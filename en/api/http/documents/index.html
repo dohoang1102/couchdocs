@@ -2,44 +2,88 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>CouchDocs - Welcome</title>
-    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" />
+    <title>CouchDocs - </title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
   </head>
   <body>
-    <div class="container"> 
-      <div id="header"> 
-          <h1>CouchDocs</h1>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
       </div>
-      
-  <div id="menu">
-  <ul id="actions">
-    <li><a href="/couchdocs">Home</a></li>
-    <li><a href="HTTP_Document_API.html">HTTP_Document_API</a></li>
-  </ul>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
 </div>
-
-      <h1>HTTP Document API</h1>
+      <div id="content">
+  <h1>HTTP Document API</h1>
 <p>This is an introduction to the CouchDB HTTP document API.</p>
 <h2>Naming/Addressing</h2>
-<p>Documents stored in a CouchDB have a DocID. DocIDs are case-sensitive string identifiers that uniquely identify a document. Two documents cannot have the same identifier in the same database, they are considered the same document.</p>
+<p>Documents stored in a CouchDB have a DocID. DocIDs are case-sensitive string
+identifiers that uniquely identify a document. Two documents cannot have the
+same identifier in the same database, they are considered the same document.</p>
 <pre><code>http://localhost:5984/test/some_doc_id
 http://localhost:5984/test/another_doc_id
 http://localhost:5984/test/BA1F48C5418E4E68E5183D5BD1F06476
 </code></pre>
-<p>The above URLs point to <em>some_doc_id</em>, <em>another_doc_id</em> and <em>BA1F48C5418E4E68E5183D5BD1F06476</em> in the database <em>test</em>.</p>
+<p>The above URLs point to <code>some_doc_id</code>, <code>another_doc_id</code> and
+<code>BA1F48C5418E4E68E5183D5BD1F06476</code> in the database <code>test</code>.</p>
 <h2>Documents</h2>
-<p>A CouchDB document is simply a JSON object. You can use any JSON structure with nesting. You can fetch the document's revision information by adding <em>?revs=true</em> or <em>?revs_info=true</em> to the get request.</p>
+<p>A CouchDB document is simply a JSON object. You can use any JSON structure
+with nesting. You can fetch the document's revision information by adding
+<code>?revs=true</code> or <code>?revs_info=true</code> to the get request.</p>
 <p>Here are two simple examples of documents:</p>
 <pre><code>{
- "_id":"discussion_tables",
- "_rev":"D1C946B7",
- "Sunrise":true,
- "Sunset":false,
- "FullHours":[1,2,3,4,5,6,7,8,9,10],
- "Activities": [
-   {"Name":"Football", "Duration":2, "DurationUnit":"Hours"},
-   {"Name":"Breakfast", "Duration":40, "DurationUnit":"Minutes", "Attendees":["Jan", "Damien", "Laura", "Gwendolyn", "Roseanna"]}
- ]
+    "_id": "discussion_tables",
+    "_rev": "D1C946B7"
+    "Activities": [
+        {
+            "Duration": 2, 
+            "DurationUnit": "Hours", 
+            "Name": "Football"
+        }, 
+        {
+            "Attendees": [
+                "Jan", 
+                "Damien", 
+                "Laura", 
+                "Gwendolyn", 
+                "Roseanna"
+            ], 
+            "Duration": 40, 
+            "DurationUnit": "Minutes", 
+            "Name": "Breakfast"
+        }
+    ], 
+    "FullHours": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    "Sunrise": true, 
+    "Sunset": false, 
 }
 
 {
@@ -53,25 +97,84 @@ http://localhost:5984/test/BA1F48C5418E4E68E5183D5BD1F06476
 }
 </code></pre>
 <h3>Special Fields</h3>
-<p>Note that any top-level fields with a name that starts with a <em>_</em> prefix are reserved for use by CouchDB itself. Also see [[Reserved_words]]. Currently (0.10+) reserved fields are:</p>
-<p>||<strong>Field Name</strong>||<strong>Description</strong>||
-  ||<em>_id</em>|| The unique identifier of the document (<strong>mandatory</strong> and <strong>immutable</strong>)||
-  ||<em>_rev</em>|| The current MVCC-token/revision of this document (<strong>mandatory</strong> and <strong>immutable</strong>)||
-  ||<em>_attachments</em>|| If the document has attachments, _attachments holds a (meta-)data structure (see section on [[HTTP_Document_API#Attachments||attachments]])||
-  ||<em>_deleted</em>|| Indicates that this document has been deleted and will be removed on next compaction run||
-  ||<em>_revisions</em>|| If the document was requested with <em>?revs=true</em> this field will hold a simple list of the documents history||
-  ||<em>_rev_infos</em>|| Similar to <em>_revisions</em>, but more details about the history and the availability of ancient versions of the document||
-  ||<em>_conflicts</em>|| Information about conflicts||
-  ||<em>_deleted_conflicts</em>|| Information about conflicts||</p>
+<p>Note that any top-level fields with a name that starts with a <code>_</code> prefix are
+reserved for use by CouchDB itself. Also see [Reserved Words][reserved_words].
+Current (0.10+) reserved fields are:</p>
+<table>
+  <tr>
+    <th>Field Name</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>_id</td>
+    <td>The unique identifier of the document.</td>
+  </tr>
+  <tr>
+    <td>_rev</td>
+    <td>The current MVCC-token/revision of this document</td>
+  </tr>
+  <tr>
+    <td>_attachments</td>
+    <td>
+      If the document has attachments, _attachments holds a (meta-)data
+      structure (see the [attachments api][doc_api])
+    </td>
+  </tr>
+  <tr>
+    <td>_deleted</td>
+    <td>
+      Indicates that this document has been deleted and will be removed on
+      next compaction run
+    </td>
+  </tr>
+  <tr>
+    <td>_revisions</td>
+    <td>
+      If the document was requested with *?revs=true* this field will hold
+      a simple list of the documents history
+    </td>
+  </tr>
+  <tr>
+    <td>_rev_infos</td>
+    <td>
+      Similar to *_revisions*, but more details about the history and the
+      availability of ancient versions of the document
+    </td>
+  </tr>
+  <tr>
+    <td>_conflicts</td>
+    <td>Information about conflicts</td>
+  </tr>
+  <tr>
+    <td>_deleted_conflicts</td>
+    <td>Information about conflicts</td>
+  </tr>
+</table>
+
 <h4>Document IDs</h4>
-<p>Document IDs don't have restrictions on what characters can be used. Although it should work, it is recommended to use non-special characters for document IDs. Using special characters you have to be aware of proper URL en-/decoding. Documents prefixed with <em>_</em> are special documents:</p>
-<p>||<strong>Document ID prefix</strong>||<strong>Description</strong>||
-  ||<em>_design/</em>|| are [[DesignDocuments]] ||
-  ||<em>_local/</em>|| are not being replicated (local documents) and used for [[Replication||replication]] checkpointing. ||</p>
-<p>You can have <strong>/</strong> as part of the document ID but if you refer to a document in a URL you must always encode it as <strong>%2F</strong>. One special case is <strong>_design/</strong> documents, those accept either <strong>/</strong> or <strong>%2F</strong> for the <strong>/</strong> after <em>_design</em>, although <strong>/</strong> is preferred and <strong>%2F</strong> is still needed for the rest of the DocID.</p>
+<p>Document IDs don't have restrictions on what characters can be used. Although
+it should work, it is recommended to use non-special characters for document
+IDs. Using special characters you have to be aware of proper URL en-/decoding.
+Documents prefixed with <em>_</em> are special documents:</p>
+<table>
+  <tr>
+    <th>Document ID prefix</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>_design/</td>
+    <td>are [Design Documents][design_docs]</td>
+  </tr>
+  <tr>
+    <td>_local/</td>
+    <td>are [Local Documents]</td>
+  </tr>
+</table>
+
+<p>You can have <code>/</code> as part of the document ID but if you refer to a document in a URL you must always encode it as <code>%2F</code>. One special case is <code>_design/</code> documents, those accept either <code>/</code> or <code>%2F</code> for the <code>/</code> after <code>_design</code>, although <code>/</code> is preferred and <code>%2F</code> is still needed for the rest of the DocID.</p>
 <h2>Working With Documents Over HTTP</h2>
 <h3>GET</h3>
-<p>To retrieve a document, simply perform a <em>GET</em> operation at the document's URL:</p>
+<p>To retrieve a document, simply perform a <code>GET</code> operation at the document's URL:</p>
 <pre><code>GET /somedatabase/some_doc_id HTTP/1.0
 </code></pre>
 <p>Here is the server's response:</p>
@@ -448,6 +551,7 @@ content-type: text/plain;charset=utf-8
 etag: "615790463"
 </code></pre>
 <p><em>POST</em> requests also return an <em>ETag</em> header for either newly created or updated documents.</p>
+</div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>
       </div>

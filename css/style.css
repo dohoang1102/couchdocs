@@ -1,6 +1,49 @@
-div#container
+
+div#wrapper
 {
-  display: block;
-  width: 800px;
-  margin: 0 auto;
+    width: 800px;
+    margin: 0 auto;
+}
+
+div#menu
+{
+    float: left;
+    width: 180px;
+}
+
+div#menu ul
+{
+    padding: 0 15px;
+    margin: 0;
+    bullet-style: none;
+}
+
+div#content
+{
+    width: 600px;
+    margin-left: 200px;
+}
+
+div#footer
+{
+    clear: both;
+}
+
+table tr th
+{
+    text-align: left;
+    white-space: nowrap;
+}
+
+a
+{
+    text-decoration: none;
+}
+
+pre
+{
+    padding: 5px;
+    border-top: 2px solid gray;
+    border-bottom: 2px solid gray;
+    background-color: #DDD;
 }

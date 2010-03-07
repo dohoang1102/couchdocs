@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - HTTP Status Codes</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>A list of HTTP statuses used by CouchDB and their respective meanings.</p>
+<table>
+  <tr>
+    <th>200 OK</th>
+    <td>Request completed successfully.</td>
+  </tr>
+  <tr>
+    <th>201 Created</th>
+    <td>Document created successfully.</td>
+  </tr>
+  <tr>
+    <th>202 Accepted</th>
+    <td>Request for database compaction completed successfully.</td>
+  </tr>
+  <tr>
+    <th>304 Not Modified</th>
+    <td>Etag not modified since last update.</td>
+  </tr>
+  <tr>
+    <th>400 Bad Request</th>
+    <td>The request was not valid in some way.</td>
+  </tr>
+  <tr>
+    <th>404 Not Found</th>
+    <td>
+      Such as a request via the HttpDocumentApi for a document which
+      doesn't exist.
+    </td>
+  </tr>
+  <tr>
+    <th>405 Method Not Allowed</th>
+    <td>The provided method is not valid for this resource.</td>
+  </tr>
+  <tr>
+    <th>409 Conflict</th>
+    <td>Request resulted in an update conflict.</td>
+  </tr>
+  <tr>
+    <th>412 Precondition Failed</th>
+    <td>Request attempted to create a database which already exists.</td>
+  </tr>
+  <tr>
+    <th>500 Internal Server Error</th>
+    <td>CouchDB had an internal error.</td>
+  </tr>
+</table>
+
+<p>As you can see, this document is incomplete, please update.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

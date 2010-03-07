@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>CouchDocs - Welcome</title>
+    <title>CouchDocs - _all_dbs</title>
     <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
   </head>
   <body>
@@ -42,8 +42,26 @@
         
 </div>
       <div id="content">
-  <h1>Welcome</h1>
-<p>This is some text that talks about CouchDB</p>
+  <h1>Listing Databases</h1>
+<p>To get the list of databases in CouchDB you can use the <code>_all_dbs</code> resource.</p>
+<pre><code>$ curl -vs http://127.0.0.1:5984/_all_dbs
+&gt; GET /_all_dbs HTTP/1.1
+&gt; User-Agent: curl/7.19.4
+&gt; Host: 127.0.0.1:5984
+&gt; Accept: */*
+&gt; 
+&lt; HTTP/1.1 200 OK
+&lt; Server: CouchDB/0.11.0b209ad163-git (Erlang OTP/R13B)
+&lt; Date: Sun, 07 Mar 2010 22:22:26 GMT
+&lt; Content-Type: text/plain;charset=utf-8
+&lt; Content-Length: 24
+&lt; Cache-Control: must-revalidate
+&lt; 
+[
+  "my_db", 
+  "my_other_db"
+]
+</code></pre>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>
