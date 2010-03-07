@@ -1,9 +1,34 @@
 ext: .css
 
-body
+
+div#wrapper
 {
-  width: 600px;
-  margin: 0 auto;
+    width: 800px;
+    margin: 0 auto;
+}
+
+div#menu
+{
+    float: left;
+    width: 180px;
+}
+
+div#menu ul
+{
+    padding: 0 15px;
+    margin: 0;
+    bullet-style: none;
+}
+
+div#content
+{
+    width: 600px;
+    margin-left: 200px;
+}
+
+div#footer
+{
+    clear: both;
 }
 
 table tr th

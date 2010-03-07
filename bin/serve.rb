@@ -3,6 +3,10 @@
 require 'webrick'
 include WEBrick
 
-s = HTTPServer.new(:Port => 8080, :DocumentRoot => Dir::pwd + "/htdocs")
+s = HTTPServer.new(
+  :Port => 8080,
+  :DocumentRoot => Dir::pwd + "/htdocs",
+  :FancyIndexing => true
+)
 trap("INT"){s.shutdown}
 s.start
