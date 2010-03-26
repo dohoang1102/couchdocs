@@ -9,25 +9,52 @@ def substitute_pattern_in_string_with(pattern, string)
    end.each do |matched, substitute|
      string.gsub!(matched, substitute)
    end
-   
+
    return string
 end
- 
+
 transformations = [
-    { :regexp => /=+\s*?$/,                    :replacement => '' },        # headlines
-                                                          
+    # headlines
+    {
+      :regexp => /=+\s*?$/,
+      :replacement => ''
+    },
+
     # { :regexp => /^(?:(\{\{\{)|(\}\}\}))\s*?$/,:replacement => '....' },    # blocks (extra line)
-    { :regexp => /\{\{\{(.*?)\}\}\}/,       :replacement => '`\1`' },       # blocks (inline)
-                                                          
-    { :regexp => /'''([^']+)'''/,              :replacement => '**\1**' },  # bold
-    { :regexp => /''([^']+)''/,                :replacement => '*\1*' },    # italic
-                                                          
-    { :regexp => /_\_(\S)/,                    :replacement => '_\_\1' },   # escaping (italic)
-    
-    { :regexp => /<<TableOfContents\(.\)>>/,   :replacement => '' }         # drop some stuff
+
+    # blocks (inline code)
+    {
+      :regexp => /\{\{\{(.*?)\}\}\}/,
+      :replacement => '`\1`'
+    },
+
+    # bold
+    {
+      :regexp => /'''([^']+)'''/,
+      :replacement => '**\1**'
+    },
+    # italic
+    {
+      :regexp => /''([^']+)''/,
+      :replacement => '*\1*'
+    },
+
+    # escaping
+    # italic
+    {
+      :regexp => /_\_(\S)/,
+      :replacement => '_\_\1'
+    },
+
+    # comment out some unsupported stuff
+    # TOC
+    {
+      :regexp => /(<<TableOfContents\(.\)>>)/,
+      :replacement => '<!-- \1 -->'
+    }
   ]
 
-# do the basic stuff 
+# do the basic stuff
 output = transformations.inject(input) do |txt, pattern|
   txt.gsub(pattern[:regexp], pattern[:replacement])
 end
@@ -45,29 +72,7 @@ output = substitute_pattern_in_string_with(/\{\{\{.*?\}\}\}/m, output) do |match
   "\n" << block.each.inject("") do |acc, line|
     acc << "    " << line << "\n"
   end
-  
+
 end
 
 puts output
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
