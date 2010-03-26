@@ -75,7 +75,7 @@ output = substitute_pattern_in_string_with(/\{\{\{.*?\}\}\}/m, output) do |match
 end
 
 # do the tables!
-output = substitute_pattern_in_string_with(/^(\|\|.*?)^[^\|]/m, output) do |matched_table|
+output = substitute_pattern_in_string_with(/^\s(\|\|.*?)^\s[^\|]/m, output) do |matched_table|
   matched_table = matched_table.gsub(/^\|\|/, "<tr><td>")
   matched_table = matched_table.gsub(/\|\|$/, "</td></tr>")
   matched_table = matched_table.gsub(/\|\|/, "</td><td>")
