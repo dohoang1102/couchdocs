@@ -1,17 +1,6 @@
 require "rubygems"
 
-input = IO.readlines('../wiki/HTTP_database_API.mm','').to_s
-
-def substitute_pattern_in_string_with(pattern, string)
-   string.scan(pattern).flatten.inject({}) do |acc, matched|
-     acc[matched] = yield matched
-     acc
-   end.each do |matched, substitute|
-     string.gsub!(matched, substitute)
-   end
-
-   return string
-end
+input = IO.readlines('../wiki/Installation.mm','').to_s
 
 transformations = [
     # headlines
@@ -60,13 +49,13 @@ output = transformations.inject(input) do |txt, pattern|
 end
 
 # transform headlines
-output = substitute_pattern_in_string_with(/^=+/, output) do |matched_string|
-  "#" * matched_string.length
+output.gsub!(/^=+/) do |match|
+  "#" * match.length
 end
 
 # doing blocks/code
-output = substitute_pattern_in_string_with(/\{\{\{.*?\}\}\}/m, output) do |matched_block|
-  block = matched_block.split("\n")
+output.gsub!(/\{\{\{.*?\}\}\}/m) do |match|
+  block = match.split("\n")
   block.shift
   block.pop
   "\n" << block.each.inject("") do |acc, line|
@@ -75,16 +64,30 @@ output = substitute_pattern_in_string_with(/\{\{\{.*?\}\}\}/m, output) do |match
 end
 
 # do the tables!
-output = substitute_pattern_in_string_with(/^\s(\|\|.*?)^\s[^\|]/m, output) do |matched_table|
-  matched_table = matched_table.gsub(/^\|\|/, "<tr><td>")
-  matched_table = matched_table.gsub(/\|\|$/, "</td></tr>")
-  matched_table = matched_table.gsub(/\|\|/, "</td><td>")
-  
+output.gsub!(/^\s(\|\|.*?)^\s([^\|])/m) do |match|
+  table = $1
+  rest = $2
+
+  table.gsub!(/&/, '&amp;')
+  # ruby does not support look behind! :(
+  # table.gsub!(/(?!\|\|)</, '&lt;')
+  # table.gsub!(/(?!\|\|<-\d)>/, '&gt;')
+
+  table.gsub!(/^\|\|<\|(\d+)>/, '<tr><td rowspan="\1">')
+  table.gsub!(/^\|\|<-(\d+)>/, '<tr><td colspan="\1">')
+  table.gsub!(/^\|\|/, "<tr><td>")
+            
+  table.gsub!(/\|\|$/, "</td></tr>")
+            
+  table.gsub!(/\|\|<\|(\d+)>/, '<td rowspan="\1">')
+  table.gsub!(/\|\|<-(\d+)>/, '<td colspan="\1">')
+  table.gsub!(/\|\|/, "</td><td>")
+
   # undo some markdown syntax, since they are not supported in block-elements like tables
-  matched_table = matched_table.gsub(/\*\*([^\*]+)\*\*/, '<strong>\1</strong>')
-  matched_table = matched_table.gsub(/\*([^\*]+)\*/, '<em>\1</em>')
-  
-  "<table>" << "\n" << matched_table << "</table>" << "\n"
+  table.gsub!(/\*\*([^\*]+)\*\*/, '<strong>\1</strong>')
+  table.gsub!(/\*([^\*]+)\*/, '<em>\1</em>')
+
+  "<table>" << "\n" << table << "</table>" << "\n\n" << rest
 end
 
 puts output
