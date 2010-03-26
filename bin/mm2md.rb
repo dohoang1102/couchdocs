@@ -81,6 +81,11 @@ markdown = [
       end
     },
 
+    {
+      :regexp => /(^\s*(\*[^\*].*?)^$)/m,
+      :replacement => "\n\\1"
+    },
+
     # comment out some unsupported stuff
     # TOC
     {
