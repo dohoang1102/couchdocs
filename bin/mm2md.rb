@@ -64,7 +64,7 @@ output = substitute_pattern_in_string_with(/^=+/, output) do |matched_string|
   "#" * matched_string.length
 end
 
-# doing blocks
+# doing blocks/code
 output = substitute_pattern_in_string_with(/\{\{\{.*?\}\}\}/m, output) do |matched_block|
   block = matched_block.split("\n")
   block.shift
@@ -72,7 +72,19 @@ output = substitute_pattern_in_string_with(/\{\{\{.*?\}\}\}/m, output) do |match
   "\n" << block.each.inject("") do |acc, line|
     acc << "    " << line << "\n"
   end
+end
 
+# do the tables!
+output = substitute_pattern_in_string_with(/^(\|\|.*?)^[^\|]/m, output) do |matched_table|
+  matched_table = matched_table.gsub(/^\|\|/, "<tr><td>")
+  matched_table = matched_table.gsub(/\|\|$/, "</td></tr>")
+  matched_table = matched_table.gsub(/\|\|/, "</td><td>")
+  
+  # undo some markdown syntax, since they are not supported in block-elements like tables
+  matched_table = matched_table.gsub(/\*\*([^\*]+)\*\*/, '<strong>\1</strong>')
+  matched_table = matched_table.gsub(/\*([^\*]+)\*/, '<em>\1</em>')
+  
+  "<table>" << "\n" << matched_table << "</table>" << "\n"
 end
 
 puts output
