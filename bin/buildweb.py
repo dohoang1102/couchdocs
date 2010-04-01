@@ -39,10 +39,20 @@ class Site(object):
         INPUT_PATH = self.cfg.INPUT_PATH
         OUTPUT_PATH = self.cfg.OUTPUT_PATH
         for curr_path, dirs, files in os.walk(INPUT_PATH):
+            self.filter(dirs)
+            self.filter(files)
             tgt_path = curr_path.replace(INPUT_PATH, OUTPUT_PATH)
             if not os.path.isdir(tgt_path):
                 os.makedirs(tgt_path)
             self.process(files, curr_path, tgt_path)
+
+    def filter(self, names):
+        i = 0
+        while i < len(names):
+            if names[i].startswith("."):
+                names.pop(i)
+            else:
+                i += 1
 
     def process(self, files, curr_path, tgt_path):
         for f in files:
