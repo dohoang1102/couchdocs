@@ -105,12 +105,13 @@ end
 
 # this is just for testing purposes
 unless STDIN.tty?
-  input = IO.readlines('../wiki/Installation.mm','').to_s
+  input = IO.readlines(File.join(File.dirname(__FILE__),'../wiki/Installation.mm'),'').to_s
   puts mm2md(input)
 else
-  Dir.glob("../wiki/**mm").first(3).each do |file|
-    File.open('../site/translated/' + File.basename(file), 'w') do |f|
-      puts "Transcoding #{file}"
+  Dir.glob(File.join(File.dirname(__FILE__),"../wiki/**mm")).each do |file|
+    target_file = File.join(File.dirname(__FILE__), '../site/translated/', File.basename(file, ".mm")) + ".md"
+    File.open(target_file, 'w') do |f|
+      puts "Transcoding #{File.basename(file)}"
       f.write(mm2md(File.read(file)))
     end
   end
