@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-require "rubygems"
+require 'fileutils'
+
+target_dir = File.join(File.dirname(__FILE__), '../site/translated/')
 
 def mm2md(input)
   markdown = [
@@ -108,8 +110,9 @@ unless STDIN.tty?
   input = IO.readlines(File.join(File.dirname(__FILE__),'../wiki/Installation.mm'),'').to_s
   puts mm2md(input)
 else
+  FileUtils.mkdir_p(target_dir)
   Dir.glob(File.join(File.dirname(__FILE__),"../wiki/**mm")).each do |file|
-    target_file = File.join(File.dirname(__FILE__), '../site/translated/', File.basename(file, ".mm")) + ".md"
+    target_file = File.join(target_dir, File.basename(file, ".mm")) + ".md"
     File.open(target_file, 'w') do |f|
       puts "Transcoding #{File.basename(file)}"
       f.write(mm2md(File.read(file)))
