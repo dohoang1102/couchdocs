@@ -29,7 +29,7 @@ def mm2md(input)
           block = match.split("\n")
           block.shift
           block.pop
-          "\n" << block.each.inject("") do |acc, line|
+          "\n" << block.inject("") do |acc, line|
             acc << "    " << line << "\n"
           end
         end
