@@ -5,6 +5,19 @@ target_dir = File.join(File.dirname(__FILE__), '../site/translated/')
 
 def mm2md(input)
   markdown = [
+      # lines beginning with # in MoinMoin seem to bit smth. special
+      # since this are markdown headline markers, comment them out
+      # and add an addional line
+      {
+        :regexp => /^#(.*?)$/m,
+        :replacement => lambda {|match| "<!-- #{match.strip} -->" }
+      },
+      {
+        :regexp => /(-->.(?!<!--))/m,
+        :replacement => '\1'+"\n"
+      },
+
+
       # headlines
       {
         :regexp => /=+\s*?$/,
@@ -14,7 +27,6 @@ def mm2md(input)
         :regexp => /^=+/,
         :replacement => lambda {|match| "#" * match.length}
       },
-
 
       # blocks (inline code)
       {
@@ -88,6 +100,17 @@ def mm2md(input)
         :replacement => "\n\\1"
       },
 
+      # basic processing of named links
+      {
+        :regexp => /\[\[(?:(.*?)\|([^\]]*?))\]\]/,
+        :replacement => %Q{<a href="\\1">\\2</a>},
+      },
+      # ... and just links
+      {
+        :regexp => /\[\[https?:\/\/(.*?)\]\]/,
+        :replacement => %Q{<a href="\\1">\\1</a>},
+      },
+
       # comment out some unsupported stuff
       # TOC
       {
@@ -101,13 +124,13 @@ def mm2md(input)
         txt.gsub(pattern[:regexp], pattern[:replacement])
       end
   end
-  
-  markdown  
+
+  markdown
 end
 
 # this is just for testing purposes
 unless STDIN.tty?
-  input = IO.readlines(File.join(File.dirname(__FILE__),'../wiki/Installation.mm'),'').to_s
+  input = IO.readlines(File.join(File.dirname(__FILE__),'../wiki/FrontPage.mm'),'').to_s
   puts mm2md(input)
 else
   FileUtils.mkdir_p(target_dir)
@@ -115,7 +138,7 @@ else
     target_file = File.join(target_dir, File.basename(file, ".mm")) + ".md"
     File.open(target_file, 'w') do |f|
       puts "Transcoding #{File.basename(file)}"
-      f.write(mm2md(File.read(file)))
+      f.write("template: page.html\ntitle: #{File.basename(file, ".mm")}\n\n" + mm2md(File.read(file)))
     end
   end
 end
