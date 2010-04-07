@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Getting_started_with_VMware</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>Getting started with CouchDB and VMware Appliance.</p>
+<h2>Quickstart</h2>
+<ul>
+<li><a href="http://s3.amazonaws.com/vmware_appliances/Jeos%20Elastic%20Drive%20and%20CouchDB-0.7.3a.rar">Download the appliance</a>. Size of the file is around 250Mb.</li>
+<li>Unpack it into proper directory (On my Windows workstation I have <em>C:Virtual Machines</em> directory).</li>
+<li>In VMware Player use <em>Commands &gt; Open</em>.</li>
+<li>In VMware Server use <em>File &gt; Open &gt; Browse</em> and select your unpacked image</li>
+<li>In terminal use username <em>khaz</em> and password <em>khaz</em>. For elevated privileges use <em>sudo command</em>.</li>
+<li>
+<p>At this point you should have all ready to go. To verify that service is running, you can run command inside terminal session <em>wget http://localhost:5984/</em>. It should return document that looks like:</p>
+<p>{"couchdb": "Welcome", "version": "0.7.3a"}</p>
+</li>
+</ul>
+<h2>Detailed Description</h2>
+<p>This appliance release has with CouchDB version 0.7.3a (rev. 649). It runs as a service under Ubuntu 7.10 Jeos and has a bonus addon - free version of Elastic Drive, that helps to establish persistence to remote storage services like Amazon S3 or Nirvanix, thus preserving the data that is stored in your CouchDB.</p>
+<ul>
+<li><a href="http://s3.amazonaws.com/vmware_appliances/Jeos%20Elastic%20Drive%20and%20CouchDB-0.7.3a.rar">Download the appliance</a>. Size of the file is around 250Mb.</li>
+<li>Unpack it into proper directory (On my Windows workstation I have <em>C:Virtual Machines</em> directory). You need to have some utility to decompress an archive, I use trial version of <a href="http://www.rarlab.com/download.htm">WinRAR</a>. Same utility had limitations on zip archive size, so this is why you have .rar</li>
+<li>In VMware Player use <em>Commands &gt; Open</em>.</li>
+<li>In VMware Server use <em>File &gt; Open &gt; Browse</em> and select your unpacked image.</li>
+<li>In terminal use username  <em>khaz</em> and password <em>khaz</em>. For elevated privileges use <em>sudo command</em>.</li>
+<li>
+<p>At this point you should have all ready to go. To verify that service is running, you can run command inside terminal session <em>wget http://localhost:5984/</em>. It should return document that looks like:</p>
+<p>{"couchdb": "Welcome", "version": "0.7.3a"}</p>
+</li>
+</ul>
+<p>If you are running Server Edition, and bridged Ethernet connection (so it uses external DHCP to obtain IP address), you can run ifconfig inside terminal session and see what IP address is assigned to this virtual instance. At this point it is easy to open new browser window and type in something like http://192.168.1.111:5984/. If you see the response like above it means all works as expected.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

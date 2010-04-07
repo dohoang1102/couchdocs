@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Getting_started_with_Rebol</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h1>Using plain Rebol3</h1>
+<p>This is how you can use CouchDB from plain Rebol3 (which is currently in public Alpha).</p>
+<p>And here you can get Rebol3 <a href="http://www.rebol.com/r3/downloads.html">Rebol3 Alpha download</a></p>
+<h2>How to read data from CouchDB using Rebol</h2>
+<pre><code>to-string read http://localhost:5984/db2/id
+</code></pre>
+<h2>How to write data to CouchDB using Rebol</h2>
+<pre><code>to-string write http://localhost:5984/db2/id json-data
+</code></pre>
+<h2>How to create a new CouchDB Database using Rebol</h2>
+<pre><code>to-string write http://localhost:5984/db2 [PUT [] ""]
+</code></pre>
+<h2>A complete console session</h2>
+<pre><code>&gt;&gt; to-string write http://localhost:5984/hohtest [PUT]
+## {{"ok":true}}
+
+&gt;&gt; to-string write http://localhost:5984/hohtest {{"_id":"hello","data":"Hello World!"}}
+## {{"ok":true,"id":"hello","rev":"1-a67aaac28adabcdd8d0718187741d49d"}}
+
+&gt;&gt; to-string read http://localhost:5984/hohtest/hello
+## {{"_id":"hello","_rev":"1-a67aaac28adabcdd8d0718187741d49d","data":"Hello World!"}}
+
+&gt;&gt; to-string write http://localhost:5984/hohtest [DELETE]
+## {{"ok":true}}
+</code></pre>
+<p>BTW, to-string is only needed to make it human readable. Without it, the return values would be binary.</p>
+<h1>A Rebol3 module</h1>
+<p>And here you can get a Rebol3 module, to make it even easier. especially working with json data.</p>
+<p><a href="http://www.rebol.org/view-script.r?script=couchdb3.r">couchdb3.r on rebol.org</a></p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - CouchIn15Minutes</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h1>Couch DB Quick Start</h1>
+<p>(Tested with 0.9.0 on <a href="http://www.ubuntu/org'">Ubuntu</a>, wikified from my <a href="http://www.jroller.com/robertburrelldonkin/entry/couchdb_in_15_minutes">blog</a>)</p>
+<h2>Install (very basic)</h2>
+<ol>
+<li><a href="http://couchdb.apache.org/downloads.html">Download</a>, unpackage and cd to the directory</li>
+<li>Read the README then follow the instructions (for Unbuntu, use <a href="http://dbpedia.org/page/Debian">Debian</a>)</li>
+<li>(Ubuntu) Remember to apt-get the require libraries before building</li>
+<li>Start Couch from the command line and check everything looks good</li>
+</ol>
+<h2>Create a new Database</h2>
+<ol>
+<li>Create new database</li>
+<li>Browse http://localhost:5984/_utils/</li>
+<li>Click "Create Database"</li>
+<li>Enter "example"</li>
+</ol>
+<h2>"Hello, World!" (of course)</h2>
+<ol>
+<li>Now for "Hello, World!"</li>
+<li>Couch is RESTful so you'll need a HTTP client. These instructions are for telnet (those who dislike the command line could use <a href="http://localhost:5984/_utils/database.html?example/_design_docs">futon</a> or, if you're using Mac OS X, <a href="http://ditchnet.org/httpclient/">HTTPClient</a>).</li>
+<li>Type: <code>$ telnet localhost 5984</code></li>
+<li>
+<p>Response: 
+    Trying 127.0.0.1...
+    Connected to localhost.</p>
+</li>
+<li>
+<p>CutNPaste: 
+    PUT /example/some_doc_id HTTP/1.0
+    Content-Length: 29
+    Content-Type: application/json</p>
+</li>
+<li>
+<p>Response: 
+    HTTP/1.0 201 Created
+    Server: CouchDB/0.9.0 (Erlang OTP/R12B)
+    Etag: "1-518824332"
+    Date: Wed, 24 Jun 2009 13:33:11 GMT
+    Content-Type: text/plain;charset=utf-8
+    Content-Length: 51
+    Cache-Control: must-revalidate</p>
+<p>{"ok":true,"id":"some_doc_id","rev":"1-518824332"}</p>
+</li>
+<li>
+<p>Browse http://localhost:5984/example/some_doc_id to see </p>
+</li>
+</ol>
+<h2>Document creation recap</h2>
+<p>1.Huh?
+ 1. Couch is a RESTful so to create a document PUT (as above) or POST
+ 1. Couch uses a JSON API. So PUT a document as JSON and GET results as JSON
+ 1. To view the data, use a view (Doh!)
+ 1. Each document has a unique "_id"
+ 1. Each document is versioned with a "_rev"</p>
+<h2>Create a View and...view it</h2>
+<ol>
+<li>Relax and take a look at the view</li>
+<li>(Well, actually I'm going to use a "show" but it'll demonstrate the flavour)</li>
+<li>
+<p>Again 
+    $ telnet localhost 5984
+    Trying 127.0.0.1...
+    Connected to localhost.
+    Escape character is '^]'.
+    PUT /example/_design/render HTTP/1.0
+    Content-Length: 79
+    Content-Type: application/json</p>
+</li>
+<li>
+<p>Response: 
+    HTTP/1.0 201 Created
+    Server: CouchDB/0.9.0 (Erlang OTP/R12B)
+    Etag: "1-2041852709"
+    Date: Wed, 01 Jul 2009 06:08:59 GMT
+    Content-Type: text/plain;charset=utf-8
+    Content-Length: 55
+    Cache-Control: must-revalidate</p>
+<p>{"ok":true,"id":"_design/render","rev":"1-2041852709"}</p>
+</li>
+<li>
+<p>Browse http://localhost:5984/example/_design/render/_show/salute/some_doc_id</p>
+</li>
+</ol>
+<h2>Summary of what a View is and does</h2>
+<ol>
+<li>What Just Happened?</li>
+<li>A "show" directly renders a document using JavaScript</li>
+<li>"Shows" are added to a design document (in this case "/_design/render" via the "shows" property)</li>
+<li>"body: doc.greetings" fills the response body with the "greetings" property</li>
+<li>GET _design/render/_show/salute/some_doc_id to use the "salute" show to render the "some_doc_id" document added above</li>
+</ol>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

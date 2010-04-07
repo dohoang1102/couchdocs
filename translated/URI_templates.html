@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - URI_templates</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>A handy list of all the key CouchDB <a href="http://bitworking.org/projects/URI-Templates/">URI templates</a>.</p>
+<h3>Databases and Documents</h3>
+<p>To see a listing of databases:</p>
+<p>/_all_dbs</p>
+<p>To see some basic information about a database:</p>
+<p>/<em>dbname</em>/</p>
+<p>To see all a listing of the data documents in a database:</p>
+<p>/<em>dbname</em>/_all_docs</p>
+<p>To see a document:</p>
+<p>/<em>dbname</em>/<em>docid</em></p>
+<p>To download a file attachment:</p>
+<p>/<em>dbname</em>/<em>docid</em>/<em>filename</em></p>
+<h3>Design Documents and Views</h3>
+<p>To see a design document:</p>
+<p>/<em>dbname</em>/_design/<em>designdocname</em></p>
+<p>To query a view.</p>
+<p>/<em>dbname</em>/_design/<em>designdocname</em>/_view/<em>viewname?</em>query''</p>
+<p>NOTE: Apparently the structure depends on the version #.  In 0.8.1 the above doesn't work, but the below works: -- JohnWarden</p>
+<p>/<em>dbname</em>/_view/<em>designdocname</em>/<em>viewname?</em>query*</p>
+<p>To query a temporary ("slow") view (with the custom view function in the body of the request):</p>
+<p>/<em>dbname</em>/_temp_view?<em>query</em></p>
+<h3>Formatting</h3>
+<p>To format a document through a "show" template:</p>
+<p>/<em>dbname</em>/_design/<em>designdocname</em>/_show/<em>showname</em>/<em>docid</em></p>
+<p>To format a view through a "list" template:</p>
+<p>/<em>dbname</em>/_design/<em>designdocname</em>/_list/<em>listname</em>/<em>viewname</em>?<em>query</em></p>
+<h3>View Query Syntax</h3>
+<p>The most common query parameters for accessing views are:</p>
+<ul>
+<li>?startkey=<em>keyvalue</em></li>
+<li>?endkey=<em>keyvalue</em></li>
+<li>?limit=<em>max rows to return</em></li>
+<li>?skip=*number of rows to skip''</li>
+</ul>
+<p>For the full query syntax, see the <a class="internal" href="HTTP_view_API.html">HTTP_view_API</a>.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

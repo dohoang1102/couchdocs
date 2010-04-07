@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Installing_on_NetBSD</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>Tested on NetBSD 5.0</p>
+<p>Install prerequisites:</p>
+<pre><code>pkg_add icu erlang spidermonkey gmake
+</code></pre>
+<p>Download the source tarball from http://couchdb.apache.org/downloads.html untar and <code>cd</code> in to the directory. Then configure and compile:</p>
+<pre><code>./configure --with-js-lib=/usr/pkg/lib --with-js-include=/usr/pkg/include --with-erlang=/usr/pkg/lib/erlang/usr/include
+gmake
+gmake install
+</code></pre>
+<p>Take care of permissions:</p>
+<pre><code>su
+useradd couchdb
+group add couchdb
+touch /usr/local/var/run/couchdb.pid
+chown couchdb:couchdb /usr/local/var/run/couchdb.pid
+chown couchdb:couchdb /usr/local/var/log/couchdb/couch.log
+chown couchdb:couchdb /usr/local/var/lib/couchdb
+</code></pre>
+<p>Start:</p>
+<pre><code>/usr/local/etc/rc.d/couchdb start
+</code></pre>
+<p>Test:
+http://localhost:5984/</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

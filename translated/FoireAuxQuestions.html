@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - FoireAuxQuestions</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- #language fr -->
+
+<p>Une FAQ pour toutes les questions autour de CouchDB.</p>
+<p>Si vous avez une question dont la réponse n'existe pas dans cette FAQ, merci de l'ajouter à la fin. Revenez au bout de quelques jours, quelqu'un y aura peut-être répondu.</p>
+<h2>Qu'est-ce que CouchDB?</h2>
+<p>CouchDB est une base de données orientée document non relationnelle (NRDBMS). La page d'<a href="http://incubator.apache.org/couchdb/docs/intro.html">Introduction</a> possède plus d'information sur le système de CouchDB.</p>
+<h2>Quel est le statut de CouchDB ?</h2>
+<p>version Alpha. Il manque encore d'importantes fonctionnalités, mais est suffisamment utilisable pour être testée.</p>
+<h2>Qu'est-ce que Couch signifie ?</h2>
+<p>C'est un acronyme pour Cluster Of Unreliable Commodity Hardware. Il résume les objectifs long terme de CouchDB qui sont d'être facilement extensible et fortement disponible sur des machines sensibles aux pannes. La nature distribuée et la structure à plat des données de la base permettra le partionnement horizontal pour étendre le stockage (avec du map/reduce pour les requêtes) et du cluster pour la disponibilité et la résistance aux pannes.</p>
+<h2>En quel langage est écrit CouchDB ?</h2>
+<p>Erlang, un langage fonctionnel concurrent temps réel et distribué, qui possède des fonctionnalités de tolérance aux pannes. Les premières versions de CouchDB étaient en C mais furent remplacées par la plateforme Erlang OTP. Erlang montre depuis qu'il correspond parefaitement à ce type de projet.</p>
+<p>CouchDB utilise la bibliothèque Javascript Mozilla's Spidermonkey en C.</p>
+<h2>Quelles plateformes sont supportées ?</h2>
+<p>La plupart des systèmes POSIX, ce qui inclue GNU/Linux et OS X.</p>
+<p>Windows n'est pas officiellement supporté mais devrait fonctioner, si c'est le cas tenez-nous au courant.</p>
+<h2>Quelle est la license ?</h2>
+<p><a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache 2.0</a></p>
+<h2>Quelle volume de données je peux stocker dans CouchDB ?</h2>
+<p>Avec un système réparti, virtuellement illimité. Pour une seule instance de base de donnée, la limite n'est pas encore connue.</p>
+<h2>Comment je fais des suites ?</h2>
+<p>Ou autrement dit, où est AUTO_INCREMENT ?! Avec la réplication les suites sont difficiles à réaliser. Les suites sont souvent utilisées pour créer des identifiants uniques pour chaque ligne de la base de données. CouchDB peut générer des ids uniques ou vous pouvez créer les votres, vous n'avez donc pas forcemment besoin de suites. Si vous utilisez une suite pour autre chose, vous devez trouver un moyen de l'intégrer dans CouchDB.</p>
+<h2>Comment j'utilise la réplication ?</h2>
+<pre><code>POST /_replicate?source=$source_basededonnée&amp;target=$destination_basededonnée
+</code></pre>
+<p>Où $source_basededonnée et $destination_basededonnée peuvent être les noms de bases locales ou des URIs correspondant à des bases de données distantes. Chacune des bases doit exister avant de lancer la réplication.</p>
+<h2>Quelle est la rapidité des vues ?</h2>
+<p>Il est difficile de vous donner des chiffres significatifs. D'un point de vue architecture, une vue sur une table est comme un index (multi-colonnes) d'une table dans une base de données relationnelle (RDBMS) sur lequel on lance une recherche rapide. C'est donc en théorie très rapide.</p>
+<p>Cependant, cette architecture a été conçue pour supporter un trafic important. Aucun blocage ne peut avoir lieu dans le module de stockage (MVCC &amp; ...) autorisant ainsi un grand nombre de lectures et d'écritures sérialisées en parallèles. Avec la réplication vous pouvez même configurer plusieurs machines pour partitionner horizontalement ls données (dans le futur). (Voir <a href="http://jan.prima.de/~jan/plok/archives/72-Some-Context.html">le slide 13 de l'essai de Jan Lehnardt</a> pour plus d'informations sur le module de stockage ou l'article complet.)</p>
+<h2>Pourquoi CouchDB n'utilise pas Mnesia?</h2>
+<p>Plusieurs raisons :</p>
+<ul>
+<li>La première est la limitation de 2giga par fichier.</li>
+<li>La seconde est que cela requiert une validation et un cycle de réparation après un crash ou une panne de courant, donc même si la taille des fichiers était augmentée, le temps de réparation sur des gros fichiers est prohibitif.</li>
+<li>Le système de réplication de Mnesia replication fonctionne sur des clusters mais pas pour du distribué ou du deconnecté. La plupart des fonctionnalités ""cool" de Mnesia ne sont pas utiles pour CouchDB.</li>
+<li>Par ailleurs Mnesia n'est pas vraiment une base de donnée "scalable"(ndlr: trouver une traduction). C'est plus une base pour des données de configuration. les données qui s'y trouvent ne sont pas le centre de l'application mais nécessaires à son fonctionnement. Des chose comme les routeurs, les proxy HTTP ou les serveurs LDAP, des choses qui ont besoin d'être mises à jour, configurées et reconfigurées souvent, mais dont le volume de données est rarement important.</li>
+</ul>
+<h2>Pourquoi n'existet-il pas d'autre moyens que HTTP pour communiquer avec CouchDB ?</h2>
+<p>Le modèle de donnée et l'API interne de CouchDB correspond si bien au modèle REST/HTTP que n'importe quel API ne ferait que réinventer un dérivé de HTTP. Cela n'aurait que peu de sens, il n'y a donc que l'api HTTP.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

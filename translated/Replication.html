@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Replication</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h2>Overview</h2>
+<p>The replication is an incremental one way process involving two databases (a source and a destination).</p>
+<p>The aim of the replication is that at the end of the process, all active documents on the source database are also in the destination database and all documents that were deleted in the source databases are also deleted (if exists) on the destination database.</p>
+<p>The replication process only copies the last revision of a document, so all previous revisions that were only on the source database are not copied to the destination database.</p>
+<p><strong>Changes on the master will not automatically replicate to the slaves</strong></p>
+<h3>Run Replication</h3>
+<p>Replication is triggered by sending a POST request to the <code>_replicate</code> URL with a JSON object in the body that includes a <code>source</code> and a <code>target</code> member.</p>
+<pre><code>POST /_replicate HTTP/1.1
+
+{"source":"example-database","target":"http://example.org/example-database"}
+</code></pre>
+<p><code>source</code> and <code>target</code> can both point at local databases, remote databases and any combination of these.</p>
+<p>If your local CouchDB instance is secured by an admin account, you need to use the full URL format</p>
+<pre><code>POST /_replicate HTTP/1.1
+
+{"source":"http://example.org/example-database","target":"http://admin:password@127.0.0.1:5984/example-database"}
+</code></pre>
+<p>The target database has to exist and is not implicitly created. Add <code>create_target:true</code> to the JSON object to create the target database (remote or local) prior to replication. The names of the source and target databases do not have to be the same.</p>
+<p>Specifying a local <code>source</code> database and a remote <code>target</code> database is called <em>push replication</em> and a remote <code>source</code> and local <code>target</code> is called <em>pull replication</em>. As of CouchDB 0.9, pull replication is a lot more efficient and resistant to errors, and it is suggested that you use pull replication in most cases, especially if your documents are large or you have large attachments.</p>
+<h3>Continuous replication</h3>
+<p>To make replication continuous, add "continuous":true parameter to JSON, for example:</p>
+<pre><code>POST /_replicate HTTP/1.1
+
+{"source":"http://example.org/example-database","target":"http://admin:password@127.0.0.1:5984/example-database", "continuous":true}
+</code></pre>
+<p>At this time, CouchDB doesn’t remember continuous replications over a server restart. For more info visit http://books.couchdb.org/relax/reference/replication - CouchDB: The Definitive Guide, chapter Replication.</p>
+<p>See also: 
+ * <a href="Replication_and_conflicts">Replication and conflicts</a>
+ * <a href="How_to_design_for_replication">How to design for replication</a></p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

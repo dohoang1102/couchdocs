@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - HowToImplementTaggingWithPython</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>This example is making use of the <a href="http://code.google.com/p/couchdb-python/">CouchDB Python Library</a> by <a href="http://www.cmlenz.net/">Christopher Lenz</a> and is derived from his <a href="http://code.cmlenz.net/diva/wiki/Divan">example blog application</a>.</p>
+<p>You´ll have to create a database named <code>tagging_example</code> and a design document named <code>_design/posts</code> with the CouchDB Views below.</p>
+<h2>CouchDB Views</h2>
+<h3>all_tags</h3>
+<p><em>map</em></p>
+<pre><code>function(doc) {
+  if (doc.type == 'post' &amp;&amp; doc.tags) {
+    doc.tags.forEach(function(tag) {
+      emit(tag, 1);
+    });
+  }
+}
+</code></pre>
+<p><em>reduce</em></p>
+<pre><code>function(keys, values) {
+  return sum(values);
+}
+</code></pre>
+<h3>by_tag</h3>
+<p><em>map</em></p>
+<pre><code>function(doc) {
+  if (doc.type == 'post' &amp;&amp; doc.tags) {
+    doc.tags.forEach(function(tag) {
+      emit(tag.slug, doc);
+    });
+  }
+}
+</code></pre>
+<h2>Create a Post model</h2>
+<p>Tags are entered as comma separated strings in a <code>TextField</code> called <code>tagstring</code> and will be generated from it on storing a post. As this is just a simple example, splitting the tagstring and making slugs in a sensible way is up to you.</p>
+<pre><code>from couchdb.client import Server
+from couchdb.schema import Document, Schema, DictField, ListField, TextField
+
+server = Server('http://127.0.0.1:5984/')
+db = server['tagging_example']
+
+class Post(Document):
+
+    type = TextField(default='post')
+
+    title = TextField(default=*)
+    # ... rest of your post model: slug, body, created, etc.
+
+    tagstring = TextField(default=*)
+    tags = ListField(DictField(Schema.build(
+                    title = TextField(),
+                    slug  = TextField()
+                    )))
+
+    def store(self, db):
+        self.tags = self._make_tags()
+        Document.store(self, db)
+
+    @classmethod
+    def all_tags(cls):
+        return make_cloud([(row.key, row.value) for row in
+                db.view('_view/posts/all_tags', group=True)])
+
+    @classmethod
+    def by_tag(cls, **options):
+        return cls.view(db, '_view/posts/by_tag', **options)
+
+    def _make_tags(self):
+        taglist = set([tag.strip() for tag in self.tagstring.split(',')])
+        tags = [
+                dict(
+                    title = tag,
+                    slug  = tag.lower()
+                    ) for tag in taglist
+                ]
+        return tags
+
+def make_cloud(tags):
+    """
+    Calculation taken from Zine blogging engine.
+    """
+    import math
+    cloud = []
+    for tag in tags:
+        tag[0][u'size'] = 100 + math.log(tag[1] or 1) * 20
+        cloud.append(tag[0])
+    return cloud
+</code></pre>
+<h3>Add some posts with tagstrings:</h3>
+<pre><code>&gt;&gt;&gt; p1 = Post(title=u"My first Post", tagstring=u"CouchDB, tagging, example")
+&gt;&gt;&gt; p1.store(db)
+&gt;&gt;&gt; p2 = Post(title=u"My second Post", tagstring=u"CouchDB, RESTful, HTTP, JSON, API")
+&gt;&gt;&gt; p2.store(db)
+&gt;&gt;&gt; p3 = Post(title=u"My third Post", tagstring=u"CouchDB, Erlang, HTTP")
+&gt;&gt;&gt; p3.store(db)
+</code></pre>
+<h2>Output</h2>
+<p>Looking at the <code>all_tags</code> design document in <a href="GettingStartedWithFuton">Futon</a> you´ll see this table:
+<table>
+<tr><td>&lt;50% #A7AFB6&gt; key </td><td>&lt;50% #A7AFB6&gt; value </td></tr>
+<tr><td>&lt;#FEFFEA&gt; {"slug": "api", "title": "API"} </td><td>&lt;#FEFFEA&gt; 1 </td></tr>
+<tr><td> {"slug": "couchdb", "title": "CouchDB"} </td><td> 3 </td></tr>
+<tr><td>&lt;#FEFFEA&gt; {"slug": "erlang", "title": "Erlang"} </td><td>&lt;#FEFFEA&gt; 1 </td></tr>
+<tr><td> {"slug": "example", "title": "example"} </td><td> 1 </td></tr>
+<tr><td>&lt;#FEFFEA&gt; {"slug": "http", "title": "HTTP"} </td><td>&lt;#FEFFEA&gt; 2 </td></tr>
+<tr><td> {"slug": "json", "title": "JSON"} </td><td> 1 </td></tr>
+<tr><td>&lt;#FEFFEA&gt; {"slug": "restful", "title": "RESTful"} </td><td>&lt;#FEFFEA&gt; 1 </td></tr>
+<tr><td> {"slug": "tagging", "title": "tagging"} </td><td> 1 </td></tr>
+</table></p>
+<p>The method of the Post model that calls the <code>all_tags</code> design document returns:</p>
+<pre><code>&gt;&gt;&gt; list(Post.all_tags())
+[{u'size': 100.0, u'slug': u'api', u'title': u'API'},
+ {u'size': 121.9722457733622, u'slug': u'couchdb', u'title': u'CouchDB'},
+ {u'size': 100.0, u'slug': u'erlang', u'title': u'Erlang'},
+ {u'size': 100.0, u'slug': u'example', u'title': u'example'},
+ {u'size': 113.8629436111989, u'slug': u'http', u'title': u'HTTP'},
+ {u'size': 100.0, u'slug': u'json', u'title': u'JSON'},
+ {u'size': 100.0, u'slug': u'restful', u'title': u'RESTful'},
+ {u'size': 100.0, u'slug': u'tagging', u'title': u'tagging'}]
+</code></pre>
+<p>Getting posts by a specific tag:</p>
+<pre><code>&gt;&gt;&gt; list(Post.by_tag()["example"])
+[&lt;Post u'7d2894971759039454ef29be57cc1b81'@u'1141652034' {u'tagstring': u'CouchDB, tagging, example', u'tags': [{u'slug': u'couchdb', u'title': u'CouchDB'}, {u'slug': u'example', u'title': u'example'}, {u'slug': u'tagging', u'title': u'tagging'}], u'type': u'post', u'title': u'My first Post'}&gt;]
+
+&gt;&gt;&gt; list(Post.by_tag()["couchdb"])
+[&lt;Post u'13b107ad3e14e06352b2476e015cf72f'@u'686077196' {u'tagstring': u'CouchDB, RESTful, HTTP, JSON, API', u'tags': [{u'slug': u'api', u'title': u'API'}, {u'slug': u'http', u'title': u'HTTP'}, {u'slug': u'json', u'title': u'JSON'}, {u'slug': u'couchdb', u'title': u'CouchDB'}, {u'slug': u'restful', u'title': u'RESTful'}], u'type': u'post', u'title': u'My second Post'}&gt;,
+ &lt;Post u'7d2894971759039454ef29be57cc1b81'@u'1141652034' {u'tagstring': u'CouchDB, tagging, example', u'tags': [{u'slug': u'couchdb', u'title': u'CouchDB'}, {u'slug': u'example', u'title': u'example'}, {u'slug': u'tagging', u'title': u'tagging'}], u'type': u'post', u'title': u'My first Post'}&gt;,
+ &lt;Post u'd71d7d8233a318745124b82f1f8a99d2'@u'667119109' {u'tagstring': u'CouchDB, Erlang, HTTP', u'tags': [{u'slug': u'http', u'title': u'HTTP'}, {u'slug': u'couchdb', u'title': u'CouchDB'}, {u'slug': u'erlang', u'title': u'Erlang'}], u'type': u'post', u'title': u'My third Post'}&gt;]
+</code></pre>
+<h2>ToDo</h2>
+<ul>
+<li>Examples for retrieving Posts by multiple tags, e.g. Posts that are tagged with <code>CouchDB</code> <em>and</em> <code>HTTP</code></li>
+<li>Related tags, e.g. find all tags across posts that are used along with a particular tag. </li>
+<li>For <code>HTTP</code> this would be <code>CouchDB, Erlang, RESTful, JSON, API</code> as they are used in p2 and p3 along with <code>HTTP</code>.</li>
+</ul>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

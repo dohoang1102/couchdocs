@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - AllInOne</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>CouchDb requires many bits to be installed.</p>
+<p>Building an all in one , embeddable, no external dependencies packaging of CouchDB for each major desktop OS (Windows, MacOSX and Linux) would help make it easy for new users to get started. Installers would be a bonus.</p>
+<p>Pioneering work has already been done with CouchDbx : a self-contained MacOSX application with all the required bits..</p>
+<p>The goal here is to document:</p>
+<ul>
+<li>the minimal bits that are required to install a self-contained, all-in-one, embeddable CouchDb</li>
+<li>the step-by-step instructions to build those packages</li>
+<li>installers creation</li>
+</ul>
+<p>Some sources of inspiration:</p>
+<ul>
+<li>the Erlang NSIS installer for windows</li>
+<li>ejabberd: http://www.ejabberd.im/</li>
+</ul>
+<p>Installer technologies:
+ * package builder on macos
+ * nsis on windows
+ * shell archives on linux</p>
+<p>IP and licensing issues
+ * since there are 3rd party dependencies that may be problematic, installers will fetch at install time the 3rd party dependencies.
+ * see that page for ASF policies: http://www.apache.org/legal/3party.html 
+ * and that email thread for specific incubator PMC comments: 
+  * http://mail-archives.apache.org/mod_mbox/incubator-general/200807.mbox/%3c003801c8e1e2$0c98fb30$0dfbfdc0@computer%3e , 
+  * http://mail-archives.apache.org/mod_mbox/incubator-general/200807.mbox/%3c3EF9FB5A-D441-4E67-BE2A-B23984A7F856@SUN.com%3e
+  * http://mail-archives.apache.org/mod_mbox/incubator-general/200807.mbox/%3cf2e8eedf0807091057q77737020s8007e255eb255837@mail.gmail.com%3e</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

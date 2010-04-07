@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - View_collation</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>A simple introduction to CouchDB view collation.</p>
+<h2>Basics</h2>
+<p>View functions specify a key and a value to be returned for each row. CouchDB collates the view rows by this key. In the following example, the !LastName property serves as the key, thus the result will be sorted by !LastName:</p>
+<pre><code>function(doc) {
+  if (doc.Type == "customer") {
+    emit(doc.LastName, {FirstName: doc.FirstName, Address: doc.Address});
+  }
+}
+</code></pre>
+<p>CouchDB allows arbitrary JSON structures to be used as keys. You can use complex keys for fine-grained control over sorting and grouping.</p>
+<h2>Examples</h2>
+<p>The following clever trick would return both customer and order documents. The key is composed of a customer <em>_id</em> and a sorting token. Because the key for order documents begins with the <em>_id</em> of a customer document, all the orders will be sorted by customer. Because the sorting token for customers is lower than the token for orders, the customer document will come before the associated orders. The values <em>0</em> and <em>1</em> for the sorting token are arbitrary.</p>
+<pre><code>function(doc) {
+  if (doc.Type == "customer") {
+    emit([doc._id, 0], doc);
+  } else if (doc.Type == "order") {
+    emit([doc.customer_id, 1], doc);
+  }
+}
+</code></pre>
+<p>This trick was <a href="http://www.cmlenz.net/blog/2007/10/couchdb-joins.html">originally documented</a> by Christopher Lenz.</p>
+<h3>Sorting by Dates</h3>
+<p>It maybe be convenient to store date attributes in a human readable format (i.e. as a String), but still sort by date. This can be done by converting the date to a number in the emit function. For example, given a document with a created_at attribute of 'Wed Jul 23 16:29:21 +0100 2008', the following emit function would sort by date</p>
+<pre><code>emit(Date.parse(doc.created_at), doc);
+</code></pre>
+<p>Alternatively, if you use a date format which sorts lexicographically, such as "2008/06/09 13:52:11 +0000" you can just </p>
+<pre><code>emit(doc.created_at, doc);
+</code></pre>
+<p>and avoid the conversion. As a bonus, this date format is compatible with the Javascript date parser, so you can use <em>new Date(doc.created_at)</em> in your client side Javascript to make date sorting easy in the browser.</p>
+<h3>String Ranges</h3>
+<p>If you need start and end keys that encompass every string with a given prefix, it is better to use a high value unicode character, than to use a 'ZZZZ' suffix.</p>
+<p>That is, rather than:</p>
+<pre><code>startkey="abc"&amp;endkey="abcZZZZZZZZZ"
+</code></pre>
+<p>You should use:</p>
+<pre><code>startkey="abc"&amp;endkey="abc\u9999"
+</code></pre>
+<h2>Collation Specification</h2>
+<p>This section is based on the <em>view_collation</em> function in <em>couch_tests.js</em>:</p>
+<pre><code>// special values sort before all other types
+null
+false
+true
+
+// then numbers
+1
+2
+3.0
+4
+
+// then text, case sensitive
+"a"
+"A"
+"aa"
+"b"
+"B"
+"ba"
+"bb"
+
+// then arrays. compared element by element until different.
+// Longer arrays sort after their prefixes
+["a"]
+["b"]
+["b","c"]
+["b","c", "a"]
+["b","d"]
+["b","d", "e"]
+
+// then object, compares each key value in the list until different.
+// larger objects sort after their subset objects.
+{a:1}
+{a:2}
+{b:1}
+{b:2}
+{b:2, a:1} // Member order does matter for collation.
+           // CouchDB preserves member order
+           // but doesn't require that clients will.
+           // this test might fail if used with a js engine
+           // that doesn't preserve order
+{b:2, c:2}
+</code></pre>
+<p>Comparison of strings is done using <a href="http://site.icu-project.org/">ICU</a> which implements the <a href="http://www.unicode.org/unicode/reports/tr10/">Unicode Collation Algorithm</a>, giving a dictionary sorting of keys. This can give surprising results if you were expecting ASCII ordering. Note that:</p>
+<ul>
+<li>All symbols sort before numbers and letters (even the "high" symbols like tilde, 0x7e)</li>
+<li>Differing sequences of letters are compared without regard to case, so a &lt; aa but also A &lt; aa and a &lt; AA</li>
+<li>Identical sequences of letters are compared with regard to case, with lowercase <em>before</em> uppercase, so a &lt; A</li>
+</ul>
+<p>You can demonstrate the collation sequence for 7-bit ASCII characters like this:</p>
+<pre><code>require 'rubygems'
+require 'restclient'
+require 'json'
+
+DB="http://127.0.0.1:5984/collator"
+
+RestClient.delete DB rescue nil
+RestClient.put "#{DB}",""
+
+(32..126).each do |c|
+  RestClient.put "#{DB}/#{c.to_s(16)}", {"x"=&gt;c.chr}.to_json
+end
+
+RestClient.put "#{DB}/_design/test", &lt;&lt;EOS
+{
+  "views":{
+    "one":{
+      "map":"function (doc) { emit(doc.x,null); }"
+    }
+  }
+}
+EOS
+
+puts RestClient.get("#{DB}/_design/test/_view/one")
+</code></pre>
+<p>This shows the collation sequence to be:</p>
+<pre><code>  ` ^ _ - , ; : ! ? . ' " ( ) [ ] { } @ * / \ &amp; # % + &lt; = &gt; | ~ $ 0 1 2 3 4 5 6 7 8 9
+a A b B c C d D e E f F g G h H i I j J k K l L m M n N o O p P q Q r R s S t T u U v V w W x X y Y z Z
+</code></pre>
+<h3>Key ranges</h3>
+<p>Take special care when querying key ranges. For example: the query</p>
+<pre><code>startkey="Abc"&amp;endkey="AbcZZZZ"
+</code></pre>
+<p>will match "ABC" and "abc1", but not "abc". This is because UCA sorts as</p>
+<pre><code>  abc &lt; Abc &lt; ABC &lt; abc1 &lt; AbcZZZZZ
+</code></pre>
+<p>For most applications, to avoid problems you should lowercase the startkey, e.g.</p>
+<pre><code>startkey="abc"&amp;endkey="abcZZZZZZZZ"
+</code></pre>
+<p>will match all keys starting with [aA][bB][cC]</p>
+<h3>Complex keys</h3>
+<p>The query <code>startkey=["foo"]&amp;endkey=["foo",{}]</code> will match most array keys with "foo" in the first element, such as <code>["foo","bar"]</code> and <code>["foo",["bar","baz"]]</code>. However it will not match <code>["foo",{"an":"object"}]</code></p>
+<h2>_all_docs</h2>
+<p>The _all_docs view is a special case because it uses ASCII collation for doc ids, not UCA. For example,</p>
+<pre><code>startkey="_design/"&amp;endkey="_design/ZZZZZZZZ"
+</code></pre>
+<p>will <em>not</em> find <code>_design/abc</code> because 'Z' comes before 'a' in the ASCII sequence. A better solution is:</p>
+<pre><code>startkey="_design/"&amp;endkey="_design0"
+</code></pre>
+<h2>Raw collation</h2>
+<p>To squeeze a little more performance out of views, you can specify <code>"options":{"collation":"raw"}</code> within the view definition for native Erlang collation, especially if you don't require UCA. This gives a different collation sequence:</p>
+<pre><code>1
+false
+null
+true
+{"a":"a"},
+["a"]
+"a"
+</code></pre>
+<p>Beware that <code>{}</code> is no longer a suitable "high" key sentinel value. Use a string like "~~~~~" instead.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

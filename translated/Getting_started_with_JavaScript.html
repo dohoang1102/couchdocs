@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Getting_started_with_JavaScript</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>Getting started with !JavaScript and the CouchDB API.</p>
+<h2>Simple Wrapper</h2>
+<p>There is a simple !JavaScript wrapper around CouchDB included in the distribution. When you install the server it is installed as http://localhost:5984/_utils/script/couch.js. You can see examples of its use in <em>couch_tests.js</em>:</p>
+<pre><code> var nc = {_id:"NC", cities:["Charlotte", "Raleigh"]};
+ var ma = {_id:"MA", cities:["Boston", "Lowell", "Worcester", "Cambridge", "Springfield"]};
+ var fl = {_id:"FL", cities:["Miami", "Tampa", "Orlando", "Springfield"]};
+
+ db.save(nc);
+ db.save(ma);
+ db.save(fl);
+
+ ...
+
+ var nc_cities = db.open('NC').cities;
+</code></pre>
+<p>Obviously the <em>couch.js</em> API is by no means final since CouchDB itself is still in flux.</p>
+<h2>Rolling Your Own</h2>
+<p>CouchDB speaks JSON. JSON means !JavaScript Object Notation. CouchDB also speaks Plain Old HTTP, so getting going with !JavaScript is a walk in the park with the XML!HttpRequest object:</p>
+<pre><code>// instantiate a new XMLHttpRequest object
+var req = new XMLHttpRequest()
+// Open a GET request to "/all_dbs"
+req.open("GET", "/_all_dbs")
+// Send nothing as the request body
+req.send("")
+// Get the response
+req.responseText
+["some_database", "another_database"]
+</code></pre>
+<p>Going from here is just a matter using the normal CouchDB HttpRestApi to get what you want.</p>
+<p>There are numerous javascript libraries out there that wraps up both XML!HttpRequest and JSON in possibly nicer APIs, including:</p>
+<ul>
+<li><a href="http://www.prototypejs.org/">Prototype</a></li>
+<li><a href="http://jquery.com/">JQuery</a></li>
+<li><a href="http://dojotoolkit.org/">Dojo</a></li>
+<li><a href="http://moofx.mad4milk.net/">Moo</a></li>
+</ul>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

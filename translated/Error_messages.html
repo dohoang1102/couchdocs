@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Error_messages</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>Explanation and solution of error messages you may experience while building or running CouchDB.</p>
+<ul>
+<li><a href="#InstallationErrors">Installation Errors</a></li>
+<li><a href="#Missingicu-config">Missing icu-config</a></li>
+<li><a href="#Erlang-version-less-5.6.0">Erlang version is less than 5.6.5</a></li>
+<li><a href="#IncorrectLD_LIBRARY_PATH">Incorrect LD_LIBRARY_PATH</a></li>
+<li><a href="#BinaryArchitectureMismatchOSX">Binary Architecture Mismatch OSX</a></li>
+<li><a href="#BinaryArchitectureMismatchSolarisSPARC">Binary Architecture Mismatch Solaris/SPARC</a></li>
+<li><a href="#UnavailablePort">Unavailable Port</a></li>
+<li><a href="#MissingOpenSSL">Missing OpenSSL</a></li>
+<li><a href="#IncorrectPermissions">Incorrect Permissions or Missing Directories</a></li>
+<li><a href="#CrashOnStartup">Crash On Startup</a></li>
+<li><a href="#RuntimeErrors">Runtime Errors</a></li>
+<li><a href="#functionraisedexceptionCannotencodeundefinedvalueasJSON">function raised exception (Cannot encode 'undefined' value as JSON)</a></li>
+<li><a href="#replicationreceivedexceptionerrorbadmatchreasonerroralreadypresent">replication received exception ({"error":"badmatch","reason":"{error,already_present}"})</a></li>
+</ul>
+<p>&lt;<Anchor(InstallationErrors)>&gt;</p>
+<h1>Installation errors</h1>
+<p>&lt;<Anchor(Missingicu-config)>&gt;</p>
+<h2>Missing icu-config</h2>
+<h3>Problem</h3>
+<pre><code>*** The icu-config script could not be found. Make sure it is
+*** in your path, and that taglib is properly installed.
+*** Or see http://ibm.com/software/globalization/icu/
+</code></pre>
+<h3>Solution</h3>
+<p>Install ICU and use <code>locate</code> to find the <code>icu-config</code> command:</p>
+<pre><code>locate icu-config
+</code></pre>
+<p>For me on Ubuntu 8.04 server I just did:</p>
+<pre><code>sudo apt-get install libicu-dev
+</code></pre>
+<p>Take the directory from the output of this command and add it to your <code>PATH</code>:</p>
+<pre><code>export PATH="$PATH:/usr/local/bin"
+</code></pre>
+<p>&lt;<Anchor(Erlang-version-less-5.6.5)>&gt;</p>
+<h2>Erlang version is less than 5.6.5 (R12B)</h2>
+<h3>Problem</h3>
+<p>Even after doing sudo apt-get install erlang you are getting the following error on ubuntu 8.04:</p>
+<pre><code>configure: error: The installed Erlang version is less than 5.6.5 (R12B).
+</code></pre>
+<h3>Solution</h3>
+<p>To get a later version without bothering with installing from source edit /etc/apt/sources.list and locate the following line:</p>
+<pre><code>deb http://us.archive.ubuntu.com/ubuntu/ hardy universe
+</code></pre>
+<p>Change it to the following</p>
+<pre><code>deb http://us.archive.ubuntu.com/ubuntu/ intrepid universe
+</code></pre>
+<p>Save and then run:</p>
+<pre><code>apt-get update
+</code></pre>
+<p>You should now be able to install it by doing:</p>
+<pre><code>apt-get install erlang-nox erlang-dev
+</code></pre>
+<p>Test you version and confirm you see something greater than 5.6.0 </p>
+<pre><code>erl
+</code></pre>
+<p>&lt;<Anchor(IncorrectLD_LIBRARY_PATH)>&gt;</p>
+<h2>Incorrect LD_LIBRARY_PATH</h2>
+<h3>Problem</h3>
+<pre><code>$ couchdb      
+Apache CouchDB 0.8.0-incubating (LogLevel=info)
+Apache CouchDB is starting.
+
+{"init terminating in do_boot",{error,{open_error,-10}}​}
+
+Crash dump was written to: erl_crash.dump
+init terminating in do_boot ()
+</code></pre>
+<p>or</p>
+<pre><code>$ couchdb
+Apache CouchDB 0.8.1-incubating (LogLevel=info)
+Apache CouchDB is starting.
+
+{"init terminating in do_boot","libjs.so: cannot open shared object file: No such file or directory"}
+
+Crash dump was written to: erl_crash.dump
+init terminating in do_boot (libjs.so: cannot open shared object file: No such file or directory)
+</code></pre>
+<h3>Solution</h3>
+<p>You must correctly set your <code>LD_LIBRARY_PATH</code> environment variable so that it picks up your installed libraries. On Mac OS X, the equivalent variable is <code>DYLD_LIBRARY_PATH</code>.</p>
+<p>Example running as normal user:</p>
+<pre><code>LD_LIBRARY_PATH=/usr/local/lib:/usr/local/spidermonkey/lib couchdb
+</code></pre>
+<p>Example running as <code>couchdb</code> user:</p>
+<pre><code>echo LD_LIBRARY_PATH=/usr/local/lib:/usr/local/spidermonkey/lib couchdb | sudo -u couchdb sh
+</code></pre>
+<p>Similar instructions are on the InstallingSpiderMonkey page.</p>
+<p>&lt;<Anchor(BinaryArchitectureMismatchOSX)>&gt;</p>
+<h2>Binary Architecture Mismatch OSX</h2>
+<p>On Mac OS X, libraries and executables can be <em>fat binaries</em> that support multiple processor architectures (PPC and x86, 32 and 64 bit). But that also means you will run into problems when trying to load a library into an application if that library doesn't support the architecture used by the application process.</p>
+<h3>Problem</h3>
+<pre><code>$ couchdb      
+Apache CouchDB 0.8.0-incubating (LogLevel=info)
+Apache CouchDB is starting.
+
+{"init terminating in do_boot",{error,{open_error,-12}}​}
+
+Crash dump was written to: erl_crash.dump
+init terminating in do_boot ()
+</code></pre>
+<h3>Solution</h3>
+<p>You've probably built Erlang with the 64 bit option enabled. The problem is that ICU, which CouchDB attempts to load at startup time, has not been compiled with 64 bit support, so it can't be loaded into the 64bit Erlang process.</p>
+<p>For now you'll have to recompile Erlang, and resist the temptation to build a 64 bit binary (just omit the <code>--enable-darwin-64bit</code> option). The <code>--enable-darwin-universal</code> option works okay, but note that currently there's no universal build of ICU available.</p>
+<p>&lt;<Anchor(BinaryArchitectureMismatchSolarisSPARC)>&gt;</p>
+<h2>Binary Architecture Mismatch Solaris/SPARC</h2>
+<h3>Problem</h3>
+<pre><code>Apache CouchDB 0.8.1-incubating (LogLevel=info)
+Apache CouchDB is starting.
+
+{"init terminating in do_boot","ld.so.1: beam.smp: fatal: relocation
+error: file
+/opt/couchdb-0.8.1//lib/couchdb/erlang/lib/couch-0.8.1-incubating/priv/lib/couch_erl_driver.so:
+symbol ucol_close_4_0: referenced symbol not found"}
+init terminating in do_boot (ld.so.1: beam.smp: fatal: relocation error:
+file
+/opt/couchdb-0.8.1//lib/couchdb/erlang/lib/couch-0.8.1-incubating/priv/lib/couch_erl_driver.so:
+symbol ucol_close_4_0: r
+</code></pre>
+<h3>Solution</h3>
+<p>Solaris provides an old version of the ICU library.  On SPARC hardware, when building the current version of ICU, it defaults to 64bits, while erlang and spidermonkey defaulted to 32bit, so when linking, the linker picks the outdated version.</p>
+<p>The solution is to rebuild ICU for 32bits.  At the ./configure step, add this flag, "--enable-64bit-libs=no".</p>
+<p>Also, use LD_LIBRARY_PATH or crle to make /usr/local/lib earlier in the search path than /usr/lib.</p>
+<p>&lt;<Anchor(UnavailablePort)>&gt;</p>
+<h2>Unavailable Port</h2>
+<h3>Problem</h3>
+<pre><code>$ couchdb      
+Apache CouchDB 0.9.0a747640 (LogLevel=info) is starting.
+Failure to start Mochiweb: eaddrinuse
+{"init terminating in do_boot",{{badmatch,{error,shutdown}},[{couch_server_sup,start_server,1},{erl_eval,do_apply,5},{erl_eval,exprs,5},{init,start_it,1},{init,start_em,1}]}}
+</code></pre>
+<h3>Solution</h3>
+<p>Edit your <code>/etc/couchdb/couch.ini</code> file and change the <code>Port</code> setting to an available port.</p>
+<p>&lt;<Anchor(MissingOpenSSL)>&gt;</p>
+<h2>Missing OpenSSL</h2>
+<h3>Problem</h3>
+<pre><code>$ bin/couchdb
+Apache CouchDB 0.8.0-incubating (LogLevel=info)
+Apache CouchDB is starting.
+
+{"init terminating in do_boot",{undef,[{crypto,start,[]},{erl_eval,do_apply,5},{init,start_it,1},{init,start_em,1}]}}
+
+Crash dump was written to: erl_crash.dump
+init terminating in do_boot ()
+</code></pre>
+<h3>Solution</h3>
+<p>You are missing erlang SSL support.</p>
+<p>You may not have installed the package that provides it (for example, erlang-ssl).  Check $(libdir)/erlang/lib/ssl-*/ and make sure it contains more than just an include/ subdirectory.</p>
+<p>If you compiled by hand, you need to install the OpenSSL libraries and recompile Erlang with SSL enabled.</p>
+<p>&lt;<Anchor(IncorrectPermissions)>&gt;</p>
+<h2>Incorrect Permissions or Missing Directories</h2>
+<h3>Problem</h3>
+<pre><code>$ bin/couchdb
+Apache CouchDB 0.9.0a691361-incubating (LogLevel=info) is starting.
+{"init terminating in do_boot",{{badmatch,{error,shutdown}},[{couch_server_sup,start_server,1},{erl_eval,do_apply,5},{erl_eval,exprs,5},{init,start_it,1},{init,start_em,1}]}}
+
+Crash dump was written to: erl_crash.dump
+init terminating in do_boot ()
+</code></pre>
+<h3>Solution</h3>
+<p>You need to make sure that the user running couchdb has permissions to write to /usr/local/var/lib/couchdb and /usr/local/var/log/couchdb. This error message may also appear if CouchDB is trying to bind to a port that is already in use.</p>
+<p>Also check that the directories specified in your local.ini are there, like the database_dir and the directory where the log file is created. If they are not there, create them.</p>
+<p>&lt;<Anchor(CrashOnStartup)>&gt;</p>
+<h2>Crash On Startup</h2>
+<h3>Problem</h3>
+<pre><code>$ sudo couchdb
+Apache CouchDB 0.9.0a720049-incubating (LogLevel=info) is starting.
+{"init terminating in do_boot","Driver is an inappropriate Mach-O file"}
+
+Crash dump was written to: erl_crash.dump
+init terminating in do_boot (Driver is an inappropriate Mach-O file)
+</code></pre>
+<h3>Solution</h3>
+<p>This is related to an update made in erlang (http://www.nabble.com/OS-X-fixes-(HiPE,-ddll-unload)-td19411880.html) Upgrading to version R12B-5 or higher should fix things.</p>
+<p>&lt;<Anchor(RuntimeErrors)>&gt;</p>
+<h1>Runtime Errors</h1>
+<p>&lt;<Anchor(functionraisedexceptionCannotencodeundefinedvalueasJSON)>&gt;</p>
+<h2>function raised exception (Cannot encode 'undefined' value as JSON)</h2>
+<h3>Problem</h3>
+<p>A view index fails to build, CouchDB Logs this error message:</p>
+<pre><code>function raised exception (Cannot encode 'undefined' value as JSON)
+</code></pre>
+<h3>Solution</h3>
+<p>The JavaScript code you are using for the map or reduce function is using an object member that is not defined. Consider this document</p>
+<pre><code>{
+  "_id":"XYZ123",
+  "_rev":"1BB2BB",
+  "field":"value"
+}
+</code></pre>
+<p>And this map function:</p>
+<pre><code>function(doc) {
+  emit(doc.name, doc.address);
+}
+</code></pre>
+<p>Use guarding to make sure to only access members when they exist in the passed-in document:</p>
+<pre><code>function(doc) {
+  if(doc.name &amp;&amp; doc.address) {
+      emit(doc.name, doc.address);
+  }
+}
+</code></pre>
+<p>While the above guard will work in most cases, it's worth bearing !JavaScript's falsy set of values in mind. Testing against a property with a value of <code>0</code> (zero), <code>''</code> (empty String), <code>false</code> or <code>null</code> will return false. If this is undesired a guard of the form <code>if (doc.foo !== undefined)</code> should do the trick.</p>
+<p>&lt;<Anchor(replicationreceivedexceptionerrorbadmatchreasonerroralreadypresent)>&gt;</p>
+<h2>replication received exception ({"error":"badmatch","reason":"{error,already_present}"})</h2>
+<h3>Problem</h3>
+<p>A replication request receives the following HTTP response</p>
+<pre><code>HTTP/1.1 500 Internal Server Error - {"error":"badmatch","reason":"{error,already_present}"}
+</code></pre>
+<h3>Solution</h3>
+<p>Alas, there is no information about this at present - it is being looked into. Observed on a 0.9 release running on x86_64 Linux</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

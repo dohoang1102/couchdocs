@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Running CouchDB in Dev Mode</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- ## page was renamed from Running_Couchdb_in_Dev_Mode -->
+
+<p>This only applies if you need to make changes to the CouchDB server or to the Futon web front-end.</p>
+<h3>Prerequisites</h3>
+<p>You need to have installed CouchDB from source. See <a class="internal" href="Installing_from_source.html">Installing_from_source</a>.</p>
+<h3>Create a Development Configuration</h3>
+<p>The following commands set up a CouchDB configuration that points to the location of your SVN checkout.</p>
+<p>Run these commands:</p>
+<pre><code>$ cd YOUR_COUCHDB_CHECKOUT_DIRECTORY
+$ ./bootstrap
+$ ./configure
+$ make dev
+</code></pre>
+<p>You can change defaults such as port number and passwords in <code>./etc/couchdb/local_dev.ini</code>. Now start CouchDB by calling this command:</p>
+<pre><code>$ utils/run
+</code></pre>
+<p>Your CouchDB server has been started as a foreground process.  You should see messages similar to this:</p>
+<pre><code>Apache CouchDB 0.11.0b885334 (LogLevel=info) is starting.
+Apache CouchDB has started. Time to relax.
+[info] [&lt;0.32.0&gt;] Apache CouchDB has started on http://127.0.0.1:5984/
+</code></pre>
+<p>You can change to background, reset config files, redirect output etc via command line arguments.  (Note only one dash in front of help.)</p>
+<pre><code>$ utils/run -help
+</code></pre>
+<h3>Ubuntu 9.10</h3>
+<p>This is how you can run the dev version side by side with the Ubuntu version. The main difficulties are Javascript engine paths as documented by <a href="http://mattgoodall.blogspot.com/2009/09/build-couchdb-on-ubuntu-910-karmic.html">Matt Goodall</a>.  You need to specify <code>LD_RUN_PATH=/usr/lib/xulrunner-1.9.1.7</code> before every command as well as provide extra parameters to configure.  (Note the final digit changes with each Firefox update - check your /usr/lib directory to find the correct number.  You also need to rebuild when that digit changes.)</p>
+<p>Get all the needed build time packages:</p>
+<pre><code>$ sudo apt-get install libtool help2man erlang-nox erlang-dev libicu-dev xulrunner-dev libcurl4-openssl-dev build-essential automake
+</code></pre>
+<p>Checkout source code and build it:</p>
+<pre><code>$ svn co http://svn.apache.org/repos/asf/couchdb/trunk couchdb
+$ cd couchdb
+$ ./bootstrap
+$ LD_RUN_PATH=/usr/lib/xulrunner-1.9.1.7 ./configure --with-js-lib=/usr/lib/xulrunner-devel-1.9.1.7/lib/ --with-js-include=/usr/lib/xulrunner-devel-1.9.1.7/include
+$ LD_RUN_PATH=/usr/lib/xulrunner-1.9.1.7 make dev
+</code></pre>
+<p>Now edit <code>./etc/default/local_dev.ini</code> and change the port.  I use 5984 (default) for the Ubuntu install and 5985 for this dev version.</p>
+<pre><code>$ LD_RUN_PATH=/usr/lib/xulrunner-1.9.1.7 utils/run
+</code></pre>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

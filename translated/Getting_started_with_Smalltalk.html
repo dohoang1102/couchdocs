@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Getting_started_with_Smalltalk</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>There is a nascent interface being built for <a href="http://www.cincomsmalltalk.com">Cincom Smalltalk</a>.  To try that out, you'll need to:</p>
+<ul>
+<li><a href="http://www.cincomsmalltalk.com/scripts/CommunityDownloadPage.ssp">Download Cincom Smalltalk</a></li>
+<li>Get an Account in the <a href="http://www.cincomsmalltalk.com/CincomSmalltalkWiki/Public+Store+Repository">Cincom Smalltalk Public Repository</a></li>
+<li>Load the "CouchDB" package from the repository</li>
+</ul>
+<p>Once it's loaded, you can try things like this:</p>
+<pre><code>"A simple interface to Couch DB.  To create, delete, and query databases, try:"
+CouchDB.Interface default databases.
+CouchDB.Interface default create: 'mydb'.
+CouchDB.Interface default delete: 'mydb'.
+CouchDB.Interface default database: 'mydb'
+
+"Further, you can then manipulate documents in a database, try:"
+myDatabase := CouchDB.Interface default database: 'mydb'.
+documentRecord := myDatabase save: myDatabase address.
+myDatabase document: (documentRecord at: 'id').
+myDatabase delete: (documentRecord at: 'id') revision: (documentRecord at: 'rev').
+</code></pre>
+<p>The APIs for database are fully implemented, and, other than attachments, the APIs for documents are fully implemented as well</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

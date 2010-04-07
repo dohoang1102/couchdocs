@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Cl-Couch</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- ## page was renamed from Cl-CouchDb -->
+
+<p>Go to the official <a href="http://common-lisp.net/project/cl-couch/">Cl-couch page on common-lisp.net</a></p>
+<h1>Overview</h1>
+<p><a class="internal" href="Cl-Couch.html">Cl-Couch</a> is a Common Lisp suite for interacting with CouchDB databases.</p>
+<p>It defines three systems: </p>
+<ul>
+<li><code>cl-couchdb-client</code> -- a client server for making requests to a CouchDB database from Common Lisp</li>
+<li><code>cl-couchdb-view-server</code> -- a view server for programming CouchDB <a class="internal" href="Views.html">Views</a> with Common Lisp</li>
+<li><code>cl-couchdb-object-layer</code> -- a simple object layer for making <code>cl-couchdb-client</code> easier to work with</li>
+</ul>
+<h1>Getting</h1>
+<p>There are no official releases of <a class="internal" href="Cl-Couch.html">Cl-Couch</a> yet.</p>
+<p>Check out the latest version from the <a href="http://common-lisp.net/cgi-bin/darcsweb/darcsweb.cgi?r=cl-couch-cl-couch;a=tree">darcs repo</a>:</p>
+<pre><code>darcs get http://www.common-lisp.net/project/cl-couch/darcs/cl-couch
+</code></pre>
+<h2>Cl-CouchDB-client</h2>
+<p><code>Cl-CouchDB-client</code> allows the user to make requests to the running CouchDB server from lisp. It's main entry point is the macro <code>R</code>.</p>
+<h3>Starting the server</h3>
+<p>You start the server with by calling <code>open-server</code>:</p>
+<pre><code>COUCHDB-SERVER&gt; (open-server)
+
+*COUCHDB-SERVER*
+</code></pre>
+<p>This sets <code>*COUCHDB-SERVER*</code> to the default http://localhost:5984. This isn't really necessary, but allows us to omit the server argument when we make requests.</p>
+<h3>COUCH-REQUEST</h3>
+<p><code>COUCH-REQUEST</code> takes specifiers for a request to a CouchDB database and returns a Lisp object. HTTP PUT and POST requests with <code>COUCH-REQUEST</code> take Lisp objects as well, thus enabling the programmer to black-box the JSON layer completely.</p>
+<h4>Examples</h4>
+<p>Using <code>COUCH-REQUEST</code> to make a GET request to <code>http://localhost:5984/blog/150fedd5d14f0771eb5e44d071a1df5d</code>:</p>
+<pre><code>COUCHDB-CLIENT&gt; (couch-request :get (blog "150fedd5d14f0771eb5e44d071a1df5d"))
+((:_ID . "150fedd5d14f0771eb5e44d071a1df5d") (:_REV . "253381451")
+ (:AUTHOR . "foo") (:BODY . "Zażółć") (:POST . "third") (:TYPE . "comment")
+ (:N . 66))
+</code></pre>
+<p>Using <code>COUCH-REQUEST</code> to make a GET request to <code>http://localhost:5984/blog/_all_docs?count=2</code>:</p>
+<pre><code>COUCHDB-CLIENT&gt; (couch-request :get (blog _all_docs :count 2))
+((:TOTAL-ROWS . 48) (:OFFSET . 0)
+ (:ROWS
+  ((:ID . "06672346ffc093ce68a07692a5f12db5")
+   (:KEY . "06672346ffc093ce68a07692a5f12db5") (:VALUE (:REV . "3441371051")))
+  ((:ID . "14328cab564dfec5eac0ff0a44d2083d")
+   (:KEY . "14328cab564dfec5eac0ff0a44d2083d") (:VALUE (:REV . "1258191009")))))
+</code></pre>
+<h3>COUCH-REQUEST*</h3>
+<p><code>COUCH-REQUEST*</code> is the functional equivalent to the macro <code>COUCH-REQUEST</code>.</p>
+<h3>@</h3>
+<p><code>@</code> is a utility function that enables you to access Lisp data in the JavaScript dot style. For example,
+<code>(@ doc :friend :id)</code> is equivalent to js <code>doc.friend.id</code>.</p>
+<p>When looking into lists, <code>@</code> does an alist lookup by default. Since it's a generic function, however, it's behavior can be extended for any type of object (eg, those created from CouchDB documents by <code>cl-CouchDB-object-layer</code>).</p>
+<h2>Cl-CouchDB-View-Server</h2>
+<p><code>Cl-CouchDB-View-Server</code> enables you to write views with Common Lisp instead of having to use JavaScript. It supports both standard and mapreduce views.</p>
+<p>Writing views with Common Lisp has several advantages:</p>
+<ul>
+<li>Common Lisp compiles to fast code.</li>
+<li>Views are compiled (even ad hoc views) since CouchDB usually sends symbols naming functions, rather than their source.</li>
+<li>You can do all sorts of weird tricks with the running Lisp image, such as maintaining an in-memory database for faster indexed lookup, making requests to the CouchDB server itself, or well... any of the weird things you can do with Lisp...</li>
+</ul>
+<h3>Starting the Lisp View Server</h3>
+<h4>From the CouchDB side</h4>
+<p>A Lisp image that with a running view server will be listening to port 5477. So, you need to add something like </p>
+<pre><code>common-lisp=/usr/bin/socat - TCP4:localhost:5477
+</code></pre>
+<p>to the <code>[Couch Query Servers]</code> section of your <code>couch.ini</code> (you can substitute socat for any program that will allow a
+socket open on port 5477 look like a program with standard input and standard output).<br />
+</p>
+<p><strong>Update: </strong> As of CouchDB 0.9.0, the configuration file has been replaced with a combination of <code>default.ini</code> and <code>local.ini</code>.  The line above needs to be added to the <code>local.ini</code> file under the <code>[query_servers]</code> section instead.  Restart the CouchDB server and make sure common-lisp is listed next to the query_servers field in the configuration page in Futon.</p>
+<h4>From the Lisp Side</h4>
+<p>The Lisp image just needs to open a client server (we need to be able to speak with couchdb through HTTP) and a view server and it's ready for action.</p>
+<pre><code>COUCHDB-SERVER&gt; (open-server)
+
+*COUCHDB-SERVER*
+
+COUCHDB-SERVER&gt; (start-view-server)
+&lt;!-- #&lt;view-server :host "127.0.0.1" :port 5477&gt; --&gt;
+</code></pre>
+<h3>Creating Design Documents</h3>
+<p>The <code>DEFDESIGN</code> macro creates a design document and saves it to the database.</p>
+<p>This example creates a design document "test" with one view (<code>by-author-type</code>) and saves it to the database "blog":</p>
+<pre><code>COUCHDB-SERVER&gt; (defdesign test
+            ((by-author-type :map (doc)
+                     (emit (list (@ doc :author) (@ doc :type)) doc)))
+          (:documentation "A test view.")
+          (:sync blog))
+&lt;!-- #&lt;design-document :name TEST :revision NIL :views (#&lt;view BY-AUTHOR-TYPE :map "#'CL-COUCHDB-VIEW-SERVER::BY-AUTHOR-TYPE-MAP" :reduce NIL&gt;)&gt; --&gt;
+</code></pre>
+<p>A <code>:reduce</code> view-function may be called either in the <code>reduce</code> or <code>rereduce</code> phase. In the latter situations it gets as its argument the list of earlier calls to reduce instead the usual list of key-value pairs produced by <code>map</code>. The function may tell whether this is the case by checking the value of the special variable <code>*in-rereduce*</code>.</p>
+<h3>Querying the View Server</h3>
+<p>You can query views with the function <code>query-view</code>:</p>
+<pre><code>COUCHDB-SERVER&gt; (query-view 'by-author-type :startkey '("foobar") :endkey '("foobar" #()))
+(((:ID . "first") (:KEY "foobar" "blogPost")
+  (:VALUE (:_ID . "first") (:_REV . "2718626630") (:AUTHOR . "foobar")
+   (:BODY . "Zażółć gęślą jaźń") (:TYPE . "blogPost") (:N . 5)))
+ ((:ID . "fourth") (:KEY "foobar" "blogPost")
+  (:VALUE (:_ID . "fourth") (:_REV . "2695588251") (:AUTHOR . "foobar")
+   (:BODY . "Zażółć gęślą jaźń") (:TYPE . "blogPost") (:N . 8)))
+ ((:ID . "second") (:KEY "foobar" "blogPost")
+  (:VALUE (:_ID . "second") (:_REV . "230136489") (:AUTHOR . "foobar")
+   (:BODY . "Zażółć gęślą jaźń") (:TYPE . "blogPost") (:N . 6)))
+ ((:ID . "third") (:KEY "foobar" "blogPost")
+  (:VALUE (:_ID . "third") (:_REV . "2453743212") (:AUTHOR . "foobar")
+   (:BODY . "Zażółć gęślą jaźń") (:TYPE . "blogPost") (:N . 7))))
+47
+39
+</code></pre>
+<p>You can create ad-hoc views with the function <code>query</code>:</p>
+<pre><code>COUCHDB-SERVER&gt; (query 'blog '(lambda (doc) (emit (@ doc :author) (@ doc :body))) :count 2)
+(((:ID . "06672346ffc093ce68a07692a5f12db5") (:KEY . "foo")
+  (:VALUE . "Zażółć"))
+ ((:ID . "146238e235f0cc36661ce82c909044be") (:KEY . "foo")
+  (:VALUE . "Zażółć")))
+47
+0
+</code></pre>
+<h2>Cl-CouchDB-Object-Layer</h2>
+<p><code>Cl-CouchDB-Object-Layer</code> provides an object abstraction layer over the alists coming in and out of the database. Most importantly, using these objects (called <code>docs</code>) allows you to automatically validate the information coming in and out of the database (preventing other Lispers from polluting your pristine CouchDB database with specious data ;-) )</p>
+<h3>Defining Doc Classes</h3>
+<p>To define a doc class, use <code>DEFDOC</code> (which is similar to <a href="http://www.lisp.org/HyperSpec/Body/mac_defclass.html">DEFCLASS</a>).</p>
+<pre><code>COUCHDB-OBJECTS&gt; (defdoc blog-post 
+             ((:author :validator #'stringp)
+              (:title :validator #'stringp)
+              (:_id :initform (lambda (doc) (url-encode (@ doc :title))))
+              (:body :validator #'stringp))
+           (:default-db 'blog))
+&lt;!-- #&lt;STANDARD-METHOD MAKE-DOC ((EQL BLOG-POST)) {BEB6679}&gt; --&gt;
+</code></pre>
+<p>"Attributes" are like slots, except identified by a keyword. Attributes can have a <code>:VALIDATOR</code> and <code>:INITFORM</code> and <code>:DOCUMENTATION</code> attribute-options (which are liks slot-options for CLOS objects).</p>
+<ul>
+<li>A <code>:VALIDATOR</code> must be a unary function that take the value of an attribute and returns a non-<code>NULL</code> value if it is valid.</li>
+<li>An <code>:INITFORM</code> may be either a normal Lisp value or unary function, which is called on the object itself after setting other attributes.</li>
+<li>a <code>:DOCUMENTATION</code> attribute-option is a doc string.</li>
+</ul>
+<h3>Making Docs</h3>
+<p>Use the function <code>MAKE-DOC</code> to make <code>DOC</code>s. <code>MAKE-DOC</code> is something like <a href="http://www.lisp.org/HyperSpec/Body/stagenfun_make-instance.html">MAKE-INSTANCE</a>.</p>
+<pre><code>COUCHDB-OBJECTS&gt; (make-doc 'blog-post :author "Kuba" :title "O czym dziś napisać" :body "Foo")
+&lt;!-- #&lt;doc(NIL) :_ID "o_czym_dzis_napisac" :BODY "Foo" :TITLE "O czym dziś napisać" :AUTHOR "Kuba" :TYPE "BLOG-POST"&gt; --&gt;
+</code></pre>
+<h3>Getting Data from Docs</h3>
+<p>You can call <code>@</code> on docs to get the value of an attribute, exactly as you would call <code>@</code> on an alist.</p>
+<pre><code>COUCHDB-OBJECTS&gt; (let ((doc (make-doc 'blog-post :author "Kuba" :title "O czym dziś napisać" :body "Foo")))
+           (@ doc :title))
+"O czym dziś napisać"
+</code></pre>
+<h3>Saving Docs</h3>
+<p>We can call <code>make-and-save</code> to create a document and save it in the database:</p>
+<pre><code>COUCHDB-OBJECTS&gt; (make-doc-and-save 'blog-post :author "Kuba" :title "Zażółć gęślą jaźń" :body "foobar") ;we'll get the rev in return
+"2591270477"
+</code></pre>
+<p>Note: if an object is invalid, it won't be saved:</p>
+<pre><code>COUCHDB-OBJECTS&gt; (make-doc-and-save 'blog-post :author "Kuba" :title "Zażółć gęślą jaźń")
+The document #&lt;doc(NIL) :_ID "zazolc_gesla_jazn" :TITLE "Zażółć gęślą jaźń" :AUTHOR "Kuba" :TYPE "BLOG-POST"&gt; is invalid. Reason: attribute
+              :BODY with value NIL didn't validate using #&lt;FUNCTION STRINGP&gt;
+   [Condition of type VALIDATOR-FAILED]
+...
+</code></pre>
+<h1>License</h1>
+<p>BSD sans advertising clause.</p>
+<h1>Author</h1>
+<p>Ryszard Szopa <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#114;&#121;&#115;&#122;&#97;&#114;&#100;&#46;&#115;&#122;&#111;&#112;&#97;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#114;&#121;&#115;&#122;&#97;&#114;&#100;&#46;&#115;&#122;&#111;&#112;&#97;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a>, with one component (logv)
+being authored by Nick Allen <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#110;&#97;&#108;&#108;&#101;&#110;&#48;&#53;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#110;&#97;&#108;&#108;&#101;&#110;&#48;&#53;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a>.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

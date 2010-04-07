@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Problèmes</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h2>Mise à jour</h2>
+<p>Avez-vous compilé CouchDB à partir du dépot Subversion?</p>
+<p>Avez vous exécuté un <code>svn up</code> qui semble tout casser ?</p>
+<p>Après chaque mise à jour, vous devez lancer la commande suivante :</p>
+<pre><code>./bootstrap -C
+</code></pre>
+<p>Si vous avez encore des problèmes, essayez le point suivant.</p>
+<h2>Premier lancement</h2>
+<p>Avez-vous des problèmes au lancement de CouchDB la première fois ?</p>
+<p>Suivez cette simple procédure et reportez le résultat de chaque étape sur la liste de diffusion (ou IRC).</p>
+<ol>
+<li>
+<p>Indiquez le nom de votre système d'exploitation et de votre architecture procésseur.</p>
+</li>
+<li>
+<p>Indiquez les versions des dépendances de CouchDB installées.</p>
+</li>
+<li>
+<p>Suivez <a href="http://incubator.apache.org/couchdb/community/code.html">les instructions de checkout</a> pour obtenir une copîe récente du trunk.</p>
+</li>
+<li>
+<p>Bootstrap à partir du dossier <code>couchdb</code> :</p>
+<p>./bootstrap -C</p>
+</li>
+<li>
+<p>Compilez dans un dossier temporaire :</p>
+<p>./configure --prefix=/tmp/couchdb &amp;&amp; make &amp;&amp; make install</p>
+</li>
+<li>
+<p>Exécutez la commande couchdb et enregistrez le résultat :</p>
+<p>/tmp/couchdb/bin/couchdb</p>
+</li>
+<li>
+<p>Utilisez votre outil de traçage et enregistrez le résultat de la commande précedente.</p>
+</li>
+<li>
+<p>Sur les systèmes Linux utilisez de préférence strace:</p>
+<p>strace /tmp/couchdb/bin/couchdb 2&gt; strace.out</p>
+</li>
+<li>
+<p>Merci d'ajouter la documentation pour votre système...</p>
+</li>
+<li>
+<p>Reportez le résultat de chaque étape sur la liste de diffusion (ou IRC).</p>
+</li>
+</ol>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

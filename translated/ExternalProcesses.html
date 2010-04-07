@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - ExternalProcesses</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h1>External Processes</h1>
+<p>CouchDB now allows for the ability to develop custom behaviors via processes that communicate over <em>stdin</em> and <em>stdout</em>. Requests to CouchDB that are captured by the external process handler are passed via JSON object to the external process over <em>stdin</em> and reads a JSON object from <em>stdout</em>. Without further ado...</p>
+<h2>JSON Requests</h2>
+<p>Requests capture information about the incoming HTTP request and transform it into a JSON object. I've formatted the object here, though in real life this object would contain no new lines and all embedded white space would be normalized to a single ' ' (space) character.</p>
+<p>An example object:</p>
+<pre><code>{
+    'body': 'undefined',
+    'cookie': {
+        '_\_utma': '96992031.3087658685658095000.1224404084.1226129950.1226169567.5',
+        '_\_utmz': '96992031.1224404084.1.1.utmcsr'
+    },
+    'form': {},
+    'info': {
+        'compact_running': False,
+        'db_name': 'couchbox',
+        'disk_size': 50559251,
+        'doc_count': 9706,
+        'doc_del_count': 0,
+        'purge_seq': 0,
+        'update_seq': 9706},
+    'path': [],
+    'query': {},
+    'method': 'GET'
+}
+</code></pre>
+<p>In order:</p>
+<ul>
+<li><em>body</em> - Raw post body</li>
+<li><em>cookie</em> - Cookie information passed on from mochiweb</li>
+<li><em>form</em> - If the request's Content-Type is "application/x-www-form-urlencoded", a decoded version of the body</li>
+<li><em>info</em> - Same structure as returned by http://127.0.0.1:5984/db_name/</li>
+<li><em>path</em> - Any extra path information after routing to the external process</li>
+<li><em>query</em> - Decoded version of the query string parameters.</li>
+<li><em>method</em> - HTTP request verb</li>
+</ul>
+<p>Note: Before CouchDB 0.11 <code>method</code> was <code>verb</code>.</p>
+<h2>JSON Response</h2>
+<p>The response object has five possible elements</p>
+<ul>
+<li><em>code</em> - HTTP response code [Default is 200]. Note that this must be a number and cannot be a string (no "").</li>
+<li><em>headers</em> - An object with key-value pairs that specify HTTP headers to send to the client.</li>
+<li><em>json</em> - An arbitrary JSON object to send the client. Automatically sets the Content-Type header to "application/json"</li>
+<li><em>body</em> - An arbitrary CLOB to be sent to the client. Content-Type header defaults to "text/html"</li>
+<li><em>base64</em> - Arbitrary binary data for the response body, base64-encoded</li>
+</ul>
+<p>While nothing breaks if you specify both a <em>json</em> and <em>body</em> member, it is undefined which response will be used. If you specify a Content-Type header in the <em>headers</em> member, it will override the default.</p>
+<h2>Common Pitfalls</h2>
+<ul>
+<li>When responding to queries always remember to turn off buffering for <em>stdout</em> or issue a <em>flush()</em> call on the file handle.</li>
+<li>All interaction is in the form of single lines. Each response should include <em>exactly</em> one new line that terminates the JSON object.</li>
+<li>When using base64 encoders, be sure to strip any CRLF from the result - most encoders will add CRLF after 76 characters and at the end.</li>
+<li>CouchDB 0.10 looks for a case-sensitive match of the Content-Type header -- a user-defined header must specify "Content-Type", not "content-type" or "CoNtEnT-type".  This is fixed in future releases.</li>
+</ul>
+<h2>Configuration</h2>
+<p>Adding external processes is as easy as pie. Simply place key=command pairs in the <em>[external]</em> section of your <em>local.ini</em> and then map those handlers in the <em>[httpd_db_handlers]</em> section, like:</p>
+<pre><code>;Including [log] and [update_notification] for context
+
+[log]
+level = info
+
+[external]
+test = /usr/local/src/couchdb/test.py
+
+[httpd_db_handlers]
+_test = {couch_httpd_external, handle_external_req, &lt;&lt;"test"&gt;&gt;}
+
+[update_notification]
+;unique notifier name=/full/path/to/exe -with "cmd line arg"
+</code></pre>
+<p>This configuration will make the <em>/usr/local/src/couchdb/test.py</em> responsible for handling requests from the url:</p>
+<pre><code>http://127.0.0.1:5984/${dbname}/_test
+</code></pre>
+<h2>Example External Process</h2>
+<p>Here is a complete Python external process that does a whole lot of nothing except show the mechanics.</p>
+<pre><code>import sys
+
+try:
+    # Python 2.6
+    import json
+except:
+    # Prior to 2.6 requires simplejson
+    import simplejson as json
+
+def requests():
+    # 'for line in sys.stdin' won't work here
+    line = sys.stdin.readline()
+    while line:
+        yield json.loads(line)
+        line = sys.stdin.readline()
+
+def respond(code=200, data={}, headers={}):
+    sys.stdout.write("%s\n" % json.dumps({"code": code, "json": data, "headers": headers}))
+    sys.stdout.flush()
+
+def main():
+    for req in requests():
+        respond(data={"qs": req["query"]})
+
+if _\_name__ == "_\_main_\_":
+    main()
+</code></pre>
+<p>A Java example can be found here: http://daily.profeth.de/2009/12/apache-couchdb-external-process-using.html</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

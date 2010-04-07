@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - AMQP_Notifier</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>The idea for this plugin type would be a simple notifier that could post a message to an <a href="http://en.wikipedia.org/wiki/Advanced_Message_Queuing_Protocol">AMQP</a> Exchange whenever a change is made to a database. A server such as <a href="http://www.rabbitmq.com/">RabbitMQ</a> (a fellow noteworthy Erlang project of 2008!) could receive these messages and route them to listening queues in any manner desired. This could be useful for anything from high speed continuous replication between CouchDB instances to updating specialized indexes (such as fulltext or geospatial etc) or anything else one might want to do. This way listening for updates to a document database would be just like listening for any other type of message.</p>
+<p>A nice advantage of organizing things this way is that a CouchDB instance would only need to notifiy one application -- the messaging server -- even if 15 applications are listening for updates. Once a description of the database change has been sent to an exchange, CouchDB's work is done and it becomes the messaging server's job to deliver the notification to all the listeners.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

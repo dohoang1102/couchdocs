@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - DémarrerAvecAmazonEc2</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- #language fr -->
+
+<p>Démarrez avec CouchDB et Amazon Elastic Compute Cloud.</p>
+<h2>Quickstart</h2>
+<ul>
+<li>Run AMI <em>ami-b832d7d1</em>, get Public DNS.</li>
+<li>Authorize TCP port 5984.</li>
+<li>In browser open http://PublicDNS.compute-1.amazonaws.com:5984/.</li>
+</ul>
+<h2>Detailed Description</h2>
+<p>This AMI release has base Debian 3.1 (Etch) with Elastic Drive installation, so you might consider some kind of persistence to Amazon S3 or other supported platforms, like Nirvanix etc., thus preserving the data that is stored in CouchDB.</p>
+<p>CouchDB has been built from source (version 0.7.2, revision 645), and configured to run as a service.</p>
+<h2>AMI Support</h2>
+<p>All the necessary information has been submitted for inclusion into repository of Amazon Public AMIs, and is listed as <a href="http://developer.amazonwebservices.com/connect/entry.jspa?externalID=1192&categoryID=101">ElasticDB - (Elasticdrive + CouchDB)</a>. We created support thread at Amazon forums, specifically <a href="http://developer.amazonwebservices.com/connect/thread.jspa?threadID=19405&tstart=0">Amazon SimpleDB (Beta)</a> and provide limited support there, when time allows and scope is limited to EC2/SimpleDB-related issues.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

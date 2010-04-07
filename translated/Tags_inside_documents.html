@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Tags_inside_documents</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>Tags are stored as a list of strings inside the document:</p>
+<pre><code>{
+ "_id":"123BAC",
+ "_rev":"946B7D1C",
+ "type":"post",
+ "subject":"I like Planktion",
+ "author":"Rusty",
+ "created":"2006-08-15T17:30:12Z-04:00",
+ "body":"I decided today that I don't like baseball. I like plankton.",
+ "tags":["plankton", "baseball", "decisions"]
+}
+</code></pre>
+<h2>CouchDB Views</h2>
+<p><strong>Retrieve all tags with their counts:</strong></p>
+<p><em>map</em></p>
+<pre><code>function(doc) {
+  if (doc.type == 'post' &amp;&amp; doc.tags) {
+    doc.tags.forEach(function(tag) {
+      emit(tag, 1);
+    });
+  }
+}
+</code></pre>
+<p><em>reduce</em></p>
+<pre><code>function(keys, values) {
+  return sum(values);
+}
+</code></pre>
+<p>Note: when retrieving data from this view, if the results are reduced to a single row, you may need to use the ?group=true option to get counts reduced by tag.  This may be a feature in version 0.8.0 and forward? see HttpViewApi.</p>
+<p><strong>Retrieve documents by a specific tag:</strong></p>
+<p><em>map</em></p>
+<pre><code>function(doc) {
+  if (doc.type == 'post' &amp;&amp; doc.tags) {
+    doc.tags.forEach(function(tag) {
+      emit(tag, doc);
+    });
+  }
+}
+</code></pre>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - How_to_create_tests</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h2>Summary</h2>
+<p>This page focuses on how to create a test case for couchdb and run it.  Creating failing test cases to identify a problem is a great way to contribute to couchdb.</p>
+<h2>Context</h2>
+<ul>
+<li>You run the tests via clicking in your browser</li>
+<li>The tests require the server to be running</li>
+<li>All tests exist in one file:</li>
+<li>(couch source)/share/www/script/couch_tests.js</li>
+<li>tests are js functions and begin with: foo: function(debug)</li>
+<li>Running tests this way may seem awkward at first</li>
+<li>But the process is pretty quick</li>
+<li>I can modify a test and see the results within a few seconds</li>
+<li>This page assumes you've built couchdb from source</li>
+</ul>
+<h2>To run the existing tests</h2>
+<ul>
+<li>Go to: http://localhost:5984/_utils</li>
+<li>Click: Test Suite</li>
+<li>Click: the triangle button next to the test you want to run</li>
+</ul>
+<h2>When a test is failing</h2>
+<ul>
+<li>Currently the tests only run correctly in Firefox.</li>
+<li>When a test is failing, re-run the single test repeatedly.</li>
+</ul>
+<h2>To create a new test</h2>
+<ul>
+<li>Go to: (couch source)/share/www/script/couch_tests.js</li>
+<li>Either:</li>
+<li>Add lines to an existing test</li>
+<li>Create a new test in the 'tests' hash</li>
+</ul>
+<h2>Steps to run your test</h2>
+<ul>
+<li>1: Run this command from your couchdb source dir</li>
+<li>sudo make install</li>
+<li>2: Run the tests in your browser</li>
+<li>reload first</li>
+<li>see 'To run the existing tests' heading above</li>
+</ul>
+<h2>Example</h2>
+<p>I added these lines to the 'lots_of_docs' method, to make the test fail:</p>
+<pre><code>     // Check _all_docs with descending=true again (now that there are many docs)
+     var desc = db.allDocs({descending:true});
+     T(desc.total_rows == desc.rows.length);
+</code></pre>
+<p>Then I attached the diff to an existing Jira bug that described the issue.</p>
+<h2>Ideas for future</h2>
+<ul>
+<li>davisp mentioned the idea of building a UI in futon</li>
+<li>Which will allow you to create/modify tests</li>
+</ul>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Configuring_distributed_systems</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>This is a stub for a page to discuss how to actually get couchdb running in a distributed fashion.</p>
+<p>Distributed CouchDB implementations:</p>
+<ul>
+<li>
+<p>CouchDB currently scales for reads, by allowing synchronization between multiple servers.</p>
+</li>
+<li>
+<p>CouchDB does not currently support partitioning.</p>
+</li>
+</ul>
+<p>(couch-dev post from Jan Lehnardt - July 2008)</p>
+<pre><code>At the moment, CouchDB runs best on a single machine
+with multiple machines for a cluster using replication to
+synchronise data. Erlang allows a VM to run on multiple
+machines and we do not yet take advantage of that fact.
+This is an area that is worth investigating.
+
+The road map is at http://incubator.apache.org/couchdb/roadmap.html
+
+... scaling parts are Future Feature work.
+A couple of people have voiced interest in contributing there
+especially the database partitioning, but nothing has come
+out of that yet.
+</code></pre>
+<h2>Editorial Notes</h2>
+<ul>
+<li>I see that there is replication via the 'replication' functionality on the http://localhost:5984/_utils console interface, but how does one distribute a database across, say 10 hosts?</li>
+<li>Is there a way to specify the number of copies of a piece of data?  (Presumes not all hosts have copies of each piece of data)</li>
+<li>Is there a piece of this that can be configured in the couch.ini file, such than when the topology changes (ie. server add or removal) that things can be put back into sync?</li>
+</ul>
+<p>Excerpts from the Architectural Document, http://incubator.apache.org/couchdb/docs/overview.html :</p>
+<pre><code>Using just the basic replication model, many traditionally single server database applications can be made distributed with almost no extra work.
+</code></pre>
+<ul>
+<li>Let's try to document this.  What do we mean by <strong>distributed</strong>?</li>
+</ul>
+<h3>Distributed defined</h3>
+<p>Here's what some people might <em>assume</em> we mean by distributed data store:</p>
+<ul>
+<li>We (couchdb) have a client which will <strong>shard</strong> the data by key, and direct it to the correct server (shard), such that the writes of the system will <strong>scale</strong>.  That is that there are many <em>writers</em>, in a collision-free update environment.</li>
+<li>Reads may scale if they outnumber the writes using some form of replication for read-only-clients.</li>
+<li>If a master data store node is lost, then the client (or some proxy mechanism) can switch over to a new master data store, which is <em>really up to date</em> (ie. milliseconds), and the client will continue without a hitch.</li>
+</ul>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

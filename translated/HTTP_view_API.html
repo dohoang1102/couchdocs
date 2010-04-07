@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - HTTP_view_API</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h1>HTTP View API</h1>
+<!-- <<TableOfContents(2)>> -->
+
+<p>An introduction to the CouchDB HTTP view API.</p>
+<h2>Basics</h2>
+<p>Views are the primary tool used for querying and reporting on CouchDB databases. They are defined in !JavaScript (although there are other query servers available). For a more detailed introduction to views see <a class="internal" href="Introduction_to_CouchDB_views.html">Introduction_to_CouchDB_views</a>.</p>
+<h2>Creating Views</h2>
+<p>To create a permanent view, the functions must first be saved into special <em>design documents</em> (well, they are not really special, we just call them special but in reality, they are regular documents, just with a special ID). The IDs of design documents must begin with <em>_design/</em> and have a special views attribute that have a <em>map</em> member and an optional <em>reduce</em> member to hold the view functions. All the views in one design document are indexed whenever any of them gets queried.</p>
+<p>A design document that defines <em>all</em>, <em>by_lastname</em>, and <em>total_purchases</em> views might look like this:</p>
+<pre><code>{
+  "_id":"_design/company",
+  "_rev":"12345",
+  "language": "javascript",
+  "views":
+  {
+    "all": {
+      "map": "function(doc) { if (doc.Type == 'customer')  emit(null, doc) }"
+    },
+    "by_lastname": {
+      "map": "function(doc) { if (doc.Type == 'customer')  emit(doc.LastName, doc) }"
+    },
+    "total_purchases": {
+      "map": "function(doc) { if (doc.Type == 'purchase')  emit(doc.Customer, doc.Amount) }",
+      "reduce": "function(keys, values) { return sum(values) }"
+    }
+  }
+}
+</code></pre>
+<p>The <em>language</em> property tells CouchDB the language of the view functions, which it uses to select the appropriate ViewServer (as specified in your couch.ini file). The default is to assume Javascript, so this property can be omitted for Javascript views.</p>
+<h2>Altering/Changing Views</h2>
+<p>To change a view or multiple view just alter the design document (see HttpDocumentApi) they are stored in and save it as a new revision.</p>
+<h2>Access/Query</h2>
+<p>Once this document is saved into a database, then the <em>all</em> view can be retrieved at the URL:</p>
+<p>http://localhost:5984/database/_design/company/_view/all</p>
+<p>Example:</p>
+<pre><code>GET /some_database/_design/company/_view/all HTTP/1.0
+Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
+</code></pre>
+<p>And will result in the following response:</p>
+<pre><code> HTTP/1.1 200 OK
+ Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
+ Content-Length: 318
+ Connection: close
+
+ {
+    "total_rows": 3,
+    "offset": 0,
+    "rows": [{
+        "id":"64ACF01B05F53ACFEC48C062A5D01D89",
+        "key": null,
+        "value": {
+          "LastName":"Katz",
+          "FirstName":"Damien",
+          "Address":"2407 Sawyer drive, Charlotte NC",
+          "Phone":012555754211
+        }
+      }, {
+        "id":"5D01D8964ACF01B05F53ACFEC48C062A",
+        "key": null,
+        "value": {
+          "LastName":"Kerr",
+          "FirstName":"Wayne",
+          "Address":"123 Fake st., such and such",
+          "Phone":88721320939
+        }
+      }, {
+        "id":"EC48C062A5D01D8964ACF01B05F53ACF",
+        "key": null,
+        "value":
+        {
+          "LastName":"McCracken",
+          "FirstName":"Phil",
+          "Address":"1234 Fake st., such and such",
+          "Phone":7766552342
+        }
+      }
+    ]
+ }
+</code></pre>
+<h2>Querying Options</h2>
+<p>Columns can be a list of values, there is no set limit to the number of values or amount of data that columns can hold.</p>
+<p>The following URL query arguments are allowed:</p>
+<ul>
+<li>GET<ul>
+<li>key=keyvalue</li>
+<li>startkey=keyvalue</li>
+<li>startkey_docid=docid</li>
+<li>endkey=keyvalue</li>
+<li>endkey_docid=docid</li>
+<li>limit=max rows to return <em>This used to be called "count" previous to Trunk SVN r731159</em></li>
+<li>stale=ok</li>
+<li>descending=true</li>
+<li>skip=number of rows to skip</li>
+<li>group=true <em>Version 0.8.0 and forward</em></li>
+<li>group_level=int</li>
+<li>reduce=false <em>(since 0.9)</em></li>
+<li>include_docs=true <em>(since 0.9)</em></li>
+<li>inclusive_end=true</li>
+</ul>
+</li>
+<li>POST<ul>
+<li>{"keys": ["key1", "key2", ...]} <em>(since 0.9)</em></li>
+</ul>
+</li>
+</ul>
+<p><em>key</em>, <em>startkey</em>, and <em>endkey</em> need to be properly JSON encoded values. For example, startkey="string" for a string value or startkey=["foo", 1, {}]. Be aware that you have to do proper URL encoding on complex values. </p>
+<p>A JSON structure of <em>{"keys": ["key1", "key2", ...]}</em> can be posted to any user defined view or <em>_all_docs</em> to retrieve just the view rows matching that set of keys. Rows are returned in the order of the keys specified. Combining this feature with <em>include_docs=true</em> results in the so-called <em>multi-document-fetch</em> feature. </p>
+<p>If you specify <em>?limit=0</em> you don't get any data, but all meta-data for this View. The number of documents in this View for example.</p>
+<p>The <em>skip</em> option should only be used with small values, as skipping a large range of documents this way is inefficient (it scans the index from the startkey and then skips N elements, but still needs to read all the index values to do that). For efficient paging you'll need to use <em>startkey</em> and <em>limit</em>. If you expect to have multiple documents emit identical keys, you'll need to use <em>startkey_docid</em> in addition to <em>startkey</em> to paginate correctly. The reason is that <em>startkey</em> alone will no longer be sufficient to uniquely identify a row. </p>
+<p>The <em>stale</em> option can be used for higher performance at the cost of possibly not seeing the all latest data. If you set the <em>stale</em> option to <em>ok</em>, CouchDB may not perform any refreshing on the view that may be necessary. Using this option essentially tells CouchDB that if a reference to the view index is available in memory (ie, if the view has been queried at least once since couch was started), go ahead and use it, even if it may be out of date. The result is that for a highly trafficked view, end users can see lower latency, although they may not get the latest data. However, if there is no view index pointer in memory, the behavior with this option is that same as the behavior without the option. If your application use <em>stale=ok</em> for end-user queries, you'll need either a cron or a notification process like the one described in <a class="internal" href="Regenerating_views_on_update.html">Regenerating_views_on_update</a>, which queries without <em>stale=ok</em> to ensure that the view is kept reasonably up to date.</p>
+<p>View rows are sorted by the key; specifying <em>descending=true</em> will reverse their order. Note that the <em>descending</em> option is applied before any key filtering, so you may need to swap the values of the <em>startkey</em> and <em>endkey</em> options to get the expected results. The sorting itself is described in ViewCollation.</p>
+<p>The <em>group</em> option controls whether the reduce function reduces to a set of distinct keys or to a single result row.</p>
+<p>If a view contains both a map and reduce function, querying that view will by default return the result of the reduce function. The result of the map function only may be retrieved by passing <em>reduce=false</em> as a query parameter.</p>
+<p>The <em>include_docs</em> option will include the associated document. Although, the user should keep in mind that there is a race condition when using this option. It is possible that between reading the view data and fetching the corresponding document that the document has changed. If you want to alleviate such concerns you should emit an object with a _rev attribute as in <em>emit(key, {"_rev": doc._rev})</em>. This alleviates the race condition but leaves the possiblity that the returned document has been deleted (in which case, it includes the <em>"_deleted": true</em> attribute).</p>
+<p>The <em>inclusive_end</em> option controls whether the <em>endkey</em> is included in the result. It defaults to true.</p>
+<h2>Getting Information about Design Documents (and their Views)</h2>
+<p>You can query the design document (<em>_design/test</em> in this case) by GET for some information on the view:</p>
+<pre><code>curl -X GET http://localhost:5984/databasename/_design/test/_info
+</code></pre>
+<p>will produce something like this:</p>
+<pre><code>{
+    "name": "test", 
+    "view_index": {
+        "compact_running": false, 
+        "disk_size": 4188, 
+        "language": "javascript", 
+        "purge_seq": 0, 
+        "signature": "07ca32cf9b0de9c915c5d9ce653cdca3", 
+        "update_seq": 4, 
+        "updater_running": false, 
+        "waiting_clients": 0, 
+        "waiting_commit": false
+    }
+}
+</code></pre>
+<h3>Meaning of the status hash</h3>
+<p>||<strong>Key</strong>||&lt;-2&gt;<strong>Description</strong>||
+||<em>name</em>||&lt;-2&gt;Name of the design document without the <em>_design</em> prefix (string)||
+||<em>view_index</em>||&lt;-2&gt;Contains information on the views (JSON object)||
+|| ||<strong>Subkeys of</strong> <strong><em>view_index</em></strong>||<strong>Description</strong>||
+|| ||<em>signature</em>||The MD5 representation of the views of a design document (string)||
+|| ||<em>language</em>||Language of the views used (string)||
+|| ||<em>disk_size</em>||Size in Bytes of the views on disk (int)||
+|| ||<em>updater_running</em>||Indicates if an update process is running (boolean)||
+|| ||<em>compact_running</em>||Indicates if view compaction is running (boolean)||
+|| ||<em>waiting_commit</em>||Indicates if this view is ahead of db commits or not (boolean)||
+|| ||<em>waiting_clients</em>||How many clients are waiting on views of this design document (int)||
+|| ||<em>update_seq</em>||The update sequence of the corresponding database that has been indexed (int)||
+|| ||<em>purge_seq</em>||The purge sequence that has been processed (int)||</p>
+<h2>Debugging Views</h2>
+<p>When creating views, CouchDB will check the syntax of the submitted JSON, but the view functions themselves will not be syntax checked by the Javascript interpreter. And if any one of the view functions has a syntax error, none of the view functions in that design document will execute. Perhaps test your functions in a temporary view before saving them in the database.</p>
+<p>As of r660140 there is a log function available in the views, which logs to the couch.log. It can be helpful for debugging but hinders performance, so it should be used sparingly in production systems.</p>
+<pre><code>{
+  "map": "function(doc) { log(doc); }"
+}
+</code></pre>
+<p>Playing with (malformed) views is currently the best way to bring the couchdb server in an unstable state. Also the Futon Web-Client does not interact very well with errors in views. Some suggestions for view development:</p>
+<ul>
+<li>Develop views on a separate server instance, not on your production systems</li>
+<li>Keep an eye on the logfile: most errors are reported only there</li>
+<li>If your Futon Web-Client acts funny, clear the cookies futon created</li>
+<li>Work with temporary views. Store views only after you have verified that they work as intended.</li>
+<li>Work with only a few hundred documents for testing.</li>
+<li>Keep in mind that the the Futon Web-Client silently adds <em>group=true</em> to your views.</li>
+</ul>
+<h2>Sharing Code Between Views</h2>
+<p>There are no development plans to share code/functions between views.  Each view function is stored according to a hash of their byte representation, so it is important that a function does not load any additional code, changing its behavior without changing its byte-string.  Hence the use-case for <a href="http://github.com/couchapp/couchapp">CouchApp</a>.</p>
+<h2>View Cleanup</h2>
+<p>Old view output remains on disk until you explicitly run cleanup. To run cleanup for a particular database;</p>
+<pre><code>POST /some_database/_view_cleanup
+</code></pre>
+<h2>View Compaction</h2>
+<p>If you have very large views or are tight on space, you might consider <a class="internal" href="Compaction.html">Compaction</a> as well. To run compact for a particular view on a particular database;</p>
+<pre><code>POST /some_database/_compact/designname
+</code></pre>
+<p>In my case, views that were 26G, 27G, 39G, and 40G, shrank to 2.8G, 2.8G, 3.4G, and 3.5G, respectively.<br />
+</p>
+<h4>Temporary Views</h4>
+<p>One-off queries (eg. views you don't want to save in the CouchDB database) can be done via the special view <em>_temp_view</em>. Temporary views are only good during development. Final code should not rely on them as they are very expensive to compute each time they get called and they get increasingly slower the more data you have in a database. If you think you can't solve something in a permanent view that you can solve in an ad-hoc view, you might want to reconsider. (TODO: add typical examples and solutions).</p>
+<pre><code>POST /some_database/_temp_view  HTTP/1.0
+Content-Length: 48
+Date: Mon, 10 Sep 2007 17:11:10 +0200
+Content-Type: application/json
+
+{
+  "map" : "function(doc) { if (doc.foo=='bar') { emit(null, doc.foo); } }"
+}
+</code></pre>
+<p>Could result in the following response:</p>
+<pre><code>{
+  "total_rows": 1,
+  "offset": 0,
+  "rows": [{
+      "id": "AE1AD84316B903AD46EF396CAFE8E50F",
+      "key": null,
+      "foo": "bar"
+    }
+  ]
+}
+</code></pre>
+<p>NOTE: couchdb 0.9.0 requires <code>Content-Type: application/json</code> on POSTs to _temp_view</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

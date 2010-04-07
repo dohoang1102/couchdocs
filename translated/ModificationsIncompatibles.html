@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - ModificationsIncompatibles</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- #language fr -->
+
+<p>Cette page décrit les modifications incompatibles introduites lors de l'évolution de CouchDB. Certains de ces changements n'ont pas d'incidence sur les utilisateurs, mais la plupart si. Cette pages vous décrit ces changements et comment adapter votre code.</p>
+<h2>Changements entre 0.7.x et 0.8.0</h2>
+<h3>Format du fichier de base de donnée</h3>
+<p>Le format du fichier de base de donnée a changé. CouchDB actuellement ne fournit pas d'outil pour migrer vos données. Vous pouvez néanmoins utiliser des scripts tiers pour effectuer cette migration tel que les outils dump/load de <a href="http://code.google.com/p/couchdb-python/">couchdb-python</a>.</p>
+<h4>Migration en utilisant les outils <code>dump</code>/<code>load</code> de couchdb-python</h4>
+<p>Tout d'abord, quelques notes sur la façon dont fonctionnent ces outils :</p>
+<ul>
+<li>Ils s'appliquent sur une base de donnée, ce qui signifie que vous devrez migrer chaque base de données individuellement.</li>
+<li>L'outil dump récupère tous les documents avec leurs attachement d'une base de donnée dans un fichier au format MIME multipart.</li>
+<li>L'outil load attend un flux d'entrée au format MIME multipart et recrée tous les documents (avec leurs attachements) qu'il contient. Il doit être utilisé sur une base de donnée vide.</li>
+<li>Les documents conservent évidemment leurs identifiants uniques.</li>
+<li>L'historique des révisions est perdu.</li>
+</ul>
+<p>'<em>Attention</em>: ''Ne mettez pas à jour CouchDB avant d'avoir récupéré vos données avec la procédure ci-dessus !*</p>
+<p><strong>En outre</strong>: *N'oubliez pas de sauvegarder les fichiers d'origines ainsi que les fichiers de dump. Au  moins tant que vous n'êtes pas sur que la migration soit réussie.''</p>
+<p>Pour utiliser ces outils, installez <code>couchdb-python</code> , qui requiert <a href="http://www.python.org/">Python 2.4 et sup</a> et les paquets  <a href="http://code.google.com/p/httplib2/">httplib2</a> et <a href="http://cheeseshop.python.org/pypi/simplejson">simplejson</a>.</p>
+<p>Dans le shell récuperez le contenu d'une  base de donnée dans un fichier en lançant la commande :</p>
+<pre><code>  python couchdb/tools/dump.py http://127.0.0.1:5984/dbname &gt; dbname.dump
+</code></pre>
+<p>Remplaçez <strong>dbname</strong> par le nom de la base de donnée à récuperer. Un fichier <code>dbname.dump</code> est créé à l'issue de cette commande dans le répertoire courant.</p>
+<p>Après avoir lançé cette commande sur toutes les bases de données que vous souhaitez migrer, vous pouvez mettre à jour CouchDB. Vous aurez besoin de supprimer le dossier où CouchDB conservait les anciennes bases de données pour éviter tous problèmes avec l'ancien format.</p>
+<p>Après la mise à jour, vous pouvez importez les données sauvegardées. Tout d'abord, créez une base de données pour chaque dump que vous souhaitez importer. Ensuite, exécutez le script <code>load.py</code> à partir de la ligne de commande :</p>
+<pre><code>  python couchdb/tools/load.py http://127.0.0.1:5984/dbname &lt; dbname.dump
+</code></pre>
+<p>Faîtes cela pour chaque bases de données, et vous devriez être bon. Merci de reporter tout problème avec ces scripts <a href="http://code.google.com/p/couchdb-python/issues/list">ici</a>.</p>
+<h3>Changement de la structure des Documents</h3>
+<p>Dans la structure JSON des attachements, la propriété  <code>content-type</code> a été changée en <code>content_type</code> (notez le caractère de soulignement). ce changement étais nécessaire pour homogénéiser les noms dans CouchDB, et faciliter l'accès à partir du code Javascript.</p>
+<h3>Changement de la définition d'une Vue.</h3>
+<p>Les vues supportent maintenant la propriété optionnelle 'reduce'. Pour que cela soit mis en place, la structure des documents design devait être modifiée. Voici un exemple pour illustrer ce changement :</p>
+<pre><code>  {
+    "_id":"_design/foo",
+    "language":"javascript",
+    "views": {
+      "bar": {
+        "map":"function... ",
+        "reduce":"function..."
+      }
+    }
+  }
+</code></pre>
+<p>Le principal changement est l'utilisation d'un objet JSON qui définit les fonctions map et reduce au lieu d'une simple chaine de caractère pour la fonction map. La propriété <code>reduce</code> peut être omise.</p>
+<p>La propriété <code>language</code> n'est plus un type MIME, à la place seule le nom du langage est indiqué. Le nom du langage correspond à celui choisi pour le serveur de vue dans le fichier <code>couch.ini</code>.</p>
+<p>la  fonction <code>map(key, value)</code>  que les fonctions map utilisent pour produire la sorte a été renommée <code>emit(key, value)</code> pour éviter toute confusion.</p>
+<pre><code>  function(doc) {
+    emit(doc.foo, doc.bar);
+  }
+</code></pre>
+<p>Les vues temporaires doivent maintenant <code>POST</code>er un document JSON avec les propriétés <code>map</code> et <code>reduce</code> au lieu de simplement <code>POST</code>er le source de la fonction map :</p>
+<pre><code>  {
+    "map":"function...",
+    "reduce":"function..."
+  }
+</code></pre>
+<p>Attention, le langage de la vue temporaire n'est plus determiné par l'entête <code>Content-Type</code> de la reqête HTTP. Comme celle-ci est mainetant définie par un objet JSON, <code>Content-Type</code> est toujours <code>application/json</code>. Le langage de la vue est maintenant défini par une propriété <code>language</code> optionnelle dans l'objet JSON. Si cette propriété est omise, le langage par défaut est "javascript".</p>
+<pre><code>  {
+    "language":"javascript"
+    "map":"function...",
+    "reduce":"function..."
+  }
+</code></pre>
+<h3>Changement API HTTP API</h3>
+<h3>Code état DELETE</h3>
+<p>La suppression avec succès de documents en utilisant la méthode HTTP <code>DELETE</code> retourne mainetant une réponse <code>200 OK</code> à la place de <code>202 Accepted</code>. Le fait que la suppression soit immédiate explique ce changement, un code 202 impliquait en effet que l'action était dans la boucle mais n'avait pas encore été  effectuée lors de la réponse. </p>
+<h4>Mise à jour en masse (Bulk updates)</h4>
+<p>La structure JSON d'une mise à jour en masse a été changée significativement tant pour la requête que la réponse.</p>
+<p>Au niveau de la requête, vous postiez précedemment un tableau JSON avec un document par ligne. Maintenant vous postez une propriété <code>docs</code> qui contient ce tableau :</p>
+<pre><code>  {
+    "docs": [
+      {"_id": "foo", "_rev": "123456", "title": "Foo"},
+      {"_id": "bar", "_rev": "234567", "title": "Bar"}
+    ]
+  }
+</code></pre>
+<p>Les réponse utilisaient un objet JSON avec une propriété <code>results</code>. Maintenant la structure JSON est la suivante :</p>
+<pre><code>  {
+    "ok": true,
+    "new_revs": [
+      {"_id": "foo", "rev": "345678"},
+      {"_id": "bar", "rev": "456789"}
+    ]
+  }
+</code></pre>
+<p>''Attention, les mises à jour en masse sont maintenant transactionnelles : toutes les mises à jours réussissent ou toutes échouent. C'est pourquoi la propriété <code>ok</code> se trouve maintenant au premier niveau.''</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

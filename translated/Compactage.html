@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Compactage</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- #language fr -->
+
+<h2>Présentation</h2>
+<p>Le compactage réecrit le fichier de base de données en supprimant les anciennes révisions de documments et les documents effacés. C'est disponible dans CouchDB dans SVN depuis 2008-04-07 et depuis la version 0.8-incubating dans les sources téléchargeables.</p>
+<p>Le compactage est géré manuellement par base de données. La gestion de queue de compactage sur plusieurs bases de données est prévue.</p>
+<h3>Exemple</h3>
+<p>Le compactage est initié par une requête HTTP POST sur la sous-resource _compact de la base de données. En cas de succès un code HTTP 200 est retourné.</p>
+<pre><code>    # POST http://localhost/ma_db/_compact via curl
+    curl -X POST http://localhost/ma_db/_compact
+    #=&gt; {"ok":true}
+</code></pre>
+<p>une requête HTTP GET sur l'url de la base de données ( http://localhost/ma_db ) renvoie un tableau(hash) des états sous la forme suivante :</p>
+<pre><code>    curl http://localhost/ma_db
+    #=&gt; {"db_name":"ma_db","doc_count":0,"doc_del_count":1,"update_seq":3,"compact_running":false,"disk_size":14341}
+</code></pre>
+<p>La clé compact_running est à true pendant le compactage.</p>
+<h3>Compactage de bases de données lourdement chargées en écritures</h3>
+<p>Compacter une base de données proche de sa limite en écritures n'est pas une bonne idée. Le processus de compactage peut ne pas prendre en compte les écritures, si jamais il les laisse passer, et peut en outre manquer d'espace disque.</p>
+<p>Le compactage doit s'effectuer sur une base de données qui n'a pas atteint sa limite en écritures. La charge en lectures ne l'empêchera pas de s'effectuer.</p>
+<p>CouchDB travaille ainsi pour avoir le moins d'impact sur les clients, la base de données reste en ligne et complètement opérationnelle en lecture/écriture. C'est un choix de conception d'empêcher le compactage d'une base de données lorsqu'elle a atteint sa limite en écritures. Il est recommandé d'effectuer ce compactage lors des heures où la base est moins chargée.</p>
+<p>Dans un environnement cluster, l'écriture peut être stoppée pour chaque noeud avant le compactage et autorisée à nouveau lorsque celui-ci est terminé.</p>
+<p>Dans le futur, un noeud CouchDB pourra être modifié pour stopper ou faire échouer les mises à jour si la charge en écriture est trop intense pour lui permettre de compléter celles-ci dans un délai raisonnable.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

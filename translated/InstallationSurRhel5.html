@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - InstallationSurRhel5</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- #language fr -->
+<!-- ## page was renamed from InstallattionSurRhel5 -->
+
+<p>Installation sur RHEL5 x86_64</p>
+<ol>
+<li>
+<p>Installez les dépendances. Vous pouvez avoir besoin de EPEL/RPMFORGE</p>
+<p>yum install ncurses-devel openssl-devel icu libicu-devel js js-devel</p>
+</li>
+<li>
+<p>Installez Erlang</p>
+<p>wget http://www.erlang.org/download/otp_src_R12B-2.tar.gz
+tar xzvf otp_src_R12B-2.tar.gz
+cd otp_src_R12B-2
+./configure &amp;&amp; make &amp;&amp; sudo make install
+cd ..</p>
+</li>
+<li>
+<p>Installez Couchdb</p>
+<p>svn checkout http://svn.apache.org/repos/asf/incubator/couchdb/trunk couchdb
+cd couchdb
+./bootstrap
+./configure &amp;&amp; make &amp;&amp; make install</p>
+</li>
+<li>
+<p>Editez le fichier de configuration :</p>
+<p>vi /usr/local/etc/couchdb/couch.ini</p>
+</li>
+<li>
+<p>Créez l'utilisateur, et appliquez les permissions sur les dossiers</p>
+<p>adduser -r -d /usr/local/var/lib/couchdb couchdb
+chown -R couchdb /usr/local/var/lib/couchdb
+chown -R couchdb /usr/local/var/log/couchdb</p>
+</li>
+<li>
+<p>Lancez! En console :</p>
+<p>sudo -u couchdb couchdb</p>
+</li>
+</ol>
+<p>ou comme démon :</p>
+<pre><code>sudo /usr/local/etc/rc.d/couchdb start
+</code></pre>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

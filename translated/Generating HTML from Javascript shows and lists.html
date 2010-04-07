@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Generating HTML from Javascript shows and lists</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h1>Generating HTML from Javascript shows and lists</h1>
+<p>You can generate output from <a href="http://books.couchdb.org/relax/design-documents/shows">shows</a> and <a href="http://books.couchdb.org/relax/design-documents/lists">lists</a>.  Typically this would be HTML intended for a browser but any format can be generated. CouchDB already includes <a href="http://en.wikipedia.org/wiki/ECMAScript_for_XML">Javascript support</a> for XML derived formats (eg Atom feeds). It is impractical to output HTML directly so some sort of templating is recommended.</p>
+<h2>Best Practise</h2>
+<p>Generate clear concise simple HTML from your show/list functions.  The resulting HTML interface should be usable from constrained devices (eg cell phones, set top boxes) as well as being accessible (eg screen readers) and easy to index for search engines.  This is also easier to automatically test.  You can then run Javascript in the browser (if the browser supports Javascript and it is turned on) to enhance what is being displayed (eg add extra information, tooltips, icons, previews of next/previous content, enhanced menus and interaction etc).</p>
+<p>It is a <strong>very</strong> good idea to use a library that automatically escapes values (eg replacing &lt; with ampersand lt semicolon) otherwise your application will be prone to <a href="http://en.wikipedia.org/wiki/Cross-site_scripting">cross site scripting attacks</a>.  It should also provide a way of disabling the escaping when you are intentionally providing raw HTML.</p>
+<p>It is convenient if the library has functions for emitting html.  For example it may have a function to insert an image where you provide the URL and the function generates all the wrapping HTML, including width/height/caption attributes if you provided them.</p>
+<p>. <strong>Bad</strong>: <code>&lt;img src={{ url }} {{ if(width) }} width={{ width }} {{/if}} {{ if(height) }} height={{ height }}{{/if}} &gt;</code></p>
+<p>. <strong>Good</strong>: <code>{{ img_tag(url, width, height) }}</code></p>
+<p>You should avoid having code in your template.  Some template libraries let you put any code you want between their tags.  This is as bad an idea as putting HTML sprinkled throughout your code.  It also makes the templates harder to translate (the translator has to understand the code) and is a maintenance burden (eg if you have similar code in multiple templates then they may all require changing for code updates).  Instead you should be able to define a meaningfully named function that is part of the data supplied to the template.</p>
+<p>. <strong>Bad</strong>: <code>{{ if(info_level&gt;3 &amp;&amp; info_items.length&gt;0  &amp;&amp; show_issues) }} &lt;h2&gt;Important issues&lt;/h2&gt; ... {{/if}}</code></p>
+<p>. <strong>Good</strong>: <code>{{ if (has_important()) }} &lt;h2&gt;Important issues&lt;/h2&gt; ... {{/if}}</code></p>
+<h2>Constraints</h2>
+<p>The Javascript view server and the environment the code run in mean that some existing Javascript templating libraries will not work.</p>
+<ul>
+<li>There is no network/file access so templates cannot be loaded over the network or from a file.  Instead they must be strings already included into your Javascript code.  (See the !json directive of couchapp which does this for you).  They must also return strings.</li>
+<li>There is no <a href="http://en.wikipedia.org/wiki/Document_Object_Model">DOM</a> available (templating libraries often assume that they are running in a browser working on the currently displayed document)</li>
+<li>Some work on complete documents whereas your show and especially list functions are often working on multiple strings and template fragments</li>
+<li>Some only do HTML - this is good if they ensure the result is correct HTML</li>
+<li>Some do any form of templating (eg plain text) which means your resulting HTML can be invalid</li>
+<li>Size can be a problem.  Some templating libraries are rather large and depend on other libraries. They can create many layers of intermediary functions and caching making it hard to debug what is happening.</li>
+</ul>
+<h2>Solutions</h2>
+<p>The solutions listed below are known to work with CouchDB show and list functions, generating HTML and working with CouchDB deployment conventions (ie !json string templates and !code inclusion into the show/list functions).</p>
+<p>. <strong>Recommendation: </strong>Use mustache.js</p>
+<h3>John Resig's micro-templating</h3>
+<p>This engine is a screenful of code described at http://ejohn.org/blog/javascript-micro-templating (download a CouchDB version <a href="http://github.com/jchris/sofa/raw/master/vendor/couchapp/template.js">here</a>).  You can read about using it in the <a href="http://books.couchdb.org/relax/design-documents/shows#Using%20Templates">CouchDB book</a>.  Example usage can be found in the <a href="http://github.com/jchris/sofa">Sofa blog application</a>.  It does not do HTML escaping so you will need to be very careful.  The templating is not HTML specific so you can generate other formats.  (The tags are HTML syntax though.)</p>
+<p>This is an example of how to do conditionals:</p>
+<pre><code>&lt;% if (o.foo) { %&gt;
+    Foo is true-ish
+&lt;% } else { %&gt;
+    Foo is not true-ish
+&lt;% } %&gt;
+</code></pre>
+<p>Note that this library has no support, bug tracker or development/test/release process.</p>
+<h3>mustache.js</h3>
+<p><a href="http://github.com/janl/mustache.js">mustache.js</a> is a Javascript version of a Ruby templating library.  The name refers to the { and } characters looking like a mustache.  Download http://github.com/janl/mustache.js/raw/master/mustache.js to get the latest version which drops right in using !json/!code as is.</p>
+<p>The library is complete and does not put Javascript code into your template, but does have all the expected features (looping, conditionals etc).  Although the intention is to generate HTML the templates are not HTML specific.  The only exception is that substitutions by default are HTML escaped (use triple braces for no escaping).  This is a very good thing.</p>
+<h3>underscore</h3>
+<p><a href="http://documentcloud.github.com/underscore/">Underscore</a> is a small library of miscellaneous functions that also includes simple <a href="http://documentcloud.github.com/underscore/#template">templating</a> substantially similar to John Resig's micro templating above.  The templating is not HTML specific and there is no automatic HTML escaping.</p>
+<h3>closure</h3>
+<p><a href="http://code.google.com/closure/templates/">closure templates</a> are a Google project used behind the scenes in places like gmail and Google docs.  It is different from the other libraries in that the templates are compiled to Javascript code and you just include that Javascript code.  This has the advantage that errors in your templates are detected at build time not run time.  Values are automatically HTML escaped.  In order for soyutils.js to work, you should include this line before including it:</p>
+<pre><code>var navigator={userAgent: ""};
+</code></pre>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

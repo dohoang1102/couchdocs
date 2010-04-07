@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Document_revisions</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h2>Overview</h2>
+<p>CouchDB does not overwrite updated documents in place, instead it creates a new document at the end of the database file, with the same <code>_id</code> but a new <code>_rev</code> identifier. This type of storage system is space-wasteful so regular <a class="internal" href="Compaction.html">Compaction</a> is needed to reclaim disk space. Note that the older revisions are not available to <a class="internal" href="Views.html">Views</a>.</p>
+<p>Document revisions are used for optimistic concurrency control. If you try to update a document using an old revision the update will be in conflict. These conflicts should be resolved by your client, usually by requesting the newest version of the document, modifying and trying the update again.</p>
+<p>@@ How does this relate to replication conflicts?</p>
+<h3>Revision History</h3>
+<p><strong>You cannot rely on document revisions for any other purpose than concurrency control.</strong></p>
+<p>Due to compaction, revisions may disappear at any time. You cannot use them for a client revision system.</p>
+<p><a class="internal" href="Replication.html">Replication</a> has also an impact on revisions, i.e. <strong>Replication only replicates the last version of a document</strong>, so it will be impossible to access, on the destination database, previous versions of a document that was stored on the source database.</p>
+<p>If you wish to implement revisions in your client system, a number of patterns have been suggested:</p>
+<ul>
+<li>Using attachments to store old revisions.</li>
+<li>Using multiple documents to store old revisions.</li>
+</ul>
+<p>@@ Please add to this list and flesh out the solutions as you see fit.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

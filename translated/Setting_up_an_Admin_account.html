@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Setting_up_an_Admin_account</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>To setup an instance-wide Admin account, edit your local.ini file addding a section like:</p>
+<pre><code>[admins]
+jchris = mytopsecretpassword
+</code></pre>
+<p>When you launch CouchDB, it will convert this into something like this and save it back to the file:</p>
+<pre><code>[admins]
+jchris = -hashed-207b1b4f8434dc60429672c0c2ba3aae61568d6c,96406178a0718239acb72cb4e8f2e66e
+</code></pre>
+<p>If you wish to remove all handling of authentication, make sure to add to your local.ini</p>
+<pre><code>[httpd]
+authentication_handlers = {couch_httpd_auth, null_authentication_handler}
+</code></pre>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

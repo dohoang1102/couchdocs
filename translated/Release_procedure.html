@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Release_procedure</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h2>Making a Release</h2>
+<h3>Checklist</h3>
+<ol>
+<li>Update the <code>README</code> file with important information.</li>
+<li>Update the <code>NEWS</code> and <code>CHANGES</code> files with important information.</li>
+<li>Update the <a class="internal" href="Breaking_changes.html">Breaking changes</a> document.</li>
+<li>Update the <code>acinclude.m4</code> file with version information.</li>
+</ol>
+<h3>Preparing the Community</h3>
+<p>Call a vote on the <a href="http://mail-archives.apache.org/mod_mbox/couchdb-dev/">couchdb-dev</a> mailing list asking for a request for comments on the release. Ask all developers to specifically check the <code>NEWS</code> and <code>CHANGES</code> file for anything that has been added in this release.</p>
+<h3>Preparing the Release</h3>
+<pre><code>repos="https://svn.apache.org/repos/asf/couchdb"
+
+svn cp $repos/trunk $repos/branches/Y.Y.x -m 'branching Y.Y.x'
+svn cp $repos/branches/Y.Y.x $repos/tags/Y.Y.Y -m 'tagging Y.Y.Y'
+svn export $repos/tags/Y.Y.Y Y.Y.Y
+</code></pre>
+<p>You must then use the <code>Y.Y.Y</code> directory to prepare the release.</p>
+<p>To build the source for distribution you should then run the following command:</p>
+<pre><code>./bootstrap &amp;&amp; ./configure &amp;&amp; make distsign
+</code></pre>
+<p>If everything was successful you should see the following files
+sitting in the <code>export</code> directory ready for distribution:</p>
+<ul>
+<li>apache-couchdb-Y.Y.Y.tar.gz</li>
+<li>apache-couchdb-Y.Y.Y.tar.gz.asc</li>
+<li>apache-couchdb-Y.Y.Y.tar.gz.md5</li>
+<li>apache-couchdb-Y.Y.Y.tar.gz.sha</li>
+</ul>
+<p>Move the files to the parent directory:</p>
+<pre><code>mv apache-couchdb* ..
+</code></pre>
+<p>Then clean the source:</p>
+<pre><code>make local-clean
+</code></pre>
+<p>Then bootstrap the source so that it mirrors the tarball:</p>
+<pre><code>./bootstrap
+</code></pre>
+<p>Then go to the parent directory and unpack the tarball:</p>
+<pre><code>tar -xvzf apache-couchdb*.tar.gz
+</code></pre>
+<p>Then compare the tarball with the boostrapped source:</p>
+<pre><code>diff -f apache-couchdb-Y.Y.Y Y.Y.x
+</code></pre>
+<p>Use your judgment here to figure out if anything is missing, or has been included by mistake.</p>
+<p>Upload these to your <code>public_html</code> directory on <code>people.apache.org</code> and make sure they are world readable.</p>
+<h3>Calling a Vote</h3>
+<p>Call a vote on the <a href="http://mail-archives.apache.org/mod_mbox/couchdb-dev/">couchdb-dev</a> mailing list:</p>
+<ul>
+<li><a href="http://mail-archives.apache.org/mod_mbox/couchdb-dev/200907.mbox/%3C20090716211304.GA17172@tumbolia.org%3E">example couchdb-dev vote</a></li>
+<li><a href="http://mail-archives.apache.org/mod_mbox/couchdb-dev/200907.mbox/%3C20090722214200.GA11737@tumbolia.org%3E">example couchdb-dev vote results</a></li>
+</ul>
+<h3>Making the Release</h3>
+<ul>
+<li>Copy the release directory to <code>/www/www.apache.org/dist/couchdb</code> on <code>people.apache.org</code>.</li>
+<li>Wait for all changes to be synced to public mirrors.</li>
+<li>Update http://couchdb.apache.org/downloads.html</li>
+<li>Wait for all changes to be synced to the public site.</li>
+<li>Make a release announcement to the <a href="http://mail-archives.apache.org/mod_mbox/www-announce/">announce@apache.org</a>, <a href="http://mail-archives.apache.org/mod_mbox/couchdb-user/">user@couchdb.apache.org</a>, and <a href="http://mail-archives.apache.org/mod_mbox/couchdb-dev/">dev@couchdb.apache.org</a> mailing lists:</li>
+<li><a href="http://mail-archives.apache.org/mod_mbox/www-announce/200806.mbox/%3C20080625173452.GA14650@bytesexual.org%3E">example release announcement</a></li>
+<li><a href="https://issues.apache.org/jira/secure/project/ManageVersions.jspa?pid=12310780">Update versions</a> in JIRA.</li>
+<li>If the currently released version is 0.1.0, JIRA should have options for 0.1.1, 0.2.0, and 0.3.0.</li>
+<li>The released version should be marked as released in JIRA.</li>
+<li>Update the links on this page to most recent email archives.</li>
+<li>Call a discussion on the <a href="http://mail-archives.apache.org/mod_mbox/couchdb-dev/">couchdb-dev</a> mailing list about updating the <a href="http://couchdb.apache.org/roadmap.html">roadmap</a> and archiving old releases.</li>
+</ul>
+<h2>Useful Resources</h2>
+<ul>
+<li>http://www.apache.org/dev/release.html</li>
+<li>http://incubator.apache.org/guides/releasemanagement.html#best-practice</li>
+</ul>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Installing_on_Fedora10</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- ## The basis for this page is originally from "Installing on Fedora10" which was itself renamed from InstallingOnRHEL4 -->
+
+<p>Installing on Fedora Core 10 x86_64
+Installing on Fedora Core 10 x86_64</p>
+<ol>
+<li>
+<p>install erlang</p>
+<p># yum install erlang</p>
+</li>
+</ol>
+<p>Note : this currently results in a version R12B-4.3.fc10.</p>
+<ol>
+<li>
+<p>install other dependencies (no external repos required).</p>
+<p># yum install icu libicu-devel js js-devel libcurl-devel</p>
+</li>
+</ol>
+<p>Note : this results in icu version 4.0-3.fc10 and js version 1.70-3.</p>
+<ol>
+<li>install couchdb</li>
+</ol>
+<p>The code can be gotten from subversion using</p>
+<pre><code>  $ svn checkout http://svn.apache.org/repos/asf/couchdb/trunk couchdb
+  $ cd couchdb
+  $ ./bootstrap
+</code></pre>
+<p>If bootstrap throws "libtoolize: command not found" you need to "# yum install libtool"</p>
+<pre><code>  $ ./configure
+</code></pre>
+<p>If configure throws "Could not find the `erl_driver.h' header" you need to tell it where the Erlang includes are; for example: "--with-erlang=/usr/lib64/erlang/usr/include/".</p>
+<p>And then as root:</p>
+<pre><code>  # make install
+</code></pre>
+<p>The source can also be obtained from a released version using a tool like wget.  The example uses the primary site, whereas it is often faster to download from a mirror, e.g.,</p>
+<p>http://www.apache.org/dyn/closer.cgi?path=/incubator/couchdb/0.8.1-incubating/apache-couchdb-0.8.1-incubating.tar.gz</p>
+<p>For example,</p>
+<pre><code>  $ wget http://www.apache.org/dist/incubator/couchdb/0.8.1-incubating/apache-couchdb-0.8.1-incubating.tar.gz
+  $ tar -xzvf apache-couchdb-0.8.1-incubating.tar.gz 
+  $ cd apache-couchdb-0.8.1-incubating
+  $ ./configure  --with-erlang=/usr/lib64/erlang/usr/include/
+  $ make &amp;&amp; make install
+</code></pre>
+<ol>
+<li>
+<p>create couchdb user </p>
+<p>$ sudo adduser -r -d /usr/local/var/lib/couchdb couchdb
+  $ sudo chown -R couchdb /usr/local/var/lib/couchdb
+  $ sudo chown -R couchdb /usr/local/var/log/couchdb</p>
+</li>
+<li>
+<p>(optional) edit basic settings like Port and !BindAddress</p>
+<p>$ emacs /usr/local/etc/couchdb/couch.ini</p>
+</li>
+<li>
+<p>start CouchDB server in your terminal</p>
+<p>$ cd /usr/local/bin/
+  $ sudo -u couchdb ./couchdb</p>
+</li>
+</ol>
+<p>or as daemon</p>
+<pre><code>  $ sudo /usr/local/etc/rc.d/couchdb start
+</code></pre>
+<p>Access </p>
+<p>http://localhost:5984/_utils/index.html</p>
+<p>or</p>
+<p>http://hostname:5984/_utils/index.html </p>
+<p>if you edited the !BindAddress</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

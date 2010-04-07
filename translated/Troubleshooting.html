@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Troubleshooting</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h2>Upgrade</h2>
+<p>Have you built CouchDB from the Subversion repository?</p>
+<p>Did you do a <code>svn up</code> that seemed to break everything?</p>
+<p>After every update you must run the following command:</p>
+<pre><code>./bootstrap
+</code></pre>
+<p>If you still have problems building try the next troubleshooting tip.</p>
+<h2>First Run</h2>
+<p>Having problems getting CouchDB to run for the first time?</p>
+<p>Follow this simple procedure and report back to mailing list (or IRC) with the
+output of each step.</p>
+<ol>
+<li>
+<p>Note down the name of your operating system and your processor architecture.</p>
+</li>
+<li>
+<p>Note down the installed versions of CouchDB's dependancies.</p>
+</li>
+<li>
+<p>Follow the <a href="http://couchdb.apache.org/community/code.html">checkout instructions</a> to get a fresh copy of trunk.</p>
+</li>
+<li>
+<p>Bootstrap from the <code>couchdb</code> directory:</p>
+<p>./bootstrap</p>
+</li>
+</ol>
+<p>FreeBSD users: if you get "<code>aclocal: not found</code>" you need to install <code>automake</code>.</p>
+<ol>
+<li>
+<p>Build into a temporary directory:</p>
+<p>./configure --prefix=/tmp/couchdb &amp;&amp; make &amp;&amp; make install</p>
+</li>
+</ol>
+<p>FreeBSD users: if you get "<code>Syntax error: end of file unexpected</code>" when you run <code>make</code>, you need to run <code>gmake</code> instead.</p>
+<ol>
+<li>
+<p>Run the couchdb command and log the output:</p>
+<p>/tmp/couchdb/bin/couchdb</p>
+</li>
+<li>
+<p>Use your system's kernel trace tool and log the output of the above command.</p>
+</li>
+<li>
+<p>Linux systems should use strace:</p>
+<p>strace /tmp/couchdb/bin/couchdb 2&gt; strace.out</p>
+</li>
+<li>
+<p>Please add documentation for your system...</p>
+</li>
+<li>
+<p>Report back to the mailing list (or IRC) with the output from each step.</p>
+</li>
+</ol>
+<h2>invalid UTF-8 JSON</h2>
+<p>When upgrading from old versions of CouchDB, it is best to really get rid of everything old.  If you get strange errors and all but the simplest actions appear to be broken, and especially if you are seeing {"error":"bad_request","reason":"invalid UTF-8 JSON"} type of errors in Futon, then you should try something like the following:</p>
+<pre><code>find /usr/local -name \*couch* | xargs rm -rf 
+make &amp;&amp; sudo make install
+</code></pre>
+<p>This was discussed on 13 Dec 2009 on the users mailing list, and the resolution is discussed 
+<a href="http://mail-archives.apache.org/mod_mbox/couchdb-user/200912.mbox/%3c200912130717.39605.sh@widetrail.dk%3e">here</a> and 
+<a href="http://mail-archives.apache.org/mod_mbox/couchdb-user/200912.mbox/%3c20091214091547.GA7543@uk.tiscali.com%3e">here</a></p>
+<h2>Misc Errors</h2>
+<p>CouchDB using a lot of memory (several hundred MB) on startup?  This one seems to especially affect Dreamhost installs.  It's really an issue with the Erlang VM pre-allocating data structures when ulimit is very large or unlimited.  A detailed dicussion can be found <a href="http://www.erlang.org/cgi-bin/ezmlm-cgi/4/46168">on the erlang-questions list</a>, but the short answer is that you should decrease ulimit -n or define ERL_MAX_PORTS to something reasonable like 1024.</p>
+<p>Erlang backtraces are quite "hard" to read for non-Erlangers. The list here tries to give keywords to help you pinpointing your problem and suggests possible solutions</p>
+<p>system_limit, erlang, open_port:: Erlang has a default limit of 1024 ports, where each FD, tcp connection, and linked-in driver uses one port. You seem to have exceeded this. You can change it at runtime using the ERL_MAX_PORTS env variable.
+ (by Adam Kocoloski, <a href="bugs.edge.launchpad.net/ubuntu/+source/couchdb/+bug/459241">bugs.edge.launchpad.net/ubuntu/+source/couchdb/+bug/459241</a>)</p>
+<h2>Map/Reduce debugging</h2>
+<p>You can debug your Map and Reduce functions in the js command line. The fact that documents and function definitions are real javascript code makes it trivial to copy and paste both into SpiderMonkey.</p>
+<p>First you assign a document to a variable. I like to copy from the Source tab of a doc in Futon:</p>
+<pre><code>js&gt; doc = {
+   "_id": "image-5",
+   "_rev": "3-3e1b61291d9102d84e71e27cb46266fc",
+   "status": 200,
+   "style": "original"
+}
+[object Object]
+</code></pre>
+<p>Next you assign your function to another variable. Again I like to copy from the Source tab of a design doc in Futon:</p>
+<pre><code>js&gt; map = function(doc) { emit(doc.style, doc) }
+function (doc) {
+    emit(doc.style, doc);
+}
+</code></pre>
+<p>Don't forget to define the emit function as well. I just alias the print function:</p>
+<pre><code>js&gt; emit = print
+function print() {
+    [native code]
+}
+</code></pre>
+<p>Now you can manually apply your map function to this document, and see what gets emitted:</p>
+<pre><code>js&gt; map(doc)
+original [object Object]
+</code></pre>
+<p>From here, just keep redefining map and applying it to doc until you are emitting the desired output.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

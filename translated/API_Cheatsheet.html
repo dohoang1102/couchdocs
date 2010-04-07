@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - API_Cheatsheet</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>See <a class="internal" href="HTTP_view_API.html">HTTP_view_API</a> for the view options that apply to many <em>GET</em> operations.</p>
+<h1>CouchDB Server Level</h1>
+<p><table>
+<tr><td>/</td><td>Info</td><td>GET</td><td>Get MOTD and version</td><td></td></tr>
+<tr><td>/_all_dbs</td><td>Databases</td><td>GET</td><td>Get a list of databases</td><td></td></tr>
+<tr><td>/_config</td><td>Config</td><td>GET</td><td>Get configuration data</td><td></td></tr>
+<tr><td>/_uuids</td><td>UUIDs</td><td>GET /_uuids?count=1</td><td>Get a number of UUIDs</td><td></td></tr>
+<tr><td>/_replicate</td><td>Replication</td><td>POST /_replicate source=x&amp;target=y</td><td>Replicate, see <a class="internal" href="Replication.html">Replication</a></td><td></td></tr>
+<tr><td>/_stats</td><td>Statistics</td><td>GET /_stats</td><td>Statistics overview</td><td></td></tr>
+<tr><td>/_active_tasks</td><td>Active tasks</td><td>GET /_active_tasks</td><td>Active task list (compaction, replication, etc.)</td><td></td></tr>
+</table></p>
+<h1>Database level</h1>
+<p><strong>Note</strong>: Document names must always have embedded <strong>/</strong> translated to <strong>%2F</strong>. E.g. "GET /<strong>db</strong>/foo%2fbar" for the document named "foo/bar". Attachment names may have embedded slashes.
+<table>
+<tr><td>/<strong>db</strong></td><td>Creation</td><td>PUT /<strong>db</strong></td><td>Database creation</td><td></td></tr>
+<tr><td>/<strong>db</strong></td><td>Deletion</td><td>DELETE /<strong>db</strong></td><td>Database deletion</td><td></td></tr>
+<tr><td>/<strong>db</strong></td><td>Info</td><td>GET /<strong>db</strong></td><td>Database information</td><td></td></tr>
+<tr><td>/<strong>db</strong></td><td>Change feed</td><td>GET /<strong>db</strong>/_changes</td><td>Feed of changes in the database</td><td></td></tr>
+<tr><td>/<strong>db</strong>/_compact</td><td>Compaction</td><td>POST /<strong>db</strong>/_compact</td><td>Data compaction</td><td></td></tr>
+<tr><td>/<strong>db</strong>/_bulk_docs</td><td>Bulk document update</td><td>POST /<strong>db</strong>/_bulk_docs [{"foo": "bar"}]</td><td>Update many documents at once</td><td></td></tr>
+<tr><td>/<strong>db</strong>/_temp_view</td><td>Temporary view</td><td>POST /<strong>db</strong>/_temp_view {<strong>view-code</strong>}</td><td>Run an ad-hoc view</td><td></td></tr>
+<tr><td>/<strong>db</strong>/_view_cleanup</td><td>Cleanup view data</td><td>POST /<strong>db</strong>/_view_cleanup</td><td>Cleanup old view data (see <a class="internal" href="Compaction.html">Compaction</a>)</td><td></td></tr>
+<tr><td>/<strong>db</strong>/_design/<strong>design-doc</strong>/_view/<strong>view</strong></td><td>View</td><td>GET /<strong>db</strong>/_design/<strong>design-doc</strong>/_view/<strong>view</strong></td><td>View query (see <a class="internal" href="HTTP_view_API.html">HTTP_view_API</a>)</td><td>(in 0.9.x, this was /<strong>db</strong>/_view/<strong>design-doc</strong>/<strong>view</strong>)</td></tr>
+</table></p>
+<p>See <a class="internal" href="HTTP_database_API.html">HTTP_database_API</a> for more information.</p>
+<h1>Documents level</h1>
+<p>||/<strong>db</strong>/_all_docs||Documents||GET /<strong>db</strong>/_all_docs||List of all documents||||
+||/<strong>db</strong>||Get document||GET /<strong>db</strong>/<strong>doc</strong>||Retrieve a document||||
+||/<strong>db</strong>||Create document||POST /<strong>db</strong> {"foo": "bar"}||Create new document||||
+||/<strong>db</strong>/<strong>doc</strong>||Update document||PUT /<strong>db</strong>/<strong>doc</strong> {"foo": "test"}||Save updated document||||
+||/<strong>db</strong>/<strong>doc</strong>||Delete document||DELETE /<strong>db</strong>/<strong>doc</strong>||Delete document||||</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

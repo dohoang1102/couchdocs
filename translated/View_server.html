@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - View_server</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>A simple introduction to the CouchDB view server.</p>
+<h2>The View Server</h2>
+<p>CouchDB delegates computation of <a class="internal" href="Views.html">Views</a> to external query servers. It communicates with them over standard input/output, using a very simple, line-based protocol. The default query server is written in Javascript, running via Mozilla !SpiderMonkey. You can use other languages by setting a MIME type in the <em>language</em> property of a design document or the Content-Type header of a temporary view. Design documents that do not specify a <em>language</em> property are assumed to be of type <em>javascript</em>, as are ad hoc queries that are <em>POST</em>ed to <em>_temp_view</em> without a <em>Content-Type</em> header.</p>
+<p>To register query servers with CouchDB, add a line for each server to <em>local.ini</em>. The basic syntax is:</p>
+<pre><code>[query_servers]
+python=/usr/bin/couchpy
+ruby=/wherever/couchobject/bin/couch_ruby_view_requestor
+</code></pre>
+<h2>Basic API</h2>
+<p>This shows you how the view server implementation for your language should behave. If in doubt, look at the <em>share/server/main.js</em> file in your CouchDB source tree for reference.</p>
+<p>CouchDB launches the view server and starts sending commands. The server responds according to its evaluation of the commands. There are only three commands the view server needs to understand.</p>
+<h3>reset</h3>
+<p>This resets the state of the view server and makes it forget all previous input. If applicable, this is the point to run garbage collection.</p>
+<p>CouchDB sends:</p>
+<pre><code>["reset"]\n
+</code></pre>
+<p>The view server responds:</p>
+<pre><code>true\n
+</code></pre>
+<h3>add_fun</h3>
+<p>When creating a view, the view server gets sent the view function for evaluation. The view server should parse/compile/evaluate the function he receives to make it callable later. If this fails, the view server returns an error. CouchDB might store several functions before sending in any actual documents.</p>
+<p>CouchDB sends:</p>
+<pre><code>["add_fun", "function(doc) { if(doc.score &gt; 50) emit(null, {"player_name": doc.name}); }"]\n
+</code></pre>
+<p>When the view server can evaluate the function and make it callable, it returns:</p>
+<pre><code>true\n
+</code></pre>
+<p>If not:</p>
+<pre><code>{"error": "some_error_code", "reason": "error message"}\n
+</code></pre>
+<h3>map_doc</h3>
+<p>When the view function is stored in the view server, CouchDB starts sending in all the documents in the database, one at a time. The view server calls the previously stored functions one after another with the document and stores its result. When all functions have been called, the result is returned as a JSON string.</p>
+<p>CouchDB sends:</p>
+<pre><code>["map_doc", {"_id":"8877AFF9789988EE","_rev":"3-235256484","name":"John Smith","score": 60}]\n
+</code></pre>
+<p>If the function above is the only function stored, the views server answers:</p>
+<pre><code>[[[null, {"player_name":"John Smith"}]]]\n
+</code></pre>
+<p>That is, an array with the result for every function for the given document.</p>
+<p>If a document is to be excluded from the View, the array should be empty.</p>
+<p>CouchDB sends:</p>
+<pre><code>["map_doc", {"_id":"9590AEB4585637FE","_rev":"1-674684684","name":"Jane Parker","score": 43}]\n
+</code></pre>
+<p>The views server answers:</p>
+<pre><code>[[[]]]\n
+</code></pre>
+<h3>reduce</h3>
+<p>If the view has a <code>reduce</code> function defined, CouchDB will enter into the reduce phase. The view server will receive a list of reduce functions and some map results on which it can apply them. The map results are given in the form <code>[[key, id-of-doc], value]</code>.</p>
+<p>CouchDB sends:</p>
+<pre><code>["reduce",["function(k, v) { return sum(v); }"],[[[1,"699b524273605d5d3e9d4fd0ff2cb272"],10],[[2,"c081d0f69c13d2ce2050d684c7ba2843"],20],[[null,"foobar"],3]]]
+</code></pre>
+<p>@@ Is there any guarantee on the ordering? The example appears unordered (null trailing)</p>
+<p>The view-server answers:</p>
+<pre><code>[true, [33]]
+</code></pre>
+<p>Note that even though the view server receives the map results in the form <code>[[key, id-of-doc], value]</code>, the function may receive them in a different form. For example, the JavaScript view-server applies functions on the list of keys and the list of values.</p>
+<h3>rereduce</h3>
+<p>When building a view, CouchDB will apply the <code>reduce</code> step directly to the output of the map step and the <code>rereduce</code> step to the output of a previous <code>reduce</code> step.</p>
+<p>CouchDB will send a list of values, with no keys or document ids, to the rereduce step.</p>
+<p>CouchDB sends:</p>
+<pre><code>["rereduce",["function(k, v, r) { return sum(v); }"],[33,55,66]]
+</code></pre>
+<p>The view-server answers:</p>
+<pre><code>[true, [154]]
+</code></pre>
+<h3>log</h3>
+<p>At any time, the view-server may send some information that will be saved in CouchDB's log file. This is done by sending a special object with just one field, <code>log</code>, on a separate line.</p>
+<p>The view-server sends</p>
+<pre><code>["log", "A kuku!"]
+</code></pre>
+<p>CouchDB answers nothing.</p>
+<p>The following line will appear in <code>couch.log</code>, mutatis mutandum:</p>
+<pre><code>[Sun, 22 Jun 2008 22:51:25 GMT] [info] [&lt;0.72.0&gt;] Query Server Log Message: A kuku!
+</code></pre>
+<p>If you use the JavaScript view-server, you achieve this effect by calling the function <code>log</code> in your view. To do the same thing in ClCouch, call <code>logit</code>.</p>
+<h2>Implementations</h2>
+<ul>
+<li><a href="http://svn.apache.org/repos/asf/couchdb/trunk/share/server/">JavaScript</a> (CouchDB native)</li>
+<li><a href="http://common-lisp.net/cgi-bin/darcsweb/darcsweb.cgi?r=submarine-cl-couch;a=summary">Common Lisp</a></li>
+<li><a href="http://jan.prima.de/~jan/plok/archives/93-CouchDb-Views-with-PHP.html">PHP</a></li>
+<li><a href="http://theexciter.com/articles/couchdb-views-in-ruby-instead-of-javascript.html">Ruby</a> <a href="http://github.com/candlerb/couchdb_ruby_view">(fork)</a></li>
+<li><a href="http://couchdb-python.googlecode.com/svn/trunk/couchdb/view.py">Python</a></li>
+<li><a href="http://github.com/mmcdanie/erlview/tree/master">Erlang</a></li>
+<li><a href="http://github.com/tashafa/clutch/">Clojure</a></li>
+<li><a href="http://search.cpan.org/~hdp/CouchDB-View-0.003/lib/CouchDB/View/Server.pm">Perl</a></li>
+<li><a href="http://chicken.wiki.br/eggref/4/couchdb-view-server">Chicken Scheme</a></li>
+</ul>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

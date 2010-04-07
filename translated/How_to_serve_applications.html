@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - How_to_serve_applications</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- ## page was renamed from ServingAppsFromCouchDb -->
+
+<p>You can write applications that are written entirely in HTML/CSS and JavaScript and that is stored within CouchDB document attachments. Here's a short script that makes it easy to wrap up a bunch of files and put them into a database.</p>
+<p>This is a quick'n'dirty hack. All you need to do is fill the <code>$files</code> array with entries of <code>$file</code> arrays that contain the filename and content-type of that file.</p>
+<p>Run with: 
+$ curl -X PUT http://server:5984/database/document -d "`php upload.php`"</p>
+<pre><code>&lt;?php
+$file["name"] = "main.html";
+$file["contentType"] = "text/html";
+$files[] = $file;
+
+$file["name"] = "thread.html";
+$file["contentType"] = "text/html";
+$files[] = $file;
+
+$file["name"] = "styles.css";
+$file["contentType"] = "text/css";
+$files[] = $file;
+
+$file["name"] = "DetectWebkit.js";
+$file["contentType"] = "application/javascript";
+$files[] = $file;
+
+foreach($files AS $file) {
+    $file["data"] = base64_encode(file_get_contents($file["name"]));
+
+    $attachments[] = &lt;&lt;&lt;EOF
+        "$file[name]": {
+            "content_type":"$file[contentType]",
+            "data":"$file[data]"
+        }
+EOF;
+}
+
+$attachments = implode(",\n\n", $attachments);
+
+$document = &lt;&lt;&lt;EOF
+{
+    "_attachments": {
+        $attachments
+
+    }
+}
+
+EOF;
+echo $document;
+?&gt;
+</code></pre>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - BuildingWindowsDependencyLibraries</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>Here're the quick procedures for building dependency libraries of couchDB on Windows with Visual C++ Express edition SP1:</p>
+<p>You will need the following software installed on your system:</p>
+<p><em><a href="http://www.microsoft.com/express/vc/">Visual C++ Express Edition SP1</a>
+ </em><a href="http://activestate.com">ActivePerl</a></p>
+<h2>Buildeing libeay32.dll</h2>
+<p>Download OpenSSL source file from <a href="http://www.openssl.org/source">OpenSSL</a>.
+Extract the source archive to working directory.</p>
+<p>open Visual Studio's command prompt from Start menu. Change directory to the working directory.
+do cofiguration :</p>
+<pre><code>perl Configure VC-WIN32
+</code></pre>
+<p>You have options here to use some assembler like MASM or NASM to get better performance.
+But we don't them neither to make the story simple: </p>
+<pre><code>ms\do_ms
+</code></pre>
+<p>Then build.</p>
+<pre><code>nmake -f ms\ntdll.mak
+</code></pre>
+<p>If you want to confirm that the build went went right, you can test:</p>
+<pre><code>nmake -f ms\ntdll.mak test
+</code></pre>
+<p>Now you'll find libeay32.dll in <working directory>out32dll.
+Please rememver that this procedure is one of the quickest one only to get libeay32.dll.
+Refer to official documemts for the build options or installing OpenSSL to your system.</p>
+<h2>Buildeing js32.dll (Spider Monkey)</h2>
+<p>Download Spider Monkey source file from <a href="http://www.mozilla.org/js/spidermonkey/">Here</a>.
+From mirrors or the download URL, download something like js-1.7.0.tar and extract 
+the archive to working directory.</p>
+<p>open Visual Sudio's command prompt from Start menu. Change directory to the working directory.</p>
+<p>Now you must be ready to build, but actually not. According to <a href="http://blog.endflow.net/?p=55&lang=en">this site</a>, you must fix
+js.mak before you start building the binary.</p>
+<p>After fixing (or replacing js.mak), do build:</p>
+<pre><code>nmake -f "js.mak" CFG="jsshell - Win32 Debug"
+</code></pre>
+<p>And you will find js32.dll and jsshell.exe in the Debug directory under the working directory.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Installing_on_Windows</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>&lt;<TableOfContents>&gt;</p>
+<p>This page describes how to build and install couchdb from source on Windows.  See also the <a class="internal" href="Windows_binary_installer.html">Windows_binary_installer</a>.</p>
+<h1>Building current couchdb versions</h1>
+<p>As of couchdb 0.10, support for Windows is included in the standard build process.  View <a href="http://svn.apache.org/viewvc/couchdb/trunk/README?view=co">README</a> in the root of the source tree for information about the dependencies and how to configure the build process.  In summary, you will need to:</p>
+<ul>
+<li>
+<p>Install the cygwin environment.</p>
+</li>
+<li>
+<p>Install the MS C compiler.</p>
+</li>
+<li>
+<p>Install and possibly build a number of pre-requisites, such as curl, icu, seamonkey, etc.</p>
+</li>
+<li>
+<p>get the sources to erlang and couch</p>
+</li>
+<li>
+<p>configure and build erlang according to the instructions.</p>
+</li>
+<li>
+<p>configure and build couch according to the <a href="http://svn.apache.org/viewvc/couchdb/trunk/README?view=co">README</a> file in couch</p>
+</li>
+</ul>
+<p>After executing 'make install', you will find a couchdb directory structure inside your erlang directory - that is, the couch build process simply installs its libraries into the erlang binaries you previously build.  This directory structure should be ready to roll - it can be zipped up, packaged by an installer, etc.</p>
+<h1>Older instructions</h1>
+<p>These instructions are for couch versions pre 0.10</p>
+<p>There is a <a class="internal" href="Windows_binary_installer.html">Windows_binary_installer</a> in "beta testing". See the wiki page for it for more instructions.</p>
+<p>CouchDB does not natively install on Windows but it is possible to install it by hand. '''Be aware that many unit tests fail due to IO-related features that aren't supported by Erlang on Windows.'''</p>
+<p>Please update this guide as needed, we aim to collect feedback and roll the procedure into the official build.</p>
+<p>These instructions currently refer to paths as they'd be set up in a default installation of Erlang OTP 5.7.1, with the couchDB distribution installed at</p>
+<pre><code>C:\Program Files\erl5.7.1\lib\apache-couchdb-0.9.0
+</code></pre>
+<h2>Dependencies</h2>
+<p>You will need the following software installed on your system:</p>
+<ul>
+<li><a href="http://www.erlang.org/download.html">Erlang/OTP</a></li>
+<li>C Compiler/Linker (such as <a href="http://gcc.gnu.org/">GCC</a> or <a href="http://msdn.microsoft.com/en-us/visualc/default.aspx">Visual C++</a>)</li>
+<li>Make (such as <a href="http://www.gnu.org/software/make/">GNU Make</a> or <a href="http://msdn.microsoft.com/en-us/library/dd9y37ha(VS.71).aspx">nmake</a>)</li>
+<li><a href="http://www.openssl.org/">OpenSSL</a></li>
+<li><a href="http://www.icu-project.org/">ICU</a> (Tested with <a href="http://www.icu-project.org/download/4.0.html">binary build of 4.2 release</a>.)</li>
+<li><a href="http://www.mozilla.org/js/spidermonkey/">SpiderMonkey</a></li>
+</ul>
+<h2>Install CouchDB as an Erlang Library Directory</h2>
+<p>After installing Erlang you should having something similar to:</p>
+<pre><code>C:\Program Files\erl5.7.1
+</code></pre>
+<p>Copy the whole CouchDB source tree to:</p>
+<pre><code>C:\Program Files\erl5.7.1\lib\apache-couchdb-0.9.0
+</code></pre>
+<p>Make the following empty directories:</p>
+<pre><code>C:\Program Files\erl5.7.1\lib\mochiweb-0.01\ebin
+
+C:\Program Files\erl5.7.1\lib\apache-couchdb-0.9.0\ebin
+</code></pre>
+<h2>Provide ICU to Erlang</h2>
+<p>From ICU copy <code>icu*.dll</code> (and <code>libeay32.dll</code> for older versions of ICU) to:</p>
+<pre><code>C:\Program Files\erl5.7.1\erts-5.7.1\bin
+</code></pre>
+<h2>Build SpiderMonkey</h2>
+<p>The SpiderMonkey distribution's Windows build stuff is broken. See <a href="http://blog.endflow.net/?p=55&lang=en">this blog post</a> for a working js.mak file. Don't bother trying to import the project file into a contemporary Visual Studio; just use the Visual Studio command line tools with the js.mak file referred to above.</p>
+<p>CouchDB uses a custom JavaScript driver, which provides unicode and buffering improvements. In the !SpiderMonkey distribution, rename src/js.c to src/js.c.bak, and copy <code>C:\Program Files\erl5.6.3\lib\couchdb-0.8.1\src\couchdb\couch_js.c</code> from the CouchDB distribution to src/js.c in the !SpiderMonkey distribution. Before running nmake, edit the new js.c and change <code>#include &lt;jsapi.h&gt;</code> to <code>#include "jsapi.h"</code>.</p>
+<p>Once you've built js.exe and js32.dll, copy them both to</p>
+<pre><code>C:\Program Files\erl5.7.1\erts-5.7.1\bin
+</code></pre>
+<p>and rename js.exe to couch_js.exe.</p>
+<p><em>Here are the binaries built according to the blog post: <a href="http://dl.getdropbox.com/u/118385/CouchDbBinaries/couchbd_spidermonkey_1.7_win32_32bit.zip">couchbd_spidermonkey_1.7_win32_32bit.zip</a> . Just unzip the contents to the bin directory.</em></p>
+<h2>Build couchdb/couch_erl_driver.c</h2>
+<p>This is a wrapper to provide ICU features to CouchDB.</p>
+<p><em>Here is a binary (no worry! MS bleeding-edge technology proved!) built against ICU 4.2 in 32-bit Windows: [[attachment:couch_erl_driver.dll]]</em></p>
+<p>The simplest way to build a DLL is to create a Win32 DLL project in an IDE, add <code>couch_erl_driver.c</code> into the project, and change project settings to include the Erlang ERTS and ICU4C header paths. </p>
+<p>You must also include the various ICU <code>*.lib</code> files to the MSVC linker as inputs. MSVC doesn't know how to create a DLL with unresolved names.  In Visual Studio 2008 this can be accomplished by right clicking on the project, choosing properties, expanding the Linker node in the left panel, selecting Input, and adding the following to the 'Additional Dependencies' field:</p>
+<p><em>icudt.lib 
+ </em>icuin.lib 
+ <em>icuio.lib 
+ </em>icule.lib 
+ <em>iculx.lib 
+ </em>icutu.lib 
+ *icuuc.lib </p>
+<p>The erlang include paths for this build for example were </p>
+<pre><code>C:\otp_src_R13B\erts\emulator\sys\win32 
+C:\otp_src_R13B\erts\emulator\beam
+</code></pre>
+<p>Make the following empty directory:</p>
+<pre><code>C:\Program Files\erl5.7.1\lib\apache-couchdb-0.9.0\priv
+</code></pre>
+<p>Copy the DLL to:</p>
+<pre><code>C:\Program Files\erl5.7.1\lib\apache-couchdb-0.9.0\priv\couch_erl_driver.dll
+</code></pre>
+<h2>Erlang Compilation</h2>
+<p>Create a the following file:</p>
+<pre><code>C:\Program Files\erl5.7.1\lib\apache-couchdb-0.9.0\src\Emakefile
+</code></pre>
+<p>Add the following content:</p>
+<pre><code>{'./couchdb/*', [{outdir,"../ebin"}]}.
+{'./mochiweb/*', [{outdir,"../../mochiweb-0.01/ebin"}]}.
+</code></pre>
+<p>Launch <code>erl</code> (or <code>werl</code>) and execute the following command to change working directory:</p>
+<pre><code>cd("C:/Program Files/erl5.7.1/lib/apache-couchdb-0.9.0/src").
+</code></pre>
+<p>Execute this command to compile CouchDB:</p>
+<pre><code>make:all().
+</code></pre>
+<h2>Configuring</h2>
+<p>Copy the following file:</p>
+<pre><code>C:\Program Files\erl5.7.1\lib\apache-couchdb-0.9.0\etc\couchdb\default.ini.tpl.in
+</code></pre>
+<p>To this location:</p>
+<pre><code>C:/Program Files/erl5.7.1/bin/default.ini
+</code></pre>
+<p>or to this location:</p>
+<pre><code>C:/Program Files/erl5.7.1/lib/couchdb-0.9.0/default.ini
+</code></pre>
+<p>Edit the file to look something like this:</p>
+<pre><code>[couchdb]
+database_dir = c:/data/couch
+view_index_dir = c:/data/couch
+util_driver_dir = C:/Program Files/erl5.7.1/lib/apache-couchdb-0.9.0/priv
+ConsoleStartupMsg=Apache CouchDB is starting.
+max_document_size = 4294967296 ; 4 GB
+max_attachment_chunk_size = 4294967296 ; 4GB
+os_process_timeout = 5000 ; 5 seconds. for view and external servers.
+max_dbs_open = 100
+
+[httpd]
+port = 5984
+bind_address = 127.0.0.1
+authentication_handler = {couch_httpd, default_authentication_handler}
+WWW-Authenticate = Basic realm="administrator"
+
+[log]
+file = c:/logs/couch.log
+level = info
+
+[daemons]
+view_manager={couch_view, start_link, []}
+external_manager={couch_external_manager, start_link, []}
+db_update_notifier={couch_db_update_notifier_sup, start_link, []}
+query_servers={couch_query_servers, start_link, []}
+httpd={couch_httpd, start_link, []}
+stats_aggregator={couch_stats_aggregator, start, []}
+stats_collector={couch_stats_collector, start, []}
+
+[httpd_global_handlers]
+/ = {couch_httpd_misc_handlers, handle_welcome_req, &lt;&lt;"Welcome"&gt;&gt;}
+favicon.ico = {couch_httpd_misc_handlers, handle_favicon_req, "C:/Program Files/erl5.7.1/lib/apache-couchdb-0.9.0/share/www"}
+
+_utils = {couch_httpd_misc_handlers, handle_utils_dir_req, "C:/Program Files/erl5.7.1/lib/apache-couchdb-0.9.0/share/www"}
+_all_dbs = {couch_httpd_misc_handlers, handle_all_dbs_req}
+_active_tasks = {couch_httpd_misc_handlers, handle_task_status_req}
+_config = {couch_httpd_misc_handlers, handle_config_req}
+_replicate = {couch_httpd_misc_handlers, handle_replicate_req}
+_uuids = {couch_httpd_misc_handlers, handle_uuids_req}
+_restart = {couch_httpd_misc_handlers, handle_restart_req}
+_stats = {couch_httpd_stats_handlers, handle_stats_req}
+
+[httpd_db_handlers]
+_design = {couch_httpd_db, handle_design_req}
+_temp_view = {couch_httpd_view, handle_temp_view_req}
+
+[httpd_design_handlers]
+_view = {couch_httpd_view, handle_view_req}
+_show = {couch_httpd_show, handle_doc_show_req}
+_list = {couch_httpd_show, handle_view_list_req}
+</code></pre>
+<p>Make sure that the <code>database_dir</code> exists and that the <code>LogFile</code> can be created.</p>
+<h2>Running</h2>
+<p>Launch <code>erl</code> (or <code>werl</code>) and execute the following command:</p>
+<pre><code>couch_server:start().
+</code></pre>
+<p>If you encounter any trouble, set the log 'level' to 'debug' in default.ini</p>
+<p>To check that everything has worked point your web browser to
+<a href="localhost:5984/_utils/index.html">localhost:5984/_utils/index.html</a> and run the test suite.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

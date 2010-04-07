@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Getting_started_with_Erlang</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- ## page was renamed from Getting Started With Erlang -->
+<!-- ## page was renamed from GettingStartedErlang -->
+
+<p>Getting started with Erlang and the CouchDB API.</p>
+<h1>couchbeam</h1>
+<p>couchbeam is a simple erlang CouchDB framework. couchbeam provides you a full featured and easy client to access and manage multiple couchdb Nodes.</p>
+<p>http://bitbucket.org/benoitc/couchbeam</p>
+<h2>Features</h2>
+<ul>
+<li>A full client in sync with latest CouchDB version</li>
+<li>full otp application</li>
+<li>Use <a href="http://bitbucket.org/etc/lhttpc/overview/">lhttpc</a> as http client</li>
+<li>multi CouchDB servers and databases support</li>
+<li>Authentification support. </li>
+</ul>
+<h1>eCouch</h1>
+<p>eCouch is an Erlang application that provides an API to a CouchDB server. Code and documentation can be obtained at:</p>
+<p>http://code.google.com/p/ecouch</p>
+<h2>Characteristics</h2>
+<ul>
+<li>Uses the <a href="http://www.lshift.net/blog/2007/02/17/json-and-json-rpc-for-erlang">rfc4627</a> module from <a href="http://www.lshift.net/">LShift</a></li>
+<li>eCouch design was inspired by the article <a href="http://www.trapexit.org/Building_a_Non-blocking_TCP_server_using_OTP_principles">Building a Non-blocking TCP server using OTP principles</a></li>
+<li>It assumes that the <a href="http://www.erlang.org/doc/apps/inets/index.html">inets</a> application is running</li>
+</ul>
+<h2>Features</h2>
+<ul>
+<li>Follows all the OTP design principles</li>
+<li>Can run stand-alone with its own supervision tree or be included inside an existing supervision tree</li>
+<li>Guarantees synchronism between calls and their responses</li>
+</ul>
+<h1>erlcouch</h1>
+<p>It is quite easy to throw together a quick interface to CouchDB in Erlang using inets or ibrowse because CouchDB API is so easy. On such interface currently exists at:</p>
+<p>http://code.google.com/p/erlcouch/</p>
+<p>Documentation can be found as part of the library.</p>
+<p><strong>NOTE:</strong> erlcouch was discontinued, but picked up and pushed along at http://github.com/bdionne/erl-couch/</p>
+<h1>erlang_couchdb</h1>
+<p>Another Erlang library exists as erlang_couchdb. It is actively development and tries to do as little as possible.</p>
+<p>http://github.com/ngerakines/erlang_couchdb/</p>
+<p>There's a branch implementing a transactional layer for it. Scroll down for documentation:
+  http://github.com/astro/erlang_couchdb/tree/couch_lier</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

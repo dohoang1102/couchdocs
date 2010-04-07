@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - How_to_make_filesystem_backups</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>There are three types of variable data files to backup:</p>
+<ul>
+<li>
+<p>Database files</p>
+</li>
+<li>
+<p>Configuration files</p>
+</li>
+<li>
+<p>Log files</p>
+</li>
+</ul>
+<p><a href="http://mail-archives.apache.org/mod_mbox/incubator-couchdb-user/200808.mbox/%3c32800028-9286-47C8-82A5-1ECC25667FDA@apache.org%3e">Couch-users discussion from Damien Katz - August 2008</a>:</p>
+<pre><code>Actually, you can copy a live database file from the OS at anytime without problem. Doesn't matter if its being updated, or even if its being compacted, the CouchDB never-overwrite storage format ensures it should just work without issue.
+</code></pre>
+<p>For all platforms, locate your database, configuration, and log files and perform a filesystem copy. Be careful to preserve file permissions, too. Archive these files to wherever you want-- ideally on a different machine in a different physical location -- with appropriate security limiting access. <br />
+</p>
+<p>For example, here are the directories to backup for a <a href="http://wiki.apache.org/couchdb/InstallingOnUbuntu">CouchDB install on Ubuntu</a>:</p>
+<ul>
+<li>
+<p>Configuration: /usr/local/etc/couchdb/</p>
+</li>
+<li>
+<p>Database files: /usr/local/var/lib/couchdb/  <br />
+</p>
+</li>
+<li>
+<p>Logs: /usr/local/var/log/couchdb/</p>
+</li>
+</ul>
+<p><strong>Note:</strong> Before CouchDB 1.0 intermediate releases can have incompatible database file formats. For details on migrating those, see BreakingChanges.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

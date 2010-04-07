@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Getting_started_with_Perl</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>Getting started with Perl and the CouchDB API.</p>
+<p>The following shows the basics of working with the raw CouchDB REST api from Perl. If you want a richer interface that more tightly maps Couch documents into Perl (so you don't have to deal with JSON manually, for example), you should pick your favourite out of the several implementations: <a href="http://wiki.github.com/mndrix/net-couchdb">Net::CouchDB</a>, <a href="http://search.cpan.org/dist/CouchDB-Client/">CouchDB::Client</a>, <a href="http://search.cpan.org/dist/AnyEvent-CouchDB/">AnyEvent::CouchDB</a>, <a href="http://search.cpan.org/dist/DB-CouchDB-Schema/">DB::CouchDB::Schema</a>, or for POE lovers <a href="http://search.cpan.org/dist/POE-Component-Client-CouchDB/">POE::Component::Client::CouchDB</a>.</p>
+<p>Currently (16/9/2009) Net::CouchDB and CouchDB::Client seem to not work against current couchdb. AnyEvent::CouchDB seems to work (tested getting a database and creating a document so far).</p>
+<p>Note that these examples all use the new version of CouchDB, with a JSON interface rather than XML.</p>
+<h2>Example Wrapper Class</h2>
+<p>You can save this to a file named <em>CouchDB.pm</em>, then just use it from your program with <em>use CouchDB;</em>. But if you're going to do anything more than mess around, I would recommend getting the Net::!CouchDb module from CPAN.</p>
+<pre><code>package CouchDB;
+
+use strict;
+use warnings;
+
+use LWP::UserAgent;
+
+sub new {
+  my ($class, $host, $port, $options) = @_;
+
+  my $ua = LWP::UserAgent-&gt;new;
+  $ua-&gt;timeout(10);
+  $ua-&gt;env_proxy;
+
+  return bless {
+                ua       =&gt; $ua,
+                host     =&gt; $host,
+                port     =&gt; $port,
+                base_uri =&gt; "http://$host:$port/",
+               }, $class;
+}
+
+sub ua { shift-&gt;{ua} }
+sub base { shift-&gt;{base_uri} }
+
+sub request {
+  my ($self, $method, $uri, $content) = @_;
+
+  my $full_uri = $self-&gt;base . $uri;
+  my $req;
+
+  if (defined $content) {
+    #Content-Type: application/json
+
+    $req = HTTP::Request-&gt;new( $method, $full_uri, undef, $content );
+    $req-&gt;header('Content-Type' =&gt; 'application/json');
+  } else {
+    $req = HTTP::Request-&gt;new( $method, $full_uri );
+  }
+
+  my $response = $self-&gt;ua-&gt;request($req);
+
+  if ($response-&gt;is_success) {
+    return $response-&gt;content;
+  } else {
+    die($response-&gt;status_line . ":" . $response-&gt;content);
+  }
+}
+
+sub delete {
+  my ($self, $url) = @_;
+
+  $self-&gt;request(DELETE =&gt; $url);
+}
+
+sub get {
+  my ($self, $url) = @_;
+
+  $self-&gt;request(GET =&gt; $url);
+}
+
+sub put {
+  my ($self, $url, $json) = @_;
+
+  $self-&gt;request(PUT =&gt; $url, $json);
+}
+
+sub post {
+  my ($self, $url, $json) = @_;
+
+  $self-&gt;request(POST =&gt; $url, $json);
+}
+
+1;
+</code></pre>
+<h2>Creating a Database</h2>
+<p>To create a database called <em>foo</em>:</p>
+<pre><code>my $db = CouchDB-&gt;new('localhost', '5984');
+$db-&gt;put("foo");
+</code></pre>
+<h2>Deleting a Database</h2>
+<p>To delete a database called <em>foo</em>:</p>
+<pre><code>my $db = CouchDB-&gt;new('localhost', '5984');
+$db-&gt;delete("foo");
+</code></pre>
+<h2>Creating a Document</h2>
+<p>To create a document in the database <em>foo</em> with the id <em>document_id</em>:</p>
+<pre><code>my $db = CouchDB-&gt;new('localhost', '5984');
+$db-&gt;put("foo/document_id", &lt;&lt;JSON);
+{
+ "value":
+ {
+   "Subject":"I like Perl",
+   "Author":"Rusty",
+   "PostedDate":"2006-08-15T17:30:12-04:00",
+   "Tags":["plankton", "perl", "decisions"],
+   "Body":"I decided today that I don't like plankton. I like perl. Or DO I?"
+ }
+}
+JSON
+</code></pre>
+<h2>Reading a Document</h2>
+<p>To read a document from database <em>foo</em> with the id <em>document_id</em>:</p>
+<pre><code>my $db = CouchDB-&gt;new('localhost', '5984');
+my $json = $db-&gt;get("foo/document_id");
+</code></pre>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

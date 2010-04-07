@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Nginx_As_a_Reverse_Proxy</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>Nginx can serve as a reverse proxy to CouchDB for scenarios such as URL rewriting, load-balancing, access restriction, etc. </p>
+<p>Here's a basic excerpt from an nginx config file in <nginx config directory>/sites-available/default. This will proxy all requests from http://domain.com/... to http://localhost:5984/...</p>
+<pre><code>location / {
+                proxy_pass http://localhost:5984;
+                proxy_redirect off;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+</code></pre>
+<h2>Reverse proxy for a subdirectory</h2>
+<p>Here's an excerpt of a basic nginx configuration that proxies the URL "http://domain.com/couchdb" to "http://localhost:5984" so that requests appended to the subdirectory, such as "http://domain.com/couchdb/db1/doc1" are proxied to "http://localhost:5984/db1/doc1".</p>
+<pre><code>location /couchdb {
+                rewrite /couchdb/(.*) /$1 break;
+                proxy_pass http://localhost:5984;
+                proxy_redirect off;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+</code></pre>
+<h3>Known Test Suite issue with reverse proxy from subdirectory URL</h3>
+<p>If the reverse proxy configuration also rewrites the URL for a subdirectory, the test suite will fail because it relies on the absolute root path for HTTP requests. This is a known issue and a patch has been submitted by Jack Moffitt at https://issues.apache.org/jira/browse/COUCHDB-321.</p>
+<h2>Authentication with reverse proxy</h2>
+<p>Here's a sample config setting with basic authentication enabled:</p>
+<pre><code>        location /couchdb {
+                auth_basic "Restricted";
+                auth_basic_user_file htpasswd;
+                rewrite /couchdb/(.*) /$1 break;
+                proxy_pass http://localhost:5984;
+                proxy_redirect off;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+</code></pre>
+<h3>Issues with reverse proxy authentication</h3>
+<p>Enabling basic authentication in Nginx will pass the HTTP authentication header to CouchDB, invoking its authentication handler as well. This configuration causes the Nginx basic authentication prompt to appear in the browser, followed by a second authentication prompt from Couchdb, even if CouchDB authentication is not enabled. </p>
+<p>You can either use the same username and password combinations for both Nginx and CouchDb, or set CouchDB to use the null_authentication_handler.</p>
+<pre><code>[httpd]
+authentication_handler = {couch_httpd, null_authentication_handler}
+</code></pre>
+<p>Note: As an Nginx newbie, it's probable that the original author of this wiki post just didn't know which headers to suppress or how to suppress them :-) I tried "proxy_hide_header Authorization" and "proxy_hide_header WWW-Authenticate".</p>
+<p>Note 2: While "proxy_hide_header" does not work, setting the header Authorization to "" seems to work.</p>
+<pre><code>  location / {
+    auth_basic            "CouchDB Admin";
+    auth_basic_user_file  /etc/nginx/passwd;
+    proxy_pass http://localhost:5984;
+    proxy_redirect off;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Authorization "";
+  }
+</code></pre>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

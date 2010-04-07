@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Installing_on_RHEL4</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- ## page was renamed from InstallingOnRHEL4 -->
+
+<p>Installing on RHEL4 x86_64</p>
+<ol>
+<li>
+<p>install erlang</p>
+<p>wget http://www.erlang.org/download/otp_src_R12B-5.tar.gz
+tar xzvf otp_src_R12B-5.tar.gz
+cd otp_src_R12B-5
+./configure &amp;&amp; make &amp;&amp; sudo make install
+cd ..</p>
+</li>
+<li>
+<p>install other dependencies. you'll need EPEL and/or RPMForge</p>
+<p>yum install icu libicu-devel js js-devel</p>
+</li>
+<li>
+<p>install spidermonkey ( step may be optional if you can get js/js-devel as above)</p>
+</li>
+</ol>
+<p>Also see <a class="internal" href="InstallingSpiderMonkey.html">InstallingSpiderMonkey</a></p>
+<pre><code>wget http://ftp.mozilla.org/pub/mozilla.org/js/js-1.7.0.tar.gz
+tar xvzf js-1.7.0.tar.gz
+cd js/src/
+make -f Makefile.ref # (add BUILD_OPT=1 for non-debug build?)
+JS_DIST=/usr/local/spidermonkey make -f Makefile.ref export
+cd ..
+cd ..
+</code></pre>
+<ol>
+<li>
+<p>install couchdb</p>
+<p>svn checkout http://svn.apache.org/repos/asf/couchdb/trunk couchdb
+cd couchdb
+./bootstrap
+./configure --with-js-lib=/usr/local/spidermonkey/lib64 --with-js-include=/usr/local/spidermonkey/include
+make &amp;&amp; make install</p>
+</li>
+</ol>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

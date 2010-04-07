@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Getting_started_with_PHP</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>Getting started with PHP and the CouchDB API.</p>
+<h2>CouchDB Libraries</h2>
+<ul>
+<li>PHPillow: http://arbitracker.org/phpillow.html</li>
+<li>PHP Object_Freezer: https://github.com/sebastianbergmann/php-object-freezer/tree</li>
+<li>PHP On Couch: http://github.com/dready92/PHP-on-Couch/tree/master</li>
+<li>PHP CouchDB Extension: http://www.topdog.za.net/php_couchdb_extension</li>
+</ul>
+<h2>Setup</h2>
+<p>To get this example code running you need to install CouchDB on your system and have it running on port 5984. If you use a different machine or port, change the first two lines of code to your specific values.</p>
+<h2>What Does it Do?</h2>
+<p>This example first creates a !CouchSimple object that we're going to use for making connections to CouchDB on our machine, port 5984. Notice that this response is already encoded in JSON. CouchDB returns nothing but JSON wrapped in HTTP responses.</p>
+<p>It then tries to make a simple GET request to the root of the data store.</p>
+<p>We then look for a list of all databases in CouchDB and we find the one that ships with it, the <em>test_suite_db</em>. CouchDB has all sorts of special URLs for specific tasks. The <em>/_all_dbs</em> URL gives us a list of all the databases.</p>
+<p>Next, we create a new database <em>test</em> using the HTTP method <em>PUT</em>. Creating databases is that easy.</p>
+<p>Then we have a look all the documents in a database. To do so we send a GET request to the special URL <em>/test/_all_docs</em>. We get an empty list.</p>
+<p>Time for action. We are now storing actual data, wrapped in JSON, in CouchDB. To do so, we make POST request to the test database and include a JSON object that has the special attribute <em>"_id": "123"</em>. This is unique identifier each document in CouchDB has. If you don't specify one here, CouchDB does it for you. In the response you see, that CouchDB then tells you what <em>_id</em> was created. There is also the <em>_rev</em> attribute which can be used to specify a document's revision, but this is beyond the scope of this introduction.</p>
+<p>Assuming all goes well, we have another look at all the documents in the test database and 'lo and behold, our document is in.</p>
+<p>We then proceed to getting it back out again with a simple GET request to <em>/test/123</em>. All documents you put into CouchDB can be retrieved like this. With their database and <em>_id</em> as the URL.</p>
+<p>At last, we delete our database. The HTTP DELETE method does the job. You can also DELETE single documents in the same way.</p>
+<pre><code>&lt;?php
+
+ $options['host'] = "localhost"; 
+ $options['port'] = 5984;
+
+ $couch = new CouchSimple($options); // See if we can make a connection
+ $resp = $couch-&gt;send("GET", "/"); 
+ var_dump($resp); // response: string(46) "{"couchdb": "Welcome", "version": "0.7.0a553"}"
+
+ // Get a list of all databases in CouchDb 
+ $resp = $couch-&gt;send("GET", "/_all_dbs"); 
+ var_dump($resp); // string(17) "["test_suite_db"]"
+
+ // Create a new database "test"
+ $resp = $couch-&gt;send("PUT", "/test"); 
+ var_dump($resp); // string(12) "{"ok":true}"
+
+ // Get all documents in that database
+ $resp = $couch-&gt;send("GET", "/test/_all_docs"); 
+ var_dump($resp); // string(27) "{"total_rows":0,"rows":[]}"
+
+ // Create a new document in the database test with the id 123 and some data
+ $resp = $couch-&gt;send("PUT", "/test/123", '{"_id":"123","data":"Foo"}'); 
+ var_dump($resp); // string(42) "{"ok":true,"id":"123","rev":"2039697587"}"
+
+ // Get all documents in test again, seing doc 123 there
+ $resp = $couch-&gt;send("GET", "/test/_all_docs"); 
+ var_dump($resp); // string(91) "{"total_rows":1,"offset":0,"rows":[{"id":"123","key":"123","value":{"rev":"2039697587"}}]}"
+
+ // Get back document with the id 123
+ $resp = $couch-&gt;send("GET", "/test/123"); 
+ var_dump($resp); // string(47) "{"_id":"123","_rev":"2039697587","data":"Foo"}"
+
+ // Delete our "test" database
+ $resp = $couch-&gt;send("DELETE", "/test/"); 
+ var_dump($resp); // string(12) "{"ok":true}"
+
+ class CouchSimple {
+    function CouchSimple($options) {
+       foreach($options AS $key =&gt; $value) {
+          $this-&gt;$key = $value;
+       }
+    }
+
+   function send($method, $url, $post_data = NULL) {
+      $s = fsockopen($this-&gt;host, $this-&gt;port, $errno, $errstr); 
+      if(!$s) {
+         echo "$errno: $errstr\n"; 
+         return false;
+      }
+
+      $request = "$method $url HTTP/1.0\r\nHost: localhost\r\n";
+
+      if($post_data) {
+         $request .= "Content-Length: ".strlen($post_data)."\r\n\r\n"; 
+         $request .= "$post_data\r\n";
+      } 
+      else {
+         $request .= "\r\n";
+      }
+
+      fwrite($s, $request); 
+      $response = "";
+
+      while(!feof($s)) {
+         $response .= fgets($s);
+      }
+
+      list($this-&gt;headers, $this-&gt;body) = explode("\r\n\r\n", $response); 
+      return $this-&gt;body;
+   }
+}
+?&gt;
+</code></pre>
+<h2>A CouchDB Response Class</h2>
+<p>We'll use the following class as a structure for storing and handling responses to our HTTP requests to the DB.  Instances of this will store response components, namely the headers and body, in appropriately named properties.  Eventually we might want to do more error checking based on the headers, etc.  For this example, we'll be most interested in <em>CouchDBResponse::getBody()</em>.  It returns either the text of the response or the data structure derived from decoding the JSON response based on the method's only parameter, <em>$decode_json</em>.  Inside the <em>getBody</em> method, we call a static method <em>decode_json</em> that lives in our as-yet-unwritten <em>CouchDB</em> class.  We'll get to that soon enough, but all it really does in this example is wrap a call to the PHP json extension's <em>json_decode</em> function.</p>
+<pre><code>class CouchDBResponse {
+
+    private $raw_response = *;
+    private $headers = *;
+    private $body = *;
+
+    function _\_construct($response = *) {
+        $this-&gt;raw_response = $response;
+        list($this-&gt;headers, $this-&gt;body) = explode("\r\n\r\n", $response);
+    }
+
+    function getRawResponse() {
+        return $this-&gt;raw_response;
+    }
+
+    function getHeaders() {
+        return $this-&gt;headers;
+    }
+
+    function getBody($decode_json = false) {
+        return $decode_json ? CouchDB::decode_json($this-&gt;body) : $this-&gt;body;
+    }
+}
+</code></pre>
+<h2>A CouchDB Request Class</h2>
+<p>Now that we have a response class, we need something to organize our requests.  This class will 1) build request headers and assemble the request, 2) send the request and 3) give us the interesting part of the result.  Following <a href="GettingStartedWithPhp">Noah Slater's lead</a>, we make our requests using <em>fsockopen</em>, which allows us to treat our connection to the CouchDB server as a file pointer.  When we execute the request, we pass the response on to a new <em>CouchDBRequest</em> object.</p>
+<pre><code>class CouchDBRequest {
+
+    static $VALID_HTTP_METHODS = array('DELETE', 'GET', 'POST', 'PUT');
+
+    private $method = 'GET';
+    private $url = '';
+    private $data = NULL;
+    private $sock = NULL;
+    private $username;
+    private $password;
+
+    function _\_construct($host, $port = 5984, $url, $method = 'GET', $data = NULL, $username = null, $password = null) {
+        $method = strtoupper($method);
+        $this-&gt;host = $host;
+        $this-&gt;port = $port;
+        $this-&gt;url = $url;
+        $this-&gt;method = $method;
+        $this-&gt;data = $data;
+        $this-&gt;username = $username;
+        $this-&gt;password = $password;
+
+        if(!in_array($this-&gt;method, self::$VALID_HTTP_METHODS)) {
+            throw new CouchDBException('Invalid HTTP method: '.$this-&gt;method);
+        }
+    }
+
+    function getRequest() {
+        $req = "{$this-&gt;method} {$this-&gt;url} HTTP/1.0\r\nHost: {$this-&gt;host}\r\n";
+
+        if($this-&gt;username || $this-&gt;password)
+            $req .= 'Authorization: Basic '.base64_encode($this-&gt;username.':'.$this-&gt;password)."\r\n";
+
+        if($this-&gt;data) {
+            $req .= 'Content-Length: '.strlen($this-&gt;data)."\r\n";
+            $req .= 'Content-Type: application/json'."\r\n\r\n";
+            $req .= $this-&gt;data."\r\n";
+        } else {
+            $req .= "\r\n";
+        }
+
+        return $req;
+    }
+
+    private function connect() {
+        $this-&gt;sock = @fsockopen($this-&gt;host, $this-&gt;port, $err_num, $err_string);
+        if(!$this-&gt;sock) {
+            throw new CouchDBException('Could not open connection to '.$this-&gt;host.':'.$this-&gt;port.' ('.$err_string.')');
+        }
+    }
+
+    private function disconnect() {
+        fclose($this-&gt;sock);
+        $this-&gt;sock = NULL;
+    }
+
+    private function execute() {
+        fwrite($this-&gt;sock, $this-&gt;getRequest());
+        $response = *;
+        while(!feof($this-&gt;sock)) {
+            $response .= fgets($this-&gt;sock);
+        }
+        $this-&gt;response = new CouchDBResponse($response);
+        return $this-&gt;response;
+    }
+
+    function send() {
+        $this-&gt;connect();
+        $this-&gt;execute();
+        $this-&gt;disconnect();
+        return $this-&gt;response;
+    }
+
+    function getResponse() {
+        return $this-&gt;response;
+    }
+}
+</code></pre>
+<h2>The CouchDB Class</h2>
+<p>The CouchDB class provides a <em>send</em> method for sending requests to the CouchDB server.  It uses the <em>CouchDBRequest</em> class above and returns a <em>CouchDBResponse</em> object.  This class also provides a method for fetching all documents in a database, using the <em>_all_docs'' built-in view.  I've also included a </em>get_item* method for fetching a document with its id.  Clearly, further abstraction for different types of queries, etc. should follow, but this is enough for us to get at the data in our database.</p>
+<p>Supports HTTP Basic Authentication for the whole session - just provide either the username, password, or both when creating this class. The pair is then sent to the CouchDBRequest to be included in the header.</p>
+<pre><code>class CouchDB {
+
+    private $username;
+    private $password;
+
+    function _\_construct($db, $host = 'localhost', $port = 5984, $username = null, $password = null) {
+        $this-&gt;db = $db;
+        $this-&gt;host = $host;
+        $this-&gt;port = $port;
+        $this-&gt;username = $username;
+        $this-&gt;password = $password;
+    }
+
+    static function decode_json($str) {
+        return json_decode($str);
+    }
+
+    static function encode_json($str) {
+        return json_encode($str);
+    }
+
+    function send($url, $method = 'get', $data = NULL) {
+        $url = '/'.$this-&gt;db.(substr($url, 0, 1) == '/' ? $url : '/'.$url);
+        $request = new CouchDBRequest($this-&gt;host, $this-&gt;port, $url, $method, $data, $this-&gt;username, $this-&gt;password);
+        return $request-&gt;send();
+    }
+
+    function get_all_docs() {
+        return $this-&gt;send('/_all_docs');
+    }
+
+    function get_item($id) {
+        return $this-&gt;send('/'.$id);
+    }
+}
+</code></pre>
+<h2>Using Our CouchDB Class</h2>
+<p>The following is some code just playing around with our pastebin data, which we assume contains the fields title, body, created, and status.</p>
+<pre><code>// we get a new CouchDB object that will use the 'pastebin' db
+$couchdb = new CouchDB('pastebin');
+try {
+    $result = $couchdb-&gt;get_all_docs();
+} catch(CouchDBException $e) {
+    die($e-&gt;errorMessage()."\n");
+}
+// here we get the decoded json from the response
+$all_docs = $result-&gt;getBody(true);
+
+// then we can iterate through the returned rows and fetch each item using its id.
+foreach($all_docs-&gt;rows as $r =&gt; $row) {
+    print_r($couchdb-&gt;get_item($row-&gt;id));
+}
+
+// if we want to find only pastebin items that are currently published, we need to do a little more.
+// below, we create a view using a javascript function passed in the post data.
+$map = &lt;&lt;&lt;MAP
+function(doc) {
+    if(doc.status == 'published') {
+        emit(doc.title, {docTitle: doc.title, docBody: doc.body});
+    }
+}
+MAP;
+$view = '{"map":"'.$map.'"}';
+
+// we set the method to POST and send the request to couch db's /_temp_view. the text of the view is passed as post data.
+// this javascript function will return documents whose 'status' field contains 'published'.
+// note that we set the content type to 'text/javascript' for posts in our couchdb class.
+$view_result = $couchdb-&gt;send('/_temp_view', 'post', $view);
+print $view_result-&gt;getBody();
+</code></pre>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

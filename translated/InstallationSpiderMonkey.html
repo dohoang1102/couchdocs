@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - InstallationSpiderMonkey</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- #language fr -->
+
+<pre><code>make -f Makefile.ref
+JS_DIST=/usr/local/spidermonkey make -f Makefile.ref export
+</code></pre>
+<h2>Notes lors de l'installation sur OS X</h2>
+<ul>
+<li>Le export doit être executé en tant que root utilisez donc $ sudo sh</li>
+<li>Lors du lancement de./configure pour couchdb vous devrez utiliser les paramètres --with-js-include et --with-js-lib</li>
+<li>Assurez vous que /usr/local/spidermonkey/lib est dans DYLD_LIBRARY_PATH : <code>export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/usr/local/spidermonkey/lib</code></li>
+<li>Si malgrez tous vous obtenez l'erreur <code>dyld: Library not loaded: Darwin_OPT.OBJ/libjs.dylib</code> lors du lancement de couchdb, essayez d'ajoutez le chemin js/src du code source. Il a le dossier Darwin_OPT.OBJ à l'intérieur.  <code>export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/usr/local/spidermonkey/lib:/path/to/src/js/src</code></li>
+</ul>
+<h2>Notes lors de l'installation sur Linux</h2>
+<p>Il est préférable d'installer la bibliothèque de SpiderMonkey à partir de votre système de gestion de paquet, ex. :</p>
+<pre><code>apt-get libmozjs-dev
+</code></pre>
+<p>Ou:</p>
+<pre><code>yum install js-devel
+</code></pre>
+<p>Cependant, si vvous avez besoin de l'installer à partir du source, assurez vous que le chemin de la bibiliothèque de SpiderMonkey est dans LD_LIBRARY_PATH :</p>
+<pre><code>export LD_LIBRARY_PATH=/usr/local/spidermonkey/lib
+</code></pre>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

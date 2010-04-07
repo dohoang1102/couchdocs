@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - HackingFuton</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h2>A Caveat</h2>
+<p>If you're running a version of CouchDB that's too out of date, Futon might do weird things. The entire point of this exercise is to make sure that you don't need to build CouchDB by hand just to hack on Futon though, so I'll just leave it as an exercise to the reader to keep things in sync. I'll post corresponding SVN URL's towards the bottom.</p>
+<h2>Bleeding Edge Instructions</h2>
+<pre><code>$ svn co http://svn.apache.org/repos/asf/couchdb/trunk/share/www futon
+$ wget http://github.com/davisp/futonproxy/raw/617b47b138a5ce5ddece13db16f6ac7ca1ba192f/futonproxy.py
+$ chmod +x futonproxy.py
+$ ./futonproxy.py futon
+</code></pre>
+<p>Assuming CouchDB is running on http://127.0.0.1:5984 you can just open a web browser and point it to http://127.0.0.1:8080/_utils/.</p>
+<h2>Futon Proxy</h2>
+<p>The latest version of Futon Proxy is at <a href="http://github.com/davisp/futonproxy">GitHub</a></p>
+<h2>Getting trunk without building</h2>
+<p>If you're on Mac OS X 10.5 or newer, there are single click installers available to use. These directions should work just fine if you would like to use one of those. The installers can be found on <a href="http://github.com/janl/couchdbx-core/downloads">GitHub</a></p>
+<h2>Futon Versions</h2>
+<p>If you're using an older version of CouchDB to run Futon against, you can check out a closer version of the HTML sources by adjusting the SVN url.</p>
+<pre><code>&lt;!-- # 0.10.x --&gt;
+
+$ svn co http://svn.apache.org/repos/asf/couchdb/branches/0.10.x/share/www futon
+&lt;!-- # 0.9.x --&gt;
+
+$ svn co http://svn.apache.org/repos/asf/couchdb/branches/0.9.x/share/www futon
+&lt;!-- # 0.8.x --&gt;
+&lt;!-- # Time to upgrade! --&gt;
+</code></pre>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

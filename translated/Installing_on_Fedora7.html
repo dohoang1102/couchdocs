@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Installing_on_Fedora7</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- ## page was renamed from InstallingOnRHEL4 -->
+
+<p>Installing on Fedora Core 7 i386</p>
+<ol>
+<li>
+<p>install erlang</p>
+<p>yum install erlang</p>
+</li>
+<li>
+<p>install other dependencies (no external repos required).</p>
+<p>yum install icu libicu-devel js js-devel</p>
+</li>
+<li>
+<p>install couchdb</p>
+<p>svn checkout http://svn.apache.org/repos/asf/couchdb/trunk couchdb
+cd couchdb
+./bootstrap
+./configure
+make &amp;&amp; make install</p>
+</li>
+<li>
+<p>create couchdb user </p>
+<p>sudo adduser -r -d /usr/local/var/lib/couchdb couchdb
+sudo chown -R couchdb /usr/local/var/lib/couchdb
+sudo chown -R couchdb /usr/local/var/log/couchdb</p>
+</li>
+<li>
+<p>(optional) edit basic settings like Port and !BindAddress</p>
+<p>vim /usr/local/etc/couchdb/couch.ini</p>
+</li>
+<li>
+<p>start CouchDB server in your terminal</p>
+<p>sudo -u couchdb couchdb</p>
+</li>
+</ol>
+<p>or as daemon</p>
+<pre><code>sudo /usr/local/etc/rc.d/couchdb start
+</code></pre>
+<p>Access http://localhost:5984/_utils/index.html
+or http://hostname:5984/_utils/index.html if you edited the !BindAddress</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

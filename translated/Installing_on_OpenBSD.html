@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Installing_on_OpenBSD</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h2>Using the port system</h2>
+<p>Use the official precompiled package</p>
+<pre><code>$ sudo pkg_add apache-couchdb
+</code></pre>
+<p>or compile it yourself using the port:</p>
+<pre><code>$ cd /usr/ports/databases/apache-couchdb/
+$ sudo make install
+</code></pre>
+<h2>Alternatives (not needed anymore due to port)</h2>
+<p>This worked for me on a brand new install of <a href="http://www.openbsd.org/">OpenBSD 4.4</a></p>
+<pre><code>&lt;!-- # pre-requisite: spidermonkey --&gt;
+
+cd /usr/ports/lang/spidermonkey
+make
+make install
+make clean
+&lt;!-- # prerequisite: icu --&gt;
+
+cd /usr/ports/textproc/icu4c
+make
+make install
+make clean
+&lt;!-- # pre-requisite: erlang --&gt;
+
+cd
+pkg_add erlang
+&lt;!-- # yes, but i would prefer the latest erlang --&gt;
+
+pkg_add wget
+pkg_add gmake
+mkdir /usr/tools
+cd /usr/tools
+mkdir erlang
+cd erlang
+wget http://www.erlang.org/download/otp_src_R12B-5.tar.gz
+tar zxf otp_src_R12B-5.tar.gz
+mkdir otp_R12B-5
+cd otp_src_R12B-5
+export LANG=C
+./configure --help
+./configure --prefix=/usr/tools/erlang/otp_R12B-5 --with-ssl
+gmake
+gmake install
+PATH=/usr/tools/erlang/otp_R12B-5/bin:$PATH
+cd /usr/tools
+mkdir couchdb
+cd couchdb
+&lt;!-- # the following url is a copy/paste from what --&gt;
+&lt;!-- # http://www.apache.org/dyn/closer.cgi?path=/incubator/couchdb/0.8.1-incubating/apache-couchdb-0.8.1-incubating.tar.gz --&gt;
+&lt;!-- # gave as a link --&gt;
+
+wget http://mir2.ovh.net/ftp.apache.org/dist/incubator/couchdb/0.8.1-incubating/apache-couchdb-0.8.1-incubating.tar.gz
+tar zxf apache-couchdb-0.8.1-incubating.tar.gz
+mkdir couchdb-0.8.1
+cd apache-couchdb-0.8.1-incubating
+./configure --prefix=/usr/tools/couchdb/couchdb-0.8.1
+gmake
+gmake install
+cd ../couchdb-0.8.1/bin
+./couchdb&amp;
+cd /tmp
+wget localhost:5984
+cat index.html
+</code></pre>
+<p>You could also use this ports tested on -current and 4.3 :<br />
+</p>
+<p>http://benoitc.org/files/couchdb.tgz<br />
+</p>
+<p>Don't forget to make update-plist to reflect latest changes.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Runtime_Statistics</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>Note, this applies to CouchDB 0.9 and newer.</p>
+<p>CouchDB comes with a runtime statistics module that lets you inspect how CouchDB performs. The statistics module collects metrics like requests per second, request sizes and a multitude of other useful stuff.</p>
+<p>You can get a list of all currently counted metrics by issuing a GET request to</p>
+<pre><code>/_stats
+</code></pre>
+<p>and CouchDB will return</p>
+<pre><code>{
+  "couchdb": {
+    "request_time": {
+      "current": 0,
+      "max": 0,
+      "mean": 0.0,
+      "description": "length of a request inside CouchDB without Mochiweb",
+      "stddev": 0.0,
+      "min": 0,
+      "count": 2
+    }
+  },
+  "httpd_request_methods": {
+    "GET": {
+      "current": 2,
+      "max": 1,
+      "mean": 0.00096946194861852,
+      "description": "number of HTTP GET requests",
+      "stddev": 0.0311210875797858,
+      "min": 0,
+      "count": 2063
+    }
+  },
+  "httpd": {
+    "requests": {
+      "current": 2,
+      "max": 1,
+      "mean": 0.00096946194861852,
+      "description": "number of HTTP requests",
+      "stddev": 0.0311210875797858,
+      "min": 0,
+      "count": 2063
+    }
+  },
+  "httpd_status_codes": {
+    "200": {
+      "current": 2,
+      "max": 1,
+      "mean": 0.00096946194861852,
+      "description": "number of HTTP 200 OK responses",
+      "stddev": 0.0311210875797858,
+      "min": 0,
+      "count": 2063
+    }
+  }
+}
+</code></pre>
+<p>Your output may vary. Depending on the number and type of requests CouchDB has processed so far, the output will include more or less metrics. Let's break the above down for a bit.</p>
+<p>Statistics are reported by 'group'. Often the group is just the couchdb module that counted the metric (<code>httpd</code> for the HTTP API for example), or it is a subgroup within a module, like <code>httpd_status_codes</code>. Each group or subgroup contains one or more 'keys'. Keys are unique identifies for a single metric in a module. The combination of group and key (<code>{httpd, requests}</code>) uniquely identifies a single metric.</p>
+<p>Each metric is aggregated over four periods time. In the default output of <code>/_stats</code> the period of time is since CouchDB was started. The aggregate values are calculated on a per-second basis. So values <code>{httpd, requests}</code> will include the number of requests made against the HTTP API per second since CouchDB was started. <code>current</code> is the current value, the number of requests. <code>max</code> and <code>min</code> are the respective extreme values and <code>mean</code> is arithmetic mean value for the period of time with a standard deviation of <code>steddev</code>. <code>description</code> is a human-readable description of the metric and <code>count</code> is the number of times this metric was counted.</p>
+<p>The three other periods of time are 60 seconds, 300, and 900 seconds (1, 5, 15 minutes). The aggregate values for these periods are reset at the end of each period and begin to count anew.</p>
+<p>You can grab single statistics by querying</p>
+<pre><code>/_stats/group/key
+</code></pre>
+<p>for example</p>
+<pre><code>/_stats/httpd/requests
+</code></pre>
+<p>and the response will include only the aggregate values for this single metric.</p>
+<pre><code>{
+  "httpd": {
+    "requests": {
+      "current": 3,
+      "max": 1,
+      "mean": 0.000978154548418653,
+      "description": "number of HTTP requests",
+      "stddev": 0.031260162541133,
+      "min": 0,
+      "count": 3067
+    }
+  }
+}
+</code></pre>
+<p>If you want to query a different time period, use the <code>?range=60</code> (or <code>300</code> or <code>900</code>). You won't get useful results if you query any other time range and you can't yet configure the different time ranges.</p>
+<p>If you are parsing the responses into native objects in your programming language, you can simply access all the aggregate values using the object-attribute accessor method of your language. Here is an example for JavaScript.</p>
+<pre><code>  // `var stats` is filled with an XMLHttpRequest.
+  alert(stats.httpd.requests.max);
+</code></pre>
+<p>At the moment the following list of metrics is collected; it might expand in the future:</p>
+<pre><code>{couchdb, database_writes}, number of times a database was changed}
+{couchdb, database_reads}, number of times a document was read from a database}
+{couchdb, open_databases}, number of open databases}
+{couchdb, open_os_files}, number of file descriptors CouchDB has open}
+{couchdb, request_time}, length of a request inside CouchDB without MochiWeb}
+
+{httpd, bulk_requests}, number of bulk requests}
+{httpd, requests}, number of HTTP requests}
+{httpd, temporary_view_reads}, number of temporary view reads}
+{httpd, view_reads}, number of view reads}
+
+{httpd_request_methods, 'COPY'}, number of HTTP COPY requests}
+{httpd_request_methods, 'DELETE'}, number of HTTP DELETE requests}
+{httpd_request_methods, 'GET'}, number of HTTP GET requests}
+{httpd_request_methods, 'HEAD'}, number of HTTP HEAD requests}
+{httpd_request_methods, 'MOVE'}, number of HTTP MOVE requests}
+{httpd_request_methods, 'POST'}, number of HTTP POST requests}
+{httpd_request_methods, 'PUT'}, number of HTTP PUT requests}
+
+{httpd_status_codes, '200'}, number of HTTP 200 OK responses}
+{httpd_status_codes, '201'}, number of HTTP 201 Created responses}
+{httpd_status_codes, '202'}, number of HTTP 202 Accepted responses}
+{httpd_status_codes, '301'}, number of HTTP 301 Moved Permanently responses}
+{httpd_status_codes, '304'}, number of HTTP 304 Not Modified responses}
+{httpd_status_codes, '400'}, number of HTTP 400 Bad Request responses}
+{httpd_status_codes, '401'}, number of HTTP 401 Unauthorized responses}
+{httpd_status_codes, '403'}, number of HTTP 403 Forbidden responses}
+{httpd_status_codes, '404'}, number of HTTP 404 Not Found responses}
+{httpd_status_codes, '405'}, number of HTTP 405 Method Not Allowed responses}
+{httpd_status_codes, '409'}, number of HTTP 409 Conflict responses}
+{httpd_status_codes, '412'}, number of HTTP 412 Precondition Failed responses}
+{httpd_status_codes, '500'}, number of HTTP 500 Internal Server Error responses}
+</code></pre>
+<hr />
+<h2>Questions about Statistics from the mailing list</h2>
+<h3>What exactly is 'current' &amp; 'count'. What are each of them recording   and why is 'count' less than 'current' in my system (seems counter intuitive    to me).</h3>
+<p>Current is a sum of the values recorded. For things like HTTP requests, this is the total number of requsts.</p>
+<p>Count is the number of updates for this metric in the given time span.</p>
+<p>Stats works with two parts, a collector and an aggregator. The collector part receives messages from through out CouchDB and holds that data in a table. Once a second the aggregator will sweep through the collector and update its stats.</p>
+<p>So, if you had 20K requests between to aggregator sweeps, Current would be incremented by 20K and Count is incremented by 1.</p>
+<h3>Can the 'mean' here be interpreted as average reads per second?</h3>
+<p>For requests, the mean is roughly the requests per second. Its not as theoretically correct as something like RRDtool because we don't interpolate, we just average the reads we take roughly once a second.</p>
+<h3>Is there any indication of exactly where within the 5 minute interval    we are?</h3>
+<p>No, but the current implementation (committed after 0.10.x was branched) does not reset statistic aggregators as the old code did. The new method is the more standard "these stats reflect all values seen in the last 5 minutes" regardless of when you query it.</p>
+<h2>Another metric that I'm having trouble with is the 'request_time'. Querying it returns data similar to:</h2>
+<p>[snip]</p>
+<h3>Again, same question about exactly what the 'count' and 'current'    values mean for this metric.</h3>
+<p>Oh weird. So, Count has the same meaning as before, but here Current is the length of the last recorded request. The weirdness comes from the fact that this is averaging a set of distinct points, where as things like requests are averaging the relative change so current makes a bit more sense there.</p>
+<h3>Does the 'mean' represent the average time for a request in CouchDB in   seconds?</h3>
+<p>milliseconds.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

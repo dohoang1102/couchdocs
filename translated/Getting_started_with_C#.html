@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Getting_started_with_C#</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>There are two known public C# libraries for using CouchDB:
+ 1. <a href="http://github.com/foretagsplatsen/Divan">Divan</a>
+ 2. <a href="http://code.google.com/p/couchbrowse">SharpCouch</a></p>
+<h2>Divan</h2>
+<p>The git repository at http://github.com/foretagsplatsen/Divan has a relatively complete C# library for CouchDB using Newtonsoft.JSON and NUnit as its only external dependencies. Divan is actively maintained and in use at Foretagsplatsen (a swedish company using it in their core system). Being the author of Divan I claim it to be much more complete than !SharpCouch :)</p>
+<p>For more information see the <a href="http://github.com/foretagsplatsen/Divan">README</a>. </p>
+<pre><code>git clone git://github.com/foretagsplatsen/Divan.git
+</code></pre>
+<h2>SharpCouch</h2>
+<p>The project at http://code.google.com/p/couchbrowse contains a simple wrapper library for CouchDB, called !SharpCouch, and a GUI client which makes use of the library. The GUI client code should serve as a good usage example, although the wrapper class is documented and fairly self-explanatory anyway.</p>
+<p>You can get the source by issuing the following SVN command:</p>
+<pre><code>svn checkout http://couchbrowse.googlecode.com/svn/trunk/ couchbrowse
+</code></pre>
+<p>The project was built with !SharpDevelop 2.2, but should work out of the box with Visual Studio 2005. Getting it to work with !MonoDevelop should be reasonably easy, but has not been tried yet.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

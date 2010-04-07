@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Coding_Standards</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>CouchDB comes with code in a variety of different languages. While the core is written in Erlang, there are some parts written in C, others written in HTML, CSS, and Javascript, and then there are also shell scripts, Makefiles, et cetera.</p>
+<p>First, some general rules:</p>
+<ul>
+<li>Always use spaces for indentation, not tabs, except in Makefiles.</li>
+<li>Use four spaces for indentation in Erlang and C code, two spaces in HTML, CSS, and Javascript.</li>
+<li>Try to keep lines shorter than 80 characters.</li>
+<li>When you edit a file, try to stick with the conventions used in the surrounding code.</li>
+<li>Avoid trailing spaces and newlines in your files. Good editors usually have a configuration option that prevents this from happening.</li>
+<li>Avoid mixing purely cosmetic changes (such as removing trailing white-space) with functional changes, as that makes review of the actual change (whether it’s a check-in or a patch) much more difficult.</li>
+</ul>
+<p>For more detailed coding conventions for Erlang code, please see the <a href="http://www.erlang.se/doc/programming_rules.shtml">Erlang Programming Rules and Conventions</a>.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Storing_GeoData</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h1>Using CouchDB For Storing Google Geocoded JSON Data</h1>
+<p>Google provides a free service that takes any string as an input and returns a bunch of JSON encoded data if that string matches a physical location.  Check it out here: http://code.google.com/apis/maps/documentation/services.html#Geocoding</p>
+<p>Unfortunately, Google's geocoding service is limited to 15k requests per day per IP.  Sounds like a lot, but for certain applications this limit can be reached very quickly.</p>
+<p>The following small library can help you get around these limitations by storing a local repository of data in CouchDB.  This is a nice fit because CouchDB is JSON-native and the data returned from google is JSON-native.</p>
+<p>The following is a rough and tumble library I put together called GeoCouch that you can use to easily handle geocoded data in CouchDB.  This lib has a narrow scope right now - the requirements are:</p>
+<ul>
+<li>PHP 5+</li>
+<li>CouchDB</li>
+<li>A Google API Key (http://code.google.com/apis/maps/signup.html)</li>
+</ul>
+<p>Download the file here: http://geocouch.googlecode.com/files/geocouch.php.  You can also find the full source at the bottom of the page.</p>
+<h2>Usage</h2>
+<pre><code>&lt;?php
+    require ('geocouch.php');
+
+    /*
+
+     * Don't forget to edit the $GeoCouch-&gt;conf parameters!
+     */
+    $GeoCouch = new GeoCouch();
+
+    /*
+     * The all-in-one method.
+     * This geocodes the string and writes it to CouchDB
+     * The second parameter is any other fields other
+     * than the Google data that you want to save along
+     * with this document.
+     * 
+     * NOTE: if this address already exists in CouchDB
+     * a new revision is created.
+     * 
+     * Returns the CouchDB response, i.e.:
+     * {"ok" : true, "rev":"3825793742", "id" : "dallas-tx" }
+     */
+    $GeoCouch-&gt;save('Dallas, TX', array('custom_field' =&gt; 'value'));
+
+    /*
+     * Simply geo coding.  
+     * Does not write to CouchDB.
+     * Returns an Google Geocoded Object.
+     */
+    $geoObj = $GeoCouch-&gt;geoCode('Dallas, TX');
+
+    /*
+     * Write some Geo JSON to CouchDB.
+     * First parameter is a unique name for the data
+     * Second parameter is the JSON - in 
+     * this case the json_encoded $geoObj from above.
+     */
+    $GeoCouch-&gt;put('Dallas, TX', json_encode($geoObj));
+
+    /*
+     * Get some existing geo data
+     */
+    $geoObj = $GeoCouch-&gt;get('Dallas, TX');
+?&gt;
+</code></pre>
+<h2>GeoCouch Class</h2>
+<pre><code>&lt;?php
+
+    class GeoCouch
+    {
+        var $conf = array(
+            'host' =&gt; 'localhost',
+            'port' =&gt; '5984',
+            'db' =&gt; 'sf_geo',
+            'geocoder' =&gt; array(
+                    'url' =&gt; 'http://maps.google.com/maps/geo?key=',
+                    'key' =&gt; 'Your Google API Key',
+                ),
+        );
+
+        var $address;
+        var $geoJSONResponse;
+        var $geoObj;
+
+        function GeoCouch() {
+
+        }
+
+        function geoCode($address = null)
+        {
+            $this-&gt;address = $address;
+            $url = $this-&gt;conf['geocoder']['url'].$this-&gt;conf['geocoder']['key'];
+            $url .= '&amp;q='.urlencode($address);
+
+            $this-&gt;geoJSONResponse = $this-&gt;_geoCodeRequest($url);
+            $this-&gt;geoObj = json_decode($this-&gt;geoJSONResponse);
+
+            if(empty($this-&gt;geoObj-&gt;Status-&gt;code) || $this-&gt;geoObj-&gt;Status-&gt;code != 200) {
+                return false;
+            } else {
+                return $this-&gt;geoJSONResponse;
+            }   
+        }
+
+        function _geoCodeRequest($url) 
+        {
+            $ch = curl_init();
+            curl_setopt ($ch, CURLOPT_URL, $url);
+            curl_setopt ($ch, CURLOPT_HEADER, 0);
+            ob_start();
+            curl_exec ($ch);
+            curl_close ($ch);
+            $string = ob_get_contents();
+            ob_end_clean();
+            return $string;
+        }
+
+        function locationName($str) {
+            return trim(preg_replace('/[^a-z0-9]+/i', '-', $str), '_');
+        }
+
+        function save($address, $extra = array())
+        {
+            $existing = $this-&gt;get($address);
+
+            if($this-&gt;geoCode($address)) 
+            {
+                if(!empty($existing-&gt;_rev)) {
+                    $this-&gt;geoObj-&gt;_rev = $existing-&gt;_rev;
+                }
+
+                foreach($extra as $field =&gt; $value) {
+                    $this-&gt;geoObj-&gt;$field = $value;
+                }
+
+                return $this-&gt;put($address, json_encode($this-&gt;geoObj));
+            }
+            else {
+                return false;
+            }
+        }
+
+        function get($name = null)
+        {
+            $s = $this-&gt;openSock();
+
+            $url = '/'.$this-&gt;conf['db'].'/'.$this-&gt;locationName($name);
+            $request = 'GET '.$url.' HTTP/1.0'. "\r\n";
+            $request .= 'Host: localhost'. "\r\n\r\n";
+            fwrite($s, $request);
+
+            return $this-&gt;parseCouchResponse($s);       
+        }
+
+        function put($name = null, $json = null)
+        {
+            $s = $this-&gt;openSock();
+
+            $url = '/'.$this-&gt;conf['db'].'/'.$this-&gt;locationName($name);
+            $request = 'PUT '.$url.' HTTP/1.0'. "\r\n";
+            $request .= 'Host: localhost'. "\r\n";
+            $request .= 'Content-Length: '.strlen($json)."\r\n\r\n";
+            $request .= $json."\r\n";
+            fwrite($s, $request);
+
+            return $this-&gt;parseCouchResponse($s);   
+        }
+
+        function openSock() 
+        {
+            $s = fsockopen($this-&gt;conf['host'], $this-&gt;conf['port'], $errno, $errstr);
+            if(!$s) {
+                return $errno.':'.$errstr;
+            } else {
+                return $s;
+            }
+        }
+
+        function parseCouchResponse($s) 
+        {
+            $response = '';
+            while(!feof($s)) {
+                $response .= fgets($s);
+            }
+            fclose($s);
+
+            list($headers, $body) = explode("\r\n\r\n", $response);
+            return json_decode($body);
+        }
+    }
+?&gt;
+</code></pre>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

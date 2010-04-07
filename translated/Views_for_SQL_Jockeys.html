@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Views_for_SQL_Jockeys</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>The latest version is maintained at http://books.couchdb.org/relax/reference/views-for-sql-jockeys</p>
+<h1>View Cookbook for SQL Jockeys</h1>
+<p>This is a collection of some common SQL queries and how to get the same result in CouchDB. The key to remember here is that CouchDB does not work like an SQL database at all and that best practices from the SQL world do not translate well or at all to CouchDB. This cookbook assumes that you are familiar with the CouchDB basics like creating and updating databases and documents.</p>
+<h2>Using Views (CREATE / ALTER TABLE)</h2>
+<p>Using views is a two step process. First you <em>define</em> a view, then you <em>query</em> it. This is analogous to defining a table structure (with indexes) using <code>CREATE TABLE</code> or <code>ALTER TABLE</code> and querying it using an SQL query.</p>
+<h3>Defining a View</h3>
+<p>Defining a view is done by creating a special document in a CouchDB database. The only actual speciality is the <code>_id</code> of the document: it starts with <code>_design/</code>, for example <code>_design/application</code>. Other than that, it is just a regular CouchDB document. To make sure CouchDB understands that you are defining a view, you need to prepare the contents of that design document in a special format. Here is an example:</p>
+<pre><code>{
+  "_id": "_design/application",
+  "_rev": "1-C1687D17",
+  "views": {
+    "viewname": {
+      "map": "function(doc) { ... }",
+      "reduce": "function(keys, values) { ... }"
+    }
+  }
+}
+</code></pre>
+<p>We are defining a view <code>viewname</code>. The definition of the view consists of two functions. The <em>map function</em> and the <em>reduce function</em>. Specifying a reduce function is optional. We'll look at the nature of the functions later. Note that <code>viewname</code> can be whatever you like; <code>users</code>, <code>by-name</code>, or <code>by date</code> are just some examples.</p>
+<p>A single design document can also include multiple view definitions, each identified by a unique name:</p>
+<pre><code>{
+  "_id": "_design/application",
+  "_rev": "1-C1687D17",
+  "views": {
+    "viewname": {
+      "map": "function(doc) { ... }",
+      "reduce": "function(keys, values) { ... }"
+    },
+    "anotherview": {
+      "map": "function(doc) { ... }",
+      "reduce": "function(keys, values) { ... }"
+    }
+  }
+}
+</code></pre>
+<h3>Querying a View</h3>
+<p>The name of the design document and the name of the view are significant for querying the view. To query the view <code>viewname</code> you perform a HTTP <code>GET</code> request to the following URI:</p>
+<pre><code>/database/_design/application/_view/viewname
+</code></pre>
+<p><code>database</code> is the name of the database you created your design document in. Next up is the design document name and then the view name prefixed with <code>_view/</code>. To query <code>anotherview</code> replace <code>viewname</code> in that URI with <code>anotherview</code>. If you want to query a view in a different design document adjust the design document name.</p>
+<h3>Map &amp; Reduce Functions</h3>
+<p>Map/Reduce is a concept that solves problems by applying a two-step process; aptly named the <em>map</em> phase and the 'reduce' phase. The map phase looks at all documents in CouchDB separately one after the other and creates a <em>map result</em>. The map result is an ordered list of key-value pairs. Both key and value can be specified by the user writing the map function. A map function may call the built-in <code>emit(key, value)</code> function 0 to N times per document, creating a row in the map result per invocation.</p>
+<p>CouchDB is smart enough to only run a map function once for every document, even on subsequent queries on a view. Only changes to documents, or new documents need to be processed anew.</p>
+<h4>Map Functions</h4>
+<p>Map functions run in isolation for every document. They can't modify the document and they can't talk to the outside world; they can't have <em>side-effects</em>. This is required so CouchDB can guarantee correct results without having to recalculate a complete result when only one document gets changed.</p>
+<p>The map result looks like this:</p>
+<pre><code>{"total_rows":3,"offset":0,"rows":[
+  {"id":"fc2636bf50556346f1ce46b4bc01fe30","key":"Lena","value":5},
+  {"id":"1fb2449f9b9d4e466dbfa47ebe675063","key":"Lisa","value":4},
+  {"id":"8ede09f6f6aeb35d948485624b28f149","key":"Sarah","value":6}
+}
+</code></pre>
+<p>It is a list of rows sorted by the value of <code>key</code>. The <code>id</code> is added automatically and refers back to the document that created this row. The <code>value</code> is the data you're looking for. For example purposes, it's the girl's age.</p>
+<p>The map function that produces this result is:</p>
+<pre><code>function(doc) {
+  if(doc.name &amp;&amp; doc.age) {
+    emit(doc.name, doc.age);
+  }
+}
+</code></pre>
+<p>It includes a sanity check to see we're operating on the right fields and calls the emit function with the name and age as key and value.</p>
+<h4>Reduce Functions</h4>
+<p>The reduce functions are explained later.</p>
+<h2>Lookup by Key (SELECT field FROM table WHERE value="key")</h2>
+<p>Use case: Get a <em>result</em> (that can be a record or set of records) associated with a <em>key</em>.</p>
+<p>To look something up quickly, regardless of the storage mechanism, an index is needed. An index is a data structure optimized for quick search and retrieval. CouchDB's map result is stored in such an index, which happens to be a b+-tree.</p>
+<p>To look up a value by <code>"key"</code> we need to put all values into the key of a view. All we need is a simple map function:</p>
+<pre><code>function(doc) {
+  if(doc.value) {
+    emit(doc.value, null);
+  }
+}
+</code></pre>
+<p>This creates a list of documents that have a <code>value</code> field sorted by the data in the <code>value</code> field. We don't emit a value. The view result will give us a list of document ids that we can then query individually, or we can use the <code>?include_docs=true</code> view query option to have CouchDB retrieve the document data for us.</p>
+<h2>Aggregate Functions (SELECT COUNT(field) FROM table)</h2>
+<h2>Get Unique Values (SELECT DISTINCT field FROM table)</h2>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

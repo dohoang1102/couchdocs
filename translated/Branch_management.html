@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Branch_management</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h2>Feature Branches</h2>
+<p>The CouchDB project uses feature branches to develop experimental features or refactorings without disrupting stability of the main trunk code.</p>
+<p>All branches are kept directly under the <code>incubator/couchdb/branches/</code> directory in the repository.</p>
+<h3>Creating a Branch</h3>
+<p>Feature branches are usually based on trunk. To create a branch, something like the following svn incantation should be used:</p>
+<pre><code>  svn cp https://svn.apache.org/repos/asf/incubator/couchdb/trunk \
+    https://svn.apache.org/repos/asf/incubator/couchdb/branches/feature-name
+</code></pre>
+<p>Note that it's preferable to create the branch by specifying the full URLs to <code>svn cp</code>, as that won't let you end up with a branch based on different revisions of trunk, possibly because you forgot to <code>svn up</code> before creating the copy.</p>
+<p>When that's done, checkout the new branch and initialize <a href="http://www.orcaware.com/svn/wiki/Svnmerge.py">svnmerge</a>, which we'll use to keep the branch in sync with trunk. For example:</p>
+<pre><code>  svn co https://svn.apache.org/repos/asf/incubator/couchdb/branches/feature-name
+  cd feature-name
+  svnmerge init
+  svn commit -m "Initialized svnmerge."
+</code></pre>
+<h3>Keeping the Branch in Sync</h3>
+<p>Changes made in trunk need to be ported to the branch. This is done by utilizing <a href="http://www.orcaware.com/svn/wiki/Svnmerge.py">svnmerge</a>.</p>
+<p>To see the changes available for being merged, use the <code>svnmerge avail --log</code> command.</p>
+<p>To merge all the changes, use <code>svnmerge merge</code>. Or you can cherry-pick the changes to mark by specifying the revisions, for example <code>svnmerge merge -r 123-125,188</code>. If there's some change that you don't want to port (possibly because it no longer applies to the code on the branch), use <code>svnmerge block -r 122</code>.</p>
+<p>As always with merging (and patching), be careful about properly resolving conflicts.</p>
+<h3>Merging the Branch Back into Trunk</h3>
+<p>When the branch has reached a certain level of stability, it should be merged back into trunk (assuming there's consensus that the branch is good and ready).</p>
+<p>First, make sure that the feature branch is in sync with trunk, that is, merge any remaining changes on trunk to the branch as explained above.</p>
+<p>Then, switch into the directory containing your working copy of trunk, use <code>svn up</code> to learn the latest revision (we'll pretend that's 12345), and issue an <code>svn merge</code> command like the following:</p>
+<pre><code>  cd trunk
+  svn up
+  svn merge https://svn.apache.org/repos/asf/incubator/couchdb/trunk@12345 \
+    https://svn.apache.org/repos/asf/incubator/couchdb/branches/feature-name@12345
+</code></pre>
+<p>After the merge is done, please remember to clear the <code>svnmerge</code>-related properties from the trunk directory, to avoid problems with future branches:</p>
+<pre><code>  cd trunk
+  svnmerge uninit
+</code></pre>
+<h3>Further Reading</h3>
+<p>See the <a href="http://svnbook.red-bean.com/en/1.4/svn.branchmerge.commonuses.html#svn.branchmerge.commonuses.patterns.feature">Feature Branches</a> chapter in the <a href="http://svnbook.red-bean.com/">SVN book</a>, as well as the <a href="http://www.orcaware.com/svn/wiki/Svnmerge.py">svnmerge documentation</a> for more information.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

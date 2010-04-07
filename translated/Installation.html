@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Installation</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h1>Installation of CouchDB and Dependencies</h1>
+<!-- <<TableOfContents(2)>> -->
+
+<h2>Dependencies</h2>
+<table>
+  <tr><td rowspan="2"><strong>CouchDB</strong> <td colspan="4"> <em>Runtime</em><td colspan="2"> <em>Build</em></td></tr>
+ </td><td><strong>Spidermonkey</strong></td><td><strong>Erlang</strong></td><td><strong>ICU</strong></td><td><strong>cURL</strong></td><td><strong>Automake</strong></td><td><strong>Autoconf</strong></td></tr>
+ </td><td>0.9.x</td><td>==1.7</td><td>>=5.6.0</td><td>>= 3.0</td><td>>= 7.15.5</td><td>>= 1.6.3</td><td>>= 2.59</td></tr>
+ </td><td>0.10.x</td><td>>=1.7 &amp;&amp; <=1.8.0</td><td>>=5.6.5</td><td>>= 3.0</td><td>>= 7.18.0</td><td>>= 1.6.3</td><td>>= 2.59</td></tr>
+ </td><td>0.11.x</td><td>>=1.7</td><td>>=5.6.5</td><td>>= 3.0</td><td>>= 7.18.0</td><td>>= 1.6.3</td><td>>= 2.59</td></tr>
+</table>
+
+<h2>Troubleshooting</h2>
+<h3>Installing from source</h3>
+<p><strong>Tips/Hints</strong></p>
+<p>If you have trouble/wired errors building from source, it is always good starting point to reset the repository to a clean state and retry:</p>
+<pre><code>make clean &amp;&amp; make distclean &amp;&amp; ./bootstrap &amp;&amp; ./configure &amp;&amp; make check &amp;&amp; make
+</code></pre>
+<h2>System specific installation guides</h2>
+<p><strong>Linux and Solaris</strong></p>
+<ul>
+<li><a class="internal" href="Installing_on_RHEL4.html">Installing_on_RHEL4</a></li>
+<li><a class="internal" href="Installing_on_RHEL5.html">Installing_on_RHEL5</a></li>
+<li><a class="internal" href="Installing_on_Fedora7.html">Installing_on_Fedora7</a></li>
+<li><a class="internal" href="Installing_on_Fedora10.html">Installing_on_Fedora10</a></li>
+<li><a class="internal" href="Installing_on_Gentoo.html">Installing_on_Gentoo</a></li>
+<li><a class="internal" href="Installing_on_Ubuntu.html">Installing_on_Ubuntu</a></li>
+<li><a class="internal" href="Installing_on_Open_Solaris_and_Joynet_Accellerator.html">Installing_on_Open_Solaris_and_Joynet_Accellerator</a></li>
+<li><a class="internal" href="Installing_on_Slackware.html">Installing_on_Slackware</a></li>
+</ul>
+<p><strong>Apple Mac</strong></p>
+<ul>
+<li><a class="internal" href="Installing_on_OSX.html">Installing_on_OSX</a></li>
+</ul>
+<p><strong>Windows</strong></p>
+<ul>
+<li><a class="internal" href="Installing_on_Windows.html">Installing_on_Windows</a></li>
+</ul>
+<p><strong>BSD Unix</strong></p>
+<ul>
+<li><a class="internal" href="Installing_on_FreeBSD.html">Installing_on_FreeBSD</a></li>
+<li><a class="internal" href="Installing_on_NetBSD.html">Installing_on_NetBSD</a></li>
+<li><a class="internal" href="Installing_on_OpenBSD.html">Installing_on_OpenBSD</a></li>
+</ul>
+<p><strong>Installing from Source</strong></p>
+<ul>
+<li><a class="internal" href="Installing_SpiderMonkey.html">Installing_SpiderMonkey</a></li>
+<li><a class="internal" href="Installing_from_source.html">Installing_from_source</a></li>
+</ul>
+<p><strong>Verifying the Installation</strong></p>
+<ul>
+<li><a class="internal" href="Verify_and_Test_Your_Installation.html">Verify_and_Test_Your_Installation</a></li>
+</ul>
+<p><strong>Third Party Tool Configuration</strong>
+  * <a class="internal" href="Apache_As_a_Reverse_Proxy.html">Apache_As_a_Reverse_Proxy</a></p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

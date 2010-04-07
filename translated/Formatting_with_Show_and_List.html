@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Formatting_with_Show_and_List</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>Note that this is only available in CouchDB 0.9 or newer — The API might still change.</p>
+<p>The basics of formatting documents using <code>show</code> and <code>list</code> functions. These functions convert documents and views, respectively, into non-JSON formats. The rows of each view are processed individually, which keeps long lists from becoming memory hogs.</p>
+<p>They are designed to be cacheable. CouchDB handles generating Etags for show and list responses.</p>
+<p>Show and list functions are side effect free and idempotent. They can not make additional HTTP requests against CouchDB. Their purpose is to render JSON documents in other formats.</p>
+<h2>Showing Documents</h2>
+<p>Show functions are stored in your design document, under the <code>shows</code> key. Here's an example set of show functions:</p>
+<pre><code>{
+"_id" : "_design/examples",
+"shows" : {
+  "posts" : "function(doc, req) {... return responseObject;}",
+  "people" : "function(doc, req) { ... }"
+}
+</code></pre>
+<p>Assuming these functions were in a design document named "<code>examples</code>" in a database named "<code>db</code>", they could be queried like this:</p>
+<pre><code>GET /db/_design/examples/_show/posts/somedocid
+
+GET /db/_design/examples/_show/people/otherdocid
+
+GET /db/_design/examples/_show/people/otherdocid?format=xml&amp;details=true
+</code></pre>
+<p>The <code>show</code> function is run with two arguments. The first is the document corresponding to the requested <code>docid</code>, and the second describes the HTTP request's query string, Accept headers, and other per-request information. The function returns an object describing its HTTP response.</p>
+<p>Example <code>show</code> function</p>
+<pre><code>function(doc, req) {
+  return {
+    body: "Hello World"
+  }
+}
+</code></pre>
+<p>If the show function is queried with document id that has no corresponding document in the database, <code>doc</code> is <code>null</code> and the submitted document shows up in <code>req.docId</code>. This is useful for creating new documents with a name, like in a wiki.</p>
+<p>If the show function is queried without a document id at all, doc is <code>null</code> and <code>req.docId</code> is <code>null</code>. This is useful for creating new documents where the user specifies the new document id in a user interface, like in a CMS.</p>
+<pre><code>function(doc, req) {
+  if(doc) {
+    // regular doc display logic
+  } else { // document not found
+    if(req.docId) {
+      // handle unused doc id
+    } else {
+      // handle unspecified doc id
+    }
+  }
+}
+</code></pre>
+<p>The request and response objects are of the same format used by <code>_external</code> functions, as documented in ExternalProcesses.</p>
+<h2>Listing Views with couchdb 0.9</h2>
+<p>List functions are stored under the <code>lists</code> key of a design document. Here's an example design doc with list functions, in addition to views:</p>
+<pre><code>{
+"_id" : "_design/examples",
+"views" {
+  "posts-by-date" : "function(doc){...}",
+  "posts-by-tag" : "function(doc){...}",
+  "people-by-name" : "function(doc) {...}"
+},
+"lists" : {
+  "index-posts" : "function(head, row, req, row_info) {...}",
+  "browse-people" : "function(head, row, req, row_info) { ... }"
+}
+</code></pre>
+<p>These lists are run by querying URLs like:</p>
+<pre><code>GET /db/_design/examples/_list/index-posts/posts-by-date?descending=true&amp;limit=10
+
+GET /db/_design/examples/_list/index-posts/posts-by-tag?key="howto"
+
+GET /db/_design/examples/_list/browse-people/people-by-name?startkey=["a"]&amp;limit=10
+</code></pre>
+<p>[As above, we assume the database is named "db" and the design doc "examples".]</p>
+<p>Couchdb 0.10 supports an alternate form of URL which allows you to use a list function and a view from different design documents.  This is particularly useful when you want to use a different language for the list and for the view.  These URLs are very similar to the above examples, but instead of the tail portion being the name of the view, the tail portion can consist of two parts - a design doc name and the name of the view in that second document.  For example:</p>
+<pre><code>GET /db/_design/examples/_list/index-posts/other_ddoc/posts-by-tag?key="howto"
+</code></pre>
+<p>[As above, we assume the database is named "db" and the design doc with the list is named "examples", while the design doc with the view is "other_ddoc".]</p>
+<p>A list function has a more interesting signature, as it is passed the head of the view on first invocation, then each row in turn, then called one more time for the tail of the view. The function should check the <code>head</code> and <code>row</code> parameters to identify which state it's being called in; the sequence of calls to <code>listfn</code>, for a view with three rows, would look like:</p>
+<pre><code>  listfn(head, null,    req, null    );  // Before the first row: head is non-null
+  listfn(null, rows[0], req, row_info);  // First row
+  listfn(null, rows[1], req, row_info);  // Subsequent rows...
+  listfn(null, rows[2], req, row_info);
+  listfn(null, null,    req, row_info);  // After last row: row=null
+</code></pre>
+<p>The <code>head</code> parameter -- which is only passed into the first call -- contains an object with information about the view that is to be iterated over. It's much like the response object returned from a view query in the CouchDB JavaScript API; useful properties include <code>total_rows</code> and <code>offset</code>.</p>
+<p>The <code>row_info</code> parameter contains an object with information about the iteration state. Its properties include:</p>
+<ul>
+<li><code>row_number</code> (the current row number)</li>
+<li><code>first_key</code> (the first key of the view to be listed)</li>
+<li><code>prev_key</code> (the key of the row in the previous iteration)</li>
+</ul>
+<p>Example list function:</p>
+<pre><code>function(head, row, req, row_info) {
+  if (head) {
+    return "&lt;p&gt;head: "+JSON.stringify(head)+"&lt;/p&gt;&lt;ul&gt;";
+  } else if (row) {
+    return "&lt;li&gt;"+JSON.stringify(row)+"&lt;/li&gt;";
+  } else {
+    return "&lt;/ul&gt;&lt;h4&gt;the tail&lt;/h4&gt;"
+  }
+}
+</code></pre>
+<h2>Listing Views with couchdb 0.10</h2>
+<p>The list API has changed significantly from 0.9 to 0.10.</p>
+<p>Example <code>list</code> function</p>
+<pre><code>function(head, req){
+  var row;
+  while(row = getRow()) {
+    send(row.value);
+  }
+}
+</code></pre>
+<h2>Other Fun Things</h2>
+<h3>Stopping iteration in a <code>_list</code></h3>
+<p>If you want to terminate iteration of a <code>_list</code> early you can return a <code>{stop: true}</code> JSON object from any of the calls to the function that include a row object.</p>
+<h3>Sending a Redirect</h3>
+<p>In the call to <code>_show</code> or when <code>_list</code> is called with a head object you can control the headers and status code sent to the client. An example of this would be to send a redirect notification.</p>
+<pre><code>function(doc)
+{
+    return {"code": 302, "body": "See other", "headers": {"Location": "/"}};
+}
+</code></pre>
+<p>For CouchDB version 0.9:</p>
+<pre><code>function(head, row, req, row_info) {
+  if (head) {
+    return {"code": 302, "body": "See other", "headers": {"Location": "/"}};
+  } else if (row) {
+    return {stop: true};
+  } else {
+    return "."
+  }
+}
+</code></pre>
+<p>For CouchDB version 0.10:</p>
+<pre><code>function(head, req) {
+  start({"code": 302, "headers": {"Location": "/"}});
+}
+</code></pre>
+<h3>Specifying Content-Type Response Header</h3>
+<p>There are two ways to deal with a content-type header in the response to a show or list request. The first way is to specify the content type as a member of the _show function's response object:</p>
+<pre><code>return {
+   "headers" : {"Content-Type" : "application/xml"},
+   "body" : new XML('&lt;xml&gt;&lt;node foo="bar"/&gt;&lt;/xml&gt;')
+}
+</code></pre>
+<h3>Responding to different Content-Type Request Headers</h3>
+<p>The second way to deal with content-type headers is to rely on some global helper methods defined by CouchDB's <em><couchdb>/server/main.js</em> file. The <em>registerType</em> method lets you register a type key with one or more content-type strings. Please refer to the <em>main.js</em> file to see content-types registered by default.</p>
+<pre><code>registerType("foo", "application/foo", "application/x-foo");
+</code></pre>
+<p>The other global helper method for handling varying Content-Type headers is <em>respondWith</em>. This helper method allows you to specify different response objects depending on the type key that corresponds to the content-type request header. The first argument is the request object, and the second argument is a key-value object that maps type keys to functions. Each function is expected to return an HTTP response object customized for the requested Content-Type.</p>
+<pre><code>//... in your show function...
+return respondWith(req, {
+         html : function() {
+           return {
+             body:"Ha ha, you said \"" + doc.word + "\"."
+           };
+         },
+         foo : function() {
+           return {
+             body: "foofoo"
+           };
+         },
+         fallback : "html"
+       });
+</code></pre>
+<p>Since CouchDB 0.10.0 there is no responseWith-Method anymore. Please use the provides Method instead. For CouchDB version 0.10:</p>
+<pre><code>//... in your show function...
+provides("html", function() {return "&lt;b&gt;doc.title&lt;/b&gt;";});
+provides("xml", function() {return "&lt;text class="title"&gt;doc.title&lt;/text&gt;";});
+</code></pre>
+<p>Hopefully this is enough to get started. For a more complete set of examples, see the CouchDB test suite, especially show_documents.js and list_views.js</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

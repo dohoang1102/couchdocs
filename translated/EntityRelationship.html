@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - EntityRelationship</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h1>Modeling Entity Relationships in CouchDB</h1>
+<p>This page is mostly a translation of Google's <a href="http://code.google.com/appengine/articles/modeling.html">Modeling Entity Relationships</a> article in CouchDB terms. It could use more code examples and more examples of actual output. Since this is a wiki, feel free to update this document to make things clearer, fix inaccuracies etc. This article is also related to <a href="http://wiki.apache.org/couchdb/Transaction_model_use_cases">Transaction model use cases</a> discussion, as it involves multiple document updates.</p>
+<p>As a quick summary, this document explains how to do things that you would normally use SQL JOIN for.</p>
+<h2>Why would I need entity relationships?</h2>
+<p>Imagine you are building a snazzy new web application that includes an address book where users can store their contacts. For each contact the user stores, you want to capture the contacts name, birthday (which they mustn't forget!) their address, telephone number and company they work for.
+When the user wants to add an address, they enter the information in to a form and the form saves the information in a model that looks something like this:</p>
+<pre><code>{
+  "_id":"some unique string that is assigned to the contact",
+  "type":"contact",
+  "name":"contact's name",
+  "birth_day":"a date in string form",
+  "address":"the address in string form (like 1600 Ampitheater Pkwy., Mountain View, CA)",
+  "phone_number":"phone number in string form",
+  "company_title":"company title",
+  "company_name":"name of the company",
+  "company_description":"some explanation about the company",
+  "company_address":"the company address in string form"
+}
+</code></pre>
+<p>(Note that <em>type</em> doesn't mean anything to CouchDB, we're just using it here for our own convenience. <em>_id</em> is the only thing CouchDB looks at)</p>
+<p>That's great, your users immediately begin to use their address book and soon the datastore starts to fill up. Not long after the deployment of your new application you hear from someone that they are not happy that there is only one phone number. What if they want to store someone's work telephone number in addition to their home number? No problem you think, you can just add a work phone number to your structure. You change your data structure to look more like this:</p>
+<pre><code>  "phone_number":"home phone in string form",
+  "work_phone_number":"work phone in string form",
+</code></pre>
+<p>Update the form with the new field and you are back in business. Soon after redeploying your application, you get a number of new complaints. When they see the new phone number field, people start asking for even more fields. Some people want a fax number field, others want a mobile field. Some people even want more than one mobile field (boy modern life sure is hectic)! You could add another field for fax, and another for mobile, maybe two. What about if people have three mobile phones? What if they have ten? What if someone invents a phone for a place you've never thought of?
+Your model needs to use relationships.</p>
+<h2>One to Many</h2>
+<p>The answer is to allow users to assign as many phone numbers to each of their contacts as they like.</p>
+<p>In CouchDB, there are 2 ways to achieve this.
+ 1. Use separate documents
+ 2. Use an embedded array</p>
+<h3>One to Many: Separate documents</h3>
+<p>When using separate documents, you could have documents like this for the phone numbers:</p>
+<pre><code>{
+  "_id":"the phone number",
+  "type":"phone",
+  "contact_id":"id of the contact document that has this phone number",
+  "phone_type":"string describing type of phone, like home,work,fax,mobile,..."
+}
+</code></pre>
+<p>(Note the use of the <em>_id</em> field to store the phone number. Phone numbers are unique (when prefixed with country and area code) and therefore this makes a great <em>natural key</em>)</p>
+<p>The key to making all this work is the contact property. By storing the contact id in it, you can refer to the owning contact in a unique way, since <em>_id</em> fields are unique in CouchDB databases.</p>
+<p>Creating the relationship between a contact and one of its phone numbers is easy to do. Let's say you have a contact named "Scott" who has a home phone and a mobile phone. You populate his contact info like this (using Perl and Net::CouchDB):</p>
+<pre><code>$db-&gt;insert({type =&gt; 'contact', _id =&gt; 'Scott', name =&gt; 'My Friend Scott'});
+$db-&gt;insert({type =&gt; 'phone', _id =&gt; '(650) 555 - 2200', contact_id =&gt; 'Scott', phone_type =&gt; 'home'});
+$db-&gt;insert({type =&gt; 'phone', _id =&gt; '(650) 555 - 2201', contact_id =&gt; 'Scott', phone_type =&gt; 'mobile'});
+</code></pre>
+<p>To get the contacts and their phone numbers from CouchDB in one search, you need to use a little trick: You need to create a view that sorts the contacts and their phone numbers in order. This is the view:</p>
+<pre><code>"map":function(doc) {
+   if (doc.type == 'contact') {
+      emit([doc._id, 0], doc);
+   } else if (doc.type == 'phone') {
+      emit([doc.contact_id, 1, doc.phone_type], doc);
+   }
+}
+</code></pre>
+<p>If you then query this view with the <em>startkey</em> parameter set to "['<strong><em>"Scott"]" and endkey "[</em></strong>'"Scott",{}]", you'll get the contact details in the first row and the phone numbers in the following rows (sorted by phone_type as well). You can easily extend this system to have other types of one-to-many attributes in the same view by giving them a different number in the view above.</p>
+<p>This is a little bit like a JOIN in SQL although in SQL the data fields would be joined together on a row where here they are on consecutive rows. This latter approach allows a variable number of data fields which is more flexible than SQL.</p>
+<p>NOTE: This needs a code example showing how to use the output of the view. Feel free to add one.</p>
+<p>Because CouchDB always sorts on keys, you can use this view to only get Scotts home phone numbers by querying with <em>startkey</em> set to "[''''<em>"Scott",1,"home"]" and </em>endkey<em> set to "[</em>''''"Scott",1,"home",{}]"</p>
+<p>When Scott loses his phone, it's easy enough to delete that record. Just delete the phone document and it can no longer be queried for:</p>
+<pre><code>$db-&gt;doc('(650) 555 - 2200')-&gt;delete;
+</code></pre>
+<h3>One to Many: Embedded Documents</h3>
+<p>The embedded array is only an option as long as you don't have "too many" items to store, since each document is always handled as a whole and bigger documents mean slower handling and slower network transfers whenever you want to change the list. Phone numbers should be ok unless you plan to store the whole company phonebook in there.</p>
+<p>This is the easiest way to handle one-to-many as everything you need is in one place. Here's how the document for Scott would look:</p>
+<pre><code>{
+  "_id":"Scott",
+  "type":"contact",
+  "name":"My Friend Scott",
+  "phones":[{"number":"(650) 555 - 2200","type":"home"},{"number":"(650) 555 - 2201","type":"mobile"}],
+}
+</code></pre>
+<p>or even more succinctly</p>
+<pre><code>{
+  "_id":"Scott",
+  "type":"contact",
+  "name":"My Friend Scott",
+  "phones":[{"home":"(650) 555 - 2200"},{"mobile":"(650) 555 - 2201"}],
+}
+</code></pre>
+<p>Note how only the fields that we know are stored. Also note that the phone numbers are not simply an array, they are an array of associative hashes. We could extend this with no effort to add email addresses, IM names etc, even if IM names would need an extra attribute that has the service type. In essence, you're embedding child documents in the master document. That is the power of schema-less databases.</p>
+<h2>Many to Many</h2>
+<p>One thing you would like to do is provide the ability for people to organize their contacts in to groups. They might make groups like "Friends", "Co-workers" and "Family". This would allow users to use these groups to perform actions en masse, such as maybe sending an invitation to all their friends for a hack-a-thon. Let's define a simple Group model like this:</p>
+<pre><code>{
+  "_id":"unique group id",
+  "type":"group",
+  "name":"Elaborate group name",
+  "description":"description"
+}
+</code></pre>
+<p>You could make a one-to-many relation with Contact. However, this would allow contacts to be part of only one group at a time. For example, someone might include some of their co-workers as friends. You need a way to represent many-to-many relationships.</p>
+<h3>Many to Many: List of Keys</h3>
+<p>One very simple way is to create a list of keys on one side of the relationship, like we did in the "Embedded One to Many" section.</p>
+<p>Our friend and colleague Scott would then get a new field in his contact document which holds group <em>_id</em> values:</p>
+<pre><code>  "groups":["Friends","Colleagues"]
+</code></pre>
+<p>Adding and removing a user to and from a group means working with a list of keys. Suppose we don't like Scott any more:</p>
+<pre><code>   my $scott = $db-&gt;doc('Scott');
+   $scott-&gt;{groups} = grep { $_ ne 'Friends' } $scott-&gt;{groups};
+   $scott-&gt;update;
+</code></pre>
+<p>To get all the members of a group, you'd create a view like this:</p>
+<pre><code>"map":function(doc) {
+   if (doc.type == 'contact') {
+      for (var i in doc.groups) {
+         emit(i,doc.name);
+      }
+   } else if (doc.type == 'group') {
+      emit(doc._id,doc);
+   }
+}
+</code></pre>
+<p>If you then query this view with search parameters</p>
+<ul>
+<li><em>descending=true</em></li>
+<li><em>key="Friends"</em>
+then you'll get all the names of members of the group Friends and the group information as the first row. (Hashes sort behind strings).</li>
+</ul>
+<p>Here's a space optimization hint: If you make the view be</p>
+<pre><code>"map":function(doc) {
+   if (doc.type == 'contact') {
+      for (var i in doc.groups) {
+         emit(i,null);
+      }
+   } else if (doc.type == 'group') {
+      emit(doc._id,null);
+   }
+}
+</code></pre>
+<p>and query this view with search parameters</p>
+<ul>
+<li><em>key="Friends"</em></li>
+<li><em>include_docs=true</em>
+You'll get all documents that are pertinent to the group, but in no particular order. The size of your index will be smaller though.</li>
+</ul>
+<p>For the most efficient changes to the relationship list, you should place the list on side of the relationship which you expect to have fewer values. In the example above, the Contact side was chosen because a single person is not likely to belong to too many groups, whereas in a large contacts database, a group might contain hundreds of members.</p>
+<h4>Querying by multiple keys</h4>
+<p>Some applications need to view the intersection of entities that have multiple keys. In the example above, this would be a query for the contacts who are in both the "Friends" and the "Colleagues" groups. The most straight-forward way to handle this situation is to query for one of the keys, and then to filter by the rest of the keys on the client-side. If the key frequencies vary greatly, it may also be worthwhile to make an initial call to determine the key with the lowest frequency, and to use that to fetch the initial document list from the database.</p>
+<p>If this is not a good option, it is possible to index the combinations of the keys, though the growth of the index for a given document will be exponential with the number of its keys. Still, for small-ish key sets, this is an option, since the keys can be ordered, and keys which are prefixes of a larger key can be omitted. For instance, for the key set <code>[1 2 3]</code> the possible key combinations are <code>[1] [2] [3] [1 2] [1 3] [2 3] [1 2 3]</code> However, the index need only contain the keys <code>[3] [1 3] [2 3] [1 2 3]</code> since (for example) the documents matching the keys [1 2] could be obtained with a query for <code>startkey=[1,2,null] and endkey=[1,2,{}]</code> The number of index entries will be 2^(n-1) number of keys.</p>
+<p>A final option is to use a separate index, such as couchdb-lucene to help with such queries.</p>
+<h3>Many to Many: Relationship documents</h3>
+<p>Another way of implementing many-to-many is by creating a separate document for each relationship.</p>
+<p>You would use this method if you modify the key list frequently (i.e. if you get more conflicts than is acceptable), or if the key list is so large that transferring the document is unacceptably slow. Relationship documents enable frequent changes with less chance of conflict; however, you can access neither the contact nor group information in one request. You must re-request those specific documents by ID, keeping in mind that they may change or be deleted in the interim.</p>
+<p>A document explaining that Scott is a Friend would look like</p>
+<pre><code>{
+  "_id":"some unique id",
+  "type":"relation",
+  "contact_id":"Scott",
+  "group_id":"Friends"
+}
+</code></pre>
+<p>If you then want to know who is in a group you'll need to use the view (fetch descending to get the group info first)</p>
+<pre><code>"map":function(doc) {
+   if (doc.type == 'relationship') {
+      emit(doc.group_id,doc.contact_id);
+   } else if (doc.type == 'group') {
+      emit(doc._id,doc);
+   }
+}
+</code></pre>
+<p>To know what groups a contact belongs to you can use</p>
+<pre><code>"map":function(doc) {
+   if (doc.type == 'relationship') {
+      emit([doc.contact_id,1],doc.group_id);
+   } else if (doc.type == 'contact') {
+      emit([doc._id,0],doc);
+   }
+}
+</code></pre>
+<p>Note that this view uses key arrays to enforce sorting, just to show you the possible variations. The disadvantage is that you can't use <em>key="Scott"</em> to search for Scotts groups, you need to use <em>startkey=[</em>''<em>"Scott"]&amp;endkey=["Scott",{}]</em>.</p>
+<p>Unlike the previous method, you can't use <em>include_docs=true</em> now to get all information about the contacts that are in a group or the groups that a contact has. The reason is that the original documents that were used in generating the view are not the contact or group documents, they are the relationship documents. If you want that information, you'll have to fetch it separately (you can use a POST view to <em>/db/_all_docs</em> to grab a bunch of documents in one go).</p>
+<p>If this is becoming a problem due to roundtrip times to the database, an acceptable solution is to duplicate the needed information in the relationship documents. You trade the inconvenience of maintaining multiple copies of the same data for the low access time to that data. Unless you have extreme requirements however, you do not need to do this.</p>
+<p>Here, CouchDB differs from traditional SQL systems. With SQL you would be able to get all the data in one go using two JOIN statements, but you would not be aware that that is in fact a pretty slow operation. CouchDB only allows you to do things that scale well.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Rewriting_urls</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>This is an overview of http rewrite handler</p>
+<h2>The HTTP Rewrite Handler</h2>
+<p>The http rewrite handler. All rewriting is done from 
+/dbname/_design/ddocname/_rewrite by default.</p>
+<p>each rules should be in rewrites member of the design doc.
+Ex of a complete rule :</p>
+<pre><code>{ 
+    .... 
+    "rewrites": [ 
+    { 
+        "from": "", 
+        "to": "index.html", 
+        "method": "GET", 
+        "query": {} 
+    } 
+    ] 
+}
+</code></pre>
+<ul>
+<li><strong>from</strong>: is the path rule used to bind current uri to the rule. It use pattern matching for that.</li>
+<li><strong>to</strong>: rule to rewrite an url. It can contain variables depending on binding variables discovered during pattern matching and query args (url args and from the query member.)</li>
+<li><strong>method</strong>: method to bind the request method to the rule. by default "*"</li>
+<li><strong>query</strong>: query args you want to define they can contain dynamic variable by binding the key to the bindings</li>
+</ul>
+<p>to and from are path with  patterns. pattern can be string starting with ":" or
+"<em>". ex:
+/somepath/:var/</em></p>
+<p>This path is converted in erlang list by splitting "/". Each var are 
+converted in atom. "<em>" is converted to '</em>' atom. The pattern matching is done
+by splitting "/" in request url in a list of token. A string pattern will 
+match equal token. The star atom ('*' in single quotes) will match any number 
+of tokens, but may only be present as the last pathtern in a pathspec. If all 
+tokens are matched and all pathterms are used, then the pathspec matches. It works
+like webmachine. Each identified token will be reused in to rule and in query</p>
+<p>The pattern matching is done by first matching the request method to a rule. by 
+default all methods match a rule. (method is equal to "*" by default). Then
+It will try to match the path to one rule. If no rule match, then a 404 error 
+is displayed.</p>
+<p>Once a rule is found we rewrite the request url using the "to" and
+"query" members. The identified token are matched to the rule and 
+will replace var. if '*' is found in the rule it will contain the remaining
+part if it exists.</p>
+<p>Examples:
+<table>
+<tr><td> <strong>Rule</strong>  </td><td> <strong>Url</strong> </td><td> <strong>Rewrite to</strong> </td><td> <strong>Tokens</strong> </td></tr>
+<tr><td> {"from": "/a/b", "to": "/some/"} </td><td>         /a/b?k=v </td><td>        /some/k=v</td><td>       k = v </td></tr>
+<tr><td> {"from": "/a/b",  "to": "/some/:var"}   </td><td>       /a/b </td><td>             /some/b?var=b  </td><td>      var = b </td></tr>
+<tr><td> {"from": "/a", "to": "/some/<em>"}</td><td>            /a </td><td>               /some </td><td> </td></tr>
+<tr><td> {"from": "/a/</em>", "to": "/some/<em>} </td><td>          /a/b/c </td><td>          /some/b/c  </td><td> </td></tr>
+<tr><td> {"from": "/a", "to": "/some/</em>"} </td><td>         /a </td><td>              /some  </td><td> </td></tr>
+<tr><td> {"from": "/a/:foo/<em>","to": "/some/:foo/</em></td><td>     /a/b/c </td><td>          /some/b/c?foo=b </td><td>    foo = b </td></tr>
+<tr><td> {"from": "/a/:foo", "to": "/some",  "query": {  "k": ":foo"  }} </td><td>  /a/b </td><td>          /some/?k=b&amp;foo=b </td><td>   foo =:= b </td></tr>
+<tr><td> {"from": "/a",  "to": "/some/:foo" } </td><td>        /a?foo=b  </td><td>      /some/b&amp;foo=b  </td><td>           foo = b </td></tr>
+</table></p>
+<p>Paths are relative to the design doc, so "/" mean the design doc too and "../" mean the path above the design doc and so on.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

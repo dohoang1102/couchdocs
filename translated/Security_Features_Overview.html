@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Security_Features_Overview</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>An overview of security features focusing on what CouchDB provides out of the box.</p>
+<h3>Authentication</h3>
+<p>CouchDB ships with basic authentication that compares user credentials to Admin accounts. See <a class="internal" href="Setting_up_an_Admin_account.html">Setting_up_an_Admin_account</a> for more details.</p>
+<p>You can specify a custom authentication handler and the web authentication scheme in the configuration file. The example below specifies that CouchDB will use the default_authentication_handler method defined in the <a href="http://svn.apache.org/viewvc/couchdb/trunk/src/couchdb/couch_httpd.erl?view=markup">couch_httpd</a> module:</p>
+<pre><code>authentication_handler = {couch_httpd, default_authentication_handler}
+WWW-Authenticate = Basic realm="administrator"
+</code></pre>
+<p>Other notes: The "null_authentication_handler" in "couch_httpd" allows any user credentials to run as admin. Web servers such as Apache or Nginx can also provide an authentication layer as a reverse-proxy to CouchDB.</p>
+<h3>Authorization</h3>
+<p>CouchDB supports one role, the "admin" group, which can execute any of the HTTP API on any database in the CouchDB instance. See <a class="internal" href="Setting_up_an_Admin_account.html">Setting_up_an_Admin_account</a> for more details.</p>
+<p>CouchDB does not support other roles at this time. Support for read access restriction is planned for the 1.0 release. </p>
+<h3>Validation</h3>
+<p>A design document may define a member function called "validate_doc_update". Requests to create or update a document are validated against every "validate_doc_update" function defined in the database. The validation functions are executed in an unspecified order. A design document can contain only one validation function. Errors are thrown as javascript objects. </p>
+<p>Example of a design document that validates the presence of an "address" field and returns :</p>
+<pre><code>{
+   _id: "_design/myview",
+   validate_doc_update: "function(newDoc, oldDoc, userCtx) {
+      if(newDoc.address === undefined) {
+         throw {forbidden: 'Document must have an address.'};
+      }"
+}
+</code></pre>
+<p>The result of a document update without the address field will look like this:</p>
+<pre><code>HTTP/1.1 403 Forbidden
+WWW-Authenticate: Basic realm="administrator"
+Server: CouchDB/0.9.0 (Erlang OTP/R12B)
+Date: Tue, 21 Apr 2009 00:02:32 GMT
+Content-Type: text/plain;charset=utf-8
+Content-Length: 57
+Cache-Control: must-revalidate
+
+{"error":"forbbiden","reason":"Document must have an address."}
+</code></pre>
+<p>The "validate_doc_update" function accepts three arguments:
+ 1. newDoc - The document to be created or used for update.
+ 1. oldDoc - The current document if document id was specified in the HTTP request
+ 1. userCtx - User context object, which contains three properties:
+   a. db - String name of database
+   a. name - String user name
+   a. roles - Array of roles to which user belongs. Currently only admin role is supported.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

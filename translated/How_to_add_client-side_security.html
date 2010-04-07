@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - How_to_add_client-side_security</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h2>Adding Client-Side Security with a Translucent Database</h2>
+<p>Many applications do not require a thick layer of security at the server. It is possible to use a modest amount of encryption and one-way functions to obscure the sensitive columns or key-value pairs, a technique often called a <em>translucent database</em>. (See <a href="http://www.wayner.org/node/52">description</a>.)</p>
+<p>The simplest solutions use one-way function like SHA-256 at the client to scramble the name and password before storing the information. Here's a quick example of what a table of store purchases might look like <em>before</em> the data is scrambled:</p>
+<h4>Before Translucency</h4>
+<p><table>
+<tr><td><em>name</em></td><td><em>password</em></td><td><em>product name</em></td><td><em>purchase date</em></td><td><em>size 1</em></td><td><em>size 2</em></td></tr>
+<tr><td>Bob Jones</td><td>Swordfish</td><td>Brawny Pants</td><td>Jan 24 2009</td><td>32</td><td>34</td></tr>
+<tr><td>Bob Jones</td><td>Swordfish</td><td>Dancing Pants</td><td>Jan 24 2009</td><td>32</td><td>34</td></tr>
+<tr><td>Mary Smith</td><td>plastics</td><td>Broadway Hat</td><td>Jan 24 2009</td><td>10</td><td>-</td></tr>
+<tr><td>Mary Smith</td><td>plastics</td><td>Shopping Pants</td><td>Jan 25 2009</td><td>26</td><td>28</td></tr>
+<tr><td>Constance Dalmation</td><td>greeny</td><td>Shopping Pants</td><td>Jan 26 2009</td><td>25</td><td>27</td></tr>
+</table></p>
+<h4>After Translucency</h4>
+<table>
+<tr><td><em>SHA256(name&amp;password)</em></td><td><em>product name</em></td><td><em>purchase date</em></td><td><em>size 1</em></td><td><em>size 2</em></td></tr>
+<tr><td>a67373bc873aacd99392</td><td>Brawny Pants</td><td>Jan 24 2009</td><td>32</td><td>34</td></tr>
+<tr><td>a67373bc873aacd99392</td><td>Dancing Pants</td><td>Jan 24 2009</td><td>32</td><td>34</td></tr>
+<tr><td>3c939a9d9939de993993</td><td>Broadway Hat</td><td>Jan 24 2009</td><td>10</td><td>-</td></tr>
+<tr><td>3c939a9d9939de993993</td><td>Shopping Pants</td><td>Jan 25 2009</td><td>26</td><td>28</td></tr>
+<tr><td>99929d99c9a999a9dd8d</td><td>Shopping Pants</td><td>Jan 26 2009</td><td>25</td><td>27</td></tr>
+</table>
+
+<p>This solution gives the client control of the data in the database without requiring a thick layer on the database to test each transaction. Some advantages are:</p>
+<ul>
+<li>Only the client or someone with the knowledge of the name and password can compute the value of SHA256 and recover the data.</li>
+<li>Some columns are still left in the clear, an advantage if the marketing department wants to compute aggregated statistics.</li>
+<li>Computation of SHA256 is left to the client side computer which usually has cycles to spare.</li>
+<li>The system prevents server-side snooping by insiders and any attacker who might penetrate the OS or any of the tools running upon it.</li>
+</ul>
+<p>There are limitations:</p>
+<ul>
+<li>There is no root password. If the person forgets their name and password, their access is gone forever. This limits its use to databases that can continue by issuing a new user name and password.</li>
+</ul>
+<p>There are many variations on the theme detailed in the book <a href="http://www.wayner.org/node/46"><em>Translucent Databases</em></a> including:</p>
+<ul>
+<li>Adding a backdoor with public-key cryptography.</li>
+<li>Adding a second layer with steganography.</li>
+<li>Dealing with typographical errors.</li>
+<li>Mixing encryption with one-way functions.</li>
+</ul>
+<p>Here are several case studies:</p>
+<ul>
+<li><a href="http://www.wayner.org/node/46"><em>Libraries</em></a></li>
+<li><a href="http://www.wayner.org/node/21"><em>Department Stores</em></a></li>
+</ul>
+<h3>Client-Side Libraries</h3>
+<p>Here are some Javascript libraries for implementing client-side security:</p>
+<ul>
+<li>
+<p><a href="http://www.dojotoolkit.org/book/dojo-book-0-9/part-5-dojox/dojox-cryptography">DojoX Crypto</a> A nice package, but the MD5 function should only be used in cases when not very much security is required. A number of successful attacks are well-known.</p>
+</li>
+<li>
+<p><a href="http://www.webtoolkit.info/javascript-sha256.html">Webtoolkit</a> An implementation of SHA256.</p>
+</li>
+</ul>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

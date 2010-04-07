@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - RevisionsDeDocuments</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- #language fr -->
+
+<p>Plutôt que d'écraser pas les documents mis à jour, CouchDB crée un nouveau document à la fin du fichier de base de données, avec la même  <code>_id</code> et un nouvel identifiant <code>_rev</code>. Ce type de stockage est gourmand, aussi un <a class="internal" href="Compactage.html">Compactage</a> régulier est nécessaire pour libérer de l'espace disque. Les anciennes révisions ne sont pas disponibles pour les <a class="internal" href="Vues.html">Vues</a>.</p>
+<p>Les révisions de documents sont utilisées pour un controle optimisé de la concurrence. Si vous tentez de mettre à jour un document en utilisant une ancienne révision, un conflit sera levée. Ces conflits doivent être résolus par votre client, géneralement en demandant une nouvelle version du document, la modifiant et en tentant une nouvelle mise à jour.</p>
+<p>@@ En quoi est-ce lié aux conflits lors d'une réplicaton ?</p>
+<h3>Historique des révisions</h3>
+<p><strong>Vous ne pouvez pas vous appuyer sur les révisions de documents pour autre chose que le controle de la concurrence.</strong></p>
+<p>En effet, avec la compation les révisions peuvent disparaître à tous moments. Vous ne pouvez donc les utiliser pour un système de révisions client.</p>
+<p>Si vous souhaitez implémenter un système de révision client, différentes méthodes ont été suggérées :</p>
+<ul>
+<li>Utiliser les attachements pour stocker les anciennes révisions.</li>
+<li>UUtiliser différents documents pour stocker les anciennes révisions.</li>
+</ul>
+<p>@@ Merci d'ajouter à cette liste les solutions qui pourraient convenir selon vous</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

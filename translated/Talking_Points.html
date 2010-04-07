@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Talking_Points</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>Some useful talking points for discussing CouchDB.</p>
+<ul>
+<li>CouchDB is not a relational database management system (RDBMS). CouchDB != SQL</li>
+<li>Updating documents creates new documents. There are no partial updates or stored diffs.</li>
+<li>Views are crucial to CouchDB. Similar in nature to indexes in a traditional RDBMS but lazily evaluated following a MapReduce paradigm. Views let you sort and filter data.</li>
+<li>Reduce is tricky, yet powerful.</li>
+<li>Complex key collation is important, yet can also be tricky.</li>
+<li>Replication can create conflicts. This is unavoidable. System design should explicitly account for possible conflicts as they <strong>will</strong> happen.</li>
+<li>The internal revisioning system is <strong>only</strong> for conflict detection and optimistic locking (Multi-Version Concurrency Control MVCC).</li>
+<li>The internal revisioning system is <strong>not</strong> usable as a revision control system.</li>
+</ul>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

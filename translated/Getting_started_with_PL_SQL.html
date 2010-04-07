@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Getting_started_with_PL_SQL</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p>Getting started with PL/SQL and the CouchDB API.</p>
+<h1>PL/COUCH</h1>
+<p>PLCouch is a simple way to save Oracle-Data in a document based database. With PLCouch, you can create, updet and delete documents, manage Databases.</p>
+<h2>Dependencies</h2>
+<ul>
+<li>
+<p>http://code.google.com/p/pl-couch/</p>
+</li>
+<li>
+<p>https://sourceforge.net/projects/pljson/</p>
+</li>
+</ul>
+<h2>Sample Usage</h2>
+<pre><code>SET SERVEROUTPUT ON SIZE 1000000
+DECLARE
+  --
+  PROCEDURE ASSERTTRUE(B BOOLEAN) AS
+  BEGIN
+    IF(NOT B) THEN RAISE_APPLICATION_ERROR(-20111, 'Test error'); END IF;
+  END;
+  --
+  PROCEDURE ASSERTFALSE(B BOOLEAN) AS
+  BEGIN
+    IF(B) THEN RAISE_APPLICATION_ERROR(-20111, 'Test error'); END IF;
+  END;
+  --
+BEGIN
+  --
+  -- Connect to database
+  PL_COUCH_DB.INIT_DB(HOSTNAME  =&gt; :HOST
+                     ,PORT      =&gt; :PORT
+                     ,ADMIN     =&gt; :admin
+                     ,adminpwd  =&gt; :adminpwd);
+  ASSERTTRUE(PL_COUCH_DB.PING_COUCHDB);
+  --
+  DBMS_OUTPUT.PUT_LINE('couchDB-Version:' || PL_COUCH_DB.GET_VERSION);
+  -- Check Database
+  ASSERTTRUE(PL_COUCH_DB.PING_COUCHDB);
+  --
+  databasename := 'test' || TO_CHAR(SYSDATE, 'YYMMDDHH24MISS') || 'x';
+  DBMS_OUTPUT.PUT_LINE('Create Database: ' || databasename);
+  ASSERTTRUE(PL_COUCH_DB.CREATE_DB(DATABASENAME));
+  --
+  jList := PL_COUCH_DB.GET_ALL_DB;
+  --
+  IF jList.count &gt; 0 THEN
+    FOR I in 1 .. jList.count LOOP
+        listElement := jList.get_elem(I);
+        dummy := listElement.getvarchar2(charElement);
+        DBMS_OUTPUT.PUT_LINE('Database: ' || charElement);
+    END LOOP;
+  END IF;
+  --
+  DBMS_OUTPUT.PUT_LINE('Drop Database: ' || databasename);
+  ASSERTTRUE(PL_COUCH_DB.DROP_DB(DATABASENAME));
+  --
+END;
+/
+
+PROMPT ENDE
+</code></pre>
+<p>More Samples see: http://code.google.com/p/pl-couch/downloads/list</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

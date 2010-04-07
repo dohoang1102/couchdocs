@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Full_text_search</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h2>Full-text Indexing and Searching</h2>
+<p>Lucene integration with CouchDB is available with an external project called couchdb-lucene (http://github.com/rnewson/couchdb-lucene).</p>
+<h3>Index interface</h3>
+<p>couchdb-lucene's indexing process is configured with update notification as follows;</p>
+<pre><code>[update_notification]
+indexer=/usr/bin/java -jar /path/to/couchdb-lucene-&lt;version&gt;-jar-with-dependencies.jar -index
+</code></pre>
+<h3>Search interface</h3>
+<p>couchdb-lucene's search process is configured as an external process accessible via an httpd_handler as follows;</p>
+<pre><code>[couchdb]
+os_process_timeout=60000 ; increase the timeout to 60 seconds.
+
+[external]
+fti=/usr/bin/java -jar /path/to/couchdb-lucene-&lt;version&gt;-jar-with-dependencies.jar -search
+
+[httpd_db_handlers]
+_fti = {couch_httpd_external, handle_external_req, &lt;&lt;"fti"&gt;&gt;}
+</code></pre>
+<p>You can install the httpd_handler as anything you like, but the name must match between the [external] and [httpd_db_handlers] section. The rest of the document assumes 'fti'.</p>
+<p>q:: the query to run (e.g, subject:hello)
+ sort:: the comma-separated fields to sort on. Prefix with / for ascending order and  for descending order (ascending is the default if not specified).
+ limit:: the maximum number of results to return
+ skip:: the number of results to skip
+ include_docs::  whether to include the source docs
+ stale=ok:: If you set the stale option ok, couchdb-lucene may not perform any refreshing on the index. Searches may be faster as Lucene caches important data (especially for sorting). A query without stale=ok will use the  latest data committed to the index.
+ debug:: if false, a normal application/json response with results appears. if true, an pretty-printed HTML blob is returned instead.</p>
+<h3>Lucene reference implementation</h3>
+<p>You must supply a index function in order to enable couchdb-lucene as by default, nothing will be indexed.</p>
+<p>You may add any number of index views in any number of design documents. All searches will be constrained to documents emitted by those view functions.</p>
+<p>Declare your functions as follows;</p>
+<pre><code>{
+  "views": {
+    // conventional view code goes here
+  },
+  "fulltext": {
+    "by_subject": {
+      "defaults": { "store":"yes" },
+      "index":"function(doc) { var ret=new Document(); ret.add(doc.subject); return ret }"
+    }
+  }
+}
+</code></pre>
+<p>You can perform queries within this view with a URL such as;</p>
+<pre><code>http://localhost:5984/dbname/_fti/design_doc_name/by_subject?q=hello
+</code></pre>
+<h4>Dependencies</h4>
+<p>couchdb-lucene uses Maven 2 to manage dependencies, so you shouldn't have to deal with them directly.</p>
+<p>At least Java version 5 is needed.</p>
+<h4>Compiling</h4>
+<p>The Lucene search engine is not build as part of the CouchDB. </p>
+<p>You need to:</p>
+<ul>
+<li>setup a Java developer environment (at least version 5). </li>
+<li>Checkout CouchDB source with git clone git://github.com/rnewson/couchdb-lucene.git</li>
+<li>cd couchdb-lucene</li>
+<li>type 'mvn'</li>
+</ul>
+<p>As result you should get a file target/couchdb-lucene-<version>-jar-with-dependencies.jar.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

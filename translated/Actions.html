@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Actions</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <p><strong>NOTE:</strong> Action.js has been removed from CouchDB trunk as it is more than we want to support right now. That said, it is still a good way to learn how to write your own external servers. For the time being, action.js can be found here: http://svn.apache.org/viewvc/couchdb/trunk/share/server/action.js?revision=727141&amp;view=markup&amp;pathrev=727141</p>
+<p><strong>See also:</strong> ExternalProcesses</p>
+<p>Actions are a default included functionality that is made available by the new ExternalProcesses feature. <em>_design/</em> docs can now specify an <em>actions</em> member that is an object of <em>key</em>/<em>function</em> pairs.</p>
+<p>Action functions are specified in JavaScript and have access to a CouchDB object that can make requests to the database.</p>
+<h2>Example <em>_design/</em> Document</h2>
+<pre><code>{
+    "_id": "_design/an_action",
+    "actions": {
+        "times_two": "function(req, db) {return {code:200, json: {val: req.query.q * 2}};}"
+    }
+}
+</code></pre>
+<p>By default, this action is available at the URL:</p>
+<pre><code>http://127.0.0.1:5984/db_name/_external/action/times_two?q=2
+</code></pre>
+<h2>Example Using the Database</h2>
+<p>The <em>db</em> argument is a CouchDB instance. This class is defined in <em>couch.js</em> at:</p>
+<pre><code>http://127.0.0.1:5984/_utils/script/couch.js
+</code></pre>
+<p>For now the best references on the API are couch.js itself, and couch_tests.js that exercises it and most of CouchDB.</p>
+<pre><code>{
+    _id: "_design/with_db",
+    actions: {
+        "get" : "function(req, db) { var doc = db.open(req.query.docid); return {json:doc} }",
+    }
+}
+</code></pre>
+<p>Accessed via:</p>
+<pre><code>http://127.0.0.1:5984/db_name/with_db/get?docid="_design/with_db"
+</code></pre>
+<h2>Caveats</h2>
+<p>The actions functionality is still a bit rough around the edges and there are efficiency questions on the implementation. Also, the error reporting is sub-par (to say the least...).</p>
+<p>That said, it helps serve as a reference (and testable) example of _external.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

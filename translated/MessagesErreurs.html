@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - MessagesErreurs</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- #language fr -->
+
+<p>Explications et solutions aux messages d'erreurs qui peuvent survenir lors de la compilation ou de l'exécution de CouchDB.</p>
+<h2>icu-config manquant</h2>
+<h3>Problème</h3>
+<pre><code>*** The icu-config script could not be found. Make sure it is
+*** in your path, and that taglib is properly installed.
+*** Or see http://ibm.com/software/globalization/icu/
+</code></pre>
+<h3>Solution</h3>
+<p>Installez ICU et utilisez <code>locate</code> pour localiser la commande <code>icu-config</code> :</p>
+<pre><code>locate icu-config
+</code></pre>
+<p>Ajoutez le dossier indiqué par cette commande à votre <code>PATH</code>:</p>
+<pre><code>export PATH="$PATH:/usr/local/bin"
+</code></pre>
+<h2>LD_LIBRARY_PATH incorrect</h2>
+<h3>Problème</h3>
+<pre><code>$ couchdb      
+Apache CouchDB 0.8.0-incubating (LogLevel=info)
+Apache CouchDB is starting.
+
+{"init terminating in do_boot",{error,{open_error,-10}}​}
+
+Crash dump was written to: erl_crash.dump
+init terminating in do_boot ()
+</code></pre>
+<h3>Solution</h3>
+<p>Vous devez fixer correctement la variable d'environnement  <code>LD_LIBRARY_PATH</code> afin qu'elle pointe bien vers les bibliothèques installées. Dans Mac OS X, l'équivalent est <code>DYLD_LIBRARY_PATH</code>.</p>
+<p>Exemple pour un utilisateur normal :</p>
+<pre><code>LD_LIBRARY_PATH=/usr/local/lib:/usr/local/js/lib couchdb
+</code></pre>
+<p>Exemple pour l'utilisateur <code>couchdb</code> :</p>
+<pre><code>echo LD_LIBRARY_PATH=/usr/local/lib:/usr/local/js/lib couchdb | sudo -u couchdb sh
+</code></pre>
+<h2>Architecture Binaire Incompatible</h2>
+<p>Sur Mac OS X, les bibliothèques et exécutables peuvent être des <em>fat binaries</em> qui supportent plusieurs architectures processeur (PPC and x86, 32 and 64 bit).  Mais cela signifie aussi que vous pouvez avoir des problèmes lors du chargement de bibliothèque qui ne supporte pas l'archictecture sur laquelle l'application est exécutée. </p>
+<h3>Problème</h3>
+<pre><code>$ couchdb      
+Apache CouchDB 0.8.0-incubating (LogLevel=info)
+Apache CouchDB is starting.
+
+{"init terminating in do_boot",{error,{open_error,-12}}​}
+
+Crash dump was written to: erl_crash.dump
+init terminating in do_boot ()
+</code></pre>
+<h3>Solution</h3>
+<p>Vous avez probablement compilé Erlang avec l'option 64 bits. Le problème est que ICU, que CouchDB tente de charger au démarrage, n'a pas été compilé avec le support 64 bits, et donc ne peut être chargé dans le processus 64 bits d'Erlang.</p>
+<p>Recompilez Erlang et résistez à la tentation de construire un binaire 64 bits (omettez juste l'option <code>--enable-darwin-64bit</code> ). L'option <code>--enable-darwin-universal</code> fonctionne correctement mais notez que pour l'instant il n'existe pas de binaire universel d'ICU.</p>
+<h2>Port non disponible</h2>
+<h3>Problème</h3>
+<pre><code>$ couchdb      
+Apache CouchDB 0.8.0-incubating (LogLevel=info)
+Apache CouchDB is starting.
+
+...
+[error] [&lt;0.46.0&gt;] {error_report,&lt;0.21.0&gt;,
+...
+               {couch_httpd,start_link,
+                   ["127.0.0.1","5984","/tmp/couchdb-a/share/couchdb/www"]}},
+           {restart_type,permanent},
+           {shutdown,1000},
+           {child_type,supervisor}]}]}}
+...
+</code></pre>
+<h3>Solution</h3>
+<p>Editez le fichier <code>/etc/couchdb/couch.ini</code> et modifiez <code>Port</code>pour un port disponible.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

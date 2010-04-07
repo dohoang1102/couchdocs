@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Getting_started_with_Amazon_EC2</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- ## page was renamed from GettingStartedWithAmazonEC2 -->
+<!-- ## page was renamed from Getting Started With Amazon EC2 -->
+<!-- ## page was renamed from GettingStartedAmazon -->
+
+<p>If you have a credit card and can swing ten cents per hour, here is a method to conveniently try the latest CouchDB code without having to install local software.  This procedure will have you quickly running an Ubuntu 8.10 server and building what you need from the source code.</p>
+<ol>
+<li>Set up your Amazon AWS EC2 account, firewall ruleset, etc.  (For example, see <a href="http://www.proven-corporation.com/2009/03/04/how-to-run-a-quick-throwaway-ubuntu-ec2-instance/">this article</a>, steps 1 through 2.6.)</li>
+<li>Start the Ubuntu 8.10 server image, ami-5059be39</li>
+<li>When it is up, copy the public DNS name and run: <code>ssh -l ubuntu &lt;public dns name&gt;</code></li>
+<li>Once logged in, install the prerequisites:</li>
+<li><code>sudo apt-get update &amp;&amp; sudo apt-get -y upgrade</code></li>
+<li><code>sudo apt-get install erlang libmozjs-dev libicu-dev libcurl4-gnutls-dev make subversion automake autoconf libtool help2man</code></li>
+<li>Fetch, build, and run CouchDB:</li>
+<li><code>svn checkout http://svn.apache.org/repos/asf/couchdb/trunk couchdb</code> # (Instead of trunk, you could try <code>tags/0.8.0</code>, <code>tags/0.8.1</code>, etc.)</li>
+<li><code>cd couchdb</code></li>
+<li><code>./bootstrap &amp;&amp; ./configure &amp;&amp; make &amp;&amp; sudo make install</code></li>
+<li><code>sudo adduser --system --home /usr/local/var/lib/couchdb --no-create-home --shell /bin/bash --group --gecos 'CouchDB account' couchdb</code></li>
+<li><code>sudo chown -R couchdb.couchdb /usr/local/var/{lib,log}/couchdb</code></li>
+<li><em>(Optional)</em> Enable direct web access.  <strong>NOTE: This step makes your CouchDB instance available for everyone. See <a href="http://wiki.apache.org/couchdb/Frequently_asked_questions#secure_remote_server">the FaQ</a> for some (but not all) security options.</strong><ol>
+<li><code>sudo vim /usr/local/etc/couchdb/local.ini</code></li>
+<li>Search for "bind_address", uncomment it, and change it to 0.0.0.0</li>
+<li>Save and exit</li>
+</ol>
+</li>
+<li><em>(Alternative option)</em> Set up port forwarding to access your DB, for example with SSH.<ol>
+<li><code>ssh -L 5984:localhost:5984 -l ubuntu &lt;public DNS name&gt;</code></li>
+<li>Leave that session open as long as you need the proxy to work</li>
+<li>Your new DB URL will be http://127.0.0.1:5984/ instead.</li>
+</ol>
+</li>
+<li><code>sudo -i -u couchdb couchdb</code></li>
+<li>Test it by going to <code>http://&lt;public dns name&gt;:5984/_utils/</code></li>
+</ol>
+<p>You can also of course install and try out client libraries.  For example, with <a href="http://github.com/jchris/couchrest/tree/master">CouchRest</a>:</p>
+<ol>
+<li><code>sudo apt-get install libxml2-dev libxslt-dev rubygems ruby1.8-dev irb</code></li>
+<li><code>sudo gem install couchrest archive-tar-minitar nokogiri rcov hoe</code></li>
+<li>
+<p>Try it!</p>
+<p>irb(main):001:0&gt; require 'rubygems'</p>
+<h1>&gt; true</h1>
+<p>irb(main):002:0&gt; require 'couchrest'</p>
+<h1>&gt; true</h1>
+<p>irb(main):003:0&gt; db = CouchRest.database! 'http://127.0.0.1:5984/my_db'</p>
+<h1>&gt; #<CouchRest::Database:0xb7acb338 @root="127.0.0.1:5984/my_db", @bulk_save_cache_limit=50, @server=#<CouchRest::Server:0xb7b335c8 @uri="127.0.0.1:5984", @uuid_batch_count=1000>, @bulk_save_cache=[], @host="127.0.0.1:5984", @name="my_db", @streamer=#<CouchRest::Streamer:0xb7acb1f8 @db=#<CouchRest::Database:0xb7acb338 ...>&gt;&gt;</h1>
+<p>irb(main):004:0&gt; response = db.save :key =&gt; 'val', 'another key' =&gt; 23</p>
+<h1>&gt; {"rev"=&gt;"1954890697", "id"=&gt;"1ba0b605480824c5d8aa6ba6fdbd7add", "ok"=&gt;true}</h1>
+<p>irb(main):005:0&gt; doc = db.get(response['id'])</p>
+<h1>&gt; {"_rev"=&gt;"1954890697", "_id"=&gt;"1ba0b605480824c5d8aa6ba6fdbd7add", "another key"=&gt;23, "key"=&gt;"val"}</h1>
+</li>
+</ol>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

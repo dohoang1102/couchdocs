@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Introduction_to_CouchDB_views</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h1>Introduction to CouchDB Views</h1>
+<!-- <<TableOfContents(2)>> -->
+
+<p>A simple introduction to CouchDB views.</p>
+<h2>Concept</h2>
+<p>Views are the primary tool used for querying and reporting on CouchDB documents. There are two different kinds of views: permanent and temporary views.</p>
+<p><strong>Permanent views</strong> are stored inside special documents called design documents, and can be accessed via an HTTP <em>GET</em> request to the URI <em>/{dbname}/{docid}/{viewname}</em>, where <em>{docid}</em> has the prefix <em>_design/</em> so that CouchDB recognizes the document as a design document, and <em>{viewname}</em> has the prefix <em>_view/</em> so that CouchDB recognizes it as a view.</p>
+<p><strong>Temporary views</strong> are not stored in the database, but rather executed on demand. To execute a temporary view, you make an HTTP <em>POST</em> request to the URI <em>/{dbname}/_temp_view</em>, where the body of the request contains the code of the view function and the <em>Content-Type</em> header is set to <em>application/json</em>.</p>
+<p><strong>NOTE</strong>: <strong>Temporary views are only good during development</strong>. Final code should not rely on them as they are very expensive to compute each time they get called and they get increasingly slower the more data you have in a database. If you think you can't solve something in a permanent view that you can solve in an ad-hoc view, you might want to reconsider. (TODO: add typical examples and solutions).</p>
+<p>For both kinds of views, the view is defined by a !JavaScript function that maps view keys to values (although it is possible to use other languages than !JavaScript by plugging in third-party view servers).</p>
+<p>Note that by default views are not created and updated when a document is saved, but rather, when it is accessed. As a result, the first access might take some time depending on the size of your data while CouchDB creates the view. If preferable the views can also be updated when a document is saved using an external script that calls the views when updates have been made. An example can be found here: RegeneratingViewsOnUpdate</p>
+<p>Note that all views in a single design document get updated when one of the views in that design document gets queried.</p>
+<p>Note on !JavaScript API change: Prior to Tue, 20 May 2008 (Subversion revision r658405) the function to emit a row to the map index, was named "map". It has now been changed to "emit".</p>
+<h2>Basics</h2>
+<h3>Map Functions</h3>
+<p>Here is the simplest example of a map function:</p>
+<pre><code>function(doc) {
+  emit(null, doc);
+}
+</code></pre>
+<p>This function defines a table that contains all the documents in a CouchDB database, with no particular key.</p>
+<p>A view function should accept a single argument: the document object. To produce results, it should call the implicitly available <em>emit(key, value)</em> function. For every invocation of that function, a result row is added to the view (if neither the <em>key</em> nor the <em>value</em> are undefined). As documents are added, edited and deleted, the rows in the computed table are updated automatically.</p>
+<p>Here is a slightly more complex example of a function that defines a view on values computed from customer documents:</p>
+<pre><code>function(doc) {
+  if (doc.Type == "customer") {
+    emit(null, {LastName: doc.LastName, FirstName: doc.FirstName, Address: doc.Address});
+  }
+}
+</code></pre>
+<p>For each document in the database that has a Type field with the value <em>customer</em>, a row is created in the view. The <em>value</em> column of the view contains the <em>!LastName</em>, <em>!FirstName</em>, and <em>Address</em> fields for each document. The key for all the documents is null in this case.</p>
+<p>To be able to filter or sort the view by some document property, you would use that property for the key. For example, the following view would allow you to lookup customer documents by the <em>!LastName</em> or <em>!FirstName</em> fields:</p>
+<pre><code>function(doc) {
+  if (doc.Type == "customer") {
+    emit(doc.LastName, {FirstName: doc.FirstName, Address: doc.Address});
+    emit(doc.FirstName, {LastName: doc.LastName, Address: doc.Address});
+  }
+}
+</code></pre>
+<p>Here is an example of the results of such a view:</p>
+<pre><code>{
+   "total_rows":4,
+   "offset":0,
+   "rows":
+   [
+     {
+       "id":"64ACF01B05F53ACFEC48C062A5D01D89",
+       "key":"Katz",
+       "value":{"FirstName":"Damien", "Address":"2407 Sawyer drive, Charlotte NC"}
+     },
+     {
+       "id":"64ACF01B05F53ACFEC48C062A5D01D89",
+       "key":"Damien",
+       "value":{"LastName":"Katz", "Address":"2407 Sawyer drive, Charlotte NC"}
+     },
+     {
+       "id":"5D01D8964ACF01B05F53ACFEC48C062A",
+       "key":"Kerr",
+       "value":{"FirstName":"Wayne", "Address":"123 Fake st., such and such"}
+     },
+     {
+       "id":"5D01D8964ACF01B05F53ACFEC48C062A",
+       "key":"Wayne",
+       "value":{"LastName":"Kerr", "Address":"123 Fake st., such and such"}
+     },
+   ]
+}
+</code></pre>
+<p><em>This example output was reformatted for readability.</em></p>
+<p>Keep in mind that emit works by just storing the key/value pairs in an array and then, when all views in the same _design document have been calculated, returns all results at once. So if you use an object to make calculations and do multiple emits on the same document, you must create a copy and not emit the same object multiple times. For example:</p>
+<pre><code>function(doc) {
+  if (doc.Type == "measurement") {
+    var timestamp = new Date(doc.timestamp)
+    emit(eval(uneval(timestamp)), doc.lastTemp);
+    timestamp.setSeconds(timestamp.getSeconds - 30);
+    emit(eval(uneval(timestamp)), doc.temp30secsAgo);
+    timestamp.setSeconds(timestamp.getSeconds - 30);
+    emit(eval(uneval(timestamp)), doc.temp1minAgo);
+  }
+}
+</code></pre>
+<p><em>Note: For those unfamiliar with the convention eval(uneval(<em>obj</em>)), this simply clones <em>obj</em>. It is cleaner than traversing each element of <em>obj</em> and it will always be true that uneval(eval(uneval(x))) == uneval(x) and eval(uneval(x)) == deep_copy_of_x . The actual method uneval(<em>obj</em>) is a Spidermonkey specific (as of 1.7) extension that is not part of ECMAScript.</em> <a href="https://developer.mozilla.org/en/SpiderMonkey/JSAPI_Reference/JS_InitStandardClasses">1</a> <a href="http://www.thespanner.co.uk/2008/04/10/javascript-cloning-objects/">2</a> <a href="http://www.mozilla.org/rhino/rhino15R5.html">3</a></p>
+<p>&lt;<Anchor(reduce_functions)>&gt;</p>
+<h3>Reduce Functions</h3>
+<p>Reduce is a powerful feature of CouchDB but is often misused which leads to performance problems. From 0.10 onwards, CouchDB uses a heuristic to detect reduce functions that won't scale to give the developer an early warning. A reduce function must reduce the input values to a smaller output value. If you are building a composite return structure in your reduce, or only transforming the values field, rather than summarizing it, you might be misusing this feature. See <a href="#reduced_value_sizes">Reduced Value Sizes</a> for more details.</p>
+<p>If a view has a reduce function, it is used to produce aggregate results for that view. A reduce function is passed a set of intermediate values and combines them to a single value. Reduce functions must accept, as input, results emitted by its corresponding map function <strong>as well as results returned by the reduce function itself</strong>. The latter case is referred to as a <em>rereduce</em>.</p>
+<p>Here is an example of a reduce function:</p>
+<pre><code>function (key, values, rereduce) {
+    return sum(values);
+}
+</code></pre>
+<p>Reduce functions are passed three arguments in the order <em>key</em>, <em>values</em> and <em>rereduce</em></p>
+<p>Reduce functions must handle two cases:</p>
+<ol>
+<li>
+<p>When <em>rereduce</em> is <em>false</em>:</p>
+</li>
+<li>
+<p><em>key</em> will be an array whose elements are arrays of the form <em>[key,id]</em>, where <em>key</em> is a key emitted by the map function and <em>id</em> is that of the document from which the key was generated.</p>
+</li>
+<li><em>values</em> will be an array of the values emitted for the respective elements in <em>keys</em></li>
+<li>
+<p>i.e. <code>reduce([ [key1,id1], [key2,id2], [key3,id3] ], [value1,value2,value3], false)</code></p>
+</li>
+<li>
+<p>When <em>rereduce</em> is <em>true</em>:</p>
+</li>
+<li>
+<p><em>key</em> will be <em>null</em></p>
+</li>
+<li><em>values</em> will be an array of values returned by previous calls to the reduce function</li>
+<li>i.e. <code>reduce(null, [intermediate1,intermediate2,intermediate3], true)</code></li>
+</ol>
+<p>Reduce functions should return a single value, suitable for both the <em>value</em> field of the final view and as a member of the <em>values</em> array passed to the reduce function.</p>
+<p>Often, reduce functions can be written to handle rereduce calls without any extra code, like the summation function above. In that case, the <em>rereduce</em> argument can be ignored and in JavaScript, it can be omitted from the function definition entirely.</p>
+<h3>Reduce vs rereduce</h3>
+<p>On a large database objects to be reduced will be sent to your reduce function in batches. These batches will be broken up on B-tree boundaries, which may occur in arbitrary places.</p>
+<p><a href="http://mail-archives.apache.org/mod_mbox/couchdb-user/200903.mbox/klzzwxh:0048">For example</a>, suppose you have a view which emits key-&gt;value pairs like this:</p>
+<pre><code>[X, Y, 0]  -&gt; Object_A
+[X, Y, 1]  -&gt; Object_B1
+[X, Y, 1]  -&gt; Object_B1
+[X, Y, 1]  -&gt; Object_B1
+[Z, Q, 0] ....
+</code></pre>
+<p>Your reduce function may receive</p>
+<pre><code>   [Object_A, Object_B1]
+</code></pre>
+<p>and then in a separate invocation</p>
+<pre><code>   [Object_B1, Object_B1]
+</code></pre>
+<p>The outputs of these two reduce functions will then be passed to your reduce function again with rereduce=true to make the final answer. You cannot rely on all four rows being passed to the initial reduce function.</p>
+<p>Furthermore: due to reduce optimisations, you may only receive some of the blocks to be reduced. Example: take these three Btree nodes:</p>
+<pre><code>     [a b c d e f g] [h i j k l m n] [o p q r s t u]
+            R1              R2              R3
+</code></pre>
+<p>The reduce value of all the items in each Btree node is stored within each node, e.g. <code>[a b c d e f g]</code> reduces to <code>R1</code>. Now suppose someone asks for a reduce value across a key range:</p>
+<pre><code>                      key range
+              &lt;-----------------------------&gt;
+
+     [a b c d e f g] [h i j k l m n] [o p q r s t u]
+</code></pre>
+<p>CouchDB will call your reduce function to calculate a value for <code>[e f g]</code> and for <code>[o p q r]</code>, but will use the existing stored/calculated value of R2 across the middle block.</p>
+<p>Therefore, it is wrong to attempt to maintain any sort of state in your reduce function between invocations. And because the Btree node boundaries can appear in any place, it is wrong to attempt to cross-reference adjacent documents too. Any cross-referencing needs to take place in the client, not in a reduce function.</p>
+<h3>Access Strategy</h3>
+<p>For queries which are not meant to actually condense the amount of information you often can live without a reduce function. A common strategy is to get the data you are interested to select by in into the <em>key</em> part and then use <em>startkey</em> and <em>endkey</em> on the result.</p>
+<h2>Keys and values</h2>
+<h3>Equal keys</h3>
+<p>CouchDB actually stores the [key,docid] pair as the key in the btree. This means that:</p>
+<ul>
+<li>you always know which document the key and value came from (it's exposed as the 'id' field in the view result)</li>
+<li>view rows with equal keys sort by increasing docid.</li>
+</ul>
+<p>If you assign your docids in a time-based way then you can get documents with equal keys in a natural oldest-to-newest order. Couchdb has a feature to do this, which you can enable in local.ini:</p>
+<pre><code>[uuids]
+algorithm = utc_random
+</code></pre>
+<h3>Lookup Views</h3>
+<p>The second parameter of the <em>emit()</em> function can be <em>null</em>. CouchDB then only stores the [key,docid] in the view. You can use the view as a compact lookup mechanism and fetch the document's details, if needed, in subsequent requests or by adding parameter <em>include_docs=true</em></p>
+<h3>Linked documents</h3>
+<p><em>This is a new feature in couchdb trunk / 0.11</em></p>
+<p>If you emit an object value which has '''{'_id': XXX}'* then include_docs will fetch the document with id XXX rather than the document which was processed to emit the key/value pair.</p>
+<p>This means that if one document contains the ids of other documents, it can cause those documents to be fetched in the view too, adjacent to the same key if required.</p>
+<p>For example, if you have the following hierarchically-linked documents:</p>
+<pre><code>[
+{ "_id": "11111" },
+{ "_id": "22222", "ancestors": ["11111"], "value": "hello" },
+{ "_id": "33333", "ancestors": ["22222","11111"], "value": "world" }
+]
+</code></pre>
+<p>you can emit the values with the ancestor documents adjacent to them in the view like this:</p>
+<pre><code>function(doc) {
+  if (doc.value) {
+    emit([doc.value, 0], null);
+    if (doc.ancestors) {
+      for (var i in doc.ancestors) {
+        emit([doc.value, Number(i)+1], {_id: doc.ancestors[i]});
+      }
+    }
+  }
+}
+</code></pre>
+<p>The result you get is:</p>
+<pre><code>{"total_rows":5,"offset":0,"rows":[
+{"id":"22222","key":["hello",0],"value":null,
+  "doc":{"_id":"22222","_rev":"1-0eee81fecb5aa4f51e285c621271ff02","ancestors":["11111"],"value":"hello"}},
+{"id":"22222","key":["hello",1],"value":{"_id":"11111"},
+  "doc":{"_id":"11111","_rev":"1-967a00dff5e02add41819138abb3284d"}},
+{"id":"33333","key":["world",0],"value":null,
+  "doc":{"_id":"33333","_rev":"1-11e42b44fdb3d3784602eca7c0332a43","ancestors":["22222","11111"],"value":"world"}},
+{"id":"33333","key":["world",1],"value":{"_id":"22222"},
+  "doc":{"_id":"22222","_rev":"1-0eee81fecb5aa4f51e285c621271ff02","ancestors":["11111"],"value":"hello"}},
+{"id":"33333","key":["world",2],"value":{"_id":"11111"},
+  "doc":{"_id":"11111","_rev":"1-967a00dff5e02add41819138abb3284d"}}
+]}
+</code></pre>
+<p>which makes it very cheap to fetch a document plus all its ancestors in one query.</p>
+<p>Note that the "id" in the row is still that of the originating document. The only difference is that include_docs fetches a different doc.</p>
+<h3>Complex Keys</h3>
+<p>Keys are not limited to simple values. You can use arbitrary JSON values to influence sorting. See ViewCollation for the rules.</p>
+<p>When the key is an array, view results can be grouped by a sub-section of the key. For example, if keys have the form [<em>year</em>, <em>month</em>, *day''] then results can be reduced to a single value or by year, month, or day. See HttpViewApi for more information.</p>
+<h2>Views in Practice</h2>
+<p>See HttpViewApi to learn how to work with views. <a class="internal" href="View_Snippets.html">View_Snippets</a> contain a few examples.</p>
+<h2>Grouping</h2>
+<p>The basic reduce operation with group=false (the default over HTTP) is to reduce to a single value. But by using startkey and endkey, you can get the summary value for any key interval.</p>
+<p>Using group=true (which is Futon's default), you get a separate reduce value for each unique key in the map - that is, all values which share the same key are grouped together and reduced to a single value.</p>
+<p>group_level=N queries are essentially a macro, which run one normal (group=false) reduce query automatically for each interval on a set of intervals as defined by the level.</p>
+<p>So with group_level=1, and keys like</p>
+<pre><code>["a",1,1]
+["a",3,4]
+["a",3,8]
+["b",2,6]
+["b",2,6]
+["c",1,5]
+["c",4,2]
+</code></pre>
+<p>CouchDB will internally run 3 reduce queries for you. One that reduces all rows where the first element of the key = "a", one for "b", and one for "c".</p>
+<p>If you were to query with group_level=2, you'd get a reduce query run for each unique set of keys (according to their first two elements), eg</p>
+<pre><code>["a",1], ["a",3], ["b",2"], ["c",1], ["c",4]
+</code></pre>
+<p>group=true is the conceptual equivalent of group_level=exact, so CouchDB runs a reduce per unique key in the map row set.</p>
+<p>Note: map and reduce results are precomputed and stored in a btree. However, the intermediate reduction values are cached according to the btree structure, instead of according to the query params. So unless your range happens to match exactly the keys underneath a given inner node, you'll end up running at least one javascript reduction per reduce query. A group=true query effectively runs multiple reduce queries, so you may find it to be slower than you expect.</p>
+<p>There is more detail in <a href="http://horicky.blogspot.com/2008/10/couchdb-implementation.html">this blog posting</a> under the heading "Query Processing"</p>
+<h2>Restrictions on map and reduce functions</h2>
+<p>The restriction on map functions is that they must be referentially transparent. That is, given the same input document, they will always emit the same key/value pairs. This allows CouchDB views to be updated incrementally, only reindexing the documents that have changed since the last index update.</p>
+<p>To make incremental Map/Reduce possible, the Reduce function has the requirement that not only must it be referentially transparent, but it must also be commutative and associative for the array value input, to be able reduce on its own output and get the same answer, like this:</p>
+<pre><code>f(Key, Values) == f(Key, [ f(Key, Values) ] )
+</code></pre>
+<p>This requirement of reduce functions allows CouchDB to store off intermediated reductions directly into inner nodes of btree indexes, and the view index updates and retrievals will have logarithmic cost. It also allows the indexes to be spread across machines and reduced at query time with logarithmic cost.</p>
+<p>For more details see <a href="http://damienkatz.net/2008/02/incremental_map.html">this blog post</a></p>
+<p>Furthermore: you have no control over how documents are partitioned in reduce and re-reduce phases. You cannot rely on "adjacent" documents all being presented at the same time to the reduce function; it's quite possible that one subset will be reduced to R1, another subset will be reduced to R2, and then R1 and R2 will be re-reduced together to make the final reduce value. In the limiting case, consider that each of your documents might be reduced individually and that the reduce outputs will be re-reduced together (which also may happen as a single stage or in multiple stages)</p>
+<p>So you should also design your reduce/re-reduce function so that</p>
+<pre><code>f(Key, Values) == f(Key, [ f(Key, Value0), f(Key, Value1), f(Key, Value2), ... ] )
+</code></pre>
+<p>&lt;<Anchor(reduced_value_sizes)>&gt;</p>
+<h3>Reduced Value Sizes</h3>
+<p>As CouchDB computes view indexes it also calculates the corresponding reduce values and caches this value inside each of the btree node pointers. This scheme allows CouchDB to reuse reduced values when updating the btree. This scheme requires some care to be taken with the amount of data returned from reduce functions.</p>
+<p>As a rule of thumb, the data returned by reduce functions should remain "smallish" and not grow faster than log(num_rows_processed). Although violating this requirement will not cause an error, btree performance will degrade drastically. If you have a view that appears to work well on small data sets but grinds to a halt as more data is added you're probably violating the growth rate characteristics.</p>
+<h2>Interactive CouchDB Tutorial</h2>
+<p>See <a href="http://labs.mudynamics.com/2009/04/03/interactive-couchdb/">this blog posting</a> for an interactive tutorial (emulator in JavaScript) that explains map/reduce, view collation and how to query CouchDB RESTfully.</p>
+<h2>Implementation</h2>
+<p>These blog posts include information about how map/reduce works, including how reduce values are kept in btree nodes.</p>
+<ul>
+<li>http://damienkatz.net/2008/02/incremental_map.html</li>
+<li>http://damienkatz.net/2008/02/incremental_map_1.html</li>
+<li>http://horicky.blogspot.com/2008/10/couchdb-implementation.html</li>
+</ul>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

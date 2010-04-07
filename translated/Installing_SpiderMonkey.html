@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Installing_SpiderMonkey</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <!-- ## page was renamed from InstallingSpiderMonkeyFromSource -->
+
+<h2>Installing from sources</h2>
+<ol>
+<li>Get one of the source tarballs from http://ftp.mozilla.org/pub/mozilla.org/js/ (1.7.0 or 1.8.0-rc1 will do).</li>
+<li>Unpack the tarball. Note that once extracted the source are in the directory "js", without the expected version suffix.</li>
+<li>
+<p>Go to the js/src directory.</p>
+<p>cd js/src</p>
+</li>
+<li>
+<p>Build SpiderMonkey. There is no default Makefile, use Makefile.ref. The default build is debug, use BUILD_OPT=1 for an optimized build.</p>
+<p>make BUILD_OPT=1 -f Makefile.ref</p>
+</li>
+<li>
+<p>Install SpiderMonkey. Instead of "install" the target to use is "export". Instead of PREFIX the target directory is specified with JS_DIST.</p>
+<p>sudo make BUILD_OPT=1 JS_DIST=/usr/local -f Makefile.ref export</p>
+</li>
+</ol>
+<h2>Notes when installing on OS X</h2>
+<ul>
+<li>The export needs to be run as root so use $ sudo sh</li>
+<li>When running ./configure for couchdb you will need to use the --with-js-include and --with-js-lib options</li>
+<li>You will need to make sure /usr/local/spidermonkey/lib is in  DYLD_LIBRARY_PATH <code>export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/usr/local/spidermonkey/lib</code></li>
+<li>If you're still getting <code>dyld: Library not loaded: Darwin_OPT.OBJ/libjs.dylib</code> when trying to start couchdb, run <code>ranlib /usr/local/spidermonkey/libjs.a</code></li>
+</ul>
+<h2>Notes when installing on Linux</h2>
+<p>It would be best if you can install the SpiderMonkey libraries via your system's package management system, eg:</p>
+<pre><code>apt-get install libmozjs-dev
+</code></pre>
+<p>Or:</p>
+<pre><code>yum install js-devel
+</code></pre>
+<p>Warning: Yum may install an older version of SpiderMonkey (1.5) that doesn't work with CouchDB. If you see build errors related to JSOPTION_NATIVE_BRANCH_CALLBACK, you will need to build a newer version of SpiderMonkey as mentioned above.</p>
+<p>However, if you need to install from source you should make sure spidermonkey's lib directory is in LD_LIBRARY_PATH:</p>
+<pre><code>export LD_LIBRARY_PATH=/usr/local/spidermonkey/lib
+</code></pre>
+<p>Or if this does not work for you, set the /lib and /include locations when running ./configure by using something similar to:</p>
+<pre><code>./configure --with-js-lib=/usr/local/spidermonkey/lib --with-js-include=/usr/local/spidermonkey/include
+</code></pre>
+<p>If you get a message like this during "yum install js-devel":</p>
+<pre><code>No package js-devel available.
+Nothing to do
+</code></pre>
+<p>you may need to add a yum repository. Add rpmforge.repo in /etc/yum.repos.d containing:</p>
+<pre><code>&lt;!-- # Name: RPMforge RPM Repository for Red Hat Enterprise 5 - dag --&gt;
+&lt;!-- # URL: http://rpmforge.net/ --&gt;
+
+[rpmforge]
+name = Red Hat Enterprise $releasever - RPMforge.net - dag
+baseurl = ftp://ftp.pbone.net/mirror/atrpms.net/el5-i386/atrpms/stable
+enabled = 1
+protect = 0
+gpgcheck = 0
+</code></pre>
+<p>(Put "x86_64" instead of "i386" if when appropriate.)</p>
+<p>Now run:</p>
+<pre><code>yum clean all
+yum install js-devel
+</code></pre>
+<p>and you should be OK.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

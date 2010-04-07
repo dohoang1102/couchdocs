@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Breaking_changes</title>
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+        <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul>
+        
+</div>
+      <div id="content">
+  <h1>Breaking Changes</h1>
+<!-- <<TableOfContents(3)>> -->
+
+<p>This page documents backwards-incompatible changes made during the evolution of CouchDB. While not all such changes will necessarily affect all users, most of them probably will. This page should show you what changed and how you'll need to adapt your code.</p>
+<h2>Changes Between 0.10.x and 0.11.0</h2>
+<h3>show, list, update and validation functions</h3>
+<p>The <code>req</code> argument to show, list, update and validation functions now contains the member <code>method</code> with the specified HTTP method of the current request. Previously, this member was called <code>verb</code>. <code>method</code> is following RFC 2616 (HTTP 1.1) closer.</p>
+<h3>_admins -&gt; _security</h3>
+<p>The /db/_admins handler has been removed and replaced with a /db/_security object. Any existing <code>_admins</code> will be dropped and need to be added to the security object again. The reason for this is that the old system made no distinction between names and roles, while the new one does, so there is no way to automatically upgrade the old admins list.</p>
+<p>The security object has 2 special fields, <code>admins</code> and <code>readers</code>, which contain lists of names and roles which are admins or readers on that database. Anything else may be stored in other fields on the security object. The entire object is made available to validation functions.</p>
+<h3>json2.js</h3>
+<p>JSON handling in the query server has been upgraded to use json2.js. This allows us to use faster native JSON serialization when it is available.</p>
+<p>In previous versions, attempts to serialize <code>undefined</code> would throw an exception, causing the doc that emitted undefined to be dropped from the view index. The new behavior is to serialize undefined as <code>null</code>. Applications depending on the old behavior will need to explicitly check for undefined.</p>
+<p>Another change is that E4X's XML objects will not automatically be stringified. XML users will need to call my_xml_object.toXMLString() to return a string value.</p>
+<p>(see commit <a href="http://github.com/apache/couchdb/commit/8d3b7ab31c1289e1425d1f4f348b7ca0021ab7fe">8d3b7ab3</a>)</p>
+<h3>WWW-Authenticate (popup)</h3>
+<p>The default configuration has been changed to avoid causing basic-auth popups which result from sending the WWW-Authenticate header. To enable basic-auth popups, uncomment the WWW-Authenticate line in local.ini.</p>
+<h3>Query server line protocol</h3>
+<p>The query server line protocol has changed for all functions except map, reduce, and rereduce. This allows us to cache the entire design document in the query server process, which results in faster performance for common operations. It also gives more flexibility to query server implementators and shouldn't require major changes in the future when adding new query server features.</p>
+<h3>UTF8 JSON</h3>
+<p>JSON request bodies are validated for proper UTF-8 before saving, instead of waiting to fail on subsequent read requests.</p>
+<h3>_changes line format</h3>
+<p>Continuous changes are now newline delimited, instead of having each line followed by a comma.</p>
+<h2>Changes Between 0.9.x and 0.10.0</h2>
+<h3>Modular Configuration Directories</h3>
+<p>CouchDB now loads configuration from the following places (glob(7) syntax) in order:</p>
+<ul>
+<li><code>PREFIX/default.ini</code></li>
+<li><code>PREFIX/default.d/*</code></li>
+<li><code>PREFIX/local.ini</code></li>
+<li><code>PREFIX/local.d/*</code></li>
+</ul>
+<p>The configuration options for <code>couchdb</code> script have changed to:</p>
+<pre><code>  -a FILE     add configuration FILE to chain
+  -A DIR      add configuration DIR to chain
+  -n          reset configuration file chain (including system default)
+  -c          print configuration file chain and exit
+</code></pre>
+<h3>Show and List API change</h3>
+<p>Show and List functions must have a new structure in 0.10. See <a class="internal" href="Formatting_with_Show_and_List.html">Formatting_with_Show_and_List</a> for details.</p>
+<h3>Stricter enforcing of reduciness in reduce-functions</h3>
+<p>Reduce functions are now required to reduce the number of values for a key.</p>
+<h3>View query reduce parameter strictness</h3>
+<p>CouchDB now considers the parameter reduce=false to be an error for queries of map-only views, and responds with status code 400.</p>
+<h2>Changes Between 0.8.x and 0.9.0</h2>
+<h3>Response to Bulk Creation/Updates</h3>
+<p>The response to a bulk creation / update now looks like this</p>
+<pre><code>[
+    {"id": "0", "rev": "3682408536"},
+    {"id": "1", "rev": "3206753266"},
+    {"id": "2", "error": "conflict", "reason": "Document update conflict."}
+]
+</code></pre>
+<h3>Database File Format</h3>
+<p>The database file format has changed. CouchDB itself does yet not provide any tools for migrating your data. In the meantime, you can use third-party scripts to deal with the migration, such as the dump/load tools that come with the development version (trunk) of <a href="http://code.google.com/p/couchdb-python/">couchdb-python</a>.</p>
+<p>If you are running a version of trunk prior to revision 753448, have a look at the BreakingChangesUpdateTrunkTo0Dot9 page.</p>
+<h3>Renamed "count" to "limit"</h3>
+<p>As of r731159 the view query API has been changed: "count" has become "limit". This is a better description of what the parameter does, and should be a simple update in any client code.</p>
+<h3>Moved View URLs</h3>
+<p>The view URLs have been moved to design document resources. This means that paths that used to be like <code>http://hostname:5984/mydb/_view/designname/viewname?limit=10</code> will now look like <code>http://hostname:5984/mydb/_design/designname/_view/viewname?limit=10</code>. See the <a href="http://mail-archives.apache.org/mod_mbox/couchdb-dev/200902.mbox/thread?3">REST, Hypermedia, and CouchApps thread on dev</a> for details.</p>
+<h3>Attachments</h3>
+<p>Names of attachments are no longer allowed to start with an underscore.</p>
+<h3>Error Codes</h3>
+<p>Some refinements have been made to error handling. CouchDB will send 400 instead of 500 on invalid query parameters. Most notably, document update conflicts now respond with <code>409 Conflict</code> instead of <code>412 Precondition Failed</code>. The error code for when attempting to create a database that already exists is now <code>412</code> instead of <code>409</code>.</p>
+<h3>ini file format</h3>
+<p>CouchDB 0.9 changes sections and configuration variable names in configuration files. Old <code>.ini</code> files won't work. See <a href="http://svn.apache.org/viewvc/couchdb/tags/0.9.0/etc/couchdb/local.ini?view=markup">local.ini</a> for an example <code>.ini</code> file. Also note that CouchDB now ships with two <code>.ini</code> files where 0.8 used <em>couch.ini</em> there are now <em>default.ini</em> and <em>local.ini</em>. <em>default.ini</em> contains CouchDB's standard configuration values. <em>local.ini</em> is meant for local changes. <em>local.ini</em> is not overwritten on CouchDB updates, so your edits are safe. In addition, the new runtime configuration system persists changes to the configuration in <em>local.ini</em>.</p>
+<h2>Changes Between 0.7.x and 0.8.0</h2>
+<h3>Database File Format</h3>
+<p>The database file format has changed. CouchDB itself does yet not provide any tools for migrating your data. In the meantime, you can use third-party scripts to deal with the migration, such as the dump/load tools that come with the development version (trunk) of <a href="http://code.google.com/p/couchdb-python/">couchdb-python</a>.</p>
+<h4>Migration Using the couchdb-python <code>dump</code>/<code>load</code> Tools</h4>
+<p>First, some important notes on the way these tools operate:</p>
+<ul>
+<li>They work on a per-database basis, meaning you'll need to migrate all databases individually.</li>
+<li>The dump tool retrieves all documents, including attachments, from a database and writes them to standard output in MIME multipart format.</li>
+<li>The load tool expects that MIME multipart on the standard input stream, and recreates all the documents (including attachments) it contains. It should be used with an empty target database.</li>
+<li>Documents of course retain their unique identifiers.</li>
+<li>The revision history of the documents is completey discarded.</li>
+</ul>
+<p><strong>Note</strong>: ''Do not upgrade CouchDB until you've gotten your data out using the procedure described below!*</p>
+<p><strong>Also note</strong>: *Please keep backups of both the original database files and the dump files, at least until you've verified that the migration worked completely.''</p>
+<p>To use the tools, you'll have to install <code>couchdb-python</code> (currently from trunk), which in turn requires <a href="http://www.python.org/">Python 2.4</a> and the <a href="http://code.google.com/p/httplib2/">httplib2</a> and <a href="http://cheeseshop.python.org/pypi/simplejson">simplejson</a> packages.</p>
+<p>On the shell, enter the directory into which you checked out the <code>couchdb-python</code> code. First run to make sure the package is installed:</p>
+<pre><code>  ./setup.py install
+</code></pre>
+<p>Now, to dump the contents of a particular database into a file, run the following command:</p>
+<pre><code>  python couchdb/tools/dump.py http://127.0.0.1:5984/dbname &gt; dbname.dump
+</code></pre>
+<p>Replace <strong>dbname</strong> with the name of the database to dump. This will create a file called <code>dbname.dump</code> in the current directory.</p>
+<p>After you've done this for all the databases you want to migrate, you can upgrade CouchDB. You will need to completely clear the directory where CouchDB stored the old databases, as it will probably choke on files using the old format.</p>
+<p>After the upgrade you can import all the data you previously exported. First, you'll need to create an empty database for every database dump you want to import. Then you execute the <code>load.py</code> script from the command-line as follows:</p>
+<pre><code>  python couchdb/tools/load.py http://127.0.0.1:5984/dbname &lt; dbname.dump
+</code></pre>
+<p>Do that for all your databases, and you should be set. Please report any bugs in those scripts <a href="http://code.google.com/p/couchdb-python/issues/list">here</a>.</p>
+<h3>Document Structure Changes</h3>
+<p>In the JSON structure for attachments, the member name <code>content-type</code> has been changed to <code>content_type</code> (note the underscore). This change was made for consistency with the general naming scheme in CouchDB, and enable easier access from Javascript code.</p>
+<h3>View Definition Changes</h3>
+<p>Views now support optional reduce. For this to work, the structure of view definitions in design documents had to change. An example is probably the best way to illustrate this:</p>
+<pre><code>  {
+    "_id":"_design/foo",
+    "language":"javascript",
+    "views": {
+      "bar": {
+        "map":"function... ",
+        "reduce":"function..."
+      }
+    }
+  }
+</code></pre>
+<p>Notable changes are the usage of a JSON object to define both the map and the reduce function instead of just a string for the map function. The <code>reduce</code> member may be omitted.</p>
+<p>The <code>language</code> member is no longer a MIME type, instead, only the language name is specified. The language name maps exactly to the name chosen for a view server registration in <code>couch.ini</code>.</p>
+<p>The <code>map(key, value)</code> function that map functions would use to produce output has been renamed to <code>emit(key, value)</code> to avoid confusion.</p>
+<pre><code>  function(doc) {
+    emit(doc.foo, doc.bar);
+  }
+</code></pre>
+<p>Temporary views now need to get <code>POST</code>ed a JSON document with <code>map</code> and <code>reduce</code> members instead of just <code>POST</code>ing the raw source of the map function:</p>
+<pre><code>  {
+    "map":"function...",
+    "reduce":"function..."
+  }
+</code></pre>
+<p>Note that the language of the temporary view is no longer determined by the <code>Content-Type</code> header of the HTTP request. Since the definition is a JSON object, the <code>Content-Type</code> is always <code>application/json</code>. The view language is now specified via an optional <code>language</code> member in the JSON request body. If omitted, the language defaults to "javascript".</p>
+<pre><code>  {
+    "language":"javascript"
+    "map":"function...",
+    "reduce":"function..."
+  }
+</code></pre>
+<h3>HTTP API Changes</h3>
+<h3>DELETE Status Code</h3>
+<p>Successful deletion of a database or document using the <code>DELETE</code> HTTP method now results in a <code>200 OK</code> response instead of the <code>202 Accepted</code> response used before. The rationale for this change is that the deletion is performed immediately, while a 202 status code implies that the action has been triggered but may not have completed at the time of the response.</p>
+<h4>Bulk Updates</h4>
+<p>The JSON structure for bulk updates has been changed slightly for both requests and responses.</p>
+<p>For requests, you previously posted a JSON array of document rows. Now, you post a JSON object with a <code>docs</code> member containing that array:</p>
+<pre><code>  {
+    "docs": [
+      {"_id": "foo", "_rev": "123456", "title": "Foo"},
+      {"_id": "bar", "_rev": "234567", "title": "Bar"}
+    ]
+  }
+</code></pre>
+<p>Responses used to have a JSON object with a <code>results</code> member. Now, the response JSON structure looks as follows:</p>
+<pre><code>  {
+    "ok": true,
+    "new_revs": [
+      {"_id": "foo", "rev": "345678"},
+      {"_id": "bar", "rev": "456789"}
+    ]
+  }
+</code></pre>
+<p>''Note that bulk updates are now transactional: either all updates succeed or all fail. That's why the <code>ok</code> member moved to the top-level of the response.''</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>
