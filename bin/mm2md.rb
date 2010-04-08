@@ -110,12 +110,15 @@ def mm2md(input)
         :regexp => /\[\[https?:\/\/(.*?)\]\]/,
         :replacement => %Q{<a href="\\1">\\1</a>},
       },
-
-      # comment out some unsupported stuff
-      # TOC
       {
         :regexp => /(<<TableOfContents\(.\)>>)/,
-        :replacement => '<!-- \1 -->'
+        :replacement => '[TOC]'
+      },
+
+      # drop some stuff
+      {
+        :regexp => /(<<Anchor\(.*?\)>>)/,
+        :replacement => '<!-- \1 -->' + "\n",
       }
     ].inject(input) do |txt, pattern|
       if pattern[:replacement].respond_to?(:call)
