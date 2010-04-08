@@ -36,12 +36,14 @@ def mm2md(input)
 
       # doing blocks/code
       {
-        :regexp => /\{\{\{.*?\}\}\}/m,
+        :regexp => /\{\{\{(?:#!highlight\s(.*?)$)?.*?\}\}\}/m,
         :replacement => lambda do |match|
+          code_hl_lang = $1
           block = match.split("\n")
           block.shift
           block.pop
-          "\n" << block.inject("") do |acc, line|
+          code_hl = "    #!#{code_hl_lang}\n" if code_hl_lang
+          "\n" << block.inject(code_hl || "") do |acc, line|
             acc << "    " << line << "\n"
           end
         end
