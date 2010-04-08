@@ -67,9 +67,16 @@ def mm2md(input)
         :replacement => '_\_\1'
       },
 
+      # nasty, but necessary (normalize links)
+      {
+        :regexp => /\[\[(?:(.*?)\|+([^\]]*?))\]\]/,
+        :replacement => '[[\1|\2]]',
+      },
+
+
       # processing tables
       {
-        :regexp => /^\s(\|\|.*?)^\s([^\|])/m,
+        :regexp => /^\s(\|\|.*?)^\s([^\|]?)/m,
         :replacement => lambda do |match|
           table = $1
           rest = $2 # this a bit ugly, but it works
