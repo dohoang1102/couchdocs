@@ -155,7 +155,7 @@ class Page(object):
 
     def convert_md(self, body):
         from markdown import markdown
-        return markdown(body, ['wikilinks(html_class=internal,base_url=,end_url=.html)'])
+        return markdown(body, ['wikilinks(html_class=internal,base_url=,end_url=.html)', 'toc', 'codehilite'])
 
     def convert_rst(self, body):
         from docutils.core import publish_parts
