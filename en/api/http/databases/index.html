@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - HTTP Database API</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,25 +56,27 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h1>HTTP Database API</h1>
+  <h1 id="http-database-api">HTTP Database API</h1>
 <p>An introduction to the CouchDB HTTP Database API.</p>
-<h2>Naming and Addressing</h2>
+<h2 id="naming-and-addressing">Naming and Addressing</h2>
 <p>A database must be named with all lowercase characters (a-z), digits (0-9), or
 any of the ''_$()+-/'' characters and must end with a slash in the URL. The
 name has to start with characters.</p>
-<pre><code>http://couchserver/databasename/
+<div class="codehilite"><pre>http://couchserver/databasename/
 http://couchserver/another/databasename/
-http://couchserver/another/database_name(1)/
-</code></pre>
+http://couchserver/another/database_name(1)/</pre></div>
+
+
 <p><strong>Uppercase characters are NOT ALLOWED in database names.</strong></p>
-<pre><code>http://couchserver/DBNAME/ (invalid)
+<div class="codehilite"><pre>http://couchserver/DBNAME/ (invalid)
 http://couchserver/DatabaseName/ (invalid)
-http://couchserver/databaseName/ (invalid)
-</code></pre>
+http://couchserver/databaseName/ (invalid)</pre></div>
+
+
 <p>Note also that a <code>/</code> character in a DB name must be escaped when used in a URL;
 if your DB is named <code>his/her</code> then it will be available at
 <code>http://localhost:5984/his%2Fher</code>.</p>
@@ -70,72 +90,80 @@ database includes a ''/'' CouchDB will create a sub-directory structure in the
 database directory. That is, a database named ''his/her'', the database file
 will be available at ''$dbdir/his/her.couch''. This is useful when you have a
 large number of databases and your file system does not like that.</p>
-<h2>Working with Databases</h2>
-<h3>List Databases</h3>
+<h2 id="working-with-databases">Working with Databases</h2>
+<h3 id="list-databases">List Databases</h3>
 <p>To get a list of databases on a CouchDB server, use the ''/_all_dbs'' URI:</p>
-<pre><code>GET /_all_dbs HTTP/1.1
-</code></pre>
+<div class="codehilite"><pre>GET /_all_dbs HTTP/1.1</pre></div>
+
+
 <p>And the response:</p>
-<pre><code>HTTP/1.1 200 OK
+<div class="codehilite"><pre>HTTP/1.1 200 OK
 Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
 Content-Length: 37
 Content-Type: application/json
 Connection: close
 
-["somedatabase", "anotherdatabase"]
-</code></pre>
-<h3>PUT (Create New Database)</h3>
+[&quot;somedatabase&quot;, &quot;anotherdatabase&quot;]</pre></div>
+
+
+<h3 id="put-create-new-database">PUT (Create New Database)</h3>
 <p>To create a new empty database, perform a PUT operation at the database URL.
 Currently the content of the actual PUT is ignored by the webserver.</p>
 <p>On success, HTTP status ''201'' is returned. If a database already exists a
 ''412'' error is returned.</p>
-<pre><code>PUT /somedatabase/ HTTP/1.1
-Content-Length: 0
-</code></pre>
+<div class="codehilite"><pre>PUT /somedatabase/ HTTP/1.1
+Content-Length: 0</pre></div>
+
+
 <p>Here is the server's response:</p>
-<pre><code>HTTP/1.1 201 Created
+<div class="codehilite"><pre>HTTP/1.1 201 Created
 Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
 Content-Length: 13
 Content-Type: application/json
 Connection: close
 
-{"ok": true}
-</code></pre>
-<h3>DELETE</h3>
+{&quot;ok&quot;: true}</pre></div>
+
+
+<h3 id="delete">DELETE</h3>
 <p>To delete a database, perform a DELETE operation at the database location.</p>
 <p>On success, HTTP status ''200'' is returned. If the database doesn't exist, a
 ''404'' error is returned.</p>
-<pre><code>DELETE /somedatabase/ HTTP/1.1
-Content-Length: 0
-</code></pre>
+<div class="codehilite"><pre>DELETE /somedatabase/ HTTP/1.1
+Content-Length: 0</pre></div>
+
+
 <p>Here is the server's response:</p>
-<pre><code>HTTP/1.1 200 OK
+<div class="codehilite"><pre>HTTP/1.1 200 OK
 Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
 Content-Length: 67
 Content-Type: application/json
 Connection: close
 
-{"ok": true}
-</code></pre>
-<h3>Database Information</h3>
+{&quot;ok&quot;: true}</pre></div>
+
+
+<h3 id="database-information">Database Information</h3>
 <p>To get information about a particular database, perform a GET operation on the
 database, e.g.:</p>
-<pre><code>GET /somedatabase/ HTTP/1.1
-</code></pre>
+<div class="codehilite"><pre>GET /somedatabase/ HTTP/1.1</pre></div>
+
+
 <p>The server's response is a JSON object similar to the following:</p>
-<pre><code>{
-    "compact_running": false, 
-    "db_name": "dj", 
-    "disk_format_version": 5, 
-    "disk_size": 12377, 
-    "doc_count": 1, 
-    "doc_del_count": 1, 
-    "instance_start_time": "1267612389906234", 
-    "purge_seq": 0, 
-    "update_seq": 4
-}
-</code></pre>
-<h4>Meaning of Result Hash</h4>
+<div class="codehilite"><pre>{
+    &quot;compact_running&quot;: false, 
+    &quot;db_name&quot;: &quot;dj&quot;, 
+    &quot;disk_format_version&quot;: 5, 
+    &quot;disk_size&quot;: 12377, 
+    &quot;doc_count&quot;: 1, 
+    &quot;doc_del_count&quot;: 1, 
+    &quot;instance_start_time&quot;: &quot;1267612389906234&quot;, 
+    &quot;purge_seq&quot;: 0, 
+    &quot;update_seq&quot;: 4
+}</pre></div>
+
+
+<h4 id="meaning-of-result-hash">Meaning of Result Hash</h4>
 <p>||'''Key'''||'''Description'''||'''CouchDB Version'''||
 ||''db_name''||Name of the database (string)||||
 ||''doc_count''||Number of documents (including design documents) in the database (int)||||
@@ -145,20 +173,22 @@ database, e.g.:</p>
 ||''disk_size''||Current size in Bytes of the database ('''Note''': Size of views indexes on disk are not included)||||
 ||''instance_start_time''|| Timestamp of CouchDBs start time (int in ms) ||||
 ||''disk_format_version''|| Current version of the internal database format on disk (int)||||</p>
-<h3>Accessing Database-specific options</h3>
+<h3 id="accessing-database-specific-options">Accessing Database-specific options</h3>
 <p>Currently there is only one database specific option you can set via a PUT
 request. <code>_revs_limit</code> defines a upper bound of document revisions which
-CouchDB keeps track of, even after [[Compaction]]. The default is set to 1000
+CouchDB keeps track of, even after <a class="internal" href="Compaction.html">Compaction</a>. The default is set to 1000
 on CouchDB 0.11.</p>
 <p>Set <code>_revs_limit</code> of a particular database:</p>
-<pre><code>$ curl -X PUT -d "1500" http://localhost:5984/test/_revs_limit
-{"ok":true}
-</code></pre>
+<div class="codehilite"><pre>$ curl -X PUT -d &quot;1500&quot; http://localhost:5984/test/_revs_limit
+{&quot;ok&quot;:true}</pre></div>
+
+
 <p>Read <code>_revs_limit</code> of a particular database:</p>
-<pre><code>curl -X GET http://localhost:5984/test/_revs_limit
-1500
-</code></pre>
-<h3>Changes</h3>
+<div class="codehilite"><pre>curl -X GET http://localhost:5984/test/_revs_limit
+1500</pre></div>
+
+
+<h3 id="changes">Changes</h3>
 <p>A list of changes made to documents in the database, in the order they were
 made, can be obtained from the database's <code>_changes</code> resource.</p>
 <ul>
@@ -177,15 +207,16 @@ made, can be obtained from the database's <code>_changes</code> resource.</p>
 </li>
 </ul>
 <p>By default all changes are immediately returned as a JSON object:</p>
-<pre><code>GET /somedatabase/_changes HTTP/1.1
+<div class="codehilite"><pre>GET /somedatabase/_changes HTTP/1.1
 
-{"results":[
-{"seq":1,"id":"fresh","changes":[{"rev":"1-967a00dff5e02add41819138abb3284d"}]},
-{"seq":3,"id":"updated","changes":[{"rev":"2-7051cbe5c8faecd085a3fa619e6e6337"}]},
-{"seq":5,"id":"deleted","changes":[{"rev":"2-eec205a9d413992850a6e32678485900"}],"deleted":true}
+{&quot;results&quot;:[
+{&quot;seq&quot;:1,&quot;id&quot;:&quot;fresh&quot;,&quot;changes&quot;:[{&quot;rev&quot;:&quot;1-967a00dff5e02add41819138abb3284d&quot;}]},
+{&quot;seq&quot;:3,&quot;id&quot;:&quot;updated&quot;,&quot;changes&quot;:[{&quot;rev&quot;:&quot;2-7051cbe5c8faecd085a3fa619e6e6337&quot;}]},
+{&quot;seq&quot;:5,&quot;id&quot;:&quot;deleted&quot;,&quot;changes&quot;:[{&quot;rev&quot;:&quot;2-eec205a9d413992850a6e32678485900&quot;}],&quot;deleted&quot;:true}
 ],
-"last_seq":5}
-</code></pre>
+&quot;last_seq&quot;:5}</pre></div>
+
+
 <p>''results'' is the list of changes in sequential order. New and changed
 documents only differ in the value of the rev; deleted documents include the
 ''"deleted": true'' attribute.</p>
@@ -193,14 +224,15 @@ documents only differ in the value of the rev; deleted documents include the
 will always be the same as the ''seq'' of the last item in ''results''.)</p>
 <p>Sending a ''since'' param in the query string skips all changes up to and
 including the given sequence number:</p>
-<pre><code>GET /somedatabase/_changes?since=3 HTTP/1.1
+<div class="codehilite"><pre>GET /somedatabase/_changes?since=3 HTTP/1.1
 
-{"results":[
-{"seq":5,"id":"deleted","changes":[{"rev":"2-eec205a9d413992850a6e32678485900"}],"deleted":true}
+{&quot;results&quot;:[
+{&quot;seq&quot;:5,&quot;id&quot;:&quot;deleted&quot;,&quot;changes&quot;:[{&quot;rev&quot;:&quot;2-eec205a9d413992850a6e32678485900&quot;}],&quot;deleted&quot;:true}
 ],
-"last_seq":5}
-</code></pre>
-<h4>Long-Polling (Efficient Polling) Feed</h4>
+&quot;last_seq&quot;:5}</pre></div>
+
+
+<h4 id="long-polling-efficient-polling-feed">Long-Polling (Efficient Polling) Feed</h4>
 <p>The ''longpoll'' feed (probably most useful used from a browser) is a more
 efficient form of polling that waits for a change to occur before the response
 is sent. ''longpoll'' avoids the need to frequently poll CouchDB to discover
@@ -209,7 +241,7 @@ nothing has changed!</p>
 <p>A ''timeout'' limits the maximum length of time the connection is open. If
 there are no changes before the timeout expires the response's ''results'' will
 be an empty list.</p>
-<h4>Continuous (Non-Polling) Feed</h4>
+<h4 id="continuous-non-polling-feed">Continuous (Non-Polling) Feed</h4>
 <p>Polling the CouchDB server is not a good thing to do. Setting up new HTTP
 connections just to tell the client that nothing's happened puts unnecessary
 strain on CouchDB.</p>
@@ -220,19 +252,20 @@ real-time.</p>
 types to simplify the job of the client - each line of the response is either
 empty or a JSON object representing a single change, as found in the normal
 feed's ''results''.</p>
-<pre><code>GET /somedatabase/_changes?feed=continuous HTTP/1.1
+<div class="codehilite"><pre>GET /somedatabase/_changes?feed=continuous HTTP/1.1
 
-{"seq":1,"id":"fresh","changes":[{"rev":"1-967a00dff5e02add41819138abb3284d"}]}
-{"seq":3,"id":"updated","changes":[{"rev":"2-7051cbe5c8faecd085a3fa619e6e6337"}]}
-{"seq":5,"id":"deleted","changes":[{"rev":"2-eec205a9d413992850a6e32678485900"}],"deleted":true}
+{&quot;seq&quot;:1,&quot;id&quot;:&quot;fresh&quot;,&quot;changes&quot;:[{&quot;rev&quot;:&quot;1-967a00dff5e02add41819138abb3284d&quot;}]}
+{&quot;seq&quot;:3,&quot;id&quot;:&quot;updated&quot;,&quot;changes&quot;:[{&quot;rev&quot;:&quot;2-7051cbe5c8faecd085a3fa619e6e6337&quot;}]}
+{&quot;seq&quot;:5,&quot;id&quot;:&quot;deleted&quot;,&quot;changes&quot;:[{&quot;rev&quot;:&quot;2-eec205a9d413992850a6e32678485900&quot;}],&quot;deleted&quot;:true}
 ... tum tee tum ...
-{"seq":6,"id":"updated","changes":[{"rev":"3-825cb35de44c433bfb2df415563a19de"}]}
-</code></pre>
+{&quot;seq&quot;:6,&quot;id&quot;:&quot;updated&quot;,&quot;changes&quot;:[{&quot;rev&quot;:&quot;3-825cb35de44c433bfb2df415563a19de&quot;}]}</pre></div>
+
+
 <p>Obviously, "... tum tee tum ..." does not appear in the actual response but
 represents a long pause before the change with ''seq'' 6 occurred.</p>
-<h2>Compaction</h2>
+<h2 id="compaction">Compaction</h2>
 <p>Databases may be compacted to reduce their disk usage.  For more details,
-see [[Compaction]].</p>
+see <a class="internal" href="Compaction.html">Compaction</a>.</p>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - _config</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,12 +56,12 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h1>The _config resource</h1>
-<pre><code>$ curl -vs http://127.0.0.1:5984/_config
+  <h1 id="the-_config-resource">The _config resource</h1>
+<div class="codehilite"><pre>$ curl -vs http://127.0.0.1:5984/_config
 &gt; GET /_config HTTP/1.1
 &gt; User-Agent: curl/7.19.4
 &gt; Host: 127.0.0.1:5984
@@ -57,91 +75,90 @@
 &lt; Cache-Control: must-revalidate
 &lt; 
 {
-  "attachments": {
-    "compressible_types": "text/* application/javascript application/json application/xml", 
-    "compression_level": "8"
+  &quot;attachments&quot;: {
+    &quot;compressible_types&quot;: &quot;text/* application/javascript application/json application/xml&quot;, 
+    &quot;compression_level&quot;: &quot;8&quot;
   }, 
-  "couch_httpd_auth": {
-    "authentication_db": "_users", 
-    "require_valid_user": "false"
+  &quot;couch_httpd_auth&quot;: {
+    &quot;authentication_db&quot;: &quot;_users&quot;, 
+    &quot;require_valid_user&quot;: &quot;false&quot;
   }, 
-  "couchdb": {
-    "batch_save_interval": "1000", 
-    "batch_save_size": "1000", 
-    "database_dir": "/path/to/couchdb/lib", 
-    "delayed_commits": "true", 
-    "max_attachment_chunk_size": "4294967296", 
-    "max_dbs_open": "100", 
-    "max_document_size": "4294967296", 
-    "os_process_timeout": "5000", 
-    "util_driver_dir": "/path/to/couchdb/priv/", 
-    "view_index_dir": "/path/to/couchdb/lib"
+  &quot;couchdb&quot;: {
+    &quot;batch_save_interval&quot;: &quot;1000&quot;, 
+    &quot;batch_save_size&quot;: &quot;1000&quot;, 
+    &quot;database_dir&quot;: &quot;/path/to/couchdb/lib&quot;, 
+    &quot;delayed_commits&quot;: &quot;true&quot;, 
+    &quot;max_attachment_chunk_size&quot;: &quot;4294967296&quot;, 
+    &quot;max_dbs_open&quot;: &quot;100&quot;, 
+    &quot;max_document_size&quot;: &quot;4294967296&quot;, 
+    &quot;os_process_timeout&quot;: &quot;5000&quot;, 
+    &quot;util_driver_dir&quot;: &quot;/path/to/couchdb/priv/&quot;, 
+    &quot;view_index_dir&quot;: &quot;/path/to/couchdb/lib&quot;
   }, 
-  "daemons": {
-    "db_update_notifier": "{couch_db_update_notifier_sup, start_link, []}", 
-    "external_manager": "{couch_external_manager, start_link, []}", 
-    "httpd": "{couch_httpd, start_link, []}", 
-    "query_servers": "{couch_query_servers, start_link, []}", 
-    "stats_aggregator": "{couch_stats_aggregator, start, []}", 
-    "stats_collector": "{couch_stats_collector, start, []}", 
-    "uuids": "{couch_uuids, start, []}", 
-    "view_manager": "{couch_view_server, start_link, []}"
+  &quot;daemons&quot;: {
+    &quot;db_update_notifier&quot;: &quot;{couch_db_update_notifier_sup, start_link, []}&quot;, 
+    &quot;external_manager&quot;: &quot;{couch_external_manager, start_link, []}&quot;, 
+    &quot;httpd&quot;: &quot;{couch_httpd, start_link, []}&quot;, 
+    &quot;query_servers&quot;: &quot;{couch_query_servers, start_link, []}&quot;, 
+    &quot;stats_aggregator&quot;: &quot;{couch_stats_aggregator, start, []}&quot;, 
+    &quot;stats_collector&quot;: &quot;{couch_stats_collector, start, []}&quot;, 
+    &quot;uuids&quot;: &quot;{couch_uuids, start, []}&quot;, 
+    &quot;view_manager&quot;: &quot;{couch_view_server, start_link, []}&quot;
   }, 
-  "httpd": {
-    "authentication_handlers": "{couch_httpd_oauth, oauth_authentication_handler}, {couch_httpd_auth, cookie_authentication_handler}, {couch_httpd_auth, default_authentication_handler}", 
-    "bind_address": "127.0.0.1", 
-    "default_handler": "{couch_httpd_db, handle_request}", 
-    "port": "5984"
+  &quot;httpd&quot;: {
+    &quot;authentication_handlers&quot;: &quot;{couch_httpd_oauth, oauth_authentication_handler}, {couch_httpd_auth, cookie_authentication_handler}, {couch_httpd_auth, default_authentication_handler}&quot;, 
+    &quot;bind_address&quot;: &quot;127.0.0.1&quot;, 
+    &quot;default_handler&quot;: &quot;{couch_httpd_db, handle_request}&quot;, 
+    &quot;port&quot;: &quot;5984&quot;
   }, 
-  "httpd_db_handlers": {
-    "_changes": "{couch_httpd_db, handle_changes_req}", 
-    "_compact": "{couch_httpd_db, handle_compact_req}", 
-    "_design": "{couch_httpd_db, handle_design_req}", 
-    "_view_cleanup": "{couch_httpd_db, handle_view_cleanup_req}"
+  &quot;httpd_db_handlers&quot;: {
+    &quot;_changes&quot;: &quot;{couch_httpd_db, handle_changes_req}&quot;, 
+    &quot;_compact&quot;: &quot;{couch_httpd_db, handle_compact_req}&quot;, 
+    &quot;_design&quot;: &quot;{couch_httpd_db, handle_design_req}&quot;, 
+    &quot;_view_cleanup&quot;: &quot;{couch_httpd_db, handle_view_cleanup_req}&quot;
   }, 
-  "httpd_design_handlers": {
-    "_info": "{couch_httpd_db,   handle_design_info_req}", 
-    "_list": "{couch_httpd_show, handle_view_list_req}", 
-    "_rewrite": "{couch_httpd_rewrite, handle_rewrite_req}", 
-    "_show": "{couch_httpd_show, handle_doc_show_req}", 
-    "_update": "{couch_httpd_show, handle_doc_update_req}", 
-    "_view": "{couch_httpd_view, handle_view_req}"
+  &quot;httpd_design_handlers&quot;: {
+    &quot;_info&quot;: &quot;{couch_httpd_db,   handle_design_info_req}&quot;, 
+    &quot;_list&quot;: &quot;{couch_httpd_show, handle_view_list_req}&quot;, 
+    &quot;_rewrite&quot;: &quot;{couch_httpd_rewrite, handle_rewrite_req}&quot;, 
+    &quot;_show&quot;: &quot;{couch_httpd_show, handle_doc_show_req}&quot;, 
+    &quot;_update&quot;: &quot;{couch_httpd_show, handle_doc_update_req}&quot;, 
+    &quot;_view&quot;: &quot;{couch_httpd_view, handle_view_req}&quot;
   }, 
-  "httpd_global_handlers": {
-    "/": "{couch_httpd_misc_handlers, handle_welcome_req, &lt;&lt;\"Welcome\"&gt;&gt;}", 
-    "_active_tasks": "{couch_httpd_misc_handlers, handle_task_status_req}", 
-    "_all_dbs": "{couch_httpd_misc_handlers, handle_all_dbs_req}", 
-    "_config": "{couch_httpd_misc_handlers, handle_config_req}", 
-    "_log": "{couch_httpd_misc_handlers, handle_log_req}", 
-    "_oauth": "{couch_httpd_oauth, handle_oauth_req}", 
-    "_replicate": "{couch_httpd_misc_handlers, handle_replicate_req}", 
-    "_restart": "{couch_httpd_misc_handlers, handle_restart_req}", 
-    "_session": "{couch_httpd_auth, handle_session_req}", 
-    "_sleep": "{couch_httpd_misc_handlers, handle_sleep_req}", 
-    "_stats": "{couch_httpd_stats_handlers, handle_stats_req}", 
-    "_utils": "{couch_httpd_misc_handlers, handle_utils_dir_req, \"/path/to/couchdb/share/www\"}", 
-    "_uuids": "{couch_httpd_misc_handlers, handle_uuids_req}", 
-    "favicon.ico": "{couch_httpd_misc_handlers, handle_favicon_req, \"/path/to/couchdb/share/www\"}"
+  &quot;httpd_global_handlers&quot;: {
+    &quot;/&quot;: &quot;{couch_httpd_misc_handlers, handle_welcome_req, &lt;&lt;\&quot;Welcome\&quot;&gt;&gt;}&quot;, 
+    &quot;_active_tasks&quot;: &quot;{couch_httpd_misc_handlers, handle_task_status_req}&quot;, 
+    &quot;_all_dbs&quot;: &quot;{couch_httpd_misc_handlers, handle_all_dbs_req}&quot;, 
+    &quot;_config&quot;: &quot;{couch_httpd_misc_handlers, handle_config_req}&quot;, 
+    &quot;_log&quot;: &quot;{couch_httpd_misc_handlers, handle_log_req}&quot;, 
+    &quot;_oauth&quot;: &quot;{couch_httpd_oauth, handle_oauth_req}&quot;, 
+    &quot;_replicate&quot;: &quot;{couch_httpd_misc_handlers, handle_replicate_req}&quot;, 
+    &quot;_restart&quot;: &quot;{couch_httpd_misc_handlers, handle_restart_req}&quot;, 
+    &quot;_session&quot;: &quot;{couch_httpd_auth, handle_session_req}&quot;, 
+    &quot;_sleep&quot;: &quot;{couch_httpd_misc_handlers, handle_sleep_req}&quot;, 
+    &quot;_stats&quot;: &quot;{couch_httpd_stats_handlers, handle_stats_req}&quot;, 
+    &quot;_utils&quot;: &quot;{couch_httpd_misc_handlers, handle_utils_dir_req, \&quot;/path/to/couchdb/share/www\&quot;}&quot;, 
+    &quot;_uuids&quot;: &quot;{couch_httpd_misc_handlers, handle_uuids_req}&quot;, 
+    &quot;favicon.ico&quot;: &quot;{couch_httpd_misc_handlers, handle_favicon_req, \&quot;/path/to/couchdb/share/www\&quot;}&quot;
   }, 
-  "log": {
-    "file": "/path/to/couchdb/log/couch.log", 
-    "level": "info"
+  &quot;log&quot;: {
+    &quot;file&quot;: &quot;/path/to/couchdb/log/couch.log&quot;, 
+    &quot;level&quot;: &quot;info&quot;
   }, 
-  "query_server_config": {
-    "reduce_limit": "true"
+  &quot;query_server_config&quot;: {
+    &quot;reduce_limit&quot;: &quot;true&quot;
   }, 
-  "query_servers": {
-    "javascript": "/path/to/couchdb/bin/couchjs_dev /path/to/couchdb/share/server/main.js"
+  &quot;query_servers&quot;: {
+    &quot;javascript&quot;: &quot;/path/to/couchdb/bin/couchjs_dev /path/to/couchdb/share/server/main.js&quot;
   }, 
-  "stats": {
-    "rate": "1000", 
-    "samples": "[0, 60, 300, 900]"
+  &quot;stats&quot;: {
+    &quot;rate&quot;: &quot;1000&quot;, 
+    &quot;samples&quot;: &quot;[0, 60, 300, 900]&quot;
   }, 
-  "uuids": {
-    "algorithm": "sequential"
+  &quot;uuids&quot;: {
+    &quot;algorithm&quot;: &quot;sequential&quot;
   }
-}
-</code></pre>
+}</pre></div>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

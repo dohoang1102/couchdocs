@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - HowToImplementTaggingWithPython</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,102 +56,112 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <p>This example is making use of the <a href="http://code.google.com/p/couchdb-python/">CouchDB Python Library</a> by <a href="http://www.cmlenz.net/">Christopher Lenz</a> and is derived from his <a href="http://code.cmlenz.net/diva/wiki/Divan">example blog application</a>.</p>
 <p>You´ll have to create a database named <code>tagging_example</code> and a design document named <code>_design/posts</code> with the CouchDB Views below.</p>
-<h2>CouchDB Views</h2>
-<h3>all_tags</h3>
+<h2 id="couchdb-views">CouchDB Views</h2>
+<h3 id="all_tags">all_tags</h3>
 <p><em>map</em></p>
-<pre><code>function(doc) {
-  if (doc.type == 'post' &amp;&amp; doc.tags) {
-    doc.tags.forEach(function(tag) {
-      emit(tag, 1);
-    });
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;post&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">forEach</span><span class="p">(</span><span class="n">function</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">emit</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p><em>reduce</em></p>
-<pre><code>function(keys, values) {
-  return sum(values);
-}
-</code></pre>
-<h3>by_tag</h3>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="nb">keys</span><span class="p">,</span> <span class="nb">values</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">sum</span><span class="p">(</span><span class="nb">values</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="by_tag">by_tag</h3>
 <p><em>map</em></p>
-<pre><code>function(doc) {
-  if (doc.type == 'post' &amp;&amp; doc.tags) {
-    doc.tags.forEach(function(tag) {
-      emit(tag.slug, doc);
-    });
-  }
-}
-</code></pre>
-<h2>Create a Post model</h2>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;post&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">forEach</span><span class="p">(</span><span class="n">function</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">emit</span><span class="p">(</span><span class="n">tag</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span> <span class="n">doc</span><span class="p">);</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="create-a-post-model">Create a Post model</h2>
 <p>Tags are entered as comma separated strings in a <code>TextField</code> called <code>tagstring</code> and will be generated from it on storing a post. As this is just a simple example, splitting the tagstring and making slugs in a sensible way is up to you.</p>
-<pre><code>from couchdb.client import Server
-from couchdb.schema import Document, Schema, DictField, ListField, TextField
+<div class="codehilite"><pre><span class="n">from</span> <span class="n">couchdb</span><span class="o">.</span><span class="n">client</span> <span class="nb">import</span> <span class="n">Server</span>
+<span class="n">from</span> <span class="n">couchdb</span><span class="o">.</span><span class="n">schema</span> <span class="nb">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">Schema</span><span class="p">,</span> <span class="n">DictField</span><span class="p">,</span> <span class="n">ListField</span><span class="p">,</span> <span class="n">TextField</span>
 
-server = Server('http://127.0.0.1:5984/')
-db = server['tagging_example']
+<span class="n">server</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="s">&#39;http://127.0.0.1:5984/&#39;</span><span class="p">)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">server</span><span class="p">[</span><span class="s">&#39;tagging_example&#39;</span><span class="p">]</span>
 
-class Post(Document):
+<span class="n">class</span> <span class="n">Post</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
 
-    type = TextField(default='post')
+    <span class="n">type</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;post&#39;</span><span class="p">)</span>
 
-    title = TextField(default=*)
-    # ... rest of your post model: slug, body, created, etc.
+    <span class="n">title</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="n">default</span><span class="o">=*</span><span class="p">)</span>
+    <span class="c1"># ... rest of your post model: slug, body, created, etc.</span>
 
-    tagstring = TextField(default=*)
-    tags = ListField(DictField(Schema.build(
-                    title = TextField(),
-                    slug  = TextField()
-                    )))
+    <span class="n">tagstring</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(</span><span class="n">default</span><span class="o">=*</span><span class="p">)</span>
+    <span class="n">tags</span> <span class="o">=</span> <span class="n">ListField</span><span class="p">(</span><span class="n">DictField</span><span class="p">(</span><span class="n">Schema</span><span class="o">.</span><span class="n">build</span><span class="p">(</span>
+                    <span class="n">title</span> <span class="o">=</span> <span class="n">TextField</span><span class="p">(),</span>
+                    <span class="n">slug</span>  <span class="o">=</span> <span class="n">TextField</span><span class="p">()</span>
+                    <span class="p">)))</span>
 
-    def store(self, db):
-        self.tags = self._make_tags()
-        Document.store(self, db)
+    <span class="n">def</span> <span class="n">store</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+        <span class="n">self</span><span class="o">.</span><span class="n">tags</span> <span class="o">=</span> <span class="n">self</span><span class="o">.</span><span class="n">_make_tags</span><span class="p">()</span>
+        <span class="n">Document</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
 
-    @classmethod
-    def all_tags(cls):
-        return make_cloud([(row.key, row.value) for row in
-                db.view('_view/posts/all_tags', group=True)])
+    <span class="nv">@classmethod</span>
+    <span class="n">def</span> <span class="n">all_tags</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">make_cloud</span><span class="p">([(</span><span class="n">row</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="n">in</span>
+                <span class="n">db</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="s">&#39;_view/posts/all_tags&#39;</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">True</span><span class="p">)])</span>
 
-    @classmethod
-    def by_tag(cls, **options):
-        return cls.view(db, '_view/posts/by_tag', **options)
+    <span class="nv">@classmethod</span>
+    <span class="n">def</span> <span class="n">by_tag</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="s">&#39;_view/posts/by_tag&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
 
-    def _make_tags(self):
-        taglist = set([tag.strip() for tag in self.tagstring.split(',')])
-        tags = [
-                dict(
-                    title = tag,
-                    slug  = tag.lower()
-                    ) for tag in taglist
-                ]
-        return tags
+    <span class="n">def</span> <span class="n">_make_tags</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">taglist</span> <span class="o">=</span> <span class="n">set</span><span class="p">([</span><span class="n">tag</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">tag</span> <span class="n">in</span> <span class="n">self</span><span class="o">.</span><span class="n">tagstring</span><span class="o">.</span><span class="nb">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)])</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">dict</span><span class="p">(</span>
+                    <span class="n">title</span> <span class="o">=</span> <span class="n">tag</span><span class="p">,</span>
+                    <span class="n">slug</span>  <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                    <span class="p">)</span> <span class="k">for</span> <span class="n">tag</span> <span class="n">in</span> <span class="n">taglist</span>
+                <span class="p">]</span>
+        <span class="k">return</span> <span class="n">tags</span>
 
-def make_cloud(tags):
-    """
-    Calculation taken from Zine blogging engine.
-    """
-    import math
-    cloud = []
-    for tag in tags:
-        tag[0][u'size'] = 100 + math.log(tag[1] or 1) * 20
-        cloud.append(tag[0])
-    return cloud
-</code></pre>
-<h3>Add some posts with tagstrings:</h3>
-<pre><code>&gt;&gt;&gt; p1 = Post(title=u"My first Post", tagstring=u"CouchDB, tagging, example")
-&gt;&gt;&gt; p1.store(db)
-&gt;&gt;&gt; p2 = Post(title=u"My second Post", tagstring=u"CouchDB, RESTful, HTTP, JSON, API")
-&gt;&gt;&gt; p2.store(db)
-&gt;&gt;&gt; p3 = Post(title=u"My third Post", tagstring=u"CouchDB, Erlang, HTTP")
-&gt;&gt;&gt; p3.store(db)
-</code></pre>
-<h2>Output</h2>
+<span class="n">def</span> <span class="n">make_cloud</span><span class="p">(</span><span class="n">tags</span><span class="p">):</span>
+    <span class="s">&quot;&quot;&quot;</span>
+<span class="s">    Calculation taken from Zine blogging engine.</span>
+<span class="s">    &quot;&quot;&quot;</span>
+    <span class="nb">import</span> <span class="n">math</span>
+    <span class="n">cloud</span> <span class="o">=</span> <span class="o">[]</span>
+    <span class="k">for</span> <span class="n">tag</span> <span class="n">in</span> <span class="n">tags:</span>
+        <span class="n">tag</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">u</span><span class="s">&#39;size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="nb">log</span><span class="p">(</span><span class="n">tag</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">20</span>
+        <span class="n">cloud</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">cloud</span>
+</pre></div>
+
+
+<h3 id="add-some-posts-with-tagstrings">Add some posts with tagstrings:</h3>
+<div class="codehilite"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">Post</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">u</span><span class="s">&quot;My first Post&quot;</span><span class="p">,</span> <span class="n">tagstring</span><span class="o">=</span><span class="n">u</span><span class="s">&quot;CouchDB, tagging, example&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p1</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">Post</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">u</span><span class="s">&quot;My second Post&quot;</span><span class="p">,</span> <span class="n">tagstring</span><span class="o">=</span><span class="n">u</span><span class="s">&quot;CouchDB, RESTful, HTTP, JSON, API&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p2</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p3</span> <span class="o">=</span> <span class="n">Post</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">u</span><span class="s">&quot;My third Post&quot;</span><span class="p">,</span> <span class="n">tagstring</span><span class="o">=</span><span class="n">u</span><span class="s">&quot;CouchDB, Erlang, HTTP&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">p3</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+</pre></div>
+
+
+<h2 id="output">Output</h2>
 <p>Looking at the <code>all_tags</code> design document in <a href="GettingStartedWithFuton">Futon</a> you´ll see this table:
 <table>
 <tr><td>&lt;50% #A7AFB6&gt; key </td><td>&lt;50% #A7AFB6&gt; value </td></tr>
@@ -147,26 +175,30 @@ def make_cloud(tags):
 <tr><td> {"slug": "tagging", "title": "tagging"} </td><td> 1 </td></tr>
 </table></p>
 <p>The method of the Post model that calls the <code>all_tags</code> design document returns:</p>
-<pre><code>&gt;&gt;&gt; list(Post.all_tags())
-[{u'size': 100.0, u'slug': u'api', u'title': u'API'},
- {u'size': 121.9722457733622, u'slug': u'couchdb', u'title': u'CouchDB'},
- {u'size': 100.0, u'slug': u'erlang', u'title': u'Erlang'},
- {u'size': 100.0, u'slug': u'example', u'title': u'example'},
- {u'size': 113.8629436111989, u'slug': u'http', u'title': u'HTTP'},
- {u'size': 100.0, u'slug': u'json', u'title': u'JSON'},
- {u'size': 100.0, u'slug': u'restful', u'title': u'RESTful'},
- {u'size': 100.0, u'slug': u'tagging', u'title': u'tagging'}]
-</code></pre>
-<p>Getting posts by a specific tag:</p>
-<pre><code>&gt;&gt;&gt; list(Post.by_tag()["example"])
-[&lt;Post u'7d2894971759039454ef29be57cc1b81'@u'1141652034' {u'tagstring': u'CouchDB, tagging, example', u'tags': [{u'slug': u'couchdb', u'title': u'CouchDB'}, {u'slug': u'example', u'title': u'example'}, {u'slug': u'tagging', u'title': u'tagging'}], u'type': u'post', u'title': u'My first Post'}&gt;]
+<div class="codehilite"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">list</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">all_tags</span><span class="p">())</span>
+<span class="p">[{</span><span class="n">u</span><span class="s">&#39;size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="o">.</span><span class="mi">0</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;api&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;API&#39;</span><span class="p">},</span>
+ <span class="p">{</span><span class="n">u</span><span class="s">&#39;size&#39;</span><span class="p">:</span> <span class="mi">121</span><span class="o">.</span><span class="mi">9722457733622</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;couchdb&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;CouchDB&#39;</span><span class="p">},</span>
+ <span class="p">{</span><span class="n">u</span><span class="s">&#39;size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="o">.</span><span class="mi">0</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;erlang&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;Erlang&#39;</span><span class="p">},</span>
+ <span class="p">{</span><span class="n">u</span><span class="s">&#39;size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="o">.</span><span class="mi">0</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;example&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;example&#39;</span><span class="p">},</span>
+ <span class="p">{</span><span class="n">u</span><span class="s">&#39;size&#39;</span><span class="p">:</span> <span class="mi">113</span><span class="o">.</span><span class="mi">8629436111989</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;http&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;HTTP&#39;</span><span class="p">},</span>
+ <span class="p">{</span><span class="n">u</span><span class="s">&#39;size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="o">.</span><span class="mi">0</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;json&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;JSON&#39;</span><span class="p">},</span>
+ <span class="p">{</span><span class="n">u</span><span class="s">&#39;size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="o">.</span><span class="mi">0</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;restful&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;RESTful&#39;</span><span class="p">},</span>
+ <span class="p">{</span><span class="n">u</span><span class="s">&#39;size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="o">.</span><span class="mi">0</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;tagging&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;tagging&#39;</span><span class="p">}]</span>
+</pre></div>
 
-&gt;&gt;&gt; list(Post.by_tag()["couchdb"])
-[&lt;Post u'13b107ad3e14e06352b2476e015cf72f'@u'686077196' {u'tagstring': u'CouchDB, RESTful, HTTP, JSON, API', u'tags': [{u'slug': u'api', u'title': u'API'}, {u'slug': u'http', u'title': u'HTTP'}, {u'slug': u'json', u'title': u'JSON'}, {u'slug': u'couchdb', u'title': u'CouchDB'}, {u'slug': u'restful', u'title': u'RESTful'}], u'type': u'post', u'title': u'My second Post'}&gt;,
- &lt;Post u'7d2894971759039454ef29be57cc1b81'@u'1141652034' {u'tagstring': u'CouchDB, tagging, example', u'tags': [{u'slug': u'couchdb', u'title': u'CouchDB'}, {u'slug': u'example', u'title': u'example'}, {u'slug': u'tagging', u'title': u'tagging'}], u'type': u'post', u'title': u'My first Post'}&gt;,
- &lt;Post u'd71d7d8233a318745124b82f1f8a99d2'@u'667119109' {u'tagstring': u'CouchDB, Erlang, HTTP', u'tags': [{u'slug': u'http', u'title': u'HTTP'}, {u'slug': u'couchdb', u'title': u'CouchDB'}, {u'slug': u'erlang', u'title': u'Erlang'}], u'type': u'post', u'title': u'My third Post'}&gt;]
-</code></pre>
-<h2>ToDo</h2>
+
+<p>Getting posts by a specific tag:</p>
+<div class="codehilite"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">list</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">by_tag</span><span class="p">()[</span><span class="s">&quot;example&quot;</span><span class="p">])</span>
+<span class="p">[</span><span class="o">&lt;</span><span class="n">Post</span> <span class="n">u</span><span class="s">&#39;7d2894971759039454ef29be57cc1b81&#39;</span><span class="nv">@u</span><span class="s">&#39;1141652034&#39;</span> <span class="p">{</span><span class="n">u</span><span class="s">&#39;tagstring&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;CouchDB, tagging, example&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;couchdb&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;CouchDB&#39;</span><span class="p">},</span> <span class="p">{</span><span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;example&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;example&#39;</span><span class="p">},</span> <span class="p">{</span><span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;tagging&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;tagging&#39;</span><span class="p">}],</span> <span class="n">u</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;post&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;My first Post&#39;</span><span class="p">}</span><span class="o">&gt;</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">list</span><span class="p">(</span><span class="n">Post</span><span class="o">.</span><span class="n">by_tag</span><span class="p">()[</span><span class="s">&quot;couchdb&quot;</span><span class="p">])</span>
+<span class="p">[</span><span class="o">&lt;</span><span class="n">Post</span> <span class="n">u</span><span class="s">&#39;13b107ad3e14e06352b2476e015cf72f&#39;</span><span class="nv">@u</span><span class="s">&#39;686077196&#39;</span> <span class="p">{</span><span class="n">u</span><span class="s">&#39;tagstring&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;CouchDB, RESTful, HTTP, JSON, API&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;api&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;API&#39;</span><span class="p">},</span> <span class="p">{</span><span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;http&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;HTTP&#39;</span><span class="p">},</span> <span class="p">{</span><span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;json&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;JSON&#39;</span><span class="p">},</span> <span class="p">{</span><span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;couchdb&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;CouchDB&#39;</span><span class="p">},</span> <span class="p">{</span><span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;restful&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;RESTful&#39;</span><span class="p">}],</span> <span class="n">u</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;post&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;My second Post&#39;</span><span class="p">}</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Post</span> <span class="n">u</span><span class="s">&#39;7d2894971759039454ef29be57cc1b81&#39;</span><span class="nv">@u</span><span class="s">&#39;1141652034&#39;</span> <span class="p">{</span><span class="n">u</span><span class="s">&#39;tagstring&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;CouchDB, tagging, example&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;couchdb&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;CouchDB&#39;</span><span class="p">},</span> <span class="p">{</span><span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;example&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;example&#39;</span><span class="p">},</span> <span class="p">{</span><span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;tagging&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;tagging&#39;</span><span class="p">}],</span> <span class="n">u</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;post&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;My first Post&#39;</span><span class="p">}</span><span class="o">&gt;</span><span class="p">,</span>
+ <span class="o">&lt;</span><span class="n">Post</span> <span class="n">u</span><span class="s">&#39;d71d7d8233a318745124b82f1f8a99d2&#39;</span><span class="nv">@u</span><span class="s">&#39;667119109&#39;</span> <span class="p">{</span><span class="n">u</span><span class="s">&#39;tagstring&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;CouchDB, Erlang, HTTP&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;http&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;HTTP&#39;</span><span class="p">},</span> <span class="p">{</span><span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;couchdb&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;CouchDB&#39;</span><span class="p">},</span> <span class="p">{</span><span class="n">u</span><span class="s">&#39;slug&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;erlang&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;Erlang&#39;</span><span class="p">}],</span> <span class="n">u</span><span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;post&#39;</span><span class="p">,</span> <span class="n">u</span><span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="n">u</span><span class="s">&#39;My third Post&#39;</span><span class="p">}</span><span class="o">&gt;</span><span class="p">]</span>
+</pre></div>
+
+
+<h2 id="todo">ToDo</h2>
 <ul>
 <li>Examples for retrieving Posts by multiple tags, e.g. Posts that are tagged with <code>CouchDB</code> <em>and</em> <code>HTTP</code></li>
 <li>Related tags, e.g. find all tags across posts that are used along with a particular tag. </li>

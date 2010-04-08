@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - How_to_store_hierarchical_data</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,105 +56,119 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <p>For the original article this example was taken from, see http://blog.paulbonser.com/2008/07/04/storing-hierarchical-data-in-couchdb/
 For comparison with how this is usually done with relational DBs, see http://www.sitepoint.com/article/hierarchical-data-database/</p>
-<h2>Storing the Tree</h2>
+<h2 id="storing-the-tree">Storing the Tree</h2>
 <p>Store the full path to each node as an attribute in that node's document.</p>
 <p>For example:</p>
-<pre><code>[
-    {"_id":"Food",   "path":["Food"]},
-    {"_id":"Fruit",  "path":["Food","Fruit"]},
-    {"_id":"Red",    "path":["Food","Fruit","Red"]},
-    {"_id":"Cherry", "path":["Food","Fruit","Red","Cherry"]},
-    {"_id":"Tomato", "path":["Food","Fruit","Red","Tomato"]},
-    {"_id":"Yellow", "path":["Food","Fruit","Yellow"]},
-    {"_id":"Banana", "path":["Food","Fruit","Yellow","Banana"]},
-    {"_id":"Meat",   "path":["Food","Meat"]},
-    {"_id":"Beef",   "path":["Food","Meat","Beef"]},
-    {"_id":"Pork",   "path":["Food","Meat","Pork"]}
-]
-</code></pre>
+<div class="codehilite"><pre><span class="p">[</span>
+    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;Food&quot;</span><span class="p">,</span>   <span class="s">&quot;path&quot;</span><span class="p">:[</span><span class="s">&quot;Food&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;Fruit&quot;</span><span class="p">,</span>  <span class="s">&quot;path&quot;</span><span class="p">:[</span><span class="s">&quot;Food&quot;</span><span class="p">,</span><span class="s">&quot;Fruit&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;Red&quot;</span><span class="p">,</span>    <span class="s">&quot;path&quot;</span><span class="p">:[</span><span class="s">&quot;Food&quot;</span><span class="p">,</span><span class="s">&quot;Fruit&quot;</span><span class="p">,</span><span class="s">&quot;Red&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;Cherry&quot;</span><span class="p">,</span> <span class="s">&quot;path&quot;</span><span class="p">:[</span><span class="s">&quot;Food&quot;</span><span class="p">,</span><span class="s">&quot;Fruit&quot;</span><span class="p">,</span><span class="s">&quot;Red&quot;</span><span class="p">,</span><span class="s">&quot;Cherry&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;Tomato&quot;</span><span class="p">,</span> <span class="s">&quot;path&quot;</span><span class="p">:[</span><span class="s">&quot;Food&quot;</span><span class="p">,</span><span class="s">&quot;Fruit&quot;</span><span class="p">,</span><span class="s">&quot;Red&quot;</span><span class="p">,</span><span class="s">&quot;Tomato&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;Yellow&quot;</span><span class="p">,</span> <span class="s">&quot;path&quot;</span><span class="p">:[</span><span class="s">&quot;Food&quot;</span><span class="p">,</span><span class="s">&quot;Fruit&quot;</span><span class="p">,</span><span class="s">&quot;Yellow&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;Banana&quot;</span><span class="p">,</span> <span class="s">&quot;path&quot;</span><span class="p">:[</span><span class="s">&quot;Food&quot;</span><span class="p">,</span><span class="s">&quot;Fruit&quot;</span><span class="p">,</span><span class="s">&quot;Yellow&quot;</span><span class="p">,</span><span class="s">&quot;Banana&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;Meat&quot;</span><span class="p">,</span>   <span class="s">&quot;path&quot;</span><span class="p">:[</span><span class="s">&quot;Food&quot;</span><span class="p">,</span><span class="s">&quot;Meat&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;Beef&quot;</span><span class="p">,</span>   <span class="s">&quot;path&quot;</span><span class="p">:[</span><span class="s">&quot;Food&quot;</span><span class="p">,</span><span class="s">&quot;Meat&quot;</span><span class="p">,</span><span class="s">&quot;Beef&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;Pork&quot;</span><span class="p">,</span>   <span class="s">&quot;path&quot;</span><span class="p">:[</span><span class="s">&quot;Food&quot;</span><span class="p">,</span><span class="s">&quot;Meat&quot;</span><span class="p">,</span><span class="s">&quot;Pork&quot;</span><span class="p">]}</span>
+<span class="p">]</span>
+</pre></div>
+
+
 <p>In a real system you'd probably want to use some sort of UUID for the _id field rather than descriptive strings, since conflicts between node names could be bad. In fact, it'd probably be much faster to just use numbers, since comparisons on numbers are generally much faster. For the purposes of this example, however, it's much easier to understand if the _id is descriptive text.  For the purposes of displaying the path for a particular document, however, it will generally be easier to store (at least) the descriptive name of each path element in the path array, as shown here.</p>
 <p>Once that data is in your DB, it's time to get it out again!</p>
-<h2>Retrieving the whole tree</h2>
+<h2 id="retrieving-the-whole-tree">Retrieving the whole tree</h2>
 <p>The CouchDB map function to retrieve the whole tree is nice and simple:</p>
-<pre><code>function(doc) {
-    emit(doc.path, doc)
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">emit</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Using the path as the key, the documents will be sorted as above, with each parent immediately followed by its children.</p>
 <p>One option to get the data into an actual tree would be to add a reduce function to the view:</p>
-<pre><code>function(keys, vals) {
-    tree = {};
-    for (var i in vals)
-    {
-        current = tree;
-        for (var j in vals[i].path)
-        {
-            child = vals[i].path[j];
-            if (current[child] == undefined) 
-                current[child] = {};
-            current = current[child];
-        } 
-        current['_data'] = vals[i];
-    }
-    return tree;
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="nb">keys</span><span class="p">,</span> <span class="n">vals</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">tree</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">var</span> <span class="n">i</span> <span class="n">in</span> <span class="n">vals</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">tree</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">var</span> <span class="n">j</span> <span class="n">in</span> <span class="n">vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">child</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="n">child</span><span class="p">]</span> <span class="o">==</span> <span class="n">undefined</span><span class="p">)</span> 
+                <span class="n">current</span><span class="p">[</span><span class="n">child</span><span class="p">]</span> <span class="o">=</span> <span class="p">{};</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">current</span><span class="p">[</span><span class="n">child</span><span class="p">];</span>
+        <span class="p">}</span> 
+        <span class="n">current</span><span class="p">[</span><span class="s">&#39;_data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">tree</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>'''''Note: don't use this reduce function, since it doesn't take the rereduce parameter into account, and would most likely not work correctly if a rereduce was done.'''''</p>
 <p>Another option would be to use a client-side function to accomplish the same thing, for example in Python:</p>
-<pre><code>class TreeNode(dict): pass
+<div class="codehilite"><pre><span class="n">class</span> <span class="n">TreeNode</span><span class="p">(</span><span class="n">dict</span><span class="p">):</span> <span class="n">pass</span>
 
-def tree_from_rows(list):
-    tree = {}
-    for item in list:
-        current = tree
-        for child in item.value['path']:
-            current = current.setdefault(child, TreeNode())
-        current.data = item.value
-    return tree
-</code></pre>
+<span class="n">def</span> <span class="n">tree_from_rows</span><span class="p">(</span><span class="n">list</span><span class="p">):</span>
+    <span class="n">tree</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="n">in</span> <span class="n">list:</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">tree</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="n">in</span> <span class="n">item</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="s">&#39;path&#39;</span><span class="p">]:</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">current</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">TreeNode</span><span class="p">())</span>
+        <span class="n">current</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">return</span> <span class="n">tree</span>
+</pre></div>
+
+
 <p>This code does the job nicely and allows me to use the same function to build a tree from several different views without duplicating code.</p>
-<h2>Getting a subtree</h2>
+<h2 id="getting-a-subtree">Getting a subtree</h2>
 <p>To get all the nodes which are underneath a specific node, I implemented the view's map function as follows:</p>
-<pre><code>function(doc) { 
-    for (var i in doc.path) { 
-        emit([doc.path[i], doc.path], doc) 
-    } 
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span> 
+    <span class="k">for</span> <span class="p">(</span><span class="n">var</span> <span class="n">i</span> <span class="n">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="p">{</span> 
+        <span class="n">emit</span><span class="p">([</span><span class="n">doc</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">doc</span><span class="o">.</span><span class="n">path</span><span class="p">],</span> <span class="n">doc</span><span class="p">)</span> 
+    <span class="p">}</span> 
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Again, this is pretty simple. The only difference from the last view is that I can now query this view with a startkey and endkey (see the HttpViewApi) to get only nodes under a certain node. You could actually do that with the previous view, except you'd have to include the full path to the node in the startkey, which is a bit too much.</p>
 <p>For example, if you had CouchDB running on your machine right now with the above example data loaded and went to http://localhost:5984/tree/_view/tree/descendants?startkey=[%22Fruit%22]&amp;endkey=[%22Fruit%22,{}]</p>
-<h2>How Many Descendants</h2>
+<h2 id="how-many-descendants">How Many Descendants</h2>
 <p>Getting the number of descendants for a given node is simple. The view is as follows:</p>
-<pre><code>'descendant_count': {
-    'map':    'function(doc) { for (var i in doc.path) { emit(doc.path[i], 1) } }',
-    'reduce': 'function(keys, values) { return sum(values) }'
-}
-</code></pre>
+<div class="codehilite"><pre><span class="s">&#39;descendant_count&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s">&#39;map&#39;</span><span class="p">:</span>    <span class="s">&#39;function(doc) { for (var i in doc.path) { emit(doc.path[i], 1) } }&#39;</span><span class="p">,</span>
+    <span class="s">&#39;reduce&#39;</span><span class="p">:</span> <span class="s">&#39;function(keys, values) { return sum(values) }&#39;</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>This will count the parent node as well, so you will probably want to subtract one from it at some point. To use this view simply call it with the key parameter set to the id of the desired root node.</p>
-<h2>Getting the immediate children of a node</h2>
+<h2 id="getting-the-immediate-children-of-a-node">Getting the immediate children of a node</h2>
 <p>Sometimes you just want to get a list of nodes which are immediately under a given node. This can be done by using a map with the following map function:</p>
-<pre><code>function(doc) { 
-    emit([doc.path.slice(-2,-1)[0], doc.path], doc) 
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span> 
+    <span class="n">emit</span><span class="p">([</span><span class="n">doc</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">doc</span><span class="o">.</span><span class="n">path</span><span class="p">],</span> <span class="n">doc</span><span class="p">)</span> 
+<span class="p">}</span>
+</pre></div>
+
+
 <p>This map function simply takes the second-to-last element from the path and uses that as the first element in the key. You can query this view in the same way as the "getting a subtree" view above.</p>
-<h2>Adding a node</h2>
+<h2 id="adding-a-node">Adding a node</h2>
 <p>Adding a node to the tree is fairly simple. Set the new node's path to be the path of the desired parent node with the new node's ID appended to the end. That's it.</p>
-<h2>Deleting a node</h2>
+<h2 id="deleting-a-node">Deleting a node</h2>
 <p>Deleting a node is a bit trickier since any given node may have some number of children. You can get the list of nodes in the subtree as outlined above and then do a bulk update to delete each of them.</p>
 <p>Depending on the data being stored, deleting the whole sub-tree might not ever be something you want to do, in a discussion forum, for example, you might want to simply delete a single offensive post, leaving any replies which might have been posted. Even in this case, it's more likely that you'd want to set a flag indicating the deletion rather than actually deleting the post.</p>
-<h2>Moving a node to another parent</h2>
+<h2 id="moving-a-node-to-another-parent">Moving a node to another parent</h2>
 <p>This is an instance where being able to update just certain fields in a document would be handly, since bulk-updating a large chunk of documents could start to kill performance.</p>
 <p>Either way, if something needs to be reparented, it's just a matter of getting all nodes which are children of a certain node, then doing a bulk update to change their paths to wherever they need to be.</p>
 <p>This part worries me a bit, because there's a chance that somebody else could add a new child node while you are in the process of moving the sub-tree, leaving that new node dangling by itself in a sub-tree which no longer exists. I'm not sure of the best approach to avoid such a problem.</p>
 <p>There is some example Python code to handle using the above views to fetch trees available at http://git.paulbonser.com/?p=couchdb.git;a=summary</p>
-<h2>Searching by value and returning associated documents</h2>
+<h2 id="searching-by-value-and-returning-associated-documents">Searching by value and returning associated documents</h2>
 <p>Couchdb 0.11 adds a feature where you can emit a key,value pair linked to a different document ID. Hence it's possible to build a view where you can search for a value V <em>and</em> also return the ancestors or children for that value in adjacent rows. See [[Introduction_to_CouchDB_views#Linked_documents]]</p>
 </div>
       <div id="footer">

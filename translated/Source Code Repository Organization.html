@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Source Code Repository Organization</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,21 +56,21 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <p>This page describes how the CouchDB source repository is organized.</p>
-<h1>The Repository</h1>
+<h1 id="the-repository">The Repository</h1>
 <p>The main and central repository lives at http://svn.apache.org/repos/asf/couchdb/. If you prefer git to svn, you can use the official <a href="http://git.apache.org/">Apache Git mirror</a>. It mirrors the svn repository's structure.</p>
 <p>(Committers should use the SSL-secured server at https://svn.apache.org/repos/asf/couchdb/).</p>
-<h2>trunk</h2>
+<h2 id="trunk">trunk</h2>
 <p>http://svn.apache.org/repos/asf/couchdb/trunk or <em>trunk</em> is where day-to-day development happens. New features and bugfixes are committed here. <a href="Feature Branches">http://wiki.apache.org/couchdb/Branch_management</a> are merged into trunk in case new features have been developed in isolation.</p>
-<h2>branches/z.y.x</h2>
+<h2 id="brancheszyx">branches/z.y.x</h2>
 <p>Branches that are not feature branches are <em>release branches</em>. <em>Major versions</em> are represented by the first number (z) in the version triplet. The middle number (y) denotes minor versions and the third number (z) represents <em>bugfix releases</em>.</p>
 <p>Once the developers decide trunk is in a good state to produce a new version of CouchDB, a release branch is created with the appropriate version numbers: Say trunk is deemed ready to be the basis for a future 0.11.0 release (where the current release is 0.10.1), a new branch branches/0.11.x is created to <em>track</em> the development of the 0.11.x series of CouchDB releases.</p>
 <p>Each release of major version (1.0.0, 1.0.1, ..., 1.1.0, 1.1.1, etc) is guaranteed to work in backwards compatible ways (as well as we humanly guarantee it :). New major versions may have incompatibilities. Upgrades between bugfix versions (0.11.0 to 0.11.1) should be seamless, upgrading minor or major versions might require extra work.</p>
-<h2>tags/z.x.y</h2>
+<h2 id="tagszxy">tags/z.x.y</h2>
 <p>When the 0.11.x branch is deemed ready for a first release a new <em>tag</em> tags/0.11.0 is created that is a snapshot of the CouchDB source code that is the 0.11.0 release. Bugfixes to the 0.11.x line of release go into branches/0.11.x. When a new version 0.11.1 is released because enough bugfixes went into branches/0.11.x, a new tag tags/0.11.1 is created to snapshot the next release and so on.</p>
 </div>
       <div id="footer">

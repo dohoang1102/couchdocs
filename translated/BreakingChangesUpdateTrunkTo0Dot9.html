@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - BreakingChangesUpdateTrunkTo0Dot9</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,89 +56,99 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <p>The latest CouchDB update brings a mature replication model for distributed updates. This involved quite a lot of changes to the internal handling of MVCC tokens. The result is what we think will be a stable and scalable model for distributed updates. It also means that both the replication API and the database file format have changed at the same time.</p>
 <p>Normally when the database file format changes upgrading can be accomplished by launching two copies of CouchDB on two different ports and replicating between them. In this case that won't work as the replication API has changed.</p>
 <p>I've written a script to do the replication for you. It's linked there and embedded below. It's not perfectly awesome (see caveats later) but it does the trick and won't blow up on databases with lots of docs. Nor does it fill up your filesystem with intermediate data.</p>
-<h2>Usage</h2>
+<h2 id="usage">Usage</h2>
 <p>First you need the latest CouchRest Ruby gem (0.2.2). I never met a packaging system I didn't hate, so I won't even suggest that you attempt to install CouchRest from a remote gem server. Instead do this:</p>
-<pre><code>git clone git://github.com/jchris/couchrest.git
-cd couchrest
-gem build couchrest.gemspec 
-sudo gem install couchrest-*.gem
-</code></pre>
+<div class="codehilite"><pre><span class="n">git</span> <span class="n">clone</span> <span class="n">git:</span><span class="sr">//gi</span><span class="n">thub</span><span class="o">.</span><span class="n">com</span><span class="sr">/jchris/co</span><span class="n">uchrest</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">couchrest</span>
+<span class="n">gem</span> <span class="n">build</span> <span class="n">couchrest</span><span class="o">.</span><span class="n">gemspec</span> 
+<span class="n">sudo</span> <span class="n">gem</span> <span class="n">install</span> <span class="n">couchrest</span><span class="o">-*.</span><span class="n">gem</span>
+</pre></div>
+
+
 <p>Now that you have the latest CouchRest, you can download the script (see the bottom of this page) save it into a file <code>couchdb_trunk_update_script.rb</code>, adjust the <code>OLD_HOST</code> and <code>NEW_HOST</code> to reflect your environment, and start it up. It does give some output every 100 docs, so you won't be totally at a loss to what's happening.</p>
-<pre><code>ruby couchdb_trunk_update_script.rb
-</code></pre>
+<div class="codehilite"><pre><span class="n">ruby</span> <span class="n">couchdb_trunk_update_script</span><span class="o">.</span><span class="n">rb</span>
+</pre></div>
+
+
 <p>It assumes that none of the databases on your <code>OLD_HOST</code> exist on your <code>NEW_HOST</code>. If they do exist it will skip them.</p>
 <p>It also assumes that none of your individual attachments are larger than the memory you can dedicate to the Ruby runtime. Coding a streaming attachment solution would be a fair amount more work. If you need it patches are welcome but I think you might be better off with a different approach. My script batches updates into blocks of 100 docs.</p>
 <p>If you have giant attachments, I'd do the docs one at a time, and stream each attachment individually. It'd probably be easier to shell out to curl from Ruby than to try to code it as a Ruby <code>Net::HTTP</code> operation.</p>
 <p>Dueling Couches
 To run CouchDB in two ports at once, you should run them in separate directories. The easiest way to do this from the source package is with the make dev target. You'll want to checkout CouchDB trunk in one directory, like so:</p>
-<pre><code>svn co https://svn.apache.org/repos/asf/couchdb/trunk
-</code></pre>
+<div class="codehilite"><pre><span class="n">svn</span> <span class="n">co</span> <span class="n">https:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/couchdb/</span><span class="n">trunk</span>
+</pre></div>
+
+
 <p>And then there's a handy tag of the last time the old file format was available, so check it out in another directory:</p>
-<pre><code>svn co https://svn.apache.org/repos/asf/couchdb/tags/bulk_transactions
-</code></pre>
+<div class="codehilite"><pre><span class="n">svn</span> <span class="n">co</span> <span class="n">https:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/couchdb/</span><span class="n">tags</span><span class="o">/</span><span class="n">bulk_transactions</span>
+</pre></div>
+
+
 <p>Once you have make dev completed in both checkouts, copy your existing old-format databases (the <code>.couch</code> files) to the <code>tmp/lib</code> directory of the bulk_transactions checkout. When you run it with utils/run you should be able to browse those databases in Futon.</p>
 <p>Now, edit the trunk CouchDB's configuration so that it runs on port 5985 instead of 5984. This you can do by changing the <code>etc/couchdb/local_dev.ini</code> file that was created by <code>make dev</code>. Once that's done you can launch trunk CouchDB with <code>utils/run</code></p>
-<h2>The Script</h2>
-<pre><code>require 'rubygems'
-require 'couchrest'
+<h2 id="the-script">The Script</h2>
+<div class="codehilite"><pre><span class="nb">require</span> <span class="s">&#39;rubygems&#39;</span>
+<span class="nb">require</span> <span class="s">&#39;couchrest&#39;</span>
 
-&lt;!-- # this is the CouchDB where all the old databases are --&gt;
+<span class="o">&lt;!--</span> <span class="c1"># this is the CouchDB where all the old databases are --&gt;</span>
 
-OLD_HOST = "http://127.0.0.1:5984"
+<span class="n">OLD_HOST</span> <span class="o">=</span> <span class="s">&quot;http://127.0.0.1:5984&quot;</span>
 
-&lt;!-- # this is the CouchDB we want to copy to --&gt;
+<span class="o">&lt;!--</span> <span class="c1"># this is the CouchDB we want to copy to --&gt;</span>
 
-NEW_HOST = "http://127.0.0.1:5985"
+<span class="n">NEW_HOST</span> <span class="o">=</span> <span class="s">&quot;http://127.0.0.1:5985&quot;</span>
 
-old_couch = CouchRest.new(OLD_HOST)
-new_couch = CouchRest.new(NEW_HOST)
+<span class="n">old_couch</span> <span class="o">=</span> <span class="n">CouchRest</span><span class="o">.</span><span class="k">new</span><span class="p">(</span><span class="n">OLD_HOST</span><span class="p">)</span>
+<span class="n">new_couch</span> <span class="o">=</span> <span class="n">CouchRest</span><span class="o">.</span><span class="k">new</span><span class="p">(</span><span class="n">NEW_HOST</span><span class="p">)</span>
 
-databases = old_couch.databases
+<span class="n">databases</span> <span class="o">=</span> <span class="n">old_couch</span><span class="o">.</span><span class="n">databases</span>
 
-databases.each do |dbname|
-  if new_couch.databases.include?(dbname)
-    puts "the database '#{dbname}' already exists on the target"
-    puts "patches welcome for picking this process up in the middle"
-    puts "for now if it fails in the middle you could just comment out these lines"
-    puts "but you'll do double work and end up with spurious conflicts"
-    puts
-    puts
-  else
-    upgrader = CouchRest::Upgrade.new(dbname, old_couch, new_couch)
-    upgrader.clone!  
-  end
-end
-</code></pre>
+<span class="n">databases</span><span class="o">.</span><span class="nb">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">dbname</span><span class="o">|</span>
+  <span class="k">if</span> <span class="n">new_couch</span><span class="o">.</span><span class="n">databases</span><span class="o">.</span><span class="n">include</span><span class="p">?(</span><span class="n">dbname</span><span class="p">)</span>
+    <span class="n">puts</span> <span class="s">&quot;the database &#39;#{dbname}&#39; already exists on the target&quot;</span>
+    <span class="n">puts</span> <span class="s">&quot;patches welcome for picking this process up in the middle&quot;</span>
+    <span class="n">puts</span> <span class="s">&quot;for now if it fails in the middle you could just comment out these lines&quot;</span>
+    <span class="n">puts</span> <span class="s">&quot;but you&#39;ll do double work and end up with spurious conflicts&quot;</span>
+    <span class="n">puts</span>
+    <span class="n">puts</span>
+  <span class="k">else</span>
+    <span class="n">upgrader</span> <span class="o">=</span> <span class="nn">CouchRest::</span><span class="n">Upgrade</span><span class="o">.</span><span class="k">new</span><span class="p">(</span><span class="n">dbname</span><span class="p">,</span> <span class="n">old_couch</span><span class="p">,</span> <span class="n">new_couch</span><span class="p">)</span>
+    <span class="n">upgrader</span><span class="o">.</span><span class="n">clone</span><span class="o">!</span>  
+  <span class="n">end</span>
+<span class="n">end</span>
+</pre></div>
+
+
 <p>Output should look something like:</p>
-<pre><code>$ ruby upgrade.rb 
-canon - 1 docs
-posting 1 bulk docs to http://jchrisa.net:5985/canon/_bulk_docs?all_or_nothing=true
-commit-hooks - 2 docs
-posting 2 bulk docs to http://jchrisa.net:5985/commit-hooks/_bulk_docs?all_or_nothing=true
-drl - 297 docs
-posting 100 bulk docs to http://jchrisa.net:5985/drl/_bulk_docs?all_or_nothing=true
-posting 100 bulk docs to http://jchrisa.net:5985/drl/_bulk_docs?all_or_nothing=true
-posting 98 bulk docs to http://jchrisa.net:5985/drl/_bulk_docs?all_or_nothing=true
-sofa-ajax - 2 docs
-posting 2 bulk docs to http://jchrisa.net:5985/sofa-ajax/_bulk_docs?all_or_nothing=true
-sofa-blog - 23 docs
-posting 23 bulk docs to http://jchrisa.net:5985/sofa-blog/_bulk_docs?all_or_nothing=true
-sofa-dev - 4 docs
-posting 4 bulk docs to http://jchrisa.net:5985/sofa-dev/_bulk_docs?all_or_nothing=true
-twitter-client-design - 1 docs
-posting 1 bulk docs to http://jchrisa.net:5985/twitter-client-design/_bulk_docs?all_or_nothing=true
-twitter-client - 14027 docs
-posting 100 bulk docs to http://jchrisa.net:5985/twitter-client/_bulk_docs?all_or_nothing=true
-posting 100 bulk docs to http://jchrisa.net:5985/twitter-client/_bulk_docs?all_or_nothing=true
-...
-</code></pre>
+<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">ruby</span> <span class="n">upgrade</span><span class="o">.</span><span class="n">rb</span> 
+<span class="n">canon</span> <span class="o">-</span> <span class="mi">1</span> <span class="n">docs</span>
+<span class="n">posting</span> <span class="mi">1</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/canon/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
+<span class="n">commit</span><span class="o">-</span><span class="n">hooks</span> <span class="o">-</span> <span class="mi">2</span> <span class="n">docs</span>
+<span class="n">posting</span> <span class="mi">2</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/commit-hooks/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
+<span class="n">drl</span> <span class="o">-</span> <span class="mi">297</span> <span class="n">docs</span>
+<span class="n">posting</span> <span class="mi">100</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/drl/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
+<span class="n">posting</span> <span class="mi">100</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/drl/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
+<span class="n">posting</span> <span class="mi">98</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/drl/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
+<span class="n">sofa</span><span class="o">-</span><span class="n">ajax</span> <span class="o">-</span> <span class="mi">2</span> <span class="n">docs</span>
+<span class="n">posting</span> <span class="mi">2</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/sofa-ajax/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
+<span class="n">sofa</span><span class="o">-</span><span class="n">blog</span> <span class="o">-</span> <span class="mi">23</span> <span class="n">docs</span>
+<span class="n">posting</span> <span class="mi">23</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/sofa-blog/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
+<span class="n">sofa</span><span class="o">-</span><span class="n">dev</span> <span class="o">-</span> <span class="mi">4</span> <span class="n">docs</span>
+<span class="n">posting</span> <span class="mi">4</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/sofa-dev/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
+<span class="n">twitter</span><span class="o">-</span><span class="n">client</span><span class="o">-</span><span class="n">design</span> <span class="o">-</span> <span class="mi">1</span> <span class="n">docs</span>
+<span class="n">posting</span> <span class="mi">1</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/twitter-client-design/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
+<span class="n">twitter</span><span class="o">-</span><span class="n">client</span> <span class="o">-</span> <span class="mi">14027</span> <span class="n">docs</span>
+<span class="n">posting</span> <span class="mi">100</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/twitter-client/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
+<span class="n">posting</span> <span class="mi">100</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/twitter-client/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
+<span class="o">...</span>
+</pre></div>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

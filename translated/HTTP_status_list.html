@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - HTTP_status_list</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,30 +56,30 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <p>A list of HTTP statuses used by CouchDB and their respective meanings.</p>
-<h3>200 - OK</h3>
+<h3 id="200-ok">200 - OK</h3>
 <p>Request completed successfully.</p>
-<h3>201 - Created</h3>
+<h3 id="201-created">201 - Created</h3>
 <p>Document created successfully.</p>
-<h3>202 - Accepted</h3>
+<h3 id="202-accepted">202 - Accepted</h3>
 <p>Request for database compaction completed successfully.</p>
-<h3>304 - Not Modified</h3>
+<h3 id="304-not-modified">304 - Not Modified</h3>
 <p>Etag not modified since last update.</p>
-<h3>400 - Bad Request</h3>
+<h3 id="400-bad-request">400 - Bad Request</h3>
 <p>Request given is not valid in some way.</p>
-<h3>404 - Not Found</h3>
+<h3 id="404-not-found">404 - Not Found</h3>
 <p>Such as a request via the HttpDocumentApi for a document which doesn't exist.</p>
-<h3>405 - Resource Not Allowed</h3>
+<h3 id="405-resource-not-allowed">405 - Resource Not Allowed</h3>
 <p>Request was accessing a non-existent URL.  For example, if you have a malformed URL, or are using a third party library that is targeting a different version of CouchDB.</p>
-<h3>409 - Conflict</h3>
+<h3 id="409-conflict">409 - Conflict</h3>
 <p>Request resulted in an update conflict.</p>
-<h3>412 - Precondition Failed</h3>
+<h3 id="412-precondition-failed">412 - Precondition Failed</h3>
 <p>Request attempted to created database which already exists.</p>
-<h3>500 - Internal Server Error</h3>
+<h3 id="500-internal-server-error">500 - Internal Server Error</h3>
 <p>Request contained invalid JSON, probably happens in other cases too.</p>
 <p><em>As you can see, this document is incomplete, please update.</em></p>
 </div>

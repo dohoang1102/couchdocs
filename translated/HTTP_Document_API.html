@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - HTTP_Document_API</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,47 +56,86 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h1>HTTP Document API</h1>
-<!-- <<TableOfContents(3)>> -->
-
+  <h1 id="http-document-api">HTTP Document API</h1>
+<div class="toc">
+<ul>
+<li><a href="#http-document-api">HTTP Document API</a><ul>
+<li><a href="#namingaddressing">Naming/Addressing</a></li>
+<li><a href="#documents">Documents</a><ul>
+<li><a href="#special-fields">Special Fields</a><ul>
+<li><a href="#document-ids">Document IDs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#working-with-documents-over-http">Working With Documents Over HTTP</a><ul>
+<li><a href="#get">GET</a><ul>
+<li><a href="#accessing-previous-revisions">Accessing Previous Revisions</a></li>
+</ul>
+</li>
+<li><a href="#put">PUT</a></li>
+<li><a href="#post">POST</a></li>
+<li><a href="#delete">DELETE</a></li>
+<li><a href="#copy">COPY</a></li>
+<li><a href="#move">MOVE</a></li>
+<li><a href="#bulk-docs">Bulk Docs</a></li>
+</ul>
+</li>
+<li><a href="#all-documents">All Documents</a></li>
+<li><a href="#all_docs_by_seq">all_docs_by_seq</a></li>
+<li><a href="#attachments">Attachments</a><ul>
+<li><a href="#inline-attachments">Inline Attachments</a></li>
+<li><a href="#multiple-attachments">Multiple Attachments</a></li>
+<li><a href="#standalone-attachments">Standalone Attachments</a></li>
+</ul>
+</li>
+<li><a href="#etagscaching">ETags/Caching</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <p>This is an introduction to the CouchDB HTTP document API.</p>
-<h2>Naming/Addressing</h2>
+<h2 id="namingaddressing">Naming/Addressing</h2>
 <p>Documents stored in a CouchDB have a DocID. DocIDs are case-sensitive string identifiers that uniquely identify a document. Two documents cannot have the same identifier in the same database, they are considered the same document.</p>
-<pre><code>http://localhost:5984/test/some_doc_id
-http://localhost:5984/test/another_doc_id
-http://localhost:5984/test/BA1F48C5418E4E68E5183D5BD1F06476
-</code></pre>
+<div class="codehilite"><pre><span class="n">http:</span><span class="sr">//</span><span class="n">localhost:5984</span><span class="sr">/test/som</span><span class="n">e_doc_id</span>
+<span class="n">http:</span><span class="sr">//</span><span class="n">localhost:5984</span><span class="sr">/test/</span><span class="n">another_doc_id</span>
+<span class="n">http:</span><span class="sr">//</span><span class="n">localhost:5984</span><span class="sr">/test/</span><span class="n">BA1F48C5418E4E68E5183D5BD1F06476</span>
+</pre></div>
+
+
 <p>The above URLs point to <em>some_doc_id</em>, <em>another_doc_id</em> and <em>BA1F48C5418E4E68E5183D5BD1F06476</em> in the database <em>test</em>.</p>
-<h2>Documents</h2>
+<h2 id="documents">Documents</h2>
 <p>A CouchDB document is simply a JSON object. You can use any JSON structure with nesting. You can fetch the document's revision information by adding <em>?revs=true</em> or <em>?revs_info=true</em> to the get request.</p>
 <p>Here are two simple examples of documents:</p>
-<pre><code>{
- "_id":"discussion_tables",
- "_rev":"D1C946B7",
- "Sunrise":true,
- "Sunset":false,
- "FullHours":[1,2,3,4,5,6,7,8,9,10],
- "Activities": [
-   {"Name":"Football", "Duration":2, "DurationUnit":"Hours"},
-   {"Name":"Breakfast", "Duration":40, "DurationUnit":"Minutes", "Attendees":["Jan", "Damien", "Laura", "Gwendolyn", "Roseanna"]}
- ]
-}
+<div class="codehilite"><pre><span class="p">{</span>
+ <span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;discussion_tables&quot;</span><span class="p">,</span>
+ <span class="s">&quot;_rev&quot;</span><span class="p">:</span><span class="s">&quot;D1C946B7&quot;</span><span class="p">,</span>
+ <span class="s">&quot;Sunrise&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">,</span>
+ <span class="s">&quot;Sunset&quot;</span><span class="p">:</span><span class="n">false</span><span class="p">,</span>
+ <span class="s">&quot;FullHours&quot;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span>
+ <span class="s">&quot;Activities&quot;</span><span class="p">:</span> <span class="p">[</span>
+   <span class="p">{</span><span class="s">&quot;Name&quot;</span><span class="p">:</span><span class="s">&quot;Football&quot;</span><span class="p">,</span> <span class="s">&quot;Duration&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="s">&quot;DurationUnit&quot;</span><span class="p">:</span><span class="s">&quot;Hours&quot;</span><span class="p">},</span>
+   <span class="p">{</span><span class="s">&quot;Name&quot;</span><span class="p">:</span><span class="s">&quot;Breakfast&quot;</span><span class="p">,</span> <span class="s">&quot;Duration&quot;</span><span class="p">:</span><span class="mi">40</span><span class="p">,</span> <span class="s">&quot;DurationUnit&quot;</span><span class="p">:</span><span class="s">&quot;Minutes&quot;</span><span class="p">,</span> <span class="s">&quot;Attendees&quot;</span><span class="p">:[</span><span class="s">&quot;Jan&quot;</span><span class="p">,</span> <span class="s">&quot;Damien&quot;</span><span class="p">,</span> <span class="s">&quot;Laura&quot;</span><span class="p">,</span> <span class="s">&quot;Gwendolyn&quot;</span><span class="p">,</span> <span class="s">&quot;Roseanna&quot;</span><span class="p">]}</span>
+ <span class="p">]</span>
+<span class="p">}</span>
 
-{
- "_id":"some_doc_id",
- "_rev":"D1C946B7",
- "Subject":"I like Plankton",
- "Author":"Rusty",
- "PostedDate":"2006-08-15T17:30:12-04:00",
- "Tags":["plankton", "baseball", "decisions"],
- "Body":"I decided today that I don't like baseball. I like plankton."
-}
-</code></pre>
-<h3>Special Fields</h3>
+<span class="p">{</span>
+ <span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;some_doc_id&quot;</span><span class="p">,</span>
+ <span class="s">&quot;_rev&quot;</span><span class="p">:</span><span class="s">&quot;D1C946B7&quot;</span><span class="p">,</span>
+ <span class="s">&quot;Subject&quot;</span><span class="p">:</span><span class="s">&quot;I like Plankton&quot;</span><span class="p">,</span>
+ <span class="s">&quot;Author&quot;</span><span class="p">:</span><span class="s">&quot;Rusty&quot;</span><span class="p">,</span>
+ <span class="s">&quot;PostedDate&quot;</span><span class="p">:</span><span class="s">&quot;2006-08-15T17:30:12-04:00&quot;</span><span class="p">,</span>
+ <span class="s">&quot;Tags&quot;</span><span class="p">:[</span><span class="s">&quot;plankton&quot;</span><span class="p">,</span> <span class="s">&quot;baseball&quot;</span><span class="p">,</span> <span class="s">&quot;decisions&quot;</span><span class="p">],</span>
+ <span class="s">&quot;Body&quot;</span><span class="p">:</span><span class="s">&quot;I decided today that I don&#39;t like baseball. I like plankton.&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="special-fields">Special Fields</h3>
 <p>Note that any top-level fields with a name that starts with a <em>_</em> prefix are reserved for use by CouchDB itself. Also see <a class="internal" href="Reserved_words.html">Reserved_words</a>. Currently (0.10+) reserved fields are:</p>
 <p>||<strong>Field Name</strong>||<strong>Description</strong>||
   ||<em>_id</em>|| The unique identifier of the document (<strong>mandatory</strong> and <strong>immutable</strong>)||
@@ -89,391 +146,482 @@ http://localhost:5984/test/BA1F48C5418E4E68E5183D5BD1F06476
   ||<em>_rev_infos</em>|| Similar to <em>_revisions</em>, but more details about the history and the availability of ancient versions of the document||
   ||<em>_conflicts</em>|| Information about conflicts||
   ||<em>_deleted_conflicts</em>|| Information about conflicts||</p>
-<h4>Document IDs</h4>
+<h4 id="document-ids">Document IDs</h4>
 <p>Document IDs don't have restrictions on what characters can be used. Although it should work, it is recommended to use non-special characters for document IDs. Using special characters you have to be aware of proper URL en-/decoding. Documents prefixed with <em>_</em> are special documents:</p>
 <p>||<strong>Document ID prefix</strong>||<strong>Description</strong>||
   ||<em>_design/</em>|| are <a href="DesignDocuments]] ">|
   ||<em>_local/</em>|| are not being replicated (local documents) and used for [[Replication||replication</a> checkpointing. ||</p>
 <p>You can have <strong>/</strong> as part of the document ID but if you refer to a document in a URL you must always encode it as <strong>%2F</strong>. One special case is <strong>_design/</strong> documents, those accept either <strong>/</strong> or <strong>%2F</strong> for the <strong>/</strong> after <em>_design</em>, although <strong>/</strong> is preferred and <strong>%2F</strong> is still needed for the rest of the DocID.</p>
-<h2>Working With Documents Over HTTP</h2>
-<h3>GET</h3>
+<h2 id="working-with-documents-over-http">Working With Documents Over HTTP</h2>
+<h3 id="get">GET</h3>
 <p>To retrieve a document, simply perform a <em>GET</em> operation at the document's URL:</p>
-<pre><code>GET /somedatabase/some_doc_id HTTP/1.0
-</code></pre>
-<p>Here is the server's response:</p>
-<pre><code>HTTP/1.1 200 OK
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-Content-Type: application/json
-Connection: close
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/somedatabase/som</span><span class="n">e_doc_id</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
 
-{
- "_id":"some_doc_id",
- "_rev":"946B7D1C",
- "Subject":"I like Plankton",
- "Author":"Rusty",
- "PostedDate":"2006-08-15T17:30:12Z-04:00",
- "Tags":["plankton", "baseball", "decisions"],
- "Body":"I decided today that I don't like baseball. I like plankton."
-}
-</code></pre>
-<h4>Accessing Previous Revisions</h4>
+
+<p>Here is the server's response:</p>
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
+
+<span class="p">{</span>
+ <span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;some_doc_id&quot;</span><span class="p">,</span>
+ <span class="s">&quot;_rev&quot;</span><span class="p">:</span><span class="s">&quot;946B7D1C&quot;</span><span class="p">,</span>
+ <span class="s">&quot;Subject&quot;</span><span class="p">:</span><span class="s">&quot;I like Plankton&quot;</span><span class="p">,</span>
+ <span class="s">&quot;Author&quot;</span><span class="p">:</span><span class="s">&quot;Rusty&quot;</span><span class="p">,</span>
+ <span class="s">&quot;PostedDate&quot;</span><span class="p">:</span><span class="s">&quot;2006-08-15T17:30:12Z-04:00&quot;</span><span class="p">,</span>
+ <span class="s">&quot;Tags&quot;</span><span class="p">:[</span><span class="s">&quot;plankton&quot;</span><span class="p">,</span> <span class="s">&quot;baseball&quot;</span><span class="p">,</span> <span class="s">&quot;decisions&quot;</span><span class="p">],</span>
+ <span class="s">&quot;Body&quot;</span><span class="p">:</span><span class="s">&quot;I decided today that I don&#39;t like baseball. I like plankton.&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h4 id="accessing-previous-revisions">Accessing Previous Revisions</h4>
 <p>See DocumentRevisions for additional notes on revisions.</p>
 <p>The above example gets the current revision. You may be able to get a specific revision by using the following syntax:</p>
-<pre><code>GET /somedatabase/some_doc_id?rev=946B7D1C HTTP/1.0
-</code></pre>
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/somedatabase/som</span><span class="n">e_doc_id</span><span class="p">?</span><span class="n">rev</span><span class="o">=</span><span class="mi">946</span><span class="n">B7D1C</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
+
+
 <p>To find out what revisions are available for a document, you can do:</p>
-<pre><code>GET /somedatabase/some_doc_id?revs=true HTTP/1.0
-</code></pre>
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/somedatabase/som</span><span class="n">e_doc_id</span><span class="p">?</span><span class="n">revs</span><span class="o">=</span><span class="n">true</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
+
+
 <p>This returns the current revision of the document, but with an additional field, <em>_revisions</em>, the value being a list of the available revision IDs. <em>Note though that not every of those revisions of the document is necessarily still available.</em> For example, the content of an old revision get removed by compacting the database, or it may only exist in a different database if it was replicated.</p>
 <p>To get more detailed information about the available document revisions, use the <em>revs_info</em> parameter instead. In this case, the JSON result will contain a <em>_revs_info</em> property, which is an array of objects, for example:</p>
-<pre><code>{
-  "_revs_info": [
-    {"rev": "123456", "status": "disk"},
-    {"rev": "234567", "status": "missing"},
-    {"rev": "345678", "status": "deleted"},
-  ]
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span>
+  <span class="s">&quot;_revs_info&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span> <span class="s">&quot;123456&quot;</span><span class="p">,</span> <span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="s">&quot;disk&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span> <span class="s">&quot;234567&quot;</span><span class="p">,</span> <span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="s">&quot;missing&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span> <span class="s">&quot;345678&quot;</span><span class="p">,</span> <span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="s">&quot;deleted&quot;</span><span class="p">},</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Here, <em>disk</em> means the revision content is stored on disk and can still be retrieved. The other values indicate that the content of that revision is not available.</p>
 <p>You can fetch the bodies of multiple revisions at once using the parameter <code>open_revs=["rev1","rev2",...]</code>, or you can fetch all leaf revisions using <code>open_revs=all</code> (see <a class="internal" href="Replication_and_conflicts.html">Replication_and_conflicts</a>). The JSON returns an array of objects with an "ok" key pointing to the document, or a "missing" key pointing to the rev string.</p>
-<pre><code>[
-{"missing":"1-fbd8a6da4d669ae4b909fcdb42bb2bfd"},
-{"ok":{"_id":"test","_rev":"2-5bc3c6319edf62d4c624277fdd0ae191","hello":"foo"}}
-]
-</code></pre>
-<p>&lt;<Anchor(create_or_update_document)>&gt;</p>
-<h3>PUT</h3>
+<div class="codehilite"><pre><span class="p">[</span>
+<span class="p">{</span><span class="s">&quot;missing&quot;</span><span class="p">:</span><span class="s">&quot;1-fbd8a6da4d669ae4b909fcdb42bb2bfd&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;test&quot;</span><span class="p">,</span><span class="s">&quot;_rev&quot;</span><span class="p">:</span><span class="s">&quot;2-5bc3c6319edf62d4c624277fdd0ae191&quot;</span><span class="p">,</span><span class="s">&quot;hello&quot;</span><span class="p">:</span><span class="s">&quot;foo&quot;</span><span class="p">}}</span>
+<span class="p">]</span>
+</pre></div>
+
+
+<!-- <<Anchor(create_or_update_document)>> -->
+
+<h3 id="put">PUT</h3>
 <p>To create new document you can either use a <em>POST</em> operation or a <em>PUT</em> operation. To create/update a named document using the PUT operation, the URL must point to the document's location.</p>
 <p>The following is an example HTTP <em>PUT</em>. It will cause the CouchDB server to generate a new revision ID and save the document with it.</p>
-<pre><code>PUT /somedatabase/some_doc_id HTTP/1.0
-Content-Length: 245
-Content-Type: application/json
+<div class="codehilite"><pre><span class="n">PUT</span> <span class="sr">/somedatabase/som</span><span class="n">e_doc_id</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">245</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
 
-{
-  "Subject":"I like Plankton",
-  "Author":"Rusty",
-  "PostedDate":"2006-08-15T17:30:12-04:00",
-  "Tags":["plankton", "baseball", "decisions"],
-  "Body":"I decided today that I don't like baseball. I like plankton."
-}
-</code></pre>
+<span class="p">{</span>
+  <span class="s">&quot;Subject&quot;</span><span class="p">:</span><span class="s">&quot;I like Plankton&quot;</span><span class="p">,</span>
+  <span class="s">&quot;Author&quot;</span><span class="p">:</span><span class="s">&quot;Rusty&quot;</span><span class="p">,</span>
+  <span class="s">&quot;PostedDate&quot;</span><span class="p">:</span><span class="s">&quot;2006-08-15T17:30:12-04:00&quot;</span><span class="p">,</span>
+  <span class="s">&quot;Tags&quot;</span><span class="p">:[</span><span class="s">&quot;plankton&quot;</span><span class="p">,</span> <span class="s">&quot;baseball&quot;</span><span class="p">,</span> <span class="s">&quot;decisions&quot;</span><span class="p">],</span>
+  <span class="s">&quot;Body&quot;</span><span class="p">:</span><span class="s">&quot;I decided today that I don&#39;t like baseball. I like plankton.&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Here is the server's response.</p>
-<pre><code>HTTP/1.1 201 Created
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-Content-Type: application/json
-Connection: close
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">201</span> <span class="n">Created</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
 
-{"ok": true, "id": "some_doc_id", "rev": "946B7D1C"}
-</code></pre>
+<span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span> <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;some_doc_id&quot;</span><span class="p">,</span> <span class="s">&quot;rev&quot;</span><span class="p">:</span> <span class="s">&quot;946B7D1C&quot;</span><span class="p">}</span>
+</pre></div>
+
+
 <p>To update an existing document, you also issue a <em>PUT</em> request. In this case, the JSON body must contain a <em>_rev</em> property, which lets CouchDB know which revision the edits are based on. If the revision of the document currently stored in the database doesn't match, then a <em>409</em> conflict error is returned.</p>
 <p>If the revision number does match what's in the database, a new revision number is generated and returned to the client.</p>
 <p>For example:</p>
-<pre><code>PUT /somedatabase/some_doc_id HTTP/1.0
-Content-Length: 245
-Content-Type: application/json
+<div class="codehilite"><pre><span class="n">PUT</span> <span class="sr">/somedatabase/som</span><span class="n">e_doc_id</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">245</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
 
-{
-  "_id":"some_doc_id",
-  "_rev":"946B7D1C",
-  "Subject":"I like Plankton",
-  "Author":"Rusty",
-  "PostedDate":"2006-08-15T17:30:12-04:00",
-  "Tags":["plankton", "baseball", "decisions"],
-  "Body":"I decided today that I don't like baseball. I like plankton."
-}
-</code></pre>
+<span class="p">{</span>
+  <span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;some_doc_id&quot;</span><span class="p">,</span>
+  <span class="s">&quot;_rev&quot;</span><span class="p">:</span><span class="s">&quot;946B7D1C&quot;</span><span class="p">,</span>
+  <span class="s">&quot;Subject&quot;</span><span class="p">:</span><span class="s">&quot;I like Plankton&quot;</span><span class="p">,</span>
+  <span class="s">&quot;Author&quot;</span><span class="p">:</span><span class="s">&quot;Rusty&quot;</span><span class="p">,</span>
+  <span class="s">&quot;PostedDate&quot;</span><span class="p">:</span><span class="s">&quot;2006-08-15T17:30:12-04:00&quot;</span><span class="p">,</span>
+  <span class="s">&quot;Tags&quot;</span><span class="p">:[</span><span class="s">&quot;plankton&quot;</span><span class="p">,</span> <span class="s">&quot;baseball&quot;</span><span class="p">,</span> <span class="s">&quot;decisions&quot;</span><span class="p">],</span>
+  <span class="s">&quot;Body&quot;</span><span class="p">:</span><span class="s">&quot;I decided today that I don&#39;t like baseball. I like plankton.&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Here is the server's response if what is stored in the database is revision <em>946B7D1C</em> of document <em>some_doc_id</em>.</p>
-<pre><code>HTTP/1.1 201 Created
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-Content-Type: application/json
-Connection: close
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">201</span> <span class="n">Created</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
 
-{"ok":true, "id":"some_doc_id", "rev":"2774761002"}
-</code></pre>
+<span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">,</span> <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;some_doc_id&quot;</span><span class="p">,</span> <span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2774761002&quot;</span><span class="p">}</span>
+</pre></div>
+
+
 <p>And here is the server's response if there is an update conflict (what is currently stored in the database is not revision <em>946B7D1C</em> of document <em>some_doc_id</em>).</p>
-<pre><code>HTTP/1.1 409 Conflict
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-Content-Length: 33
-Connection: close
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">409</span> <span class="n">Conflict</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">33</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
 
-{"error":"conflict","reason":"Document update conflict."}
-</code></pre>
+<span class="p">{</span><span class="s">&quot;error&quot;</span><span class="p">:</span><span class="s">&quot;conflict&quot;</span><span class="p">,</span><span class="s">&quot;reason&quot;</span><span class="p">:</span><span class="s">&quot;Document update conflict.&quot;</span><span class="p">}</span>
+</pre></div>
+
+
 <p>There is a query option <em>batch=ok</em> which can be used to achieve higher throughput at the cost of lower guarantees. When a <em>PUT</em> (or a document <em>POST</em> as described below) is sent using this option, it is not immediately written to disk. Instead it is stored in memory on a per-user basis for a second or so (or the number of docs in memory reaches a certain point). After the threshold has passed, the docs are committed to disk. Instead of waiting for the doc to be written to disk before responding, CouchDB sends an HTTP <em>202 Accepted</em> response immediately.</p>
 <p><em>batch=ok</em> is not suitable for crucial data, but it ideal for applications like logging which can accept the risk that a small proportion of updates could be lost due to a crash. Docs in the batch can also be flushed manually using the <em>_ensure_full_commit</em> API.</p>
-<h3>POST</h3>
+<h3 id="post">POST</h3>
 <p>The <em>POST</em> operation can be used to create a new document with a server generated DocID. To create a named document, use the <em>PUT</em> method instead. It is recommended that you avoid <em>POST</em> when possible, because proxies and other network intermediaries will occasionally resend <em>POST</em> requests, which can result in duplicate document creation. If your client software is not capable of guaranteeing uniqueness of generated UUIDs, use a <em>GET</em> to <em>/_uuids?count=100</em> to retrieve a list of document IDs for future <em>PUT</em> requests. Please note that the <em>/_uuids</em>-call does not check for existing document ids; collision-detection happens when you are trying to save a document.</p>
 <p>The following is an example HTTP <em>POST</em>. It will cause the CouchDB server to generate a new DocID and revision ID and save the document with it.</p>
-<pre><code>POST /somedatabase/ HTTP/1.0
-Content-Length: 245
-Content-Type: application/json
+<div class="codehilite"><pre><span class="n">POST</span> <span class="sr">/somedatabase/</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">245</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
 
-{
-  "Subject":"I like Plankton",
-  "Author":"Rusty",
-  "PostedDate":"2006-08-15T17:30:12-04:00",
-  "Tags":["plankton", "baseball", "decisions"],
-  "Body":"I decided today that I don't like baseball. I like plankton."
-}
-</code></pre>
+<span class="p">{</span>
+  <span class="s">&quot;Subject&quot;</span><span class="p">:</span><span class="s">&quot;I like Plankton&quot;</span><span class="p">,</span>
+  <span class="s">&quot;Author&quot;</span><span class="p">:</span><span class="s">&quot;Rusty&quot;</span><span class="p">,</span>
+  <span class="s">&quot;PostedDate&quot;</span><span class="p">:</span><span class="s">&quot;2006-08-15T17:30:12-04:00&quot;</span><span class="p">,</span>
+  <span class="s">&quot;Tags&quot;</span><span class="p">:[</span><span class="s">&quot;plankton&quot;</span><span class="p">,</span> <span class="s">&quot;baseball&quot;</span><span class="p">,</span> <span class="s">&quot;decisions&quot;</span><span class="p">],</span>
+  <span class="s">&quot;Body&quot;</span><span class="p">:</span><span class="s">&quot;I decided today that I don&#39;t like baseball. I like plankton.&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Here is the server's response:</p>
-<pre><code>HTTP/1.1 201 Created
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-Content-Type: application/json
-Connection: close
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">201</span> <span class="n">Created</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
 
-{"ok":true, "id":"123BAC", "rev":"946B7D1C"}
-</code></pre>
-<h3>DELETE</h3>
+<span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">,</span> <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;123BAC&quot;</span><span class="p">,</span> <span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;946B7D1C&quot;</span><span class="p">}</span>
+</pre></div>
+
+
+<h3 id="delete">DELETE</h3>
 <p>To delete a document, perform a <em>DELETE</em> operation at the document's location, passing the <em>rev</em> parameter with the document's current revision. If successful, it will return the revision id for the deletion stub.</p>
-<pre><code>DELETE /somedatabase/some_doc?rev=1582603387 HTTP/1.0
-</code></pre>
-<p>As an alternative you can submit the <em>rev</em> parameter with the etag header field <em>If-Match</em>.</p>
-<pre><code>DELETE /somedatabase/some_doc HTTP/1.0
-If-Match: "1582603387"
-</code></pre>
-<p>And the response:</p>
-<pre><code>HTTP/1.1 200 OK
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-Content-Type: application/json
-Connection: close
+<div class="codehilite"><pre><span class="n">DELETE</span> <span class="sr">/somedatabase/som</span><span class="n">e_doc</span><span class="p">?</span><span class="n">rev</span><span class="o">=</span><span class="mi">1582603387</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
 
-{"ok":true,"rev":"2839830636"}
-</code></pre>
-<h3>COPY</h3>
+
+<p>As an alternative you can submit the <em>rev</em> parameter with the etag header field <em>If-Match</em>.</p>
+<div class="codehilite"><pre><span class="n">DELETE</span> <span class="sr">/somedatabase/som</span><span class="n">e_doc</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">If</span><span class="o">-</span><span class="n">Match:</span> <span class="s">&quot;1582603387&quot;</span>
+</pre></div>
+
+
+<p>And the response:</p>
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
+
+<span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2839830636&quot;</span><span class="p">}</span>
+</pre></div>
+
+
+<h3 id="copy">COPY</h3>
 <p>Note that this is a non-standard extension to HTTP.</p>
 <p>You can copy documents by sending an HTTP COPY request. This allows you to duplicate the contents (and attachments) of a document to a new document under a different document id without first retrieving it from CouchDB. Use the <em>Destination</em> header to specify the document that you want to copy to (the target document).</p>
 <p>It is not possible to copy documents between databases and it is not (yet) possible to perform bulk copy operations.</p>
-<pre><code>COPY /somedatabase/some_doc HTTP/1.1
-Destination: some_other_doc
-</code></pre>
+<div class="codehilite"><pre><span class="n">COPY</span> <span class="sr">/somedatabase/som</span><span class="n">e_doc</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">Destination:</span> <span class="n">some_other_doc</span>
+</pre></div>
+
+
 <p>If you want to overwrite an existing document, you need to specify the target document's revision with a <em>rev</em> parameter in the <em>Destination</em> header:</p>
-<pre><code>COPY /somedatabase/some_doc HTTP/1.1
-Destination: some_other_doc?rev=rev_id
-</code></pre>
+<div class="codehilite"><pre><span class="n">COPY</span> <span class="sr">/somedatabase/som</span><span class="n">e_doc</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">Destination:</span> <span class="n">some_other_doc</span><span class="p">?</span><span class="n">rev</span><span class="o">=</span><span class="n">rev_id</span>
+</pre></div>
+
+
 <p>The response in both cases includes the target document's revision:</p>
-<pre><code>HTTP/1.1 201 Created
-Server: CouchDB/0.9.0a730122-incubating (Erlang OTP/R12B)
-Etag: "355068078"
-Date: Mon, 05 Jan 2009 11:12:49 GMT
-Content-Type: text/plain;charset=utf-8
-Content-Length: 41
-Cache-Control: must-revalidate
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">201</span> <span class="n">Created</span>
+<span class="n">Server:</span> <span class="n">CouchDB</span><span class="sr">/0.9.0a730122-incubating (Erlang OTP/</span><span class="n">R12B</span><span class="p">)</span>
+<span class="n">Etag:</span> <span class="s">&quot;355068078&quot;</span>
+<span class="n">Date:</span> <span class="n">Mon</span><span class="p">,</span> <span class="mo">05</span> <span class="n">Jan</span> <span class="mi">2009</span> <span class="mi">11</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mi">49</span> <span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">text</span><span class="o">/</span><span class="n">plain</span><span class="p">;</span><span class="n">charset</span><span class="o">=</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">41</span>
+<span class="n">Cache</span><span class="o">-</span><span class="n">Control:</span> <span class="n">must</span><span class="o">-</span><span class="n">revalidate</span>
 
-{"ok":true,"id":"some_other_doc","rev":"355068078"}
-</code></pre>
-<h3>MOVE</h3>
+<span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;some_other_doc&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;355068078&quot;</span><span class="p">}</span>
+</pre></div>
+
+
+<h3 id="move">MOVE</h3>
 <p>For a ~6 month period CouchDB trunk between versions 0.8 and 0.9 included the nonstandard MOVE method. Since MOVE is really just COPY &amp; DELETE and CouchDB can not reasonably guarantee atomicity between the COPY &amp; MOVE operations on a single or on multiple nodes, this was removed before the release of CouchDB 0.9.</p>
-<h3>Bulk Docs</h3>
+<h3 id="bulk-docs">Bulk Docs</h3>
 <p>For information about editing multiple documents at the same time, see <a class="internal" href="HTTP_Bulk_Document_API.html">HTTP_Bulk_Document_API</a></p>
-<h2>All Documents</h2>
+<h2 id="all-documents">All Documents</h2>
 <p>To get a listing of all documents in a database, use the special <em>_all_docs</em> URI. This is a specialized View so the Querying Options of the <a class="internal" href="HTTP_view_API.html">HTTP_view_API</a> apply here.</p>
-<pre><code>GET somedatabase/_all_docs HTTP/1.0
-</code></pre>
-<p>Will return a listing of all documents and their revision IDs, ordered by DocID (case sensitive):</p>
-<pre><code>HTTP/1.1 200 OK
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-Content-Type: application/json
-Connection: close
+<div class="codehilite"><pre><span class="n">GET</span> <span class="n">somedatabase</span><span class="sr">/_all_docs HTTP/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
 
-{
-  "total_rows": 3, "offset": 0, "rows": [
-    {"id": "doc1", "key": "doc1", "value": {"rev": "4324BB"}},
-    {"id": "doc2", "key": "doc2", "value": {"rev":"2441HF"}},
-    {"id": "doc3", "key": "doc3", "value": {"rev":"74EC24"}}
-  ]
-}
-</code></pre>
+
+<p>Will return a listing of all documents and their revision IDs, ordered by DocID (case sensitive):</p>
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
+
+<span class="p">{</span>
+  <span class="s">&quot;total_rows&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;rows&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;doc1&quot;</span><span class="p">,</span> <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;doc1&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span> <span class="s">&quot;4324BB&quot;</span><span class="p">}},</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;doc2&quot;</span><span class="p">,</span> <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;doc2&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2441HF&quot;</span><span class="p">}},</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;doc3&quot;</span><span class="p">,</span> <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;doc3&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;74EC24&quot;</span><span class="p">}}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Use the query argument <em>descending=true</em> to reverse the order of the output table:</p>
 <p>Will return the same as before but in reverse order:</p>
-<pre><code>HTTP/1.1 200 OK
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-Content-Type: application/json
-Connection: close
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
 
-{
-  "total_rows": 3, "offset": 0, "rows": [
-    {"id": "doc3", "key": "doc3", "value": {"rev":"74EC24"}}
-    {"id": "doc2", "key": "doc2", "value": {"rev":"2441HF"}},
-    {"id": "doc1", "key": "doc1", "value": {"rev": "4324BB"}},
-  ]
-}
-</code></pre>
+<span class="p">{</span>
+  <span class="s">&quot;total_rows&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;rows&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;doc3&quot;</span><span class="p">,</span> <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;doc3&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;74EC24&quot;</span><span class="p">}}</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;doc2&quot;</span><span class="p">,</span> <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;doc2&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2441HF&quot;</span><span class="p">}},</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;doc1&quot;</span><span class="p">,</span> <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;doc1&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span> <span class="s">&quot;4324BB&quot;</span><span class="p">}},</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>The query string parameters <em>startkey</em>, <em>endkey</em> and <em>limit</em> may also be used to limit the result set. For example:</p>
-<pre><code>GET somedatabase/_all_docs?startkey="doc2"&amp;limit=2 HTTP/1.0
-</code></pre>
-<p>Will return:</p>
-<pre><code>HTTP/1.1 200 OK
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-Content-Type: application/json
-Connection: close
+<div class="codehilite"><pre><span class="n">GET</span> <span class="n">somedatabase</span><span class="sr">/_all_docs?startkey=&quot;doc2&quot;&amp;limit=2 HTTP/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
 
-{
-  "total_rows": 3, "offset": 1, "rows": [
-    {"id": "doc2", "key": "doc2", "value": {"rev":"2441HF"}},
-    {"id": "doc3", "key": "doc3", "value": {"rev":"74EC24"}}
-  ]
-}
-</code></pre>
+
+<p>Will return:</p>
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
+
+<span class="p">{</span>
+  <span class="s">&quot;total_rows&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;rows&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;doc2&quot;</span><span class="p">,</span> <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;doc2&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2441HF&quot;</span><span class="p">}},</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;doc3&quot;</span><span class="p">,</span> <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;doc3&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;74EC24&quot;</span><span class="p">}}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Use <em>endkey</em> if you are interested  in a specific range of documents:</p>
-<pre><code>GET somedatabase/_all_docs?startkey="doc2"&amp;endkey="doc3" HTTP/1.0
-</code></pre>
+<div class="codehilite"><pre><span class="n">GET</span> <span class="n">somedatabase</span><span class="sr">/_all_docs?startkey=&quot;doc2&quot;&amp;endkey=&quot;doc3&quot; HTTP/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
+
+
 <p>This will get keys inbetween and including doc2 and doc3; e.g. <em>doc2-b</em> and <em>doc234</em>.</p>
 <p>Both approaches can be combined with <em>descending</em>:</p>
-<pre><code>GET somedatabase/_all_docs?startkey="doc2"&amp;limit=2&amp;descending=true HTTP/1.0
-</code></pre>
-<p>Will return:</p>
-<pre><code>HTTP/1.1 200 OK
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-Content-Type: application/json
-Connection: close
+<div class="codehilite"><pre><span class="n">GET</span> <span class="n">somedatabase</span><span class="sr">/_all_docs?startkey=&quot;doc2&quot;&amp;limit=2&amp;descending=true HTTP/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
 
-{
-  "total_rows": 3, "offset": 1, "rows": [
-    {"id": "doc3", "key": "doc3", "value": {"rev":"74EC24"}}
-    {"id": "doc2", "key": "doc2", "value": {"rev":"2441HF"}},
-  ]
-}
-</code></pre>
+
+<p>Will return:</p>
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
+
+<span class="p">{</span>
+  <span class="s">&quot;total_rows&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;rows&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;doc3&quot;</span><span class="p">,</span> <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;doc3&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;74EC24&quot;</span><span class="p">}}</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;doc2&quot;</span><span class="p">,</span> <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;doc2&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2441HF&quot;</span><span class="p">}},</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>If you add <em>include_docs=true</em> to a request to <em>_all_docs</em> not only metadata but also the documents themselves are returned.</p>
-<h2>all_docs_by_seq</h2>
+<h2 id="all_docs_by_seq">all_docs_by_seq</h2>
 <p>This allows you to see all the documents that were updated and deleted, in the order these actions are done:</p>
-<pre><code>GET somedatabase/_all_docs_by_seq HTTP/1.0
-</code></pre>
-<p>Will return:</p>
-<pre><code>HTTP/1.1 200 OK
-Date: Fri, 8 May 2009 11:07:02 +0000GMT
-Content-Type: application/json
-Connection: close
+<div class="codehilite"><pre><span class="n">GET</span> <span class="n">somedatabase</span><span class="sr">/_all_docs_by_seq HTTP/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
 
-{
-  "total_rows": 4, "offset": 0, "rows": [
-    {"id": "doc1", "key": "1", "value": {"rev":"1-4124667444"}},
-    {"id": "doc2", "key": "2", "value": {"rev":"1-1815587255"}},
-    {"id": "doc3", "key": "3", "value": {"rev":"1-1750227892"}},
-    {"id": "doc4", "key": "4", "value": {"rev":"2-524044848", "deleted": true}}
-  ]
-}
-</code></pre>
+
+<p>Will return:</p>
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Date:</span> <span class="n">Fri</span><span class="p">,</span> <span class="mi">8</span> <span class="n">May</span> <span class="mi">2009</span> <span class="mi">11</span><span class="p">:</span><span class="mo">07</span><span class="p">:</span><span class="mo">02</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
+
+<span class="p">{</span>
+  <span class="s">&quot;total_rows&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;rows&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;doc1&quot;</span><span class="p">,</span> <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;1&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-4124667444&quot;</span><span class="p">}},</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;doc2&quot;</span><span class="p">,</span> <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;2&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-1815587255&quot;</span><span class="p">}},</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;doc3&quot;</span><span class="p">,</span> <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;3&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-1750227892&quot;</span><span class="p">}},</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;doc4&quot;</span><span class="p">,</span> <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="s">&quot;4&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-524044848&quot;</span><span class="p">,</span> <span class="s">&quot;deleted&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">}}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>All the view parameters work on _all_docs_by_seq, such as startkey, include_docs etc. However, note that the startkey is exclusive when applied to this view. This allows for a usage pattern where the startkey is set to the sequence id of the last doc returned by the previous query. As the startkey is exclusive, the same document won't be processed twice.</p>
-<h2>Attachments</h2>
+<h2 id="attachments">Attachments</h2>
 <p>Documents can have attachments just like email. There are two ways to use attachments. The first one is inline with your document and it described first. The second one is a separate REST API for attachments that is described a little further down.</p>
 <p>A note on attachment names: Attachments may have embedded <strong>/</strong> characters that are sent unescaped to CouchDB. You can use this to provide a subtree of attachments under a document. A DocID must have any <strong>/</strong> escaped as <strong>%2F</strong>. So if you have document <em>a/b/c</em> with an attachment <em>d/e/f.txt</em>, you would be able to access it at <a href="http://couchdb/db/a/b/c/d/e/f.txt">http://couchdb/db/a%2fb%2fc/d/e/f.txt</a> .</p>
-<h3>Inline Attachments</h3>
+<h3 id="inline-attachments">Inline Attachments</h3>
 <p>On creation, attachments go into a special <em>_attachments</em> attribute of the document. They are encoded in a JSON structure that holds the name, the content_type and the base64 encoded data of an attachment. A document can have any number of attachments.</p>
 <p>When retrieving documents, the attachment's actual data is not included, only the metadata. The actual data has to be fetched separately, using a special URI.</p>
 <p>If you need to access attachments with the document in one request, you can pass in the <code>?attachments=true</code> URL parameter to get the data included in the JSON in the base64 encoded form. Since this puts a significant burden on CouchDB when you request this, you're not advised to use this feature unless you know what you are doing :)</p>
 <p>Creating a document with an attachment:</p>
-<pre><code>{
-  "_id":"attachment_doc",
-  "_attachments":
-  {
-    "foo.txt":
-    {
-      "content_type":"text\/plain",
-      "data": "VGhpcyBpcyBhIGJhc2U2NCBlbmNvZGVkIHRleHQ="
-    }
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span>
+  <span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;attachment_doc&quot;</span><span class="p">,</span>
+  <span class="s">&quot;_attachments&quot;</span><span class="p">:</span>
+  <span class="p">{</span>
+    <span class="s">&quot;foo.txt&quot;</span><span class="p">:</span>
+    <span class="p">{</span>
+      <span class="s">&quot;content_type&quot;</span><span class="p">:</span><span class="s">&quot;text\/plain&quot;</span><span class="p">,</span>
+      <span class="s">&quot;data&quot;</span><span class="p">:</span> <span class="s">&quot;VGhpcyBpcyBhIGJhc2U2NCBlbmNvZGVkIHRleHQ=&quot;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Please note that any base64 data you send has to be on <strong>a single line of characters</strong>, so pre-process your data to remove any carriage returns and newlines.</p>
 <p>Requesting said document:</p>
-<pre><code>GET /database/attachment_doc
-</code></pre>
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/database/</span><span class="n">attachment_doc</span>
+</pre></div>
+
+
 <p>CouchDB replies:</p>
-<pre><code>{
-  "_id":"attachment_doc",
-  "_rev":1589456116,
-  "_attachments":
-  {
-    "foo.txt":
-    {
-      "stub":true,
-      "content_type":"text\/plain",
-      "length":29
-    }
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span>
+  <span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;attachment_doc&quot;</span><span class="p">,</span>
+  <span class="s">&quot;_rev&quot;</span><span class="p">:</span><span class="mi">1589456116</span><span class="p">,</span>
+  <span class="s">&quot;_attachments&quot;</span><span class="p">:</span>
+  <span class="p">{</span>
+    <span class="s">&quot;foo.txt&quot;</span><span class="p">:</span>
+    <span class="p">{</span>
+      <span class="s">&quot;stub&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">,</span>
+      <span class="s">&quot;content_type&quot;</span><span class="p">:</span><span class="s">&quot;text\/plain&quot;</span><span class="p">,</span>
+      <span class="s">&quot;length&quot;</span><span class="p">:</span><span class="mi">29</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Note that the <em>"stub":true</em> attribute denotes that this is not the complete attachment. Also, note the length attribute added automatically. When you update the document you must include the attachment stubs or CouchDB will delete the attachment.</p>
 <p>Requesting the attachment:</p>
-<pre><code>GET /database/attachment_doc/foo.txt
-</code></pre>
-<p>CouchDB returns:</p>
-<pre><code>This is a base64 encoded text
-</code></pre>
-<p>Automatically decoded!</p>
-<h3>Multiple Attachments</h3>
-<p>Creating a document with an attachment:</p>
-<pre><code>{
-  "_id":"attachment_doc",
-  "_attachments":
-  {
-    "foo.txt":
-    {
-      "content_type":"text\/plain",
-      "data": "VGhpcyBpcyBhIGJhc2U2NCBlbmNvZGVkIHRleHQ="
-    },
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/database/</span><span class="n">attachment_doc</span><span class="o">/</span><span class="n">foo</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
 
-   "bar.txt":
-    {
-      "content_type":"text\/plain",
-      "data": "VGhpcyBpcyBhIGJhc2U2NCBlbmNvZGVkIHRleHQ="
-    }
-  }
-}
-</code></pre>
-<h3>Standalone Attachments</h3>
+
+<p>CouchDB returns:</p>
+<div class="codehilite"><pre><span class="n">This</span> <span class="n">is</span> <span class="n">a</span> <span class="n">base64</span> <span class="n">encoded</span> <span class="n">text</span>
+</pre></div>
+
+
+<p>Automatically decoded!</p>
+<h3 id="multiple-attachments">Multiple Attachments</h3>
+<p>Creating a document with an attachment:</p>
+<div class="codehilite"><pre><span class="p">{</span>
+  <span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;attachment_doc&quot;</span><span class="p">,</span>
+  <span class="s">&quot;_attachments&quot;</span><span class="p">:</span>
+  <span class="p">{</span>
+    <span class="s">&quot;foo.txt&quot;</span><span class="p">:</span>
+    <span class="p">{</span>
+      <span class="s">&quot;content_type&quot;</span><span class="p">:</span><span class="s">&quot;text\/plain&quot;</span><span class="p">,</span>
+      <span class="s">&quot;data&quot;</span><span class="p">:</span> <span class="s">&quot;VGhpcyBpcyBhIGJhc2U2NCBlbmNvZGVkIHRleHQ=&quot;</span>
+    <span class="p">},</span>
+
+   <span class="s">&quot;bar.txt&quot;</span><span class="p">:</span>
+    <span class="p">{</span>
+      <span class="s">&quot;content_type&quot;</span><span class="p">:</span><span class="s">&quot;text\/plain&quot;</span><span class="p">,</span>
+      <span class="s">&quot;data&quot;</span><span class="p">:</span> <span class="s">&quot;VGhpcyBpcyBhIGJhc2U2NCBlbmNvZGVkIHRleHQ=&quot;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="standalone-attachments">Standalone Attachments</h3>
 <p>Note: This was added in version 0.9 of CouchDB. It is not available in earlier version.</p>
 <p>CouchDB allows to create, change and delete attachments without touching the actual document. As a bonus feature, you do not have to base64 encode your data. This can significantly speed up requests since CouchDB and your client do not have to do the base64 conversion.</p>
 <p>You need to specify a MIME type using the Content-Type header. CouchDB will serve the attachment with the specified Content-Type when asked.</p>
 <p>To create an attachment:</p>
-<pre><code>PUT somedatabase/document/attachment?rev=123 HTTP/1.0
-Content-Length: 245
-Content-Type: image/jpeg
+<div class="codehilite"><pre><span class="n">PUT</span> <span class="n">somedatabase</span><span class="sr">/document/</span><span class="n">attachment</span><span class="p">?</span><span class="n">rev</span><span class="o">=</span><span class="mi">123</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">245</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">image</span><span class="o">/</span><span class="n">jpeg</span>
 
-&lt;JPEG data&gt;
-</code></pre>
+<span class="o">&lt;</span><span class="n">JPEG</span> <span class="n">data</span><span class="o">&gt;</span>
+</pre></div>
+
+
 <p>CouchDB replies:</p>
-<pre><code>{"ok": true, "id": "document", "rev": "765B7D1C"}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span> <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;document&quot;</span><span class="p">,</span> <span class="s">&quot;rev&quot;</span><span class="p">:</span> <span class="s">&quot;765B7D1C&quot;</span><span class="p">}</span>
+</pre></div>
+
+
 <p>Note that you can do this on a non-existing document. The document and attachment will be created implicitly for you. A revision id must not be specified in this case.</p>
 <p>To change an attachment:</p>
-<pre><code>PUT somedatabase/document/attachment?rev=765B7D1C HTTP/1.0
-Content-Length: 245
-Content-Type: image/jpeg
+<div class="codehilite"><pre><span class="n">PUT</span> <span class="n">somedatabase</span><span class="sr">/document/</span><span class="n">attachment</span><span class="p">?</span><span class="n">rev</span><span class="o">=</span><span class="mi">765</span><span class="n">B7D1C</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">245</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">image</span><span class="o">/</span><span class="n">jpeg</span>
 
-&lt;JPEG data&gt;
-</code></pre>
+<span class="o">&lt;</span><span class="n">JPEG</span> <span class="n">data</span><span class="o">&gt;</span>
+</pre></div>
+
+
 <p>CouchDB replies:</p>
-<pre><code>{"ok": true, "id": "document", "rev": "766FC88G"}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">,</span> <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;document&quot;</span><span class="p">,</span> <span class="s">&quot;rev&quot;</span><span class="p">:</span> <span class="s">&quot;766FC88G&quot;</span><span class="p">}</span>
+</pre></div>
+
+
 <p>To delete an attachment:</p>
-<pre><code>DELETE somedatabase/document/attachment?rev=765B7D1C HTTP/1.0
-</code></pre>
-<p>CouchDB replies:</p>
-<pre><code>{"ok":true,"id":"document","rev":"519558700"}
-</code></pre>
-<p>To retrieve an attachment:</p>
-<pre><code>GET somedatabase/document/attachment HTTP/1.0
-</code></pre>
-<p>CouchDB replies</p>
-<pre><code>Content-Type:image/jpeg
+<div class="codehilite"><pre><span class="n">DELETE</span> <span class="n">somedatabase</span><span class="sr">/document/</span><span class="n">attachment</span><span class="p">?</span><span class="n">rev</span><span class="o">=</span><span class="mi">765</span><span class="n">B7D1C</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
 
-&lt;JPEG data&gt;
-</code></pre>
-<h2>ETags/Caching</h2>
+
+<p>CouchDB replies:</p>
+<div class="codehilite"><pre><span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;document&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;519558700&quot;</span><span class="p">}</span>
+</pre></div>
+
+
+<p>To retrieve an attachment:</p>
+<div class="codehilite"><pre><span class="n">GET</span> <span class="n">somedatabase</span><span class="sr">/document/</span><span class="n">attachment</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
+
+
+<p>CouchDB replies</p>
+<div class="codehilite"><pre><span class="n">Content</span><span class="o">-</span><span class="n">Type:image</span><span class="o">/</span><span class="n">jpeg</span>
+
+<span class="o">&lt;</span><span class="n">JPEG</span> <span class="n">data</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<h2 id="etagscaching">ETags/Caching</h2>
 <p>CouchDB sends an <em>ETag</em> Header for document requests. The ETag Header is simply the document's revision in quotes.</p>
 <p>For example, a <em>GET</em> request:</p>
-<pre><code>GET /database/123182719287
-</code></pre>
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/database/</span><span class="mi">123182719287</span>
+</pre></div>
+
+
 <p>Results in a reply with the following headers:</p>
-<pre><code>cache-control: no-cache,
-pragma: no-cache
-expires: Tue, 13 Nov 2007 23:09:50 GMT
-transfer-encoding: chunked
-content-type: text/plain;charset=utf-8
-etag: "615790463"
-</code></pre>
+<div class="codehilite"><pre><span class="n">cache</span><span class="o">-</span><span class="n">control:</span> <span class="nb">no</span><span class="o">-</span><span class="n">cache</span><span class="p">,</span>
+<span class="n">pragma:</span> <span class="nb">no</span><span class="o">-</span><span class="n">cache</span>
+<span class="n">expires:</span> <span class="n">Tue</span><span class="p">,</span> <span class="mi">13</span> <span class="n">Nov</span> <span class="mi">2007</span> <span class="mi">23</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">50</span> <span class="n">GMT</span>
+<span class="n">transfer</span><span class="o">-</span><span class="n">encoding:</span> <span class="n">chunked</span>
+<span class="n">content</span><span class="o">-</span><span class="n">type:</span> <span class="n">text</span><span class="o">/</span><span class="n">plain</span><span class="p">;</span><span class="n">charset</span><span class="o">=</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">etag:</span> <span class="s">&quot;615790463&quot;</span>
+</pre></div>
+
+
 <p><em>POST</em> requests also return an <em>ETag</em> header for either newly created or updated documents.</p>
 </div>
       <div id="footer">

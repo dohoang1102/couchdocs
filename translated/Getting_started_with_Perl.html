@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Getting_started_with_Perl</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,7 +56,7 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
@@ -46,114 +64,122 @@
 <p>The following shows the basics of working with the raw CouchDB REST api from Perl. If you want a richer interface that more tightly maps Couch documents into Perl (so you don't have to deal with JSON manually, for example), you should pick your favourite out of the several implementations: <a href="http://wiki.github.com/mndrix/net-couchdb">Net::CouchDB</a>, <a href="http://search.cpan.org/dist/CouchDB-Client/">CouchDB::Client</a>, <a href="http://search.cpan.org/dist/AnyEvent-CouchDB/">AnyEvent::CouchDB</a>, <a href="http://search.cpan.org/dist/DB-CouchDB-Schema/">DB::CouchDB::Schema</a>, or for POE lovers <a href="http://search.cpan.org/dist/POE-Component-Client-CouchDB/">POE::Component::Client::CouchDB</a>.</p>
 <p>Currently (16/9/2009) Net::CouchDB and CouchDB::Client seem to not work against current couchdb. AnyEvent::CouchDB seems to work (tested getting a database and creating a document so far).</p>
 <p>Note that these examples all use the new version of CouchDB, with a JSON interface rather than XML.</p>
-<h2>Example Wrapper Class</h2>
+<h2 id="example-wrapper-class">Example Wrapper Class</h2>
 <p>You can save this to a file named <em>CouchDB.pm</em>, then just use it from your program with <em>use CouchDB;</em>. But if you're going to do anything more than mess around, I would recommend getting the Net::!CouchDb module from CPAN.</p>
-<pre><code>package CouchDB;
+<div class="codehilite"><pre><span class="nb">package</span> <span class="n">CouchDB</span><span class="p">;</span>
 
-use strict;
-use warnings;
+<span class="k">use</span> <span class="n">strict</span><span class="p">;</span>
+<span class="k">use</span> <span class="n">warnings</span><span class="p">;</span>
 
-use LWP::UserAgent;
+<span class="k">use</span> <span class="nn">LWP::</span><span class="n">UserAgent</span><span class="p">;</span>
 
-sub new {
-  my ($class, $host, $port, $options) = @_;
+<span class="k">sub </span><span class="nf">new</span> <span class="p">{</span>
+  <span class="k">my</span> <span class="p">(</span><span class="nv">$class</span><span class="p">,</span> <span class="nv">$host</span><span class="p">,</span> <span class="nv">$port</span><span class="p">,</span> <span class="nv">$options</span><span class="p">)</span> <span class="o">=</span> <span class="nv">@_</span><span class="p">;</span>
 
-  my $ua = LWP::UserAgent-&gt;new;
-  $ua-&gt;timeout(10);
-  $ua-&gt;env_proxy;
+  <span class="k">my</span> <span class="nv">$ua</span> <span class="o">=</span> <span class="nn">LWP::</span><span class="n">UserAgent</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">;</span>
+  <span class="nv">$ua</span><span class="o">-&gt;</span><span class="n">timeout</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+  <span class="nv">$ua</span><span class="o">-&gt;</span><span class="n">env_proxy</span><span class="p">;</span>
 
-  return bless {
-                ua       =&gt; $ua,
-                host     =&gt; $host,
-                port     =&gt; $port,
-                base_uri =&gt; "http://$host:$port/",
-               }, $class;
-}
+  <span class="k">return</span> <span class="nb">bless</span> <span class="p">{</span>
+                <span class="n">ua</span>       <span class="o">=&gt;</span> <span class="nv">$ua</span><span class="p">,</span>
+                <span class="n">host</span>     <span class="o">=&gt;</span> <span class="nv">$host</span><span class="p">,</span>
+                <span class="n">port</span>     <span class="o">=&gt;</span> <span class="nv">$port</span><span class="p">,</span>
+                <span class="n">base_uri</span> <span class="o">=&gt;</span> <span class="s">&quot;http://$host:$port/&quot;</span><span class="p">,</span>
+               <span class="p">},</span> <span class="nv">$class</span><span class="p">;</span>
+<span class="p">}</span>
 
-sub ua { shift-&gt;{ua} }
-sub base { shift-&gt;{base_uri} }
+<span class="k">sub </span><span class="nf">ua</span> <span class="p">{</span> <span class="nb">shift</span><span class="o">-&gt;</span><span class="p">{</span><span class="n">ua</span><span class="p">}</span> <span class="p">}</span>
+<span class="k">sub </span><span class="nf">base</span> <span class="p">{</span> <span class="nb">shift</span><span class="o">-&gt;</span><span class="p">{</span><span class="n">base_uri</span><span class="p">}</span> <span class="p">}</span>
 
-sub request {
-  my ($self, $method, $uri, $content) = @_;
+<span class="k">sub </span><span class="nf">request</span> <span class="p">{</span>
+  <span class="k">my</span> <span class="p">(</span><span class="nv">$self</span><span class="p">,</span> <span class="nv">$method</span><span class="p">,</span> <span class="nv">$uri</span><span class="p">,</span> <span class="nv">$content</span><span class="p">)</span> <span class="o">=</span> <span class="nv">@_</span><span class="p">;</span>
 
-  my $full_uri = $self-&gt;base . $uri;
-  my $req;
+  <span class="k">my</span> <span class="nv">$full_uri</span> <span class="o">=</span> <span class="nv">$self</span><span class="o">-&gt;</span><span class="n">base</span> <span class="o">.</span> <span class="nv">$uri</span><span class="p">;</span>
+  <span class="k">my</span> <span class="nv">$req</span><span class="p">;</span>
 
-  if (defined $content) {
-    #Content-Type: application/json
+  <span class="k">if</span> <span class="p">(</span><span class="nb">defined</span> <span class="nv">$content</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">#Content-Type: application/json</span>
 
-    $req = HTTP::Request-&gt;new( $method, $full_uri, undef, $content );
-    $req-&gt;header('Content-Type' =&gt; 'application/json');
-  } else {
-    $req = HTTP::Request-&gt;new( $method, $full_uri );
-  }
+    <span class="nv">$req</span> <span class="o">=</span> <span class="nn">HTTP::</span><span class="n">Request</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span> <span class="nv">$method</span><span class="p">,</span> <span class="nv">$full_uri</span><span class="p">,</span> <span class="nb">undef</span><span class="p">,</span> <span class="nv">$content</span> <span class="p">);</span>
+    <span class="nv">$req</span><span class="o">-&gt;</span><span class="n">header</span><span class="p">(</span><span class="s">&#39;Content-Type&#39;</span> <span class="o">=&gt;</span> <span class="s">&#39;application/json&#39;</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nv">$req</span> <span class="o">=</span> <span class="nn">HTTP::</span><span class="n">Request</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span> <span class="nv">$method</span><span class="p">,</span> <span class="nv">$full_uri</span> <span class="p">);</span>
+  <span class="p">}</span>
 
-  my $response = $self-&gt;ua-&gt;request($req);
+  <span class="k">my</span> <span class="nv">$response</span> <span class="o">=</span> <span class="nv">$self</span><span class="o">-&gt;</span><span class="n">ua</span><span class="o">-&gt;</span><span class="n">request</span><span class="p">(</span><span class="nv">$req</span><span class="p">);</span>
 
-  if ($response-&gt;is_success) {
-    return $response-&gt;content;
-  } else {
-    die($response-&gt;status_line . ":" . $response-&gt;content);
-  }
-}
+  <span class="k">if</span> <span class="p">(</span><span class="nv">$response</span><span class="o">-&gt;</span><span class="n">is_success</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nv">$response</span><span class="o">-&gt;</span><span class="n">content</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nb">die</span><span class="p">(</span><span class="nv">$response</span><span class="o">-&gt;</span><span class="n">status_line</span> <span class="o">.</span> <span class="s">&quot;:&quot;</span> <span class="o">.</span> <span class="nv">$response</span><span class="o">-&gt;</span><span class="n">content</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 
-sub delete {
-  my ($self, $url) = @_;
+<span class="k">sub </span><span class="nf">delete</span> <span class="p">{</span>
+  <span class="k">my</span> <span class="p">(</span><span class="nv">$self</span><span class="p">,</span> <span class="nv">$url</span><span class="p">)</span> <span class="o">=</span> <span class="nv">@_</span><span class="p">;</span>
 
-  $self-&gt;request(DELETE =&gt; $url);
-}
+  <span class="nv">$self</span><span class="o">-&gt;</span><span class="n">request</span><span class="p">(</span><span class="n">DELETE</span> <span class="o">=&gt;</span> <span class="nv">$url</span><span class="p">);</span>
+<span class="p">}</span>
 
-sub get {
-  my ($self, $url) = @_;
+<span class="k">sub </span><span class="nf">get</span> <span class="p">{</span>
+  <span class="k">my</span> <span class="p">(</span><span class="nv">$self</span><span class="p">,</span> <span class="nv">$url</span><span class="p">)</span> <span class="o">=</span> <span class="nv">@_</span><span class="p">;</span>
 
-  $self-&gt;request(GET =&gt; $url);
-}
+  <span class="nv">$self</span><span class="o">-&gt;</span><span class="n">request</span><span class="p">(</span><span class="n">GET</span> <span class="o">=&gt;</span> <span class="nv">$url</span><span class="p">);</span>
+<span class="p">}</span>
 
-sub put {
-  my ($self, $url, $json) = @_;
+<span class="k">sub </span><span class="nf">put</span> <span class="p">{</span>
+  <span class="k">my</span> <span class="p">(</span><span class="nv">$self</span><span class="p">,</span> <span class="nv">$url</span><span class="p">,</span> <span class="nv">$json</span><span class="p">)</span> <span class="o">=</span> <span class="nv">@_</span><span class="p">;</span>
 
-  $self-&gt;request(PUT =&gt; $url, $json);
-}
+  <span class="nv">$self</span><span class="o">-&gt;</span><span class="n">request</span><span class="p">(</span><span class="n">PUT</span> <span class="o">=&gt;</span> <span class="nv">$url</span><span class="p">,</span> <span class="nv">$json</span><span class="p">);</span>
+<span class="p">}</span>
 
-sub post {
-  my ($self, $url, $json) = @_;
+<span class="k">sub </span><span class="nf">post</span> <span class="p">{</span>
+  <span class="k">my</span> <span class="p">(</span><span class="nv">$self</span><span class="p">,</span> <span class="nv">$url</span><span class="p">,</span> <span class="nv">$json</span><span class="p">)</span> <span class="o">=</span> <span class="nv">@_</span><span class="p">;</span>
 
-  $self-&gt;request(POST =&gt; $url, $json);
-}
+  <span class="nv">$self</span><span class="o">-&gt;</span><span class="n">request</span><span class="p">(</span><span class="n">POST</span> <span class="o">=&gt;</span> <span class="nv">$url</span><span class="p">,</span> <span class="nv">$json</span><span class="p">);</span>
+<span class="p">}</span>
 
-1;
-</code></pre>
-<h2>Creating a Database</h2>
+<span class="mi">1</span><span class="p">;</span>
+</pre></div>
+
+
+<h2 id="creating-a-database">Creating a Database</h2>
 <p>To create a database called <em>foo</em>:</p>
-<pre><code>my $db = CouchDB-&gt;new('localhost', '5984');
-$db-&gt;put("foo");
-</code></pre>
-<h2>Deleting a Database</h2>
+<div class="codehilite"><pre><span class="k">my</span> <span class="nv">$db</span> <span class="o">=</span> <span class="n">CouchDB</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="s">&#39;5984&#39;</span><span class="p">);</span>
+<span class="nv">$db</span><span class="o">-&gt;</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">);</span>
+</pre></div>
+
+
+<h2 id="deleting-a-database">Deleting a Database</h2>
 <p>To delete a database called <em>foo</em>:</p>
-<pre><code>my $db = CouchDB-&gt;new('localhost', '5984');
-$db-&gt;delete("foo");
-</code></pre>
-<h2>Creating a Document</h2>
+<div class="codehilite"><pre><span class="k">my</span> <span class="nv">$db</span> <span class="o">=</span> <span class="n">CouchDB</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="s">&#39;5984&#39;</span><span class="p">);</span>
+<span class="nv">$db</span><span class="o">-&gt;</span><span class="nb">delete</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">);</span>
+</pre></div>
+
+
+<h2 id="creating-a-document">Creating a Document</h2>
 <p>To create a document in the database <em>foo</em> with the id <em>document_id</em>:</p>
-<pre><code>my $db = CouchDB-&gt;new('localhost', '5984');
-$db-&gt;put("foo/document_id", &lt;&lt;JSON);
-{
- "value":
- {
-   "Subject":"I like Perl",
-   "Author":"Rusty",
-   "PostedDate":"2006-08-15T17:30:12-04:00",
-   "Tags":["plankton", "perl", "decisions"],
-   "Body":"I decided today that I don't like plankton. I like perl. Or DO I?"
- }
-}
-JSON
-</code></pre>
-<h2>Reading a Document</h2>
+<div class="codehilite"><pre><span class="k">my</span> <span class="nv">$db</span> <span class="o">=</span> <span class="n">CouchDB</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="s">&#39;5984&#39;</span><span class="p">);</span>
+<span class="nv">$db</span><span class="o">-&gt;</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;foo/document_id&quot;</span><span class="p">,</span> <span class="o">&lt;&lt;</span><span class="n">JSON</span><span class="p">);</span>
+<span class="p">{</span>
+ <span class="s">&quot;value&quot;</span><span class="p">:</span>
+ <span class="p">{</span>
+   <span class="s">&quot;Subject&quot;</span><span class="p">:</span><span class="s">&quot;I like Perl&quot;</span><span class="p">,</span>
+   <span class="s">&quot;Author&quot;</span><span class="p">:</span><span class="s">&quot;Rusty&quot;</span><span class="p">,</span>
+   <span class="s">&quot;PostedDate&quot;</span><span class="p">:</span><span class="s">&quot;2006-08-15T17:30:12-04:00&quot;</span><span class="p">,</span>
+   <span class="s">&quot;Tags&quot;</span><span class="p">:[</span><span class="s">&quot;plankton&quot;</span><span class="p">,</span> <span class="s">&quot;perl&quot;</span><span class="p">,</span> <span class="s">&quot;decisions&quot;</span><span class="p">],</span>
+   <span class="s">&quot;Body&quot;</span><span class="p">:</span><span class="s">&quot;I decided today that I don&#39;t like plankton. I like perl. Or DO I?&quot;</span>
+ <span class="p">}</span>
+<span class="p">}</span>
+<span class="n">JSON</span>
+</pre></div>
+
+
+<h2 id="reading-a-document">Reading a Document</h2>
 <p>To read a document from database <em>foo</em> with the id <em>document_id</em>:</p>
-<pre><code>my $db = CouchDB-&gt;new('localhost', '5984');
-my $json = $db-&gt;get("foo/document_id");
-</code></pre>
+<div class="codehilite"><pre><span class="k">my</span> <span class="nv">$db</span> <span class="o">=</span> <span class="n">CouchDB</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="s">&#39;5984&#39;</span><span class="p">);</span>
+<span class="k">my</span> <span class="nv">$json</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;foo/document_id&quot;</span><span class="p">);</span>
+</pre></div>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

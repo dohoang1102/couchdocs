@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - RegénérationVuesÀlaMiseAjour</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,122 +56,124 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <!-- #language fr -->
 
-<h1>Mettre à jour les vues lors de l'enregistrement d'un document</h1>
+<h1 id="mettre-a-jour-les-vues-lors-de-lenregistrement-dun-document">Mettre à jour les vues lors de l'enregistrement d'un document</h1>
 <p>Par défaut CouchDB regénère les vues la première fois qu'elles sont appelées. Ce comportement est adéquat pour la plupart des cas dans la mesure où il optimise l'utilisation des resources sur le serveur de base de données.</p>
 <p>Mais  dans certains cas, il est préférables d'avoir rapidement des vues à jour malgré le coût créée par une mise à jour systématique à chaque fois que le serveur reçoit une mise à jour. On peut réaliser cela en fournissant un script de mise à jour qui appelle les vues lorsque cela est nécessaire.</p>
-<h2>Exemple utilisant ruby</h2>
-<h3>couch.ini</h3>
+<h2 id="exemple-utilisant-ruby">Exemple utilisant ruby</h2>
+<h3 id="couchini">couch.ini</h3>
 <p>Ajoutez la lignes suivante au fichier couch.ini 
         DbUpdateNotificationProcess=/PATH/TO/view_updater.rb</p>
-<h3>view_updater.rb</h3>
+<h3 id="view_updaterrb">view_updater.rb</h3>
 <p>Le script suivant met à jour les vues toutes les 10 mises à jour reçues  par la base de données ou une fois / secondes lorsque le nombre d'enregistrement est important 
     <!-- #!/usr/bin/ruby --></p>
-<pre><code>&lt;!-- ################### --&gt;
-&lt;!-- # CONF            # --&gt;
-&lt;!-- ################### --&gt;
+<div class="codehilite"><pre><span class="o">&lt;!--</span> <span class="c1">################### --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># CONF            # --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1">################### --&gt;</span>
 
-&lt;!-- # The smallest amount of changed documents before the views are updated --&gt;
+<span class="o">&lt;!--</span> <span class="c1"># The smallest amount of changed documents before the views are updated --&gt;</span>
 
-MIN_NUM_OF_CHANGED_DOCS = 10
+<span class="n">MIN_NUM_OF_CHANGED_DOCS</span> <span class="o">=</span> <span class="mi">10</span>
 
-&lt;!-- # URL to the DB on the CouchDB server --&gt;
+<span class="o">&lt;!--</span> <span class="c1"># URL to the DB on the CouchDB server --&gt;</span>
 
-URL = "http://localhost:5984"
+<span class="n">URL</span> <span class="o">=</span> <span class="s">&quot;http://localhost:5984&quot;</span>
 
-&lt;!-- # Set the minimum pause between calls to the database --&gt;
+<span class="o">&lt;!--</span> <span class="c1"># Set the minimum pause between calls to the database --&gt;</span>
 
-PAUSE = 1 # seconds
+<span class="n">PAUSE</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># seconds</span>
 
-&lt;!-- # One entry for each design document --&gt;
-&lt;!-- # in each database --&gt;
+<span class="o">&lt;!--</span> <span class="c1"># One entry for each design document --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># in each database --&gt;</span>
 
-VIEWS = {"DATABASE_NAME"  =&gt; ["list_of/design_documents",
-                              "another/design_document"],
-         "recipes"        =&gt; ["category/most_popular"],
-         "ingredients"    =&gt; ["by/price"]}
+<span class="n">VIEWS</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;DATABASE_NAME&quot;</span>  <span class="o">=&gt;</span> <span class="p">[</span><span class="s">&quot;list_of/design_documents&quot;</span><span class="p">,</span>
+                              <span class="s">&quot;another/design_document&quot;</span><span class="p">],</span>
+         <span class="s">&quot;recipes&quot;</span>        <span class="o">=&gt;</span> <span class="p">[</span><span class="s">&quot;category/most_popular&quot;</span><span class="p">],</span>
+         <span class="s">&quot;ingredients&quot;</span>    <span class="o">=&gt;</span> <span class="p">[</span><span class="s">&quot;by/price&quot;</span><span class="p">]}</span>
 
-&lt;!-- ################### --&gt;
-&lt;!-- # RUNTIME         # --&gt;
-&lt;!-- ################### --&gt;
+<span class="o">&lt;!--</span> <span class="c1">################### --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># RUNTIME         # --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1">################### --&gt;</span>
 
-run = true
-number_of_changed_docs = {}
+<span class="n">run</span> <span class="o">=</span> <span class="n">true</span>
+<span class="n">number_of_changed_docs</span> <span class="o">=</span> <span class="p">{}</span>
 
-threads = []
+<span class="n">threads</span> <span class="o">=</span> <span class="o">[]</span>
 
-&lt;!-- # Updates the views --&gt;
+<span class="o">&lt;!--</span> <span class="c1"># Updates the views --&gt;</span>
 
-threads &lt;&lt; Thread.new do
+<span class="n">threads</span> <span class="o">&lt;&lt;</span> <span class="n">Thread</span><span class="o">.</span><span class="k">new</span> <span class="k">do</span>
 
-  while run do
+  <span class="k">while</span> <span class="n">run</span> <span class="k">do</span>
 
-    number_of_changed_docs.each_pair do |db_name, number_of_docs|
-      if number_of_docs &gt;= MIN_NUM_OF_CHANGED_DOCS
+    <span class="n">number_of_changed_docs</span><span class="o">.</span><span class="n">each_pair</span> <span class="k">do</span> <span class="o">|</span><span class="n">db_name</span><span class="p">,</span> <span class="n">number_of_docs</span><span class="o">|</span>
+      <span class="k">if</span> <span class="n">number_of_docs</span> <span class="o">&gt;=</span> <span class="n">MIN_NUM_OF_CHANGED_DOCS</span>
 
-        # Reset the value
-        number_of_changed_docs[db_name] = 0
+        <span class="c1"># Reset the value</span>
+        <span class="n">number_of_changed_docs</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
 
-        # If there are views in the database, get them
-        if VIEWS[db_name]
-          VIEWS[db_name].each do |view|
-            `curl #{URL}/#{db_name}/_view/#{view}?count=0`
-          end  
-        end
+        <span class="c1"># If there are views in the database, get them</span>
+        <span class="k">if</span> <span class="n">VIEWS</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+          <span class="n">VIEWS</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span><span class="o">.</span><span class="nb">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">view</span><span class="o">|</span>
+            <span class="sb">`curl #{URL}/#{db_name}/_view/#{view}?count=0`</span>
+          <span class="n">end</span>  
+        <span class="n">end</span>
 
-      end
-    end
+      <span class="n">end</span>
+    <span class="n">end</span>
 
-    # Pause before starting over again
-    sleep PAUSE
+    <span class="c1"># Pause before starting over again</span>
+    <span class="nb">sleep</span> <span class="n">PAUSE</span>
 
-  end
+  <span class="n">end</span>
 
-end
+<span class="n">end</span>
 
-&lt;!-- # Receives the update notification from CouchDB --&gt;
+<span class="o">&lt;!--</span> <span class="c1"># Receives the update notification from CouchDB --&gt;</span>
 
-threads &lt;&lt; Thread.new do
+<span class="n">threads</span> <span class="o">&lt;&lt;</span> <span class="n">Thread</span><span class="o">.</span><span class="k">new</span> <span class="k">do</span>
 
-  while run do
+  <span class="k">while</span> <span class="n">run</span> <span class="k">do</span>
 
-    puts "Waiting for input:"
-    update_call = gets
+    <span class="n">puts</span> <span class="s">&quot;Waiting for input:&quot;</span>
+    <span class="n">update_call</span> <span class="o">=</span> <span class="n">gets</span>
 
-    # When CouchDB exits the script gets called with
-    # a never ending series of nil
-    if update_call == nil
-      run = false
-    else
+    <span class="c1"># When CouchDB exits the script gets called with</span>
+    <span class="c1"># a never ending series of nil</span>
+    <span class="k">if</span> <span class="n">update_call</span> <span class="o">==</span> <span class="n">nil</span>
+      <span class="n">run</span> <span class="o">=</span> <span class="n">false</span>
+    <span class="k">else</span>
 
-      # Get the database name out of the call data
-      # The data looks somethind like this:
-      # {"type":"updated","db":"DB_NAME"}\n
-      update_call =~ /\"db\":\"(\w+)\"/
-      database_name = $1
+      <span class="c1"># Get the database name out of the call data</span>
+      <span class="c1"># The data looks somethind like this:</span>
+      <span class="c1"># {&quot;type&quot;:&quot;updated&quot;,&quot;db&quot;:&quot;DB_NAME&quot;}\n</span>
+      <span class="n">update_call</span> <span class="o">=~</span><span class="sr"> /\&quot;db\&quot;:\&quot;(\w+)\&quot;/</span>
+      <span class="n">database_name</span> <span class="o">=</span> <span class="nv">$1</span>
 
-      # Set to 0 if it hasn't been initialized before
-      number_of_changed_docs[$1] ||= 0
+      <span class="c1"># Set to 0 if it hasn&#39;t been initialized before</span>
+      <span class="n">number_of_changed_docs</span><span class="p">[</span><span class="nv">$1</span><span class="p">]</span> <span class="o">||=</span> <span class="mi">0</span>
 
-      # Add one pending changed document to the list of documents
-      # in the DB
-      number_of_changed_docs[$1] += 1
+      <span class="c1"># Add one pending changed document to the list of documents</span>
+      <span class="c1"># in the DB</span>
+      <span class="n">number_of_changed_docs</span><span class="p">[</span><span class="nv">$1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
 
-    end
+    <span class="n">end</span>
 
-  end
+  <span class="n">end</span>
 
-end
+<span class="n">end</span>
 
-&lt;!-- # Good bye --&gt;
+<span class="o">&lt;!--</span> <span class="c1"># Good bye --&gt;</span>
 
-threads.each {|thr| thr.join}
-</code></pre>
+<span class="n">threads</span><span class="o">.</span><span class="nb">each</span> <span class="p">{</span><span class="o">|</span><span class="n">thr</span><span class="o">|</span> <span class="n">thr</span><span class="o">.</span><span class="nb">join</span><span class="p">}</span>
+</pre></div>
+
+
 <p>view_updater.rb doit être exécutable par CouchDB .</p>
 </div>
       <div id="footer">

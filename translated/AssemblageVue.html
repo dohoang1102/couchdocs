@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - AssemblageVue</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,7 +56,7 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
@@ -46,69 +64,73 @@
 <!-- #language fr -->
 
 <p>Une simple introduction sur la l'assemblage de vue (view collation).</p>
-<h2>Bases</h2>
+<h2 id="bases">Bases</h2>
 <p>Les fonctions vues définissent une clé et une valeur retournée à chaque ligne. CouchDB assemble les lignes de la vues par clé. Dans l'exemple suivant, la propriété  !LastName sert de clé, le résultat est alors trié par !LastName :</p>
-<pre><code>function(doc) {
-  if (doc.Type == "customer") {
-    emit(doc.LastName, {FirstName: doc.FirstName, Address: doc.Address});
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s">&quot;customer&quot;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">emit</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">LastName</span><span class="p">,</span> <span class="p">{</span><span class="n">FirstName:</span> <span class="n">doc</span><span class="o">.</span><span class="n">FirstName</span><span class="p">,</span> <span class="n">Address:</span> <span class="n">doc</span><span class="o">.</span><span class="n">Address</span><span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>CouchDB autorise n'importe quelle structure JSON comme clé. Vous pouvez utiliser des clés complexe pour affiner le tri et le groupement.</p>
-<h2>Exemples</h2>
+<h2 id="exemples">Exemples</h2>
 <p>Le truc suivant retourne à la fois les documents customer(client) et order(commande). La clé est composée de l' <em>_id</em> custommer et une valeur de classement. Parce que la clé des documents order commence avec l' <em>_id</em> d'un document customer, tous les orders(commandes) seront triés par customer(client). Parce que la valeur de classement des clients(custommers) est inférieure à celle des orders(commandes) , le document custommer(client) sera avant les orders(commandes) associées. Les valeurs <em>0</em> et <em>1</em> pour le classement sont arbitraires.</p>
-<pre><code>function(doc) {
-  if (doc.Type == "customer") {
-    emit([doc._id, 0], doc);
-  } else if (doc.Type == "order") {
-    emit([doc.customer_id, 1], doc);
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s">&quot;customer&quot;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">emit</span><span class="p">([</span><span class="n">doc</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">doc</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s">&quot;order&quot;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">emit</span><span class="p">([</span><span class="n">doc</span><span class="o">.</span><span class="n">customer_id</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">doc</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Ce truc a été <a href="http://www.cmlenz.net/blog/2007/10/couchdb-joins.html">documenté précedemment</a> par Christopher Lenz.</p>
-<h2>Spécification Assemblage</h2>
+<h2 id="specification-assemblage">Spécification Assemblage</h2>
 <p>Cette section repose sur la fonction <em>view_collation</em> dans <em>couch_tests.js</em>:</p>
-<pre><code>// valeurs spéciales triées avant les autres types
-null
-false
-true
+<div class="codehilite"><pre><span class="sr">//</span> <span class="n">valeurs</span> <span class="n">sp</span><span class="err">é</span><span class="n">ciales</span> <span class="n">tri</span><span class="err">é</span><span class="n">es</span> <span class="n">avant</span> <span class="n">les</span> <span class="n">autres</span> <span class="n">types</span>
+<span class="n">null</span>
+<span class="n">false</span>
+<span class="n">true</span>
 
-// ensuite les nombres
-1
-2
-3.0
-4
+<span class="sr">//</span> <span class="n">ensuite</span> <span class="n">les</span> <span class="n">nombres</span>
+<span class="mi">1</span>
+<span class="mi">2</span>
+<span class="mi">3</span><span class="o">.</span><span class="mi">0</span>
+<span class="mi">4</span>
 
-// puis le texte, sensible à la casse
-"a"
-"A"
-"aa"
-"b"
-"B"
-"ba"
-"bb"
+<span class="sr">//</span> <span class="n">puis</span> <span class="ow">le</span> <span class="n">texte</span><span class="p">,</span> <span class="n">sensible</span> <span class="err">à</span> <span class="n">la</span> <span class="n">casse</span>
+<span class="s">&quot;a&quot;</span>
+<span class="s">&quot;A&quot;</span>
+<span class="s">&quot;aa&quot;</span>
+<span class="s">&quot;b&quot;</span>
+<span class="s">&quot;B&quot;</span>
+<span class="s">&quot;ba&quot;</span>
+<span class="s">&quot;bb&quot;</span>
 
-// ensuite les tableaux, compare éléments par élements tant que différentt
-// tableaux sont triés par tailles ensuite.
-["b"]
-["b","c"]
-["b","c", "a"]
-["b","d"]
-["b","d", "e"]
+<span class="sr">//</span> <span class="n">ensuite</span> <span class="n">les</span> <span class="n">tableaux</span><span class="p">,</span> <span class="n">compare</span> <span class="err">é</span><span class="n">l</span><span class="err">é</span><span class="n">ments</span> <span class="n">par</span> <span class="err">é</span><span class="n">lements</span> <span class="n">tant</span> <span class="n">que</span> <span class="n">diff</span><span class="err">é</span><span class="n">rentt</span>
+<span class="sr">//</span> <span class="n">tableaux</span> <span class="n">sont</span> <span class="n">tri</span><span class="err">é</span><span class="n">s</span> <span class="n">par</span> <span class="n">tailles</span> <span class="n">ensuite</span><span class="o">.</span>
+<span class="p">[</span><span class="s">&quot;b&quot;</span><span class="p">]</span>
+<span class="p">[</span><span class="s">&quot;b&quot;</span><span class="p">,</span><span class="s">&quot;c&quot;</span><span class="p">]</span>
+<span class="p">[</span><span class="s">&quot;b&quot;</span><span class="p">,</span><span class="s">&quot;c&quot;</span><span class="p">,</span> <span class="s">&quot;a&quot;</span><span class="p">]</span>
+<span class="p">[</span><span class="s">&quot;b&quot;</span><span class="p">,</span><span class="s">&quot;d&quot;</span><span class="p">]</span>
+<span class="p">[</span><span class="s">&quot;b&quot;</span><span class="p">,</span><span class="s">&quot;d&quot;</span><span class="p">,</span> <span class="s">&quot;e&quot;</span><span class="p">]</span>
 
-// Ensuite les objets. compare chaque couple clé valeur dans la liste tant que différent
-// les objets sont triés par tailles ensuite.
-{a:1}
-{a:2}
-{b:1}
-{b:2}
-{b:2, a:1} // L'odre des membres est pris en compte lors de l'assemblage.
-           // CouchDB préserve l'ordre des membres
-           // mais ne requiert pas que le client le doive.
-           // ce test peut échouer si utilisé avec un moteur js
-           //qui ne préserve pas l'ordre
-{b:2, c:2}
-</code></pre>
+<span class="sr">//</span> <span class="n">Ensuite</span> <span class="n">les</span> <span class="n">objets</span><span class="o">.</span> <span class="n">compare</span> <span class="n">chaque</span> <span class="n">couple</span> <span class="n">cl</span><span class="err">é</span> <span class="n">valeur</span> <span class="n">dans</span> <span class="n">la</span> <span class="n">liste</span> <span class="n">tant</span> <span class="n">que</span> <span class="n">diff</span><span class="err">é</span><span class="n">rent</span>
+<span class="sr">//</span> <span class="n">les</span> <span class="n">objets</span> <span class="n">sont</span> <span class="n">tri</span><span class="err">é</span><span class="n">s</span> <span class="n">par</span> <span class="n">tailles</span> <span class="n">ensuite</span><span class="o">.</span>
+<span class="p">{</span><span class="n">a:1</span><span class="p">}</span>
+<span class="p">{</span><span class="n">a:2</span><span class="p">}</span>
+<span class="p">{</span><span class="n">b:1</span><span class="p">}</span>
+<span class="p">{</span><span class="n">b:2</span><span class="p">}</span>
+<span class="p">{</span><span class="n">b:2</span><span class="p">,</span> <span class="n">a:1</span><span class="p">}</span> <span class="sr">//</span> <span class="n">L</span><span class="s">&#39;odre des membres est pris en compte lors de l&#39;</span><span class="n">assemblage</span><span class="o">.</span>
+           <span class="sr">//</span> <span class="n">CouchDB</span> <span class="n">pr</span><span class="err">é</span><span class="n">serve</span> <span class="n">l</span><span class="s">&#39;ordre des membres</span>
+<span class="s">           // mais ne requiert pas que le client le doive.</span>
+<span class="s">           // ce test peut échouer si utilisé avec un moteur js</span>
+<span class="s">           //qui ne préserve pas l&#39;</span><span class="n">ordre</span>
+<span class="p">{</span><span class="n">b:2</span><span class="p">,</span> <span class="n">c:2</span><span class="p">}</span>
+</pre></div>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

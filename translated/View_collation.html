@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - View_collation</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,91 +56,105 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <p>A simple introduction to CouchDB view collation.</p>
-<h2>Basics</h2>
+<h2 id="basics">Basics</h2>
 <p>View functions specify a key and a value to be returned for each row. CouchDB collates the view rows by this key. In the following example, the !LastName property serves as the key, thus the result will be sorted by !LastName:</p>
-<pre><code>function(doc) {
-  if (doc.Type == "customer") {
-    emit(doc.LastName, {FirstName: doc.FirstName, Address: doc.Address});
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s">&quot;customer&quot;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">emit</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">LastName</span><span class="p">,</span> <span class="p">{</span><span class="n">FirstName:</span> <span class="n">doc</span><span class="o">.</span><span class="n">FirstName</span><span class="p">,</span> <span class="n">Address:</span> <span class="n">doc</span><span class="o">.</span><span class="n">Address</span><span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>CouchDB allows arbitrary JSON structures to be used as keys. You can use complex keys for fine-grained control over sorting and grouping.</p>
-<h2>Examples</h2>
+<h2 id="examples">Examples</h2>
 <p>The following clever trick would return both customer and order documents. The key is composed of a customer <em>_id</em> and a sorting token. Because the key for order documents begins with the <em>_id</em> of a customer document, all the orders will be sorted by customer. Because the sorting token for customers is lower than the token for orders, the customer document will come before the associated orders. The values <em>0</em> and <em>1</em> for the sorting token are arbitrary.</p>
-<pre><code>function(doc) {
-  if (doc.Type == "customer") {
-    emit([doc._id, 0], doc);
-  } else if (doc.Type == "order") {
-    emit([doc.customer_id, 1], doc);
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s">&quot;customer&quot;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">emit</span><span class="p">([</span><span class="n">doc</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">doc</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s">&quot;order&quot;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">emit</span><span class="p">([</span><span class="n">doc</span><span class="o">.</span><span class="n">customer_id</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">doc</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>This trick was <a href="http://www.cmlenz.net/blog/2007/10/couchdb-joins.html">originally documented</a> by Christopher Lenz.</p>
-<h3>Sorting by Dates</h3>
+<h3 id="sorting-by-dates">Sorting by Dates</h3>
 <p>It maybe be convenient to store date attributes in a human readable format (i.e. as a String), but still sort by date. This can be done by converting the date to a number in the emit function. For example, given a document with a created_at attribute of 'Wed Jul 23 16:29:21 +0100 2008', the following emit function would sort by date</p>
-<pre><code>emit(Date.parse(doc.created_at), doc);
-</code></pre>
+<div class="codehilite"><pre><span class="n">emit</span><span class="p">(</span><span class="n">Date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">created_at</span><span class="p">),</span> <span class="n">doc</span><span class="p">);</span>
+</pre></div>
+
+
 <p>Alternatively, if you use a date format which sorts lexicographically, such as "2008/06/09 13:52:11 +0000" you can just </p>
-<pre><code>emit(doc.created_at, doc);
-</code></pre>
+<div class="codehilite"><pre><span class="n">emit</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">created_at</span><span class="p">,</span> <span class="n">doc</span><span class="p">);</span>
+</pre></div>
+
+
 <p>and avoid the conversion. As a bonus, this date format is compatible with the Javascript date parser, so you can use <em>new Date(doc.created_at)</em> in your client side Javascript to make date sorting easy in the browser.</p>
-<h3>String Ranges</h3>
+<h3 id="string-ranges">String Ranges</h3>
 <p>If you need start and end keys that encompass every string with a given prefix, it is better to use a high value unicode character, than to use a 'ZZZZ' suffix.</p>
 <p>That is, rather than:</p>
-<pre><code>startkey="abc"&amp;endkey="abcZZZZZZZZZ"
-</code></pre>
+<div class="codehilite"><pre><span class="n">startkey</span><span class="o">=</span><span class="s">&quot;abc&quot;</span><span class="o">&amp;</span><span class="n">endkey</span><span class="o">=</span><span class="s">&quot;abcZZZZZZZZZ&quot;</span>
+</pre></div>
+
+
 <p>You should use:</p>
-<pre><code>startkey="abc"&amp;endkey="abc\u9999"
-</code></pre>
-<h2>Collation Specification</h2>
+<div class="codehilite"><pre><span class="n">startkey</span><span class="o">=</span><span class="s">&quot;abc&quot;</span><span class="o">&amp;</span><span class="n">endkey</span><span class="o">=</span><span class="s">&quot;abc\u9999&quot;</span>
+</pre></div>
+
+
+<h2 id="collation-specification">Collation Specification</h2>
 <p>This section is based on the <em>view_collation</em> function in <em>couch_tests.js</em>:</p>
-<pre><code>// special values sort before all other types
-null
-false
-true
+<div class="codehilite"><pre><span class="sr">//</span> <span class="n">special</span> <span class="nb">values</span> <span class="nb">sort</span> <span class="n">before</span> <span class="n">all</span> <span class="n">other</span> <span class="n">types</span>
+<span class="n">null</span>
+<span class="n">false</span>
+<span class="n">true</span>
 
-// then numbers
-1
-2
-3.0
-4
+<span class="sr">//</span> <span class="k">then</span> <span class="n">numbers</span>
+<span class="mi">1</span>
+<span class="mi">2</span>
+<span class="mi">3</span><span class="o">.</span><span class="mi">0</span>
+<span class="mi">4</span>
 
-// then text, case sensitive
-"a"
-"A"
-"aa"
-"b"
-"B"
-"ba"
-"bb"
+<span class="sr">//</span> <span class="k">then</span> <span class="n">text</span><span class="p">,</span> <span class="k">case</span> <span class="n">sensitive</span>
+<span class="s">&quot;a&quot;</span>
+<span class="s">&quot;A&quot;</span>
+<span class="s">&quot;aa&quot;</span>
+<span class="s">&quot;b&quot;</span>
+<span class="s">&quot;B&quot;</span>
+<span class="s">&quot;ba&quot;</span>
+<span class="s">&quot;bb&quot;</span>
 
-// then arrays. compared element by element until different.
-// Longer arrays sort after their prefixes
-["a"]
-["b"]
-["b","c"]
-["b","c", "a"]
-["b","d"]
-["b","d", "e"]
+<span class="sr">//</span> <span class="k">then</span> <span class="n">arrays</span><span class="o">.</span> <span class="n">compared</span> <span class="n">element</span> <span class="n">by</span> <span class="n">element</span> <span class="k">until</span> <span class="n">different</span><span class="o">.</span>
+<span class="sr">//</span> <span class="n">Longer</span> <span class="n">arrays</span> <span class="nb">sort</span> <span class="n">after</span> <span class="n">their</span> <span class="n">prefixes</span>
+<span class="p">[</span><span class="s">&quot;a&quot;</span><span class="p">]</span>
+<span class="p">[</span><span class="s">&quot;b&quot;</span><span class="p">]</span>
+<span class="p">[</span><span class="s">&quot;b&quot;</span><span class="p">,</span><span class="s">&quot;c&quot;</span><span class="p">]</span>
+<span class="p">[</span><span class="s">&quot;b&quot;</span><span class="p">,</span><span class="s">&quot;c&quot;</span><span class="p">,</span> <span class="s">&quot;a&quot;</span><span class="p">]</span>
+<span class="p">[</span><span class="s">&quot;b&quot;</span><span class="p">,</span><span class="s">&quot;d&quot;</span><span class="p">]</span>
+<span class="p">[</span><span class="s">&quot;b&quot;</span><span class="p">,</span><span class="s">&quot;d&quot;</span><span class="p">,</span> <span class="s">&quot;e&quot;</span><span class="p">]</span>
 
-// then object, compares each key value in the list until different.
-// larger objects sort after their subset objects.
-{a:1}
-{a:2}
-{b:1}
-{b:2}
-{b:2, a:1} // Member order does matter for collation.
-           // CouchDB preserves member order
-           // but doesn't require that clients will.
-           // this test might fail if used with a js engine
-           // that doesn't preserve order
-{b:2, c:2}
-</code></pre>
+<span class="sr">//</span> <span class="k">then</span> <span class="n">object</span><span class="p">,</span> <span class="n">compares</span> <span class="nb">each</span> <span class="n">key</span> <span class="n">value</span> <span class="n">in</span> <span class="n">the</span> <span class="n">list</span> <span class="k">until</span> <span class="n">different</span><span class="o">.</span>
+<span class="sr">//</span> <span class="n">larger</span> <span class="n">objects</span> <span class="nb">sort</span> <span class="n">after</span> <span class="n">their</span> <span class="n">subset</span> <span class="n">objects</span><span class="o">.</span>
+<span class="p">{</span><span class="n">a:1</span><span class="p">}</span>
+<span class="p">{</span><span class="n">a:2</span><span class="p">}</span>
+<span class="p">{</span><span class="n">b:1</span><span class="p">}</span>
+<span class="p">{</span><span class="n">b:2</span><span class="p">}</span>
+<span class="p">{</span><span class="n">b:2</span><span class="p">,</span> <span class="n">a:1</span><span class="p">}</span> <span class="sr">//</span> <span class="n">Member</span> <span class="n">order</span> <span class="n">does</span> <span class="n">matter</span> <span class="k">for</span> <span class="n">collation</span><span class="o">.</span>
+           <span class="sr">//</span> <span class="n">CouchDB</span> <span class="n">preserves</span> <span class="n">member</span> <span class="n">order</span>
+           <span class="sr">//</span> <span class="n">but</span> <span class="n">doesn</span><span class="s">&#39;t require that clients will.</span>
+<span class="s">           // this test might fail if used with a js engine</span>
+<span class="s">           // that doesn&#39;</span><span class="n">t</span> <span class="n">preserve</span> <span class="n">order</span>
+<span class="p">{</span><span class="n">b:2</span><span class="p">,</span> <span class="n">c:2</span><span class="p">}</span>
+</pre></div>
+
+
 <p>Comparison of strings is done using <a href="http://site.icu-project.org/">ICU</a> which implements the <a href="http://www.unicode.org/unicode/reports/tr10/">Unicode Collation Algorithm</a>, giving a dictionary sorting of keys. This can give surprising results if you were expecting ASCII ordering. Note that:</p>
 <ul>
 <li>All symbols sort before numbers and letters (even the "high" symbols like tilde, 0x7e)</li>
@@ -130,65 +162,81 @@ true
 <li>Identical sequences of letters are compared with regard to case, with lowercase <em>before</em> uppercase, so a &lt; A</li>
 </ul>
 <p>You can demonstrate the collation sequence for 7-bit ASCII characters like this:</p>
-<pre><code>require 'rubygems'
-require 'restclient'
-require 'json'
+<div class="codehilite"><pre><span class="nb">require</span> <span class="s">&#39;rubygems&#39;</span>
+<span class="nb">require</span> <span class="s">&#39;restclient&#39;</span>
+<span class="nb">require</span> <span class="s">&#39;json&#39;</span>
 
-DB="http://127.0.0.1:5984/collator"
+<span class="n">DB</span><span class="o">=</span><span class="s">&quot;http://127.0.0.1:5984/collator&quot;</span>
 
-RestClient.delete DB rescue nil
-RestClient.put "#{DB}",""
+<span class="n">RestClient</span><span class="o">.</span><span class="nb">delete</span> <span class="n">DB</span> <span class="n">rescue</span> <span class="n">nil</span>
+<span class="n">RestClient</span><span class="o">.</span><span class="n">put</span> <span class="s">&quot;#{DB}&quot;</span><span class="p">,</span><span class="s">&quot;&quot;</span>
 
-(32..126).each do |c|
-  RestClient.put "#{DB}/#{c.to_s(16)}", {"x"=&gt;c.chr}.to_json
-end
+<span class="p">(</span><span class="mi">32</span><span class="o">..</span><span class="mi">126</span><span class="p">)</span><span class="o">.</span><span class="nb">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">c</span><span class="o">|</span>
+  <span class="n">RestClient</span><span class="o">.</span><span class="n">put</span> <span class="s">&quot;#{DB}/#{c.to_s(16)}&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s">&quot;x&quot;</span><span class="o">=&gt;</span><span class="n">c</span><span class="o">.</span><span class="nb">chr</span><span class="p">}</span><span class="o">.</span><span class="n">to_json</span>
+<span class="n">end</span>
 
-RestClient.put "#{DB}/_design/test", &lt;&lt;EOS
-{
-  "views":{
-    "one":{
-      "map":"function (doc) { emit(doc.x,null); }"
-    }
-  }
-}
-EOS
+<span class="n">RestClient</span><span class="o">.</span><span class="n">put</span> <span class="s">&quot;#{DB}/_design/test&quot;</span><span class="p">,</span> <span class="s">&lt;&lt;EOS</span>
+<span class="s">{</span>
+<span class="s">  &quot;views&quot;:{</span>
+<span class="s">    &quot;one&quot;:{</span>
+<span class="s">      &quot;map&quot;:&quot;function (doc) { emit(doc.x,null); }&quot;</span>
+<span class="s">    }</span>
+<span class="s">  }</span>
+<span class="s">}</span>
+<span class="s">EOS</span>
 
-puts RestClient.get("#{DB}/_design/test/_view/one")
-</code></pre>
+<span class="n">puts</span> <span class="n">RestClient</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;#{DB}/_design/test/_view/one&quot;</span><span class="p">)</span>
+</pre></div>
+
+
 <p>This shows the collation sequence to be:</p>
-<pre><code>  ` ^ _ - , ; : ! ? . ' " ( ) [ ] { } @ * / \ &amp; # % + &lt; = &gt; | ~ $ 0 1 2 3 4 5 6 7 8 9
-a A b B c C d D e E f F g G h H i I j J k K l L m M n N o O p P q Q r R s S t T u U v V w W x X y Y z Z
-</code></pre>
-<h3>Key ranges</h3>
+<div class="codehilite"><pre>  <span class="err">`</span> <span class="o">^</span> <span class="n">_</span> <span class="o">-</span> <span class="p">,</span> <span class="p">;</span> <span class="p">:</span> <span class="o">!</span> <span class="p">?</span> <span class="o">.</span> <span class="err">&#39;</span> <span class="err">&quot;</span> <span class="p">(</span> <span class="p">)</span> <span class="p">[</span> <span class="p">]</span> <span class="p">{</span> <span class="p">}</span> <span class="nv">@</span> <span class="err">*</span> <span class="err">/</span> <span class="err">\</span> <span class="err">&amp;</span> <span class="err">#</span> <span class="err">%</span> <span class="err">+</span> <span class="err">&lt;</span> <span class="err">=</span> <span class="err">&gt;</span> <span class="err">|</span> <span class="err">~</span> <span class="err">$</span> <span class="nv">0</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span>
+<span class="n">a</span> <span class="n">A</span> <span class="n">b</span> <span class="n">B</span> <span class="n">c</span> <span class="n">C</span> <span class="n">d</span> <span class="n">D</span> <span class="n">e</span> <span class="n">E</span> <span class="n">f</span> <span class="n">F</span> <span class="n">g</span> <span class="n">G</span> <span class="n">h</span> <span class="n">H</span> <span class="n">i</span> <span class="n">I</span> <span class="n">j</span> <span class="n">J</span> <span class="n">k</span> <span class="n">K</span> <span class="n">l</span> <span class="n">L</span> <span class="n">m</span> <span class="n">M</span> <span class="n">n</span> <span class="n">N</span> <span class="n">o</span> <span class="n">O</span> <span class="n">p</span> <span class="n">P</span> <span class="sx">q Q </span><span class="n">r</span> <span class="n">R</span> <span class="n">s</span> <span class="n">S</span> <span class="n">t</span> <span class="n">T</span> <span class="n">u</span> <span class="n">U</span> <span class="n">v</span> <span class="n">V</span> <span class="n">w</span> <span class="n">W</span> <span class="n">x</span> <span class="n">X</span> <span class="n">y</span> <span class="n">Y</span> <span class="n">z</span> <span class="n">Z</span>
+</pre></div>
+
+
+<h3 id="key-ranges">Key ranges</h3>
 <p>Take special care when querying key ranges. For example: the query</p>
-<pre><code>startkey="Abc"&amp;endkey="AbcZZZZ"
-</code></pre>
+<div class="codehilite"><pre><span class="n">startkey</span><span class="o">=</span><span class="s">&quot;Abc&quot;</span><span class="o">&amp;</span><span class="n">endkey</span><span class="o">=</span><span class="s">&quot;AbcZZZZ&quot;</span>
+</pre></div>
+
+
 <p>will match "ABC" and "abc1", but not "abc". This is because UCA sorts as</p>
-<pre><code>  abc &lt; Abc &lt; ABC &lt; abc1 &lt; AbcZZZZZ
-</code></pre>
+<div class="codehilite"><pre>  <span class="n">abc</span> <span class="o">&lt;</span> <span class="n">Abc</span> <span class="o">&lt;</span> <span class="n">ABC</span> <span class="o">&lt;</span> <span class="n">abc1</span> <span class="o">&lt;</span> <span class="n">AbcZZZZZ</span>
+</pre></div>
+
+
 <p>For most applications, to avoid problems you should lowercase the startkey, e.g.</p>
-<pre><code>startkey="abc"&amp;endkey="abcZZZZZZZZ"
-</code></pre>
+<div class="codehilite"><pre><span class="n">startkey</span><span class="o">=</span><span class="s">&quot;abc&quot;</span><span class="o">&amp;</span><span class="n">endkey</span><span class="o">=</span><span class="s">&quot;abcZZZZZZZZ&quot;</span>
+</pre></div>
+
+
 <p>will match all keys starting with [aA][bB][cC]</p>
-<h3>Complex keys</h3>
+<h3 id="complex-keys">Complex keys</h3>
 <p>The query <code>startkey=["foo"]&amp;endkey=["foo",{}]</code> will match most array keys with "foo" in the first element, such as <code>["foo","bar"]</code> and <code>["foo",["bar","baz"]]</code>. However it will not match <code>["foo",{"an":"object"}]</code></p>
-<h2>_all_docs</h2>
+<h2 id="_all_docs">_all_docs</h2>
 <p>The _all_docs view is a special case because it uses ASCII collation for doc ids, not UCA. For example,</p>
-<pre><code>startkey="_design/"&amp;endkey="_design/ZZZZZZZZ"
-</code></pre>
+<div class="codehilite"><pre><span class="n">startkey</span><span class="o">=</span><span class="s">&quot;_design/&quot;</span><span class="o">&amp;</span><span class="n">endkey</span><span class="o">=</span><span class="s">&quot;_design/ZZZZZZZZ&quot;</span>
+</pre></div>
+
+
 <p>will <em>not</em> find <code>_design/abc</code> because 'Z' comes before 'a' in the ASCII sequence. A better solution is:</p>
-<pre><code>startkey="_design/"&amp;endkey="_design0"
-</code></pre>
-<h2>Raw collation</h2>
+<div class="codehilite"><pre><span class="n">startkey</span><span class="o">=</span><span class="s">&quot;_design/&quot;</span><span class="o">&amp;</span><span class="n">endkey</span><span class="o">=</span><span class="s">&quot;_design0&quot;</span>
+</pre></div>
+
+
+<h2 id="raw-collation">Raw collation</h2>
 <p>To squeeze a little more performance out of views, you can specify <code>"options":{"collation":"raw"}</code> within the view definition for native Erlang collation, especially if you don't require UCA. This gives a different collation sequence:</p>
-<pre><code>1
-false
-null
-true
-{"a":"a"},
-["a"]
-"a"
-</code></pre>
+<div class="codehilite"><pre><span class="mi">1</span>
+<span class="n">false</span>
+<span class="n">null</span>
+<span class="n">true</span>
+<span class="p">{</span><span class="s">&quot;a&quot;</span><span class="p">:</span><span class="s">&quot;a&quot;</span><span class="p">},</span>
+<span class="p">[</span><span class="s">&quot;a&quot;</span><span class="p">]</span>
+<span class="s">&quot;a&quot;</span>
+</pre></div>
+
+
 <p>Beware that <code>{}</code> is no longer a suitable "high" key sentinel value. Use a string like "~~~~~" instead.</p>
 </div>
       <div id="footer">

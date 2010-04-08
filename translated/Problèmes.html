@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Problèmes</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,18 +56,20 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h2>Mise à jour</h2>
+  <h2 id="mise-a-jour">Mise à jour</h2>
 <p>Avez-vous compilé CouchDB à partir du dépot Subversion?</p>
 <p>Avez vous exécuté un <code>svn up</code> qui semble tout casser ?</p>
 <p>Après chaque mise à jour, vous devez lancer la commande suivante :</p>
-<pre><code>./bootstrap -C
-</code></pre>
+<div class="codehilite"><pre><span class="o">./</span><span class="n">bootstrap</span> <span class="o">-</span><span class="n">C</span>
+</pre></div>
+
+
 <p>Si vous avez encore des problèmes, essayez le point suivant.</p>
-<h2>Premier lancement</h2>
+<h2 id="premier-lancement">Premier lancement</h2>
 <p>Avez-vous des problèmes au lancement de CouchDB la première fois ?</p>
 <p>Suivez cette simple procédure et reportez le résultat de chaque étape sur la liste de diffusion (ou IRC).</p>
 <ol>

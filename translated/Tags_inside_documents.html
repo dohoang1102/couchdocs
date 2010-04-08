@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Tags_inside_documents</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,49 +56,55 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <p>Tags are stored as a list of strings inside the document:</p>
-<pre><code>{
- "_id":"123BAC",
- "_rev":"946B7D1C",
- "type":"post",
- "subject":"I like Planktion",
- "author":"Rusty",
- "created":"2006-08-15T17:30:12Z-04:00",
- "body":"I decided today that I don't like baseball. I like plankton.",
- "tags":["plankton", "baseball", "decisions"]
-}
-</code></pre>
-<h2>CouchDB Views</h2>
+<div class="codehilite"><pre><span class="p">{</span>
+ <span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;123BAC&quot;</span><span class="p">,</span>
+ <span class="s">&quot;_rev&quot;</span><span class="p">:</span><span class="s">&quot;946B7D1C&quot;</span><span class="p">,</span>
+ <span class="s">&quot;type&quot;</span><span class="p">:</span><span class="s">&quot;post&quot;</span><span class="p">,</span>
+ <span class="s">&quot;subject&quot;</span><span class="p">:</span><span class="s">&quot;I like Planktion&quot;</span><span class="p">,</span>
+ <span class="s">&quot;author&quot;</span><span class="p">:</span><span class="s">&quot;Rusty&quot;</span><span class="p">,</span>
+ <span class="s">&quot;created&quot;</span><span class="p">:</span><span class="s">&quot;2006-08-15T17:30:12Z-04:00&quot;</span><span class="p">,</span>
+ <span class="s">&quot;body&quot;</span><span class="p">:</span><span class="s">&quot;I decided today that I don&#39;t like baseball. I like plankton.&quot;</span><span class="p">,</span>
+ <span class="s">&quot;tags&quot;</span><span class="p">:[</span><span class="s">&quot;plankton&quot;</span><span class="p">,</span> <span class="s">&quot;baseball&quot;</span><span class="p">,</span> <span class="s">&quot;decisions&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="couchdb-views">CouchDB Views</h2>
 <p><strong>Retrieve all tags with their counts:</strong></p>
 <p><em>map</em></p>
-<pre><code>function(doc) {
-  if (doc.type == 'post' &amp;&amp; doc.tags) {
-    doc.tags.forEach(function(tag) {
-      emit(tag, 1);
-    });
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;post&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">forEach</span><span class="p">(</span><span class="n">function</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">emit</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p><em>reduce</em></p>
-<pre><code>function(keys, values) {
-  return sum(values);
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="nb">keys</span><span class="p">,</span> <span class="nb">values</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">sum</span><span class="p">(</span><span class="nb">values</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Note: when retrieving data from this view, if the results are reduced to a single row, you may need to use the ?group=true option to get counts reduced by tag.  This may be a feature in version 0.8.0 and forward? see HttpViewApi.</p>
 <p><strong>Retrieve documents by a specific tag:</strong></p>
 <p><em>map</em></p>
-<pre><code>function(doc) {
-  if (doc.type == 'post' &amp;&amp; doc.tags) {
-    doc.tags.forEach(function(tag) {
-      emit(tag, doc);
-    });
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s">&#39;post&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">forEach</span><span class="p">(</span><span class="n">function</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">emit</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">doc</span><span class="p">);</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Views_for_SQL_Jockeys</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,86 +56,98 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <p>The latest version is maintained at http://books.couchdb.org/relax/reference/views-for-sql-jockeys</p>
-<h1>View Cookbook for SQL Jockeys</h1>
+<h1 id="view-cookbook-for-sql-jockeys">View Cookbook for SQL Jockeys</h1>
 <p>This is a collection of some common SQL queries and how to get the same result in CouchDB. The key to remember here is that CouchDB does not work like an SQL database at all and that best practices from the SQL world do not translate well or at all to CouchDB. This cookbook assumes that you are familiar with the CouchDB basics like creating and updating databases and documents.</p>
-<h2>Using Views (CREATE / ALTER TABLE)</h2>
+<h2 id="using-views-create-alter-table">Using Views (CREATE / ALTER TABLE)</h2>
 <p>Using views is a two step process. First you <em>define</em> a view, then you <em>query</em> it. This is analogous to defining a table structure (with indexes) using <code>CREATE TABLE</code> or <code>ALTER TABLE</code> and querying it using an SQL query.</p>
-<h3>Defining a View</h3>
+<h3 id="defining-a-view">Defining a View</h3>
 <p>Defining a view is done by creating a special document in a CouchDB database. The only actual speciality is the <code>_id</code> of the document: it starts with <code>_design/</code>, for example <code>_design/application</code>. Other than that, it is just a regular CouchDB document. To make sure CouchDB understands that you are defining a view, you need to prepare the contents of that design document in a special format. Here is an example:</p>
-<pre><code>{
-  "_id": "_design/application",
-  "_rev": "1-C1687D17",
-  "views": {
-    "viewname": {
-      "map": "function(doc) { ... }",
-      "reduce": "function(keys, values) { ... }"
-    }
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span>
+  <span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;_design/application&quot;</span><span class="p">,</span>
+  <span class="s">&quot;_rev&quot;</span><span class="p">:</span> <span class="s">&quot;1-C1687D17&quot;</span><span class="p">,</span>
+  <span class="s">&quot;views&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s">&quot;viewname&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s">&quot;map&quot;</span><span class="p">:</span> <span class="s">&quot;function(doc) { ... }&quot;</span><span class="p">,</span>
+      <span class="s">&quot;reduce&quot;</span><span class="p">:</span> <span class="s">&quot;function(keys, values) { ... }&quot;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>We are defining a view <code>viewname</code>. The definition of the view consists of two functions. The <em>map function</em> and the <em>reduce function</em>. Specifying a reduce function is optional. We'll look at the nature of the functions later. Note that <code>viewname</code> can be whatever you like; <code>users</code>, <code>by-name</code>, or <code>by date</code> are just some examples.</p>
 <p>A single design document can also include multiple view definitions, each identified by a unique name:</p>
-<pre><code>{
-  "_id": "_design/application",
-  "_rev": "1-C1687D17",
-  "views": {
-    "viewname": {
-      "map": "function(doc) { ... }",
-      "reduce": "function(keys, values) { ... }"
-    },
-    "anotherview": {
-      "map": "function(doc) { ... }",
-      "reduce": "function(keys, values) { ... }"
-    }
-  }
-}
-</code></pre>
-<h3>Querying a View</h3>
+<div class="codehilite"><pre><span class="p">{</span>
+  <span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;_design/application&quot;</span><span class="p">,</span>
+  <span class="s">&quot;_rev&quot;</span><span class="p">:</span> <span class="s">&quot;1-C1687D17&quot;</span><span class="p">,</span>
+  <span class="s">&quot;views&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s">&quot;viewname&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s">&quot;map&quot;</span><span class="p">:</span> <span class="s">&quot;function(doc) { ... }&quot;</span><span class="p">,</span>
+      <span class="s">&quot;reduce&quot;</span><span class="p">:</span> <span class="s">&quot;function(keys, values) { ... }&quot;</span>
+    <span class="p">},</span>
+    <span class="s">&quot;anotherview&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s">&quot;map&quot;</span><span class="p">:</span> <span class="s">&quot;function(doc) { ... }&quot;</span><span class="p">,</span>
+      <span class="s">&quot;reduce&quot;</span><span class="p">:</span> <span class="s">&quot;function(keys, values) { ... }&quot;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="querying-a-view">Querying a View</h3>
 <p>The name of the design document and the name of the view are significant for querying the view. To query the view <code>viewname</code> you perform a HTTP <code>GET</code> request to the following URI:</p>
-<pre><code>/database/_design/application/_view/viewname
-</code></pre>
+<div class="codehilite"><pre><span class="sr">/database/</span><span class="n">_design</span><span class="sr">/application/</span><span class="n">_view</span><span class="o">/</span><span class="n">viewname</span>
+</pre></div>
+
+
 <p><code>database</code> is the name of the database you created your design document in. Next up is the design document name and then the view name prefixed with <code>_view/</code>. To query <code>anotherview</code> replace <code>viewname</code> in that URI with <code>anotherview</code>. If you want to query a view in a different design document adjust the design document name.</p>
-<h3>Map &amp; Reduce Functions</h3>
+<h3 id="map-reduce-functions">Map &amp; Reduce Functions</h3>
 <p>Map/Reduce is a concept that solves problems by applying a two-step process; aptly named the <em>map</em> phase and the 'reduce' phase. The map phase looks at all documents in CouchDB separately one after the other and creates a <em>map result</em>. The map result is an ordered list of key-value pairs. Both key and value can be specified by the user writing the map function. A map function may call the built-in <code>emit(key, value)</code> function 0 to N times per document, creating a row in the map result per invocation.</p>
 <p>CouchDB is smart enough to only run a map function once for every document, even on subsequent queries on a view. Only changes to documents, or new documents need to be processed anew.</p>
-<h4>Map Functions</h4>
+<h4 id="map-functions">Map Functions</h4>
 <p>Map functions run in isolation for every document. They can't modify the document and they can't talk to the outside world; they can't have <em>side-effects</em>. This is required so CouchDB can guarantee correct results without having to recalculate a complete result when only one document gets changed.</p>
 <p>The map result looks like this:</p>
-<pre><code>{"total_rows":3,"offset":0,"rows":[
-  {"id":"fc2636bf50556346f1ce46b4bc01fe30","key":"Lena","value":5},
-  {"id":"1fb2449f9b9d4e466dbfa47ebe675063","key":"Lisa","value":4},
-  {"id":"8ede09f6f6aeb35d948485624b28f149","key":"Sarah","value":6}
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span><span class="s">&quot;total_rows&quot;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="s">&quot;offset&quot;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="s">&quot;rows&quot;</span><span class="p">:[</span>
+  <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;fc2636bf50556346f1ce46b4bc01fe30&quot;</span><span class="p">,</span><span class="s">&quot;key&quot;</span><span class="p">:</span><span class="s">&quot;Lena&quot;</span><span class="p">,</span><span class="s">&quot;value&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">},</span>
+  <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;1fb2449f9b9d4e466dbfa47ebe675063&quot;</span><span class="p">,</span><span class="s">&quot;key&quot;</span><span class="p">:</span><span class="s">&quot;Lisa&quot;</span><span class="p">,</span><span class="s">&quot;value&quot;</span><span class="p">:</span><span class="mi">4</span><span class="p">},</span>
+  <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;8ede09f6f6aeb35d948485624b28f149&quot;</span><span class="p">,</span><span class="s">&quot;key&quot;</span><span class="p">:</span><span class="s">&quot;Sarah&quot;</span><span class="p">,</span><span class="s">&quot;value&quot;</span><span class="p">:</span><span class="mi">6</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>It is a list of rows sorted by the value of <code>key</code>. The <code>id</code> is added automatically and refers back to the document that created this row. The <code>value</code> is the data you're looking for. For example purposes, it's the girl's age.</p>
 <p>The map function that produces this result is:</p>
-<pre><code>function(doc) {
-  if(doc.name &amp;&amp; doc.age) {
-    emit(doc.name, doc.age);
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">name</span> <span class="o">&amp;&amp;</span> <span class="n">doc</span><span class="o">.</span><span class="n">age</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">emit</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">doc</span><span class="o">.</span><span class="n">age</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>It includes a sanity check to see we're operating on the right fields and calls the emit function with the name and age as key and value.</p>
-<h4>Reduce Functions</h4>
+<h4 id="reduce-functions">Reduce Functions</h4>
 <p>The reduce functions are explained later.</p>
-<h2>Lookup by Key (SELECT field FROM table WHERE value="key")</h2>
+<h2 id="lookup-by-key-select-field-from-table-where-valuekey">Lookup by Key (SELECT field FROM table WHERE value="key")</h2>
 <p>Use case: Get a <em>result</em> (that can be a record or set of records) associated with a <em>key</em>.</p>
 <p>To look something up quickly, regardless of the storage mechanism, an index is needed. An index is a data structure optimized for quick search and retrieval. CouchDB's map result is stored in such an index, which happens to be a b+-tree.</p>
 <p>To look up a value by <code>"key"</code> we need to put all values into the key of a view. All we need is a simple map function:</p>
-<pre><code>function(doc) {
-  if(doc.value) {
-    emit(doc.value, null);
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">emit</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">null</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>This creates a list of documents that have a <code>value</code> field sorted by the data in the <code>value</code> field. We don't emit a value. The view result will give us a list of document ids that we can then query individually, or we can use the <code>?include_docs=true</code> view query option to have CouchDB retrieve the document data for us.</p>
-<h2>Aggregate Functions (SELECT COUNT(field) FROM table)</h2>
-<h2>Get Unique Values (SELECT DISTINCT field FROM table)</h2>
+<h2 id="aggregate-functions-select-countfield-from-table">Aggregate Functions (SELECT COUNT(field) FROM table)</h2>
+<h2 id="get-unique-values-select-distinct-field-from-table">Get Unique Values (SELECT DISTINCT field FROM table)</h2>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

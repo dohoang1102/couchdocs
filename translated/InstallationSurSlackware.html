@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - InstallationSurSlackware</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,11 +56,11 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h2>Dépendances de CouchDB</h2>
+  <h2 id="dependances-de-couchdb">Dépendances de CouchDB</h2>
 <p>Dans un premier temps, il vous faut récupérer les slackbuilds suivants :</p>
 <ul>
 <li><a href="http://slackbuilds.org/repository/13.0/network/js/">js</a></li>
@@ -61,104 +79,118 @@
 </ul>
 <p>Créer les packages des slackbuids (les slackbuils sont prévus pour i486 ; si vous êtes en 64 bits, éditer le fichier <code>&lt;package&gt;.Slackbuild</code> pour modifier la valeur de <code>ARCH</code>.</p>
 <p>Pour que le SlackBuild fonctionne, il vous faut mettre l'archive des sources du package à créer dans le répertoire créé en décompressant le fichier slackbuild.</p>
-<pre><code>tar xzf js.tar.gz
-cd js
-./js.SlackBuild
-#&gt; Slackware package /tmp/js-1.8.0_rc1-x86_64-1_SBo.tgz created.
+<div class="codehilite"><pre><span class="n">tar</span> <span class="n">xzf</span> <span class="n">js</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">cd</span> <span class="n">js</span>
+<span class="o">./</span><span class="n">js</span><span class="o">.</span><span class="n">SlackBuild</span>
+<span class="c1">#&gt; Slackware package /tmp/js-1.8.0_rc1-x86_64-1_SBo.tgz created.</span>
 
-tar xzf icu4c.tar.gz
-cd ../icu4c
-./icu4c.SlackBuild
-#&gt; Slackware package /tmp/icu4c-4.2.1-x86_64-1_SBo.tgz created
+<span class="n">tar</span> <span class="n">xzf</span> <span class="n">icu4c</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">cd</span> <span class="o">../</span><span class="n">icu4c</span>
+<span class="o">./</span><span class="n">icu4c</span><span class="o">.</span><span class="n">SlackBuild</span>
+<span class="c1">#&gt; Slackware package /tmp/icu4c-4.2.1-x86_64-1_SBo.tgz created</span>
 
-tar xzf erlang-otp.tar.gz
-cd erlang-otp
-./erlang-otp.SlackBuild
-#&gt; Slackware package /tmp/erlang-otp-13B03-x86_64-1_SBo.tgz created.
-</code></pre>
+<span class="n">tar</span> <span class="n">xzf</span> <span class="n">erlang</span><span class="o">-</span><span class="n">otp</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">cd</span> <span class="n">erlang</span><span class="o">-</span><span class="n">otp</span>
+<span class="o">./</span><span class="n">erlang</span><span class="o">-</span><span class="n">otp</span><span class="o">.</span><span class="n">SlackBuild</span>
+<span class="c1">#&gt; Slackware package /tmp/erlang-otp-13B03-x86_64-1_SBo.tgz created.</span>
+</pre></div>
+
+
 <p>Installer ensuite les packages créés :</p>
-<pre><code>nicolas@cassis:/tmp$ sudo installpkg icu4c-4.2.1-x86_64-1_SBo.tgz 
-Verifying package icu4c-4.2.1-x86_64-1_SBo.tgz.                   
-Installing package icu4c-4.2.1-x86_64-1_SBo.tgz:                  
-PACKAGE DESCRIPTION:                                              
-&lt;!-- # icu4c (International Components for Unicode) --&gt;
-&lt;!-- # --&gt;
-&lt;!-- # The International Components for Unicode (ICU) libraries provide --&gt;
-&lt;!-- # robust and full-featured Unicode services on a wide variety of --&gt;
-&lt;!-- # platforms. --&gt;
-&lt;!-- # --&gt;
-&lt;!-- # Homepage: http://www.icu-project.org/ --&gt;
-&lt;!-- # --&gt;
+<div class="codehilite"><pre><span class="n">nicolas</span><span class="nv">@cassis:</span><span class="o">/</span><span class="n">tmp</span><span class="nv">$</span> <span class="nv">sudo</span> <span class="n">installpkg</span> <span class="n">icu4c</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="mi">1</span><span class="n">_SBo</span><span class="o">.</span><span class="n">tgz</span> 
+<span class="n">Verifying</span> <span class="nb">package</span> <span class="n">icu4c</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="mi">1</span><span class="n">_SBo</span><span class="o">.</span><span class="n">tgz</span><span class="o">.</span>                   
+<span class="n">Installing</span> <span class="nb">package</span> <span class="n">icu4c</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="mi">1</span><span class="n">_SBo</span><span class="o">.</span><span class="n">tgz:</span>                  
+<span class="n">PACKAGE</span> <span class="n">DESCRIPTION:</span>                                              
+<span class="o">&lt;!--</span> <span class="c1"># icu4c (International Components for Unicode) --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># The International Components for Unicode (ICU) libraries provide --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># robust and full-featured Unicode services on a wide variety of --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># platforms. --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># Homepage: http://www.icu-project.org/ --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># --&gt;</span>
 
-Executing install script for icu4c-4.2.1-x86_64-1_SBo.tgz.        
-Package icu4c-4.2.1-x86_64-1_SBo.tgz installed.
+<span class="n">Executing</span> <span class="n">install</span> <span class="n">script</span> <span class="k">for</span> <span class="n">icu4c</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="mi">1</span><span class="n">_SBo</span><span class="o">.</span><span class="n">tgz</span><span class="o">.</span>        
+<span class="n">Package</span> <span class="n">icu4c</span><span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="mi">1</span><span class="n">_SBo</span><span class="o">.</span><span class="n">tgz</span> <span class="n">installed</span><span class="o">.</span>
 
-nicolas@cassis:/tmp$ sudo installpkg js-1.8.0_rc1-x86_64-1_SBo.tgz
-Verifying package js-1.8.0_rc1-x86_64-1_SBo.tgz.
-Installing package js-1.8.0_rc1-x86_64-1_SBo.tgz:
-PACKAGE DESCRIPTION:
-&lt;!-- # SpiderMonkey (Mozilla's JavaScript Engine) --&gt;
-&lt;!-- # --&gt;
-&lt;!-- # SpiderMonkey is the code-name for the Mozilla's C implementation of --&gt;
-&lt;!-- # JavaScript. It can be used by applications such as elinks and others. --&gt;
-&lt;!-- # --&gt;
-&lt;!-- # This is the standalone version of the engine used by Firefox and other --&gt;
-&lt;!-- # Mozilla applications. --&gt;
-&lt;!-- # --&gt;
-&lt;!-- # Homepage: http://www.mozilla.org/js/spidermonkey --&gt;
-&lt;!-- # --&gt;
+<span class="n">nicolas</span><span class="nv">@cassis:</span><span class="o">/</span><span class="n">tmp</span><span class="nv">$</span> <span class="nv">sudo</span> <span class="n">installpkg</span> <span class="n">js</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="n">_rc1</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="mi">1</span><span class="n">_SBo</span><span class="o">.</span><span class="n">tgz</span>
+<span class="n">Verifying</span> <span class="nb">package</span> <span class="n">js</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="n">_rc1</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="mi">1</span><span class="n">_SBo</span><span class="o">.</span><span class="n">tgz</span><span class="o">.</span>
+<span class="n">Installing</span> <span class="nb">package</span> <span class="n">js</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="n">_rc1</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="mi">1</span><span class="n">_SBo</span><span class="o">.</span><span class="n">tgz:</span>
+<span class="n">PACKAGE</span> <span class="n">DESCRIPTION:</span>
+<span class="o">&lt;!--</span> <span class="c1"># SpiderMonkey (Mozilla&#39;s JavaScript Engine) --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># SpiderMonkey is the code-name for the Mozilla&#39;s C implementation of --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># JavaScript. It can be used by applications such as elinks and others. --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># This is the standalone version of the engine used by Firefox and other --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># Mozilla applications. --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># Homepage: http://www.mozilla.org/js/spidermonkey --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># --&gt;</span>
 
-Package js-1.8.0_rc1-x86_64-1_SBo.tgz installed.
+<span class="n">Package</span> <span class="n">js</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="n">_rc1</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="mi">1</span><span class="n">_SBo</span><span class="o">.</span><span class="n">tgz</span> <span class="n">installed</span><span class="o">.</span>
 
-nicolas@cassis:/tmp$ sudo installpkg erlang-otp-13B03-x86_64-1_SBo.tgz
-Verifying package erlang-otp-13B03-x86_64-1_SBo.tgz.
-Installing package erlang-otp-13B03-x86_64-1_SBo.tgz:
-PACKAGE DESCRIPTION:
-&lt;!-- # Erlang (programming language) --&gt;
-&lt;!-- # --&gt;
-&lt;!-- # Erlang is a general-purpose concurrent programming language and --&gt;
-&lt;!-- # runtime system. --&gt;
-&lt;!-- # The sequential subset of Erlang is a functional language, --&gt;
-&lt;!-- # with strict evaluation, single assignment, and dynamic typing. --&gt;
-&lt;!-- # It was designed by Ericsson to support distributed, --&gt;
-&lt;!-- # fault-tolerant, soft-real-time, non-stop applications. --&gt;
-&lt;!-- # --&gt;
-&lt;!-- # http://www.erlang.org/ --&gt;
-&lt;!-- # --&gt;
+<span class="n">nicolas</span><span class="nv">@cassis:</span><span class="o">/</span><span class="n">tmp</span><span class="nv">$</span> <span class="nv">sudo</span> <span class="n">installpkg</span> <span class="n">erlang</span><span class="o">-</span><span class="n">otp</span><span class="o">-</span><span class="mi">13</span><span class="n">B03</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="mi">1</span><span class="n">_SBo</span><span class="o">.</span><span class="n">tgz</span>
+<span class="n">Verifying</span> <span class="nb">package</span> <span class="n">erlang</span><span class="o">-</span><span class="n">otp</span><span class="o">-</span><span class="mi">13</span><span class="n">B03</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="mi">1</span><span class="n">_SBo</span><span class="o">.</span><span class="n">tgz</span><span class="o">.</span>
+<span class="n">Installing</span> <span class="nb">package</span> <span class="n">erlang</span><span class="o">-</span><span class="n">otp</span><span class="o">-</span><span class="mi">13</span><span class="n">B03</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="mi">1</span><span class="n">_SBo</span><span class="o">.</span><span class="n">tgz:</span>
+<span class="n">PACKAGE</span> <span class="n">DESCRIPTION:</span>
+<span class="o">&lt;!--</span> <span class="c1"># Erlang (programming language) --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># Erlang is a general-purpose concurrent programming language and --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># runtime system. --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># The sequential subset of Erlang is a functional language, --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># with strict evaluation, single assignment, and dynamic typing. --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># It was designed by Ericsson to support distributed, --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># fault-tolerant, soft-real-time, non-stop applications. --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># http://www.erlang.org/ --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># --&gt;</span>
 
-Executing install script for erlang-otp-13B03-x86_64-1_SBo.tgz.
-Package erlang-otp-13B03-x86_64-1_SBo.tgz installed.
-</code></pre>
-<h2>Installation de CouchDB</h2>
+<span class="n">Executing</span> <span class="n">install</span> <span class="n">script</span> <span class="k">for</span> <span class="n">erlang</span><span class="o">-</span><span class="n">otp</span><span class="o">-</span><span class="mi">13</span><span class="n">B03</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="mi">1</span><span class="n">_SBo</span><span class="o">.</span><span class="n">tgz</span><span class="o">.</span>
+<span class="n">Package</span> <span class="n">erlang</span><span class="o">-</span><span class="n">otp</span><span class="o">-</span><span class="mi">13</span><span class="n">B03</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="mi">1</span><span class="n">_SBo</span><span class="o">.</span><span class="n">tgz</span> <span class="n">installed</span><span class="o">.</span>
+</pre></div>
+
+
+<h2 id="installation-de-couchdb">Installation de CouchDB</h2>
 <p>Il vous faut au préalable créer un utilisateur et un groupe couchdb :</p>
-<pre><code>groupadd -g 231 couchdb
-useradd -u 231 -g couchdb -d /var/lib/couchdb -s /bin/sh couchdb
-</code></pre>
+<div class="codehilite"><pre><span class="n">groupadd</span> <span class="o">-</span><span class="n">g</span> <span class="mi">231</span> <span class="n">couchdb</span>
+<span class="n">useradd</span> <span class="o">-</span><span class="n">u</span> <span class="mi">231</span> <span class="o">-</span><span class="n">g</span> <span class="n">couchdb</span> <span class="o">-</span><span class="n">d</span> <span class="sr">/var/</span><span class="n">lib</span><span class="sr">/couchdb -s /</span><span class="n">bin</span><span class="o">/</span><span class="n">sh</span> <span class="n">couchdb</span>
+</pre></div>
+
+
 <p>Récupérer le <a href="http://slackbuilds.org/repository/13.0/development/couchdb/">slackbuild de CouchDB</a></p>
 <p>il vous faut alors procéder de la façon suivante :</p>
-<pre><code>tar xzf couchdb.tar.gz
-cd couchdb
-&lt;!-- # récupérer les sources de couchdb 0.10.1 et metter les dans votre répertoire couchdb --&gt;
-&lt;!-- # éditer si besoin le SlackBuild --&gt;
-&lt;!-- # créer votre package : --&gt;
+<div class="codehilite"><pre><span class="n">tar</span> <span class="n">xzf</span> <span class="n">couchdb</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="n">cd</span> <span class="n">couchdb</span>
+<span class="o">&lt;!--</span> <span class="c1"># récupérer les sources de couchdb 0.10.1 et metter les dans votre répertoire couchdb --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># éditer si besoin le SlackBuild --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># créer votre package : --&gt;</span>
 
-./couchdb.Slackbuild
-#&gt; Slackware package /tmp/SBo/couchdb-0.10.1-x86_64-1_SBo.tgz created.
-</code></pre>
+<span class="o">./</span><span class="n">couchdb</span><span class="o">.</span><span class="n">Slackbuild</span>
+<span class="c1">#&gt; Slackware package /tmp/SBo/couchdb-0.10.1-x86_64-1_SBo.tgz created.</span>
+</pre></div>
+
+
 <p>Il ne reste plus qu'à installer le paquet :</p>
-<pre><code>installpkg /tmp/SBo/couchdb-0.10.1-x86_64-1_SBo.tgz
-</code></pre>
-<h2>Démarrage / Arrêt automatique de CouchDB</h2>
+<div class="codehilite"><pre><span class="n">installpkg</span> <span class="sr">/tmp/</span><span class="n">SBo</span><span class="o">/</span><span class="n">couchdb</span><span class="o">-</span><span class="mi">0</span><span class="o">.</span><span class="mi">10</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="mi">1</span><span class="n">_SBo</span><span class="o">.</span><span class="n">tgz</span>
+</pre></div>
+
+
+<h2 id="demarrage-arret-automatique-de-couchdb">Démarrage / Arrêt automatique de CouchDB</h2>
 <p>Editer /etc/rc.d/rc.local pour y ajouter :</p>
-<pre><code>if [ -x /etc/rc.d/rc.couchdb ]; then
-    . /etc/rc.d/rc.couchdb start
-fi
-</code></pre>
+<div class="codehilite"><pre><span class="k">if</span> <span class="p">[</span> <span class="o">-</span><span class="n">x</span> <span class="sr">/etc/</span><span class="n">rc</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">rc</span><span class="o">.</span><span class="n">couchdb</span> <span class="p">];</span> <span class="k">then</span>
+    <span class="o">.</span> <span class="sr">/etc/</span><span class="n">rc</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">rc</span><span class="o">.</span><span class="n">couchdb</span> <span class="n">start</span>
+<span class="n">fi</span>
+</pre></div>
+
+
 <p>et dans /etc/rc.d/rc.local_shutdown :</p>
-<pre><code>if [ -x /etc/rc.d/rc.couchdb ]; then
-    . /etc/rc.d/rc.couchdb stop
-fi
-</code></pre>
+<div class="codehilite"><pre><span class="k">if</span> <span class="p">[</span> <span class="o">-</span><span class="n">x</span> <span class="sr">/etc/</span><span class="n">rc</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">rc</span><span class="o">.</span><span class="n">couchdb</span> <span class="p">];</span> <span class="k">then</span>
+    <span class="o">.</span> <span class="sr">/etc/</span><span class="n">rc</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">rc</span><span class="o">.</span><span class="n">couchdb</span> <span class="n">stop</span>
+<span class="n">fi</span>
+</pre></div>
+
+
 <p>Ouvrez http://localhost:5984/_utils/</p>
 <p>Et voilà... il est maintenant temps de vous relaxer ;-)</p>
 </div>

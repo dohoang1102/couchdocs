@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - ApiVueHttp</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,118 +56,130 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <!-- #language fr -->
 
 <p>Ce document est une introduction sur l'API de vue HTTP de CouchDB.</p>
-<h2>Bases</h2>
+<h2 id="bases">Bases</h2>
 <p>Les vues sont l'outil de base pour interroger et reporter des documents CouchDB.</p>
 <p>Les vues sont définies avec des fonctions Javascript. Voici une fonction très simple, qui retourne l'ensemble des documents :</p>
-<pre><code>function(doc) {
-  emit(null, doc);
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">emit</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">doc</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Voir <a class="internal" href="Vues.html">Vues</a> pour plus d'informations.</p>
-<h2>Créer des vues</h2>
+<h2 id="creer-des-vues">Créer des vues</h2>
 <p>Pour créer une vue permanente, les fonctions doivent d'abord être sauvées dans des documents spéciaux appelés <em>documents design</em>. L'ID de ces documents doit commmencer par <em>_design/</em> et ces documents doivent avoir des attributs spécifiques contenant un membre <em>map</em> et optionnellement un membre <em>reduce</em> pour contenir les fonctions de vues. Toutes les vues dans un document design sont indexées à chaque fois qu'elles sont interrogées.</p>
 <p>Un document design qui définit les vues <em>all</em>, <em>by_lastname</em>, et <em>total_purchases</em> peut ressembler à cela:</p>
-<pre><code>{
-  "_id":"_design/company",
-  "_rev":"12345",
-  "language": "javascript",
-  "views":
-  {
-    "all": {
-      "map": "function(doc) { if (doc.Type == 'customer')  emit(null, doc) }"
-    },
-    "by_lastname": {
-      "map": "function(doc) { if (doc.Type == 'customer')  emit(doc.LastName, doc) }"
-    },
-    "total_purchases": {
-      "map": "function(doc) { if (doc.Type == 'purchase')  emit(doc.Customer, doc.Amount) }",
-      "reduce": "function(keys, values) { return sum(values) }"
-    }
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span>
+  <span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;_design/company&quot;</span><span class="p">,</span>
+  <span class="s">&quot;_rev&quot;</span><span class="p">:</span><span class="s">&quot;12345&quot;</span><span class="p">,</span>
+  <span class="s">&quot;language&quot;</span><span class="p">:</span> <span class="s">&quot;javascript&quot;</span><span class="p">,</span>
+  <span class="s">&quot;views&quot;</span><span class="p">:</span>
+  <span class="p">{</span>
+    <span class="s">&quot;all&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s">&quot;map&quot;</span><span class="p">:</span> <span class="s">&quot;function(doc) { if (doc.Type == &#39;customer&#39;)  emit(null, doc) }&quot;</span>
+    <span class="p">},</span>
+    <span class="s">&quot;by_lastname&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s">&quot;map&quot;</span><span class="p">:</span> <span class="s">&quot;function(doc) { if (doc.Type == &#39;customer&#39;)  emit(doc.LastName, doc) }&quot;</span>
+    <span class="p">},</span>
+    <span class="s">&quot;total_purchases&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s">&quot;map&quot;</span><span class="p">:</span> <span class="s">&quot;function(doc) { if (doc.Type == &#39;purchase&#39;)  emit(doc.Customer, doc.Amount) }&quot;</span><span class="p">,</span>
+      <span class="s">&quot;reduce&quot;</span><span class="p">:</span> <span class="s">&quot;function(keys, values) { return sum(values) }&quot;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>La propriété <em>language</em> indique à CouchDB le langage des fonctions de vue, ce qui est utilisé pour sélectionnner le ServeurDeVue approprié (définit dans le fichier <em>couch.ini</em>). Par défaut CouchDB utilise Javascript, et cette propriété peut donc être omise pour les vues Javascript.</p>
-<h2>Modifier/Changer les Vues</h2>
+<h2 id="modifierchanger-les-vues">Modifier/Changer les Vues</h2>
 <p>Pour changer une vue ou plusieurs vues, modifiez juste le document (voir ApiDocumentHttp) où elles sont stockées et enregistrez une nouvelle révision.</p>
-<h2>Accéder/Interroger</h2>
+<h2 id="accederinterroger">Accéder/Interroger</h2>
 <p>Une fois que le document définissant les vues enregistré dans la base, la vue <em>all</em> peut être récupérée via l'URL :</p>
 <p>. http://localhost:5984/ma_bd/_view/company/all</p>
 <p>Exemple :</p>
-<pre><code>GET /ma_bd/_view/company/all HTTP/1.0
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-</code></pre>
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/ma_bd/</span><span class="n">_view</span><span class="sr">/company/</span><span class="n">all</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+</pre></div>
+
+
 <p>Ce qui entraine la réponse suivant :</p>
-<pre><code> HTTP/1.1 200 OK
- Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
- Content-Length: 318
- Connection: close
+<div class="codehilite"><pre> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">200</span> <span class="n">OK</span>
+ <span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+ <span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">318</span>
+ <span class="n">Connection:</span> <span class="nb">close</span>
 
- {
-    "total_rows": 3,
-    "offset": 0,
-    "rows": [{
-        "id":"64ACF01B05F53ACFEC48C062A5D01D89",
-        "key": null,
-        "value": {
-          "LastName":"Katz",
-          "FirstName":"Damien",
-          "Address":"2407 Sawyer drive, Charlotte NC",
-          "Phone":012555754211
-        }
-      }, {
-        "id":"5D01D8964ACF01B05F53ACFEC48C062A",
-        "key": null,
-        "value": {
-          "LastName":"Kerr",
-          "FirstName":"Wayne",
-          "Address":"123 Fake st., such and such",
-          "Phone":88721320939
-        }
-      }, {
-        "id":"EC48C062A5D01D8964ACF01B05F53ACF",
-        "key": null,
-        "value":
-        {
-          "LastName":"McCracken",
-          "FirstName":"Phil",
-          "Address":"1234 Fake st., such and such",
-          "Phone":7766552342
-        }
-      }
-    ]
- }
-</code></pre>
-<h2>Vues Ad Hoc</h2>
+ <span class="p">{</span>
+    <span class="s">&quot;total_rows&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="s">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s">&quot;rows&quot;</span><span class="p">:</span> <span class="p">[{</span>
+        <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;64ACF01B05F53ACFEC48C062A5D01D89&quot;</span><span class="p">,</span>
+        <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
+        <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s">&quot;LastName&quot;</span><span class="p">:</span><span class="s">&quot;Katz&quot;</span><span class="p">,</span>
+          <span class="s">&quot;FirstName&quot;</span><span class="p">:</span><span class="s">&quot;Damien&quot;</span><span class="p">,</span>
+          <span class="s">&quot;Address&quot;</span><span class="p">:</span><span class="s">&quot;2407 Sawyer drive, Charlotte NC&quot;</span><span class="p">,</span>
+          <span class="s">&quot;Phone&quot;</span><span class="p">:</span><span class="mo">012555754211</span>
+        <span class="p">}</span>
+      <span class="p">},</span> <span class="p">{</span>
+        <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;5D01D8964ACF01B05F53ACFEC48C062A&quot;</span><span class="p">,</span>
+        <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
+        <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s">&quot;LastName&quot;</span><span class="p">:</span><span class="s">&quot;Kerr&quot;</span><span class="p">,</span>
+          <span class="s">&quot;FirstName&quot;</span><span class="p">:</span><span class="s">&quot;Wayne&quot;</span><span class="p">,</span>
+          <span class="s">&quot;Address&quot;</span><span class="p">:</span><span class="s">&quot;123 Fake st., such and such&quot;</span><span class="p">,</span>
+          <span class="s">&quot;Phone&quot;</span><span class="p">:</span><span class="mi">88721320939</span>
+        <span class="p">}</span>
+      <span class="p">},</span> <span class="p">{</span>
+        <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;EC48C062A5D01D8964ACF01B05F53ACF&quot;</span><span class="p">,</span>
+        <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
+        <span class="s">&quot;value&quot;</span><span class="p">:</span>
+        <span class="p">{</span>
+          <span class="s">&quot;LastName&quot;</span><span class="p">:</span><span class="s">&quot;McCracken&quot;</span><span class="p">,</span>
+          <span class="s">&quot;FirstName&quot;</span><span class="p">:</span><span class="s">&quot;Phil&quot;</span><span class="p">,</span>
+          <span class="s">&quot;Address&quot;</span><span class="p">:</span><span class="s">&quot;1234 Fake st., such and such&quot;</span><span class="p">,</span>
+          <span class="s">&quot;Phone&quot;</span><span class="p">:</span><span class="mi">7766552342</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+ <span class="p">}</span>
+</pre></div>
+
+
+<h2 id="vues-ad-hoc">Vues Ad Hoc</h2>
 <p>Les requêtes temporaires (ex. les vues que vous ne souhaitez pas enregistrer dans CouchDB) peuvent être réalisées à travers la vue spéciale <em>_temp_view</em> :</p>
-<pre><code>POST /some_database/_temp_view  HTTP/1.0
-Content-Length: 48
-Date: Mon, 10 Sep 2007 17:11:10 +0200
-Content-Type: application/json
+<div class="codehilite"><pre><span class="n">POST</span> <span class="sr">/some_database/</span><span class="n">_temp_view</span>  <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">48</span>
+<span class="n">Date:</span> <span class="n">Mon</span><span class="p">,</span> <span class="mi">10</span> <span class="n">Sep</span> <span class="mi">2007</span> <span class="mi">17</span><span class="p">:</span><span class="mi">11</span><span class="p">:</span><span class="mi">10</span> <span class="o">+</span><span class="mo">0200</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
 
-{
-  "map" : "function(doc) { if (doc.foo=='bar') { emit(null, doc.foo); } }"
-}
-</code></pre>
+<span class="p">{</span>
+  <span class="s">&quot;map&quot;</span> <span class="p">:</span> <span class="s">&quot;function(doc) { if (doc.foo==&#39;bar&#39;) { emit(null, doc.foo); } }&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Pouvant entraîner la réponse suivante :</p>
-<pre><code>{
-  "total_rows": 1,
-  "offset": 0,
-  "rows": [{
-      "id": "AE1AD84316B903AD46EF396CAFE8E50F",
-      "key": null,
-      "foo": "bar"
-    }
-  ]
-}
-</code></pre>
-<h2>Options de requêtes</h2>
+<div class="codehilite"><pre><span class="p">{</span>
+  <span class="s">&quot;total_rows&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="s">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="s">&quot;rows&quot;</span><span class="p">:</span> <span class="p">[{</span>
+      <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;AE1AD84316B903AD46EF396CAFE8E50F&quot;</span><span class="p">,</span>
+      <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
+      <span class="s">&quot;foo&quot;</span><span class="p">:</span> <span class="s">&quot;bar&quot;</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="options-de-requetes">Options de requêtes</h2>
 <p>Les colonnes peuvent être une suite de valeur, il n'y a pas de limites au nombre de valeurs ou sur le volume des données que peuvent contenir les colonnes.</p>
 <p>Les options suivantes peuvent être passées à l'URL de la requête :</p>
 <ul>
@@ -167,13 +197,13 @@ Content-Type: application/json
 <p>le paramètre <em>skip</em> devrait être seulement utilisé pour un petit nombre de valeurs, passer un grand nombre de documents de cette façon n'est pas efficace (couchdb parcourt alors l'index à partir de startkey, passe les N premiers documents mais nécessite quand même de lire tout l'index pour le faire). Pour une pagination efficace, utilisez <em>startkey</em> et/ou <em>startkey_docid</em>.</p>
 <p>L'option <em>update</em>, positionée à <em>false</em>, permet de ne pas récupérer les dernieres modifications de la vue. Cela peut être utilisée pour accroître les performances.</p>
 <p>Les lignes de la vue sont triées par clé. Spécifier <em>descending=true</em> inversera l'ordre. L'option <em>descending</em> est appliquée <strong>avant</strong> tout filtrage des clés, il est donc parfois necessaire de modifier les valeurs des options <em>startkey</em> et <em>endkey</em> pour récupérer le résultat attendu. Pour plus d'information sur le tri, reportez vous à la page AssemblageVue.</p>
-<h2>Traquer un problème dans les vues</h2>
+<h2 id="traquer-un-probleme-dans-les-vues">Traquer un problème dans les vues</h2>
 <p>Lors de la création des vues, CouchDB vérifie la syntaxe JSON, mais la syntaxe des fonctions de vue en elle même n'est pas vérifiée par l'interpréteur Javascript. Si l'une des vues possède des erreurs de syntaxes, aucune des autres fonctions dans le document design ne sera exécutée. Il est par contre possible de tester vos fonctions dans une vue temporaire avant de les sauver dans la base.</p>
 <p>Depuis la révision r660140, une fonction <em>log</em> est disponible dans les vues, qui enregistre dans couch.log. Cela peut être utile pendant la résolution de problèmes mais peut coûter en performances. C'est donc à utiliser avec parcimonie sur un système en production.</p>
-<pre><code>{
-  "map": "function(doc) { log(doc); }"
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span>
+  <span class="s">&quot;map&quot;</span><span class="p">:</span> <span class="s">&quot;function(doc) { log(doc); }&quot;</span>
+<span class="p">}</span>
+</pre></div>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Full_text_index_with_view</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,453 +56,459 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <p>I wanted to throw this idea out there to see what people thought.</p>
 <p>There has been a lot of discussion about integrating full text search into couch and possibly implementing full text search in Erlang. Would it be worth investigating the use of CouchDB's !MapReduce functionality to implement a full text indexer? I whipped together a short example using views. It implements a simple white space tokenizer in !JavaScript, emits each token with it's doc id and position, and reduces each token to a list of doc ids and positions.</p>
 <p>Here is the map function:</p>
-<pre><code>function(doc) 
-{
-    var tokenEmit = function(token) {
-        emit([token.value,token.field], [this._id,token.position]);
-    }
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> 
+<span class="p">{</span>
+    <span class="n">var</span> <span class="n">tokenEmit</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">emit</span><span class="p">([</span><span class="n">token</span><span class="o">.</span><span class="n">value</span><span class="p">,</span><span class="n">token</span><span class="o">.</span><span class="n">field</span><span class="p">],</span> <span class="p">[</span><span class="n">this</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span><span class="n">token</span><span class="o">.</span><span class="n">position</span><span class="p">]);</span>
+    <span class="p">}</span>
 
-    var whiteSpaceAnalyzer = function(str, field) {
-        // Returns tokens split by white space
-        // token: { value: tokenString, position: [0,10] }
-        var len = str.length;
-        var tokenPositions = new Array();
-        var startPosition = null;
+    <span class="n">var</span> <span class="n">whiteSpaceAnalyzer</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">str</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="p">{</span>
+        <span class="sr">//</span> <span class="n">Returns</span> <span class="n">tokens</span> <span class="nb">split</span> <span class="n">by</span> <span class="n">white</span> <span class="n">space</span>
+        <span class="sr">//</span> <span class="n">token:</span> <span class="p">{</span> <span class="n">value:</span> <span class="n">tokenString</span><span class="p">,</span> <span class="n">position:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span> <span class="p">}</span>
+        <span class="n">var</span> <span class="n">len</span> <span class="o">=</span> <span class="n">str</span><span class="o">.</span><span class="nb">length</span><span class="p">;</span>
+        <span class="n">var</span> <span class="n">tokenPositions</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Array</span><span class="p">();</span>
+        <span class="n">var</span> <span class="n">startPosition</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
 
-        var isTokenChar = function(Char) {
-            if (Char === ' ' || Char === '\t' || Char === '\n')
-                return false;
-            return true;
-        }
+        <span class="n">var</span> <span class="n">isTokenChar</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">Char</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">Char</span> <span class="o">===</span> <span class="s">&#39; &#39;</span> <span class="o">||</span> <span class="n">Char</span> <span class="o">===</span> <span class="s">&#39;\t&#39;</span> <span class="o">||</span> <span class="n">Char</span> <span class="o">===</span> <span class="s">&#39;\n&#39;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">false</span><span class="p">;</span>
+            <span class="k">return</span> <span class="n">true</span><span class="p">;</span>
+        <span class="p">}</span>
 
-        for(var i=0; i &lt; len; i++)
-        {
-            if(startPosition == null)
-            {
-                if(isTokenChar(str[i]))
-                {
-                    // start of word
-                    startPosition = i;
-                    if( i+1 == len )
-                    {
-                        // end of string
-                        tokenPositions[tokenPositions.length] = [startPosition, i+1];
-                    }
-                }
-            }
-            else
-            {
-                if(!isTokenChar(str[i]))
-                {
-                    // end of word
-                    tokenPositions[tokenPositions.length] = [startPosition, i];
-                    startPosition = null; // reset startPosition
-                    continue;
-                }
+        <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">len</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">startPosition</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">isTokenChar</span><span class="p">(</span><span class="n">str</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="p">{</span>
+                    <span class="sr">//</span> <span class="n">start</span> <span class="n">of</span> <span class="n">word</span>
+                    <span class="n">startPosition</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+                    <span class="k">if</span><span class="p">(</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="n">len</span> <span class="p">)</span>
+                    <span class="p">{</span>
+                        <span class="sr">//</span> <span class="n">end</span> <span class="n">of</span> <span class="n">string</span>
+                        <span class="n">tokenPositions</span><span class="p">[</span><span class="n">tokenPositions</span><span class="o">.</span><span class="nb">length</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">startPosition</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="k">else</span>
+            <span class="p">{</span>
+                <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">isTokenChar</span><span class="p">(</span><span class="n">str</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="p">{</span>
+                    <span class="sr">//</span> <span class="n">end</span> <span class="n">of</span> <span class="n">word</span>
+                    <span class="n">tokenPositions</span><span class="p">[</span><span class="n">tokenPositions</span><span class="o">.</span><span class="nb">length</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">startPosition</span><span class="p">,</span> <span class="n">i</span><span class="p">];</span>
+                    <span class="n">startPosition</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span> <span class="sr">//</span> <span class="k">reset</span> <span class="n">startPosition</span>
+                    <span class="k">continue</span><span class="p">;</span>
+                <span class="p">}</span>
 
-                if( i+1 == len )
-                {
-                    // end of string
-                    tokenPositions[tokenPositions.length] = [startPosition, i+1];
-                }
-            }
-        }
+                <span class="k">if</span><span class="p">(</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="n">len</span> <span class="p">)</span>
+                <span class="p">{</span>
+                    <span class="sr">//</span> <span class="n">end</span> <span class="n">of</span> <span class="n">string</span>
+                    <span class="n">tokenPositions</span><span class="p">[</span><span class="n">tokenPositions</span><span class="o">.</span><span class="nb">length</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">startPosition</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
 
-        var tokenMap = function(tokenPosition) {
-            var token = this.str.substring(tokenPosition[0],tokenPosition[1]);
-            return { value: token, field:this.field, position: tokenPosition };
-        }
+        <span class="n">var</span> <span class="n">tokenMap</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">tokenPosition</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">var</span> <span class="n">token</span> <span class="o">=</span> <span class="n">this</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">substring</span><span class="p">(</span><span class="n">tokenPosition</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">tokenPosition</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+            <span class="k">return</span> <span class="p">{</span> <span class="n">value:</span> <span class="n">token</span><span class="p">,</span> <span class="n">field:this</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">position:</span> <span class="n">tokenPosition</span> <span class="p">};</span>
+        <span class="p">}</span>
 
-        return tokenPositions.map(tokenMap,{str:str,field:field});
-    }
+        <span class="k">return</span> <span class="n">tokenPositions</span><span class="o">.</span><span class="nb">map</span><span class="p">(</span><span class="n">tokenMap</span><span class="p">,{</span><span class="n">str:str</span><span class="p">,</span><span class="n">field:field</span><span class="p">});</span>
+    <span class="p">}</span>
 
-    var tokens;
+    <span class="n">var</span> <span class="n">tokens</span><span class="p">;</span>
 
-    for (field in doc) {
-        if (typeof(doc[field])=='string') {
-            tokens = whiteSpaceAnalyzer(doc[field], field);
-            tokens.map(tokenEmit, doc);
-        }
-    }
-}
-</code></pre>
+    <span class="k">for</span> <span class="p">(</span><span class="n">field</span> <span class="n">in</span> <span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="n">field</span><span class="p">])</span><span class="o">==</span><span class="s">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">tokens</span> <span class="o">=</span> <span class="n">whiteSpaceAnalyzer</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="n">field</span><span class="p">],</span> <span class="n">field</span><span class="p">);</span>
+            <span class="n">tokens</span><span class="o">.</span><span class="nb">map</span><span class="p">(</span><span class="n">tokenEmit</span><span class="p">,</span> <span class="n">doc</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Here is the reduce function:</p>
-<pre><code>function(keys,values,combine)
-{
-    var result = new Array();
-    var docHash = new Array();
-    if(combine) 
-    {
-        for(var v in values)
-        {
-            var docObject = values[v][0];
-            var docId = docObject["doc"];
-            var positions = docObject["pos"];
-            if(docHash[docId] == null)
-            {
-                docHash[docId]=new Array();
-            }
-            docHash[docId] = docHash[docId].concat(positions);
-        }
-        for(var i in docHash){
-            result[result.length]={doc:i,pos:docHash[i]};
-        }
-    }
-    else
-    {
-        for(var j in values)
-        {
-            var docId = values[j][0];
-            var position = values[j][1];
-            if(docHash[docId] == null)
-            {
-            docHash[docId]=new Array();
-            }
-            docHash[docId] = docHash[docId].concat([position]);
-        }
-        for(var i in docHash){
-            result[result.length]={doc:i,pos:docHash[i]};
-        }
-    }
-    return result;  
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="nb">keys</span><span class="p">,</span><span class="nb">values</span><span class="p">,</span><span class="n">combine</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">var</span> <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Array</span><span class="p">();</span>
+    <span class="n">var</span> <span class="n">docHash</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Array</span><span class="p">();</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">combine</span><span class="p">)</span> 
+    <span class="p">{</span>
+        <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">v</span> <span class="n">in</span> <span class="nb">values</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">var</span> <span class="n">docObject</span> <span class="o">=</span> <span class="nb">values</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
+            <span class="n">var</span> <span class="n">docId</span> <span class="o">=</span> <span class="n">docObject</span><span class="p">[</span><span class="s">&quot;doc&quot;</span><span class="p">];</span>
+            <span class="n">var</span> <span class="n">positions</span> <span class="o">=</span> <span class="n">docObject</span><span class="p">[</span><span class="s">&quot;pos&quot;</span><span class="p">];</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">docHash</span><span class="p">[</span><span class="n">docId</span><span class="p">]</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">docHash</span><span class="p">[</span><span class="n">docId</span><span class="p">]</span><span class="o">=</span><span class="k">new</span> <span class="n">Array</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="n">docHash</span><span class="p">[</span><span class="n">docId</span><span class="p">]</span> <span class="o">=</span> <span class="n">docHash</span><span class="p">[</span><span class="n">docId</span><span class="p">]</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">positions</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">i</span> <span class="n">in</span> <span class="n">docHash</span><span class="p">){</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">result</span><span class="o">.</span><span class="nb">length</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="n">doc:i</span><span class="p">,</span><span class="nb">pos</span><span class="p">:</span><span class="n">docHash</span><span class="p">[</span><span class="n">i</span><span class="p">]};</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">j</span> <span class="n">in</span> <span class="nb">values</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">var</span> <span class="n">docId</span> <span class="o">=</span> <span class="nb">values</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
+            <span class="n">var</span> <span class="n">position</span> <span class="o">=</span> <span class="nb">values</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">docHash</span><span class="p">[</span><span class="n">docId</span><span class="p">]</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+            <span class="p">{</span>
+            <span class="n">docHash</span><span class="p">[</span><span class="n">docId</span><span class="p">]</span><span class="o">=</span><span class="k">new</span> <span class="n">Array</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="n">docHash</span><span class="p">[</span><span class="n">docId</span><span class="p">]</span> <span class="o">=</span> <span class="n">docHash</span><span class="p">[</span><span class="n">docId</span><span class="p">]</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">position</span><span class="p">]);</span>
+        <span class="p">}</span>
+        <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">i</span> <span class="n">in</span> <span class="n">docHash</span><span class="p">){</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">result</span><span class="o">.</span><span class="nb">length</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="n">doc:i</span><span class="p">,</span><span class="nb">pos</span><span class="p">:</span><span class="n">docHash</span><span class="p">[</span><span class="n">i</span><span class="p">]};</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">result</span><span class="p">;</span>  
+<span class="p">}</span>
+</pre></div>
+
+
 <p>The key emitted from the view is <code>["token","field"]</code>. This allows terms to be searched per field while also allowing the use of group_level=1 to combine the results of all fields. Combining results of multiple fields currently eliminates the use of positions.</p>
 <p>To reduce the amount of information passed during view generation the whiteSpaceAnalyzer function can be moved to the main.js file.</p>
 <p>Is this worth pursuing further?
 <em>_</em></p>
 <p>After pursuing this a little further, here's an expanded version of the above m/r functions, modified to support stemming (via porter), optional case-insensitivity, min-length for tokens, wider whitespace handling (still english-centric though).</p>
 <p>Here's the map function: options can be set in the options object at the top, as well whitespace and ignore words, then the porter stemming function (which could get sucked into main.js as noted by Dan). I still have no idea how to do any kind of boolean operations.</p>
-<pre><code>options = {
-  stem: porter_stem,
-  min_length: 3,
-  case_sensitive: false,
-  ignore_words: true
-};
+<div class="codehilite"><pre><span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="n">stem:</span> <span class="n">porter_stem</span><span class="p">,</span>
+  <span class="n">min_length:</span> <span class="mi">3</span><span class="p">,</span>
+  <span class="n">case_sensitive:</span> <span class="n">false</span><span class="p">,</span>
+  <span class="n">ignore_words:</span> <span class="n">true</span>
+<span class="p">};</span>
 
-token_chars = [' ', 'h', '.', ',', ':', '\  ', '\
-'];
+<span class="n">token_chars</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="s">&#39;h&#39;</span><span class="p">,</span> <span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="s">&#39;,&#39;</span><span class="p">,</span> <span class="s">&#39;:&#39;</span><span class="p">,</span> <span class="s">&#39;\  &#39;</span><span class="p">,</span> <span class="s">&#39;\</span>
+<span class="s">&#39;</span><span class="p">];</span>
 
-// list of fields to not index
-// defaults set to ['type'] as a common usecase
-ignore_fields = ['type'];
+<span class="sr">//</span> <span class="n">list</span> <span class="n">of</span> <span class="n">fields</span> <span class="n">to</span> <span class="ow">not</span> <span class="nb">index</span>
+<span class="sr">//</span> <span class="n">defaults</span> <span class="n">set</span> <span class="n">to</span> <span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">]</span> <span class="n">as</span> <span class="n">a</span> <span class="n">common</span> <span class="n">usecase</span>
+<span class="n">ignore_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">];</span>
 
-ignore_words = [
-  'about','after','all','also','an','and','another','any','are','as','at','be','because',
-  'been','before','being','between','both','but','by','came','can','come',
-  'could','did','do','each','for','from','get','got','has','had','he',
-  'have','her','here','him','himself','his','how','if','in','into','is',
-  'it','like','make','many','me','might','more','most','much','must','my',
-  'never','now','of','on','only','or','other','our','out','over','said',
-  'same','see','should','since','some','still','such','take','than',
-  'that','the','their','them','then','there','these','they','this','those',
-  'through','to','too','under','up','very','was','way','we','well','were',
-  'what','where','which','while','who','with','would','you','your','a','b',
-  'c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t',
-  'u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9'
-];
+<span class="n">ignore_words</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="s">&#39;about&#39;</span><span class="p">,</span><span class="s">&#39;after&#39;</span><span class="p">,</span><span class="s">&#39;all&#39;</span><span class="p">,</span><span class="s">&#39;also&#39;</span><span class="p">,</span><span class="s">&#39;an&#39;</span><span class="p">,</span><span class="s">&#39;and&#39;</span><span class="p">,</span><span class="s">&#39;another&#39;</span><span class="p">,</span><span class="s">&#39;any&#39;</span><span class="p">,</span><span class="s">&#39;are&#39;</span><span class="p">,</span><span class="s">&#39;as&#39;</span><span class="p">,</span><span class="s">&#39;at&#39;</span><span class="p">,</span><span class="s">&#39;be&#39;</span><span class="p">,</span><span class="s">&#39;because&#39;</span><span class="p">,</span>
+  <span class="s">&#39;been&#39;</span><span class="p">,</span><span class="s">&#39;before&#39;</span><span class="p">,</span><span class="s">&#39;being&#39;</span><span class="p">,</span><span class="s">&#39;between&#39;</span><span class="p">,</span><span class="s">&#39;both&#39;</span><span class="p">,</span><span class="s">&#39;but&#39;</span><span class="p">,</span><span class="s">&#39;by&#39;</span><span class="p">,</span><span class="s">&#39;came&#39;</span><span class="p">,</span><span class="s">&#39;can&#39;</span><span class="p">,</span><span class="s">&#39;come&#39;</span><span class="p">,</span>
+  <span class="s">&#39;could&#39;</span><span class="p">,</span><span class="s">&#39;did&#39;</span><span class="p">,</span><span class="s">&#39;do&#39;</span><span class="p">,</span><span class="s">&#39;each&#39;</span><span class="p">,</span><span class="s">&#39;for&#39;</span><span class="p">,</span><span class="s">&#39;from&#39;</span><span class="p">,</span><span class="s">&#39;get&#39;</span><span class="p">,</span><span class="s">&#39;got&#39;</span><span class="p">,</span><span class="s">&#39;has&#39;</span><span class="p">,</span><span class="s">&#39;had&#39;</span><span class="p">,</span><span class="s">&#39;he&#39;</span><span class="p">,</span>
+  <span class="s">&#39;have&#39;</span><span class="p">,</span><span class="s">&#39;her&#39;</span><span class="p">,</span><span class="s">&#39;here&#39;</span><span class="p">,</span><span class="s">&#39;him&#39;</span><span class="p">,</span><span class="s">&#39;himself&#39;</span><span class="p">,</span><span class="s">&#39;his&#39;</span><span class="p">,</span><span class="s">&#39;how&#39;</span><span class="p">,</span><span class="s">&#39;if&#39;</span><span class="p">,</span><span class="s">&#39;in&#39;</span><span class="p">,</span><span class="s">&#39;into&#39;</span><span class="p">,</span><span class="s">&#39;is&#39;</span><span class="p">,</span>
+  <span class="s">&#39;it&#39;</span><span class="p">,</span><span class="s">&#39;like&#39;</span><span class="p">,</span><span class="s">&#39;make&#39;</span><span class="p">,</span><span class="s">&#39;many&#39;</span><span class="p">,</span><span class="s">&#39;me&#39;</span><span class="p">,</span><span class="s">&#39;might&#39;</span><span class="p">,</span><span class="s">&#39;more&#39;</span><span class="p">,</span><span class="s">&#39;most&#39;</span><span class="p">,</span><span class="s">&#39;much&#39;</span><span class="p">,</span><span class="s">&#39;must&#39;</span><span class="p">,</span><span class="s">&#39;my&#39;</span><span class="p">,</span>
+  <span class="s">&#39;never&#39;</span><span class="p">,</span><span class="s">&#39;now&#39;</span><span class="p">,</span><span class="s">&#39;of&#39;</span><span class="p">,</span><span class="s">&#39;on&#39;</span><span class="p">,</span><span class="s">&#39;only&#39;</span><span class="p">,</span><span class="s">&#39;or&#39;</span><span class="p">,</span><span class="s">&#39;other&#39;</span><span class="p">,</span><span class="s">&#39;our&#39;</span><span class="p">,</span><span class="s">&#39;out&#39;</span><span class="p">,</span><span class="s">&#39;over&#39;</span><span class="p">,</span><span class="s">&#39;said&#39;</span><span class="p">,</span>
+  <span class="s">&#39;same&#39;</span><span class="p">,</span><span class="s">&#39;see&#39;</span><span class="p">,</span><span class="s">&#39;should&#39;</span><span class="p">,</span><span class="s">&#39;since&#39;</span><span class="p">,</span><span class="s">&#39;some&#39;</span><span class="p">,</span><span class="s">&#39;still&#39;</span><span class="p">,</span><span class="s">&#39;such&#39;</span><span class="p">,</span><span class="s">&#39;take&#39;</span><span class="p">,</span><span class="s">&#39;than&#39;</span><span class="p">,</span>
+  <span class="s">&#39;that&#39;</span><span class="p">,</span><span class="s">&#39;the&#39;</span><span class="p">,</span><span class="s">&#39;their&#39;</span><span class="p">,</span><span class="s">&#39;them&#39;</span><span class="p">,</span><span class="s">&#39;then&#39;</span><span class="p">,</span><span class="s">&#39;there&#39;</span><span class="p">,</span><span class="s">&#39;these&#39;</span><span class="p">,</span><span class="s">&#39;they&#39;</span><span class="p">,</span><span class="s">&#39;this&#39;</span><span class="p">,</span><span class="s">&#39;those&#39;</span><span class="p">,</span>
+  <span class="s">&#39;through&#39;</span><span class="p">,</span><span class="s">&#39;to&#39;</span><span class="p">,</span><span class="s">&#39;too&#39;</span><span class="p">,</span><span class="s">&#39;under&#39;</span><span class="p">,</span><span class="s">&#39;up&#39;</span><span class="p">,</span><span class="s">&#39;very&#39;</span><span class="p">,</span><span class="s">&#39;was&#39;</span><span class="p">,</span><span class="s">&#39;way&#39;</span><span class="p">,</span><span class="s">&#39;we&#39;</span><span class="p">,</span><span class="s">&#39;well&#39;</span><span class="p">,</span><span class="s">&#39;were&#39;</span><span class="p">,</span>
+  <span class="s">&#39;what&#39;</span><span class="p">,</span><span class="s">&#39;where&#39;</span><span class="p">,</span><span class="s">&#39;which&#39;</span><span class="p">,</span><span class="s">&#39;while&#39;</span><span class="p">,</span><span class="s">&#39;who&#39;</span><span class="p">,</span><span class="s">&#39;with&#39;</span><span class="p">,</span><span class="s">&#39;would&#39;</span><span class="p">,</span><span class="s">&#39;you&#39;</span><span class="p">,</span><span class="s">&#39;your&#39;</span><span class="p">,</span><span class="s">&#39;a&#39;</span><span class="p">,</span><span class="s">&#39;b&#39;</span><span class="p">,</span>
+  <span class="s">&#39;c&#39;</span><span class="p">,</span><span class="s">&#39;d&#39;</span><span class="p">,</span><span class="s">&#39;e&#39;</span><span class="p">,</span><span class="s">&#39;f&#39;</span><span class="p">,</span><span class="s">&#39;g&#39;</span><span class="p">,</span><span class="s">&#39;h&#39;</span><span class="p">,</span><span class="s">&#39;i&#39;</span><span class="p">,</span><span class="s">&#39;j&#39;</span><span class="p">,</span><span class="s">&#39;k&#39;</span><span class="p">,</span><span class="s">&#39;l&#39;</span><span class="p">,</span><span class="s">&#39;m&#39;</span><span class="p">,</span><span class="s">&#39;n&#39;</span><span class="p">,</span><span class="s">&#39;o&#39;</span><span class="p">,</span><span class="s">&#39;p&#39;</span><span class="p">,</span><span class="s">&#39;q&#39;</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">,</span><span class="s">&#39;s&#39;</span><span class="p">,</span><span class="s">&#39;t&#39;</span><span class="p">,</span>
+  <span class="s">&#39;u&#39;</span><span class="p">,</span><span class="s">&#39;v&#39;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">,</span><span class="s">&#39;x&#39;</span><span class="p">,</span><span class="s">&#39;y&#39;</span><span class="p">,</span><span class="s">&#39;z&#39;</span><span class="p">,</span><span class="s">&#39;0&#39;</span><span class="p">,</span><span class="s">&#39;1&#39;</span><span class="p">,</span><span class="s">&#39;2&#39;</span><span class="p">,</span><span class="s">&#39;3&#39;</span><span class="p">,</span><span class="s">&#39;4&#39;</span><span class="p">,</span><span class="s">&#39;5&#39;</span><span class="p">,</span><span class="s">&#39;6&#39;</span><span class="p">,</span><span class="s">&#39;7&#39;</span><span class="p">,</span><span class="s">&#39;8&#39;</span><span class="p">,</span><span class="s">&#39;9&#39;</span>
+<span class="p">];</span>
 
-// Porter stemmer in Javascript. Few comments, but it's easy to follow against 
-// the rules in the original paper, in
-//
-//  Porter, 1980, An algorithm for suffix stripping, Program, Vol. 14,
-//  no. 3, pp 130-137,
-//
-// see also http://www.tartarus.org/~martin/PorterStemmer
+<span class="sr">//</span> <span class="n">Porter</span> <span class="n">stemmer</span> <span class="n">in</span> <span class="n">Javascript</span><span class="o">.</span> <span class="n">Few</span> <span class="n">comments</span><span class="p">,</span> <span class="n">but</span> <span class="n">it</span><span class="s">&#39;s easy to follow against </span>
+<span class="s">// the rules in the original paper, in</span>
+<span class="s">//</span>
+<span class="s">//  Porter, 1980, An algorithm for suffix stripping, Program, Vol. 14,</span>
+<span class="s">//  no. 3, pp 130-137,</span>
+<span class="s">//</span>
+<span class="s">// see also http://www.tartarus.org/~martin/PorterStemmer</span>
 
-// Release 1
+<span class="s">// Release 1</span>
 
-step2list = new Array();
-step2list["ational"]="ate";
-step2list["tional"]="tion";
-step2list["enci"]="ence";
-step2list["anci"]="ance";
-step2list["izer"]="ize";
-step2list["bli"]="ble";
-step2list["alli"]="al";
-step2list["entli"]="ent";
-step2list["eli"]="e";
-step2list["ousli"]="ous";
-step2list["ization"]="ize";
-step2list["ation"]="ate";
-step2list["ator"]="ate";
-step2list["alism"]="al";
-step2list["iveness"]="ive";
-step2list["fulness"]="ful";
-step2list["ousness"]="ous";
-step2list["aliti"]="al";
-step2list["iviti"]="ive";
-step2list["biliti"]="ble";
-step2list["logi"]="log";
+<span class="s">step2list = new Array();</span>
+<span class="s">step2list[&quot;ational&quot;]=&quot;ate&quot;;</span>
+<span class="s">step2list[&quot;tional&quot;]=&quot;tion&quot;;</span>
+<span class="s">step2list[&quot;enci&quot;]=&quot;ence&quot;;</span>
+<span class="s">step2list[&quot;anci&quot;]=&quot;ance&quot;;</span>
+<span class="s">step2list[&quot;izer&quot;]=&quot;ize&quot;;</span>
+<span class="s">step2list[&quot;bli&quot;]=&quot;ble&quot;;</span>
+<span class="s">step2list[&quot;alli&quot;]=&quot;al&quot;;</span>
+<span class="s">step2list[&quot;entli&quot;]=&quot;ent&quot;;</span>
+<span class="s">step2list[&quot;eli&quot;]=&quot;e&quot;;</span>
+<span class="s">step2list[&quot;ousli&quot;]=&quot;ous&quot;;</span>
+<span class="s">step2list[&quot;ization&quot;]=&quot;ize&quot;;</span>
+<span class="s">step2list[&quot;ation&quot;]=&quot;ate&quot;;</span>
+<span class="s">step2list[&quot;ator&quot;]=&quot;ate&quot;;</span>
+<span class="s">step2list[&quot;alism&quot;]=&quot;al&quot;;</span>
+<span class="s">step2list[&quot;iveness&quot;]=&quot;ive&quot;;</span>
+<span class="s">step2list[&quot;fulness&quot;]=&quot;ful&quot;;</span>
+<span class="s">step2list[&quot;ousness&quot;]=&quot;ous&quot;;</span>
+<span class="s">step2list[&quot;aliti&quot;]=&quot;al&quot;;</span>
+<span class="s">step2list[&quot;iviti&quot;]=&quot;ive&quot;;</span>
+<span class="s">step2list[&quot;biliti&quot;]=&quot;ble&quot;;</span>
+<span class="s">step2list[&quot;logi&quot;]=&quot;log&quot;;</span>
 
-step3list = new Array();
-step3list["icate"]="ic";
-step3list["ative"]="";
-step3list["alize"]="al";
-step3list["iciti"]="ic";
-step3list["ical"]="ic";
-step3list["ful"]="";
-step3list["ness"]="";
+<span class="s">step3list = new Array();</span>
+<span class="s">step3list[&quot;icate&quot;]=&quot;ic&quot;;</span>
+<span class="s">step3list[&quot;ative&quot;]=&quot;&quot;;</span>
+<span class="s">step3list[&quot;alize&quot;]=&quot;al&quot;;</span>
+<span class="s">step3list[&quot;iciti&quot;]=&quot;ic&quot;;</span>
+<span class="s">step3list[&quot;ical&quot;]=&quot;ic&quot;;</span>
+<span class="s">step3list[&quot;ful&quot;]=&quot;&quot;;</span>
+<span class="s">step3list[&quot;ness&quot;]=&quot;&quot;;</span>
 
-c = "[^aeiou]";          // consonant
-v = "[aeiouy]";          // vowel
-C = c + "[^aeiouy]*";    // consonant sequence
-V = v + "[aeiou]*";      // vowel sequence
+<span class="s">c = &quot;[^aeiou]&quot;;          // consonant</span>
+<span class="s">v = &quot;[aeiouy]&quot;;          // vowel</span>
+<span class="s">C = c + &quot;[^aeiouy]*&quot;;    // consonant sequence</span>
+<span class="s">V = v + &quot;[aeiou]*&quot;;      // vowel sequence</span>
 
-mgr0 = "^(" + C + ")?" + V + C;               // [C]VC... is m&gt;0
-meq1 = "^(" + C + ")?" + V + C + "(" + V + ")?$";  // [C]VC[V] is m=1
-mgr1 = "^(" + C + ")?" + V + C + V + C;       // [C]VCVC... is m&gt;1
-s_v   = "^(" + C + ")?" + v;                   // vowel in stem
+<span class="s">mgr0 = &quot;^(&quot; + C + &quot;)?&quot; + V + C;               // [C]VC... is m&gt;0</span>
+<span class="s">meq1 = &quot;^(&quot; + C + &quot;)?&quot; + V + C + &quot;(&quot; + V + &quot;)?$&quot;;  // [C]VC[V] is m=1</span>
+<span class="s">mgr1 = &quot;^(&quot; + C + &quot;)?&quot; + V + C + V + C;       // [C]VCVC... is m&gt;1</span>
+<span class="s">s_v   = &quot;^(&quot; + C + &quot;)?&quot; + v;                   // vowel in stem</span>
 
-function porter_stem(w) {
-    var stem;
-    var suffix;
-    var firstch;
-    var origword = w;
+<span class="s">function porter_stem(w) {</span>
+<span class="s">    var stem;</span>
+<span class="s">    var suffix;</span>
+<span class="s">    var firstch;</span>
+<span class="s">    var origword = w;</span>
 
-    if (w.length &lt; 3) { return w; }
+<span class="s">    if (w.length &lt; 3) { return w; }</span>
 
-    var re;
-    var re2;
-    var re3;
-    var re4;
+<span class="s">    var re;</span>
+<span class="s">    var re2;</span>
+<span class="s">    var re3;</span>
+<span class="s">    var re4;</span>
 
-    firstch = w.substr(0,1);
-    if (firstch == "y") {
-        w = firstch.toUpperCase() + w.substr(1);
-    }
+<span class="s">    firstch = w.substr(0,1);</span>
+<span class="s">    if (firstch == &quot;y&quot;) {</span>
+<span class="s">        w = firstch.toUpperCase() + w.substr(1);</span>
+<span class="s">    }</span>
 
-    // Step 1a
-    re = /^(.+?)(ss|i)es$/;
-    re2 = /^(.+?)([^s])s$/;
+<span class="s">    // Step 1a</span>
+<span class="s">    re = /^(.+?)(ss|i)es$/;</span>
+<span class="s">    re2 = /^(.+?)([^s])s$/;</span>
 
-    if (re.test(w)) { w = w.replace(re,"$1$2"); }
-    else if (re2.test(w)) { w = w.replace(re2,"$1$2"); }
+<span class="s">    if (re.test(w)) { w = w.replace(re,&quot;$1$2&quot;); }</span>
+<span class="s">    else if (re2.test(w)) { w = w.replace(re2,&quot;$1$2&quot;); }</span>
 
-    // Step 1b
-    re = /^(.+?)eed$/;
-    re2 = /^(.+?)(ed|ing)$/;
-    if (re.test(w)) {
-        var fp = re.exec(w);
-        re = new RegExp(mgr0);
-        if (re.test(fp[1])) {
-            re = /.$/;
-            w = w.replace(re,"");
-        }
-    } else if (re2.test(w)) {
-        var fp = re2.exec(w);
-        stem = fp[1];
-        re2 = new RegExp(s_v);
-        if (re2.test(stem)) {
-            w = stem;
-            re2 = /(at|bl|iz)$/;
-            re3 = new RegExp("([^aeiouylsz])\\1$");
-            re4 = new RegExp("^" + C + v + "[^aeiouwxy]$");
-            if (re2.test(w)) {  w = w + "e"; }
-            else if (re3.test(w)) { re = /.$/; w = w.replace(re,""); }
-            else if (re4.test(w)) { w = w + "e"; }
-        }
-    }
+<span class="s">    // Step 1b</span>
+<span class="s">    re = /^(.+?)eed$/;</span>
+<span class="s">    re2 = /^(.+?)(ed|ing)$/;</span>
+<span class="s">    if (re.test(w)) {</span>
+<span class="s">        var fp = re.exec(w);</span>
+<span class="s">        re = new RegExp(mgr0);</span>
+<span class="s">        if (re.test(fp[1])) {</span>
+<span class="s">            re = /.$/;</span>
+<span class="s">            w = w.replace(re,&quot;&quot;);</span>
+<span class="s">        }</span>
+<span class="s">    } else if (re2.test(w)) {</span>
+<span class="s">        var fp = re2.exec(w);</span>
+<span class="s">        stem = fp[1];</span>
+<span class="s">        re2 = new RegExp(s_v);</span>
+<span class="s">        if (re2.test(stem)) {</span>
+<span class="s">            w = stem;</span>
+<span class="s">            re2 = /(at|bl|iz)$/;</span>
+<span class="s">            re3 = new RegExp(&quot;([^aeiouylsz])\\1$&quot;);</span>
+<span class="s">            re4 = new RegExp(&quot;^&quot; + C + v + &quot;[^aeiouwxy]$&quot;);</span>
+<span class="s">            if (re2.test(w)) {  w = w + &quot;e&quot;; }</span>
+<span class="s">            else if (re3.test(w)) { re = /.$/; w = w.replace(re,&quot;&quot;); }</span>
+<span class="s">            else if (re4.test(w)) { w = w + &quot;e&quot;; }</span>
+<span class="s">        }</span>
+<span class="s">    }</span>
 
-    // Step 1c
-    re = /^(.+?)y$/;
-    if (re.test(w)) {
-        var fp = re.exec(w);
-        stem = fp[1];
-        re = new RegExp(s_v);
-        if (re.test(stem)) { w = stem + "i"; }
-    }
+<span class="s">    // Step 1c</span>
+<span class="s">    re = /^(.+?)y$/;</span>
+<span class="s">    if (re.test(w)) {</span>
+<span class="s">        var fp = re.exec(w);</span>
+<span class="s">        stem = fp[1];</span>
+<span class="s">        re = new RegExp(s_v);</span>
+<span class="s">        if (re.test(stem)) { w = stem + &quot;i&quot;; }</span>
+<span class="s">    }</span>
 
-    // Step 2
-    re = /^(.+?)(ational|tional|enci|anci|izer|bli|alli|entli|eli|ousli|ization|ation|ator|alism|iveness|fulness|ousness|aliti|iviti|biliti|logi)$/;
-    if (re.test(w)) {
-        var fp = re.exec(w);
-        stem = fp[1];
-        suffix = fp[2];
-        re = new RegExp(mgr0);
-        if (re.test(stem)) {
-            w = stem + step2list[suffix];
-        }
-    }
+<span class="s">    // Step 2</span>
+<span class="s">    re = /^(.+?)(ational|tional|enci|anci|izer|bli|alli|entli|eli|ousli|ization|ation|ator|alism|iveness|fulness|ousness|aliti|iviti|biliti|logi)$/;</span>
+<span class="s">    if (re.test(w)) {</span>
+<span class="s">        var fp = re.exec(w);</span>
+<span class="s">        stem = fp[1];</span>
+<span class="s">        suffix = fp[2];</span>
+<span class="s">        re = new RegExp(mgr0);</span>
+<span class="s">        if (re.test(stem)) {</span>
+<span class="s">            w = stem + step2list[suffix];</span>
+<span class="s">        }</span>
+<span class="s">    }</span>
 
-    // Step 3
-    re = /^(.+?)(icate|ative|alize|iciti|ical|ful|ness)$/;
-    if (re.test(w)) {
-        var fp = re.exec(w);
-        stem = fp[1];
-        suffix = fp[2];
-        re = new RegExp(mgr0);
-        if (re.test(stem)) {
-            w = stem + step3list[suffix];
-        }
-    }
+<span class="s">    // Step 3</span>
+<span class="s">    re = /^(.+?)(icate|ative|alize|iciti|ical|ful|ness)$/;</span>
+<span class="s">    if (re.test(w)) {</span>
+<span class="s">        var fp = re.exec(w);</span>
+<span class="s">        stem = fp[1];</span>
+<span class="s">        suffix = fp[2];</span>
+<span class="s">        re = new RegExp(mgr0);</span>
+<span class="s">        if (re.test(stem)) {</span>
+<span class="s">            w = stem + step3list[suffix];</span>
+<span class="s">        }</span>
+<span class="s">    }</span>
 
-    // Step 4
-    re = /^(.+?)(al|ance|ence|er|ic|able|ible|ant|ement|ment|ent|ou|ism|ate|iti|ous|ive|ize)$/;
-    re2 = /^(.+?)(s|t)(ion)$/;
-    if (re.test(w)) {
-        var fp = re.exec(w);
-        stem = fp[1];
-        re = new RegExp(mgr1);
-        if (re.test(stem)) {
-            w = stem;
-        }
-    } else if (re2.test(w)) {
-        var fp = re2.exec(w);
-        stem = fp[1] + fp[2];
-        re2 = new RegExp(mgr1);
-        if (re2.test(stem)) {
-            w = stem;
-        }
-    }
+<span class="s">    // Step 4</span>
+<span class="s">    re = /^(.+?)(al|ance|ence|er|ic|able|ible|ant|ement|ment|ent|ou|ism|ate|iti|ous|ive|ize)$/;</span>
+<span class="s">    re2 = /^(.+?)(s|t)(ion)$/;</span>
+<span class="s">    if (re.test(w)) {</span>
+<span class="s">        var fp = re.exec(w);</span>
+<span class="s">        stem = fp[1];</span>
+<span class="s">        re = new RegExp(mgr1);</span>
+<span class="s">        if (re.test(stem)) {</span>
+<span class="s">            w = stem;</span>
+<span class="s">        }</span>
+<span class="s">    } else if (re2.test(w)) {</span>
+<span class="s">        var fp = re2.exec(w);</span>
+<span class="s">        stem = fp[1] + fp[2];</span>
+<span class="s">        re2 = new RegExp(mgr1);</span>
+<span class="s">        if (re2.test(stem)) {</span>
+<span class="s">            w = stem;</span>
+<span class="s">        }</span>
+<span class="s">    }</span>
 
-    // Step 5
-    re = /^(.+?)e$/;
-    if (re.test(w)) {
-        var fp = re.exec(w);
-        stem = fp[1];
-        re = new RegExp(mgr1);
-        re2 = new RegExp(meq1);
-        re3 = new RegExp("^" + C + v + "[^aeiouwxy]$");
-        if (re.test(stem) || (re2.test(stem) &amp;&amp; !(re3.test(stem)))) {
-            w = stem;
-        }
-    }
+<span class="s">    // Step 5</span>
+<span class="s">    re = /^(.+?)e$/;</span>
+<span class="s">    if (re.test(w)) {</span>
+<span class="s">        var fp = re.exec(w);</span>
+<span class="s">        stem = fp[1];</span>
+<span class="s">        re = new RegExp(mgr1);</span>
+<span class="s">        re2 = new RegExp(meq1);</span>
+<span class="s">        re3 = new RegExp(&quot;^&quot; + C + v + &quot;[^aeiouwxy]$&quot;);</span>
+<span class="s">        if (re.test(stem) || (re2.test(stem) &amp;&amp; !(re3.test(stem)))) {</span>
+<span class="s">            w = stem;</span>
+<span class="s">        }</span>
+<span class="s">    }</span>
 
-    re = /ll$/;
-    re2 = new RegExp(mgr1);
-    if (re.test(w) &amp;&amp; re2.test(w)) {
-        re = /.$/;
-        w = w.replace(re,"");
-    }
+<span class="s">    re = /ll$/;</span>
+<span class="s">    re2 = new RegExp(mgr1);</span>
+<span class="s">    if (re.test(w) &amp;&amp; re2.test(w)) {</span>
+<span class="s">        re = /.$/;</span>
+<span class="s">        w = w.replace(re,&quot;&quot;);</span>
+<span class="s">    }</span>
 
-    // and turn initial Y back to y
+<span class="s">    // and turn initial Y back to y</span>
 
-    if (firstch == "y") {
-        w = firstch.toLowerCase() + w.substr(1);
-    }
+<span class="s">    if (firstch == &quot;y&quot;) {</span>
+<span class="s">        w = firstch.toLowerCase() + w.substr(1);</span>
+<span class="s">    }</span>
 
-    return w;
+<span class="s">    return w;</span>
 
-}
+<span class="s">}</span>
 
-function(doc) {
-  var tokenEmit = function(token) {
-    emit([token.value, token.field], [this._id, token.position]);
-    if(typeof(options.stem) == 'function')
-      emit([options.stem(token.value), token.field], [this._id, token.position]);
-  }
+<span class="s">function(doc) {</span>
+<span class="s">  var tokenEmit = function(token) {</span>
+<span class="s">    emit([token.value, token.field], [this._id, token.position]);</span>
+<span class="s">    if(typeof(options.stem) == &#39;</span><span class="n">function</span><span class="s">&#39;)</span>
+<span class="s">      emit([options.stem(token.value), token.field], [this._id, token.position]);</span>
+<span class="s">  }</span>
 
-  var stripIgnoreFields = function(token) {
-    return (ignore_fields.indexOf(token.field.toLowerCase()) &lt; 0);
-  }
+<span class="s">  var stripIgnoreFields = function(token) {</span>
+<span class="s">    return (ignore_fields.indexOf(token.field.toLowerCase()) &lt; 0);</span>
+<span class="s">  }</span>
 
-  var stripIgnoreWords = function(token) {
-    return (ignore_words.indexOf(token.value) &lt; 0);
-  }
+<span class="s">  var stripIgnoreWords = function(token) {</span>
+<span class="s">    return (ignore_words.indexOf(token.value) &lt; 0);</span>
+<span class="s">  }</span>
 
-  var whiteSpaceAnalyzer = function(str, field) {
-    // Returns tokens split by white space
-    // token: {value:tokenString, position:[0,10]}
-    var len = str.length;
-    var tokenPositions = new Array();
-    var startPosition = null;
+<span class="s">  var whiteSpaceAnalyzer = function(str, field) {</span>
+<span class="s">    // Returns tokens split by white space</span>
+<span class="s">    // token: {value:tokenString, position:[0,10]}</span>
+<span class="s">    var len = str.length;</span>
+<span class="s">    var tokenPositions = new Array();</span>
+<span class="s">    var startPosition = null;</span>
 
-    var isTokenChar = function(chr) {
-      return !(token_chars.indexOf(chr) &gt;= 0);
-    }
+<span class="s">    var isTokenChar = function(chr) {</span>
+<span class="s">      return !(token_chars.indexOf(chr) &gt;= 0);</span>
+<span class="s">    }</span>
 
-    for(var i=0; i &lt; len; i++) {
-      if(startPosition == null) {
-        if(isTokenChar(str[i])) {
-          // start of word
-          startPosition = i;
-          if(i+1 == len)
-            tokenPositions[tokenPositions.length] = [startPosition, i+1];
-        }
-      } else {
-        if(!isTokenChar(str[i])) {
-          // end of word
-          tokenPositions[tokenPositions.length] = [startPosition, i];
-          startPosition = null; // reset startPosition
-          continue;
-        }
+<span class="s">    for(var i=0; i &lt; len; i++) {</span>
+<span class="s">      if(startPosition == null) {</span>
+<span class="s">        if(isTokenChar(str[i])) {</span>
+<span class="s">          // start of word</span>
+<span class="s">          startPosition = i;</span>
+<span class="s">          if(i+1 == len)</span>
+<span class="s">            tokenPositions[tokenPositions.length] = [startPosition, i+1];</span>
+<span class="s">        }</span>
+<span class="s">      } else {</span>
+<span class="s">        if(!isTokenChar(str[i])) {</span>
+<span class="s">          // end of word</span>
+<span class="s">          tokenPositions[tokenPositions.length] = [startPosition, i];</span>
+<span class="s">          startPosition = null; // reset startPosition</span>
+<span class="s">          continue;</span>
+<span class="s">        }</span>
 
-        if(i+1 == len) {
-          // end of string
-          tokenPositions[tokenPositions.length] = [startPosition, i+1];
-        }
-      }
-    }
+<span class="s">        if(i+1 == len) {</span>
+<span class="s">          // end of string</span>
+<span class="s">          tokenPositions[tokenPositions.length] = [startPosition, i+1];</span>
+<span class="s">        }</span>
+<span class="s">      }</span>
+<span class="s">    }</span>
 
-    // kill all tokens shorter than min_length
-    var newPositions = new Array();
-    for(var i=0; i&lt;tokenPositions.length; i++){
-      if (tokenPositions[i][1] - tokenPositions[i][0] &gt;= options.min_length)
-        newPositions.push(tokenPositions[i]);
-    }
-    tokenPositions = newPositions;
+<span class="s">    // kill all tokens shorter than min_length</span>
+<span class="s">    var newPositions = new Array();</span>
+<span class="s">    for(var i=0; i&lt;tokenPositions.length; i++){</span>
+<span class="s">      if (tokenPositions[i][1] - tokenPositions[i][0] &gt;= options.min_length)</span>
+<span class="s">        newPositions.push(tokenPositions[i]);</span>
+<span class="s">    }</span>
+<span class="s">    tokenPositions = newPositions;</span>
 
-    var tokenMap = function(tokenPosition) {
-      var token = this.str.substring(tokenPosition[0], tokenPosition[1]);
-      if (!options.case_sensitive)
-        token = token.toLowerCase();
-      return {value:token, field:this.field, position:tokenPosition};
-    }
+<span class="s">    var tokenMap = function(tokenPosition) {</span>
+<span class="s">      var token = this.str.substring(tokenPosition[0], tokenPosition[1]);</span>
+<span class="s">      if (!options.case_sensitive)</span>
+<span class="s">        token = token.toLowerCase();</span>
+<span class="s">      return {value:token, field:this.field, position:tokenPosition};</span>
+<span class="s">    }</span>
 
-    return tokenPositions.map(tokenMap, {str:str, field:field});
-  }
+<span class="s">    return tokenPositions.map(tokenMap, {str:str, field:field});</span>
+<span class="s">  }</span>
 
-  var tokens;
+<span class="s">  var tokens;</span>
 
-  for (field in doc){
-    if (field[0] != '_' &amp;&amp; typeof(doc[field]) == 'string'){
-      tokens = whiteSpaceAnalyzer(doc[field], field);
-      tokens = tokens.filter(stripIgnoreFields);
-      tokens = tokens.filter(stripIgnoreWords);
-      tokens.map(tokenEmit, doc);
-    }
-  }
-}
-</code></pre>
+<span class="s">  for (field in doc){</span>
+<span class="s">    if (field[0] != &#39;</span><span class="n">_</span><span class="s">&#39; &amp;&amp; typeof(doc[field]) == &#39;</span><span class="n">string</span><span class="err">&#39;</span><span class="p">){</span>
+      <span class="n">tokens</span> <span class="o">=</span> <span class="n">whiteSpaceAnalyzer</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="n">field</span><span class="p">],</span> <span class="n">field</span><span class="p">);</span>
+      <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">stripIgnoreFields</span><span class="p">);</span>
+      <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">stripIgnoreWords</span><span class="p">);</span>
+      <span class="n">tokens</span><span class="o">.</span><span class="nb">map</span><span class="p">(</span><span class="n">tokenEmit</span><span class="p">,</span> <span class="n">doc</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Here is the reduce function (mostly unchanged from above):</p>
-<pre><code>function(keys, values, combine) {
-  var result = new Array();
-  var docHash = new Array();
-  if(combine) {
-    for(var v in values){
-      var docObject = values[v][0];
-      var docId = docObject["doc"];
-      var positions = docObject["pos"];
-      if(docHash[docId] == null)
-        docHash[docId] = new Array();
-      docHash[docId] = docHash[docId].concat(positions);
-    }
-    for(var i in docHash) {
-      result[result.length]={doc:i, pos:docHash[i]};
-    }
-  } else {
-    for(var j in values) {
-      var docId = values[j][0];
-      var position = values[j][1];
-      if(docHash[docId] == null)
-        docHash[docId] = new Array();
-      docHash[docId] = docHash[docId].concat([position]);
-    }
-    for(var i in docHash) {
-      result[result.length] = {doc:i, pos:docHash[i]};
-    }
-  }
-  return result;  
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="nb">keys</span><span class="p">,</span> <span class="nb">values</span><span class="p">,</span> <span class="n">combine</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">var</span> <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Array</span><span class="p">();</span>
+  <span class="n">var</span> <span class="n">docHash</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Array</span><span class="p">();</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">combine</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">v</span> <span class="n">in</span> <span class="nb">values</span><span class="p">){</span>
+      <span class="n">var</span> <span class="n">docObject</span> <span class="o">=</span> <span class="nb">values</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
+      <span class="n">var</span> <span class="n">docId</span> <span class="o">=</span> <span class="n">docObject</span><span class="p">[</span><span class="s">&quot;doc&quot;</span><span class="p">];</span>
+      <span class="n">var</span> <span class="n">positions</span> <span class="o">=</span> <span class="n">docObject</span><span class="p">[</span><span class="s">&quot;pos&quot;</span><span class="p">];</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">docHash</span><span class="p">[</span><span class="n">docId</span><span class="p">]</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+        <span class="n">docHash</span><span class="p">[</span><span class="n">docId</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Array</span><span class="p">();</span>
+      <span class="n">docHash</span><span class="p">[</span><span class="n">docId</span><span class="p">]</span> <span class="o">=</span> <span class="n">docHash</span><span class="p">[</span><span class="n">docId</span><span class="p">]</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">positions</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">i</span> <span class="n">in</span> <span class="n">docHash</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">result</span><span class="p">[</span><span class="n">result</span><span class="o">.</span><span class="nb">length</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="n">doc:i</span><span class="p">,</span> <span class="nb">pos</span><span class="p">:</span><span class="n">docHash</span><span class="p">[</span><span class="n">i</span><span class="p">]};</span>
+    <span class="p">}</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">j</span> <span class="n">in</span> <span class="nb">values</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">var</span> <span class="n">docId</span> <span class="o">=</span> <span class="nb">values</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
+      <span class="n">var</span> <span class="n">position</span> <span class="o">=</span> <span class="nb">values</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">docHash</span><span class="p">[</span><span class="n">docId</span><span class="p">]</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span>
+        <span class="n">docHash</span><span class="p">[</span><span class="n">docId</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Array</span><span class="p">();</span>
+      <span class="n">docHash</span><span class="p">[</span><span class="n">docId</span><span class="p">]</span> <span class="o">=</span> <span class="n">docHash</span><span class="p">[</span><span class="n">docId</span><span class="p">]</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">position</span><span class="p">]);</span>
+    <span class="p">}</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">i</span> <span class="n">in</span> <span class="n">docHash</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">result</span><span class="p">[</span><span class="n">result</span><span class="o">.</span><span class="nb">length</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">doc:i</span><span class="p">,</span> <span class="nb">pos</span><span class="p">:</span><span class="n">docHash</span><span class="p">[</span><span class="n">i</span><span class="p">]};</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">result</span><span class="p">;</span>  
+<span class="p">}</span>
+</pre></div>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

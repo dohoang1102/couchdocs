@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - HTTP_database_API</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,94 +56,137 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h1>HTTP Database API</h1>
-<!-- <<TableOfContents(3)>> -->
-
+  <h1 id="http-database-api">HTTP Database API</h1>
+<div class="toc">
+<ul>
+<li><a href="#http-database-api">HTTP Database API</a><ul>
+<li><a href="#naming-and-addressing">Naming and Addressing</a></li>
+<li><a href="#working-with-databases">Working with Databases</a><ul>
+<li><a href="#list-databases">List Databases</a></li>
+<li><a href="#put-create-new-database">PUT (Create New Database)</a></li>
+<li><a href="#delete">DELETE</a></li>
+<li><a href="#database-information">Database Information</a><ul>
+<li><a href="#meaning-of-result-hash">Meaning of Result Hash</a></li>
+</ul>
+</li>
+<li><a href="#accessing-database-specific-options">Accessing Database-specific options</a></li>
+<li><a href="#changes">Changes</a><ul>
+<li><a href="#long-polling-efficient-polling-feed">Long-Polling (Efficient Polling) Feed</a></li>
+<li><a href="#continuous-non-polling-feed">Continuous (Non-Polling) Feed</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#compaction">Compaction</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <p>An introduction to the CouchDB HTTP Database API.</p>
-<h2>Naming and Addressing</h2>
+<h2 id="naming-and-addressing">Naming and Addressing</h2>
 <p>A database must be named with all lowercase characters (a-z), digits (0-9), or any of the <em>_$()+-/</em> characters and must end with a slash in the URL. The name has to start with characters.</p>
-<pre><code>http://couchserver/databasename/
-http://couchserver/another/databasename/
-http://couchserver/another/database_name(1)/
-</code></pre>
+<div class="codehilite"><pre><span class="n">http:</span><span class="sr">//co</span><span class="n">uchserver</span><span class="sr">/databasename/</span>
+<span class="n">http:</span><span class="sr">//co</span><span class="n">uchserver</span><span class="sr">/another/</span><span class="n">databasename</span><span class="o">/</span>
+<span class="n">http:</span><span class="sr">//co</span><span class="n">uchserver</span><span class="sr">/another/</span><span class="n">database_name</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span>
+</pre></div>
+
+
 <p><em>Uppercase characters are NOT ALLOWED in database names.</em></p>
-<pre><code>http://couchserver/DBNAME/ (invalid)
-http://couchserver/DatabaseName/ (invalid)
-http://couchserver/databaseName/ (invalid)
-</code></pre>
+<div class="codehilite"><pre><span class="n">http:</span><span class="sr">//co</span><span class="n">uchserver</span><span class="sr">/DBNAME/</span> <span class="p">(</span><span class="n">invalid</span><span class="p">)</span>
+<span class="n">http:</span><span class="sr">//co</span><span class="n">uchserver</span><span class="sr">/DatabaseName/</span> <span class="p">(</span><span class="n">invalid</span><span class="p">)</span>
+<span class="n">http:</span><span class="sr">//co</span><span class="n">uchserver</span><span class="sr">/databaseName/</span> <span class="p">(</span><span class="n">invalid</span><span class="p">)</span>
+</pre></div>
+
+
 <p>Note also that a <em>/</em> character in a DB name must be escaped when used in a URL; if your DB is named <em>his/her</em> then it will be available at <em>http://localhost:5984/his%2Fher</em>.</p>
 <p><em>Rationale for character restrictions</em></p>
 <p>The limited set of characters for database names is driven by the need to satisfy the lowest common denominator for file system naming conventions. For example, disallowing uppercase characters makes compliance with case insensitive file systems straightforward.</p>
 <p>All database files are stored in a single directory on the file system. If your database includes a <em>/</em> CouchDB will create a sub-directory structure in the database directory. That is, a database named <em>his/her</em>, the database file will be available at <em>$dbdir/his/her.couch</em>. This is useful when you have a large number of databases and your file system does not like that.</p>
-<h2>Working with Databases</h2>
-<h3>List Databases</h3>
+<h2 id="working-with-databases">Working with Databases</h2>
+<h3 id="list-databases">List Databases</h3>
 <p>To get a list of databases on a CouchDB server, use the <em>/_all_dbs</em> URI:</p>
-<pre><code>GET /_all_dbs HTTP/1.1
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-</code></pre>
-<p>And the response:</p>
-<pre><code>HTTP/1.1 200 OK
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-Content-Length: 37
-Content-Type: application/json
-Connection: close
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/_all_dbs HTTP/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+</pre></div>
 
-["somedatabase", "anotherdatabase"]
-</code></pre>
-<h3>PUT (Create New Database)</h3>
+
+<p>And the response:</p>
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">37</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
+
+<span class="p">[</span><span class="s">&quot;somedatabase&quot;</span><span class="p">,</span> <span class="s">&quot;anotherdatabase&quot;</span><span class="p">]</span>
+</pre></div>
+
+
+<h3 id="put-create-new-database">PUT (Create New Database)</h3>
 <p>To create a new empty database, perform a PUT operation at the database URL. Currently the content of the actual PUT is ignored by the webserver.</p>
 <p>On success, HTTP status <em>201</em> is returned. If a database already exists a <em>412</em> error is returned.</p>
-<pre><code>PUT /somedatabase/ HTTP/1.1
-Content-Length: 0
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-</code></pre>
-<p>Here is the server's response:</p>
-<pre><code>HTTP/1.1 201 Created
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-Content-Length: 13
-Content-Type: application/json
-Connection: close
+<div class="codehilite"><pre><span class="n">PUT</span> <span class="sr">/somedatabase/</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">0</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+</pre></div>
 
-{"ok": true}
-</code></pre>
-<h3>DELETE</h3>
+
+<p>Here is the server's response:</p>
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">201</span> <span class="n">Created</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">13</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
+
+<span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">}</span>
+</pre></div>
+
+
+<h3 id="delete">DELETE</h3>
 <p>To delete a database, perform a DELETE operation at the database location.</p>
 <p>On success, HTTP status <em>200</em> is returned. If the database doesn't exist, a <em>404</em> error is returned.</p>
-<pre><code>DELETE /somedatabase/ HTTP/1.1
-Content-Length: 1
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-</code></pre>
-<p>Here is the server's response:</p>
-<pre><code>HTTP/1.1 200 OK
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-Content-Length: 67
-Content-Type: application/json
-Connection: close
+<div class="codehilite"><pre><span class="n">DELETE</span> <span class="sr">/somedatabase/</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">1</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+</pre></div>
 
-{"ok": true}
-</code></pre>
-<h3>Database Information</h3>
+
+<p>Here is the server's response:</p>
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">67</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
+
+<span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">}</span>
+</pre></div>
+
+
+<h3 id="database-information">Database Information</h3>
 <p>To get information about a particular database, perform a GET operation on the database, e.g.:</p>
-<pre><code>GET /somedatabase/ HTTP/1.1
-</code></pre>
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/somedatabase/</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
+</pre></div>
+
+
 <p>The server's response is a JSON object similar to the following:</p>
-<pre><code>{
-    "compact_running": false, 
-    "db_name": "dj", 
-    "disk_format_version": 5, 
-    "disk_size": 12377, 
-    "doc_count": 1, 
-    "doc_del_count": 1, 
-    "instance_start_time": "1267612389906234", 
-    "purge_seq": 0, 
-    "update_seq": 4
-}
-</code></pre>
-<h4>Meaning of Result Hash</h4>
+<div class="codehilite"><pre><span class="p">{</span>
+    <span class="s">&quot;compact_running&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span> 
+    <span class="s">&quot;db_name&quot;</span><span class="p">:</span> <span class="s">&quot;dj&quot;</span><span class="p">,</span> 
+    <span class="s">&quot;disk_format_version&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> 
+    <span class="s">&quot;disk_size&quot;</span><span class="p">:</span> <span class="mi">12377</span><span class="p">,</span> 
+    <span class="s">&quot;doc_count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
+    <span class="s">&quot;doc_del_count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
+    <span class="s">&quot;instance_start_time&quot;</span><span class="p">:</span> <span class="s">&quot;1267612389906234&quot;</span><span class="p">,</span> 
+    <span class="s">&quot;purge_seq&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
+    <span class="s">&quot;update_seq&quot;</span><span class="p">:</span> <span class="mi">4</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h4 id="meaning-of-result-hash">Meaning of Result Hash</h4>
 <p><table>
 <tr><td><strong>Key</strong></td><td><strong>Description</strong></td><td><strong>CouchDB Version</strong></td></tr>
 <tr><td><em>db_name</em></td><td>Name of the database (string)</td><td></td></tr>
@@ -137,17 +198,21 @@ Connection: close
 <tr><td><em>instance_start_time</em></td><td> Timestamp of CouchDBs start time (int in ms) </td><td></td></tr>
 <tr><td><em>disk_format_version</em></td><td> Current version of the internal database format on disk (int)</td><td></td></tr>
 </table></p>
-<h3>Accessing Database-specific options</h3>
+<h3 id="accessing-database-specific-options">Accessing Database-specific options</h3>
 <p>Currently there is only one database specific option you can set via a PUT request. <em>_revs_limit</em> defines a upper bound of document revisions which CouchDB keeps track of, even after <a class="internal" href="Compaction.html">Compaction</a>. The default is set to 1000 on CouchDB 0.11.</p>
 <p>Set <em>_revs_limit</em> of a particular database:</p>
-<pre><code>curl -X PUT -d "1500" http://localhost:5984/test/_revs_limit
-&lt;!-- #=&gt; {"ok":true} --&gt;
-</code></pre>
+<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">PUT</span> <span class="o">-</span><span class="n">d</span> <span class="s">&quot;1500&quot;</span> <span class="n">http:</span><span class="sr">//</span><span class="n">localhost:5984</span><span class="sr">/test/</span><span class="n">_revs_limit</span>
+<span class="o">&lt;!--</span> <span class="c1">#=&gt; {&quot;ok&quot;:true} --&gt;</span>
+</pre></div>
+
+
 <p>Read <em>_revs_limit</em> of a particular database:</p>
-<pre><code>curl -X GET http://localhost:5984/test/_revs_limit
-&lt;!-- #=&gt; 1500 --&gt;
-</code></pre>
-<h3>Changes</h3>
+<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">GET</span> <span class="n">http:</span><span class="sr">//</span><span class="n">localhost:5984</span><span class="sr">/test/</span><span class="n">_revs_limit</span>
+<span class="o">&lt;!--</span> <span class="c1">#=&gt; 1500 --&gt;</span>
+</pre></div>
+
+
+<h3 id="changes">Changes</h3>
 <p>A list of changes made to documents in the database, in the order they were made, can be obtained from the database's <em>_changes</em> resource.</p>
 <ul>
 <li>GET<ul>
@@ -159,43 +224,49 @@ Connection: close
 </li>
 </ul>
 <p>By default all changes are immediately returned as a JSON object:</p>
-<pre><code>GET /somedatabase/_changes HTTP/1.1
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/somedatabase/</span><span class="n">_changes</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
 
-{"results":[
-{"seq":1,"id":"fresh","changes":[{"rev":"1-967a00dff5e02add41819138abb3284d"}]},
-{"seq":3,"id":"updated","changes":[{"rev":"2-7051cbe5c8faecd085a3fa619e6e6337"}]},
-{"seq":5,"id":"deleted","changes":[{"rev":"2-eec205a9d413992850a6e32678485900"}],"deleted":true}
-],
-"last_seq":5}
-</code></pre>
+<span class="p">{</span><span class="s">&quot;results&quot;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;fresh&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-967a00dff5e02add41819138abb3284d&quot;</span><span class="p">}]},</span>
+<span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;updated&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-7051cbe5c8faecd085a3fa619e6e6337&quot;</span><span class="p">}]},</span>
+<span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;deleted&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-eec205a9d413992850a6e32678485900&quot;</span><span class="p">}],</span><span class="s">&quot;deleted&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
+<span class="p">],</span>
+<span class="s">&quot;last_seq&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span>
+</pre></div>
+
+
 <p><em>results</em> is the list of changes in sequential order. New and changed documents only differ in the value of the rev; deleted documents include the <em>"deleted": true</em> attribute.</p>
 <p><em>last_seq</em> is the sequence number of the last update returned. (Currently it will always be the same as the <em>seq</em> of the last item in <em>results</em>.)</p>
 <p>Sending a <em>since</em> param in the query string skips all changes up to and including the given sequence number:</p>
-<pre><code>GET /somedatabase/_changes?since=3 HTTP/1.1
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/somedatabase/</span><span class="n">_changes</span><span class="p">?</span><span class="n">since</span><span class="o">=</span><span class="mi">3</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
 
-{"results":[
-{"seq":5,"id":"deleted","changes":[{"rev":"2-eec205a9d413992850a6e32678485900"}],"deleted":true}
-],
-"last_seq":5}
-</code></pre>
-<h4>Long-Polling (Efficient Polling) Feed</h4>
+<span class="p">{</span><span class="s">&quot;results&quot;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;deleted&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-eec205a9d413992850a6e32678485900&quot;</span><span class="p">}],</span><span class="s">&quot;deleted&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
+<span class="p">],</span>
+<span class="s">&quot;last_seq&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span>
+</pre></div>
+
+
+<h4 id="long-polling-efficient-polling-feed">Long-Polling (Efficient Polling) Feed</h4>
 <p>The <em>longpoll</em> feed (probably most useful used from a browser) is a more efficient form of polling that waits for a change to occur before the response is sent. <em>longpoll</em> avoids the need to frequently poll CouchDB to discover nothing has changed!</p>
 <p>The response is basically the same JSON as is sent for the <em>normal</em> feed.</p>
 <p>A <em>timeout</em> limits the maximum length of time the connection is open. If there are no changes before the timeout expires the response's <em>results</em> will be an empty list.</p>
-<h4>Continuous (Non-Polling) Feed</h4>
+<h4 id="continuous-non-polling-feed">Continuous (Non-Polling) Feed</h4>
 <p>Polling the CouchDB server is not a good thing to do. Setting up new HTTP connections just to tell the client that nothing's happened puts unnecessary strain on CouchDB.</p>
 <p>A <em>continuous</em> feed stays open and connected to the database until explicitly closed and changes are sent to the client as they happen, i.e. in near real-time.</p>
 <p>The <em>continuous</em> feed's response is a little different than the other feed types to simplify the job of the client - each line of the response is either empty or a JSON object representing a single change, as found in the normal feed's <em>results</em>.</p>
-<pre><code>GET /somedatabase/_changes?feed=continuous HTTP/1.1
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/somedatabase/</span><span class="n">_changes</span><span class="p">?</span><span class="n">feed</span><span class="o">=</span><span class="n">continuous</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
 
-{"seq":1,"id":"fresh","changes":[{"rev":"1-967a00dff5e02add41819138abb3284d"}]}
-{"seq":3,"id":"updated","changes":[{"rev":"2-7051cbe5c8faecd085a3fa619e6e6337"}]}
-{"seq":5,"id":"deleted","changes":[{"rev":"2-eec205a9d413992850a6e32678485900"}],"deleted":true}
-... tum tee tum ...
-{"seq":6,"id":"updated","changes":[{"rev":"3-825cb35de44c433bfb2df415563a19de"}]}
-</code></pre>
+<span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;fresh&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-967a00dff5e02add41819138abb3284d&quot;</span><span class="p">}]}</span>
+<span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;updated&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-7051cbe5c8faecd085a3fa619e6e6337&quot;</span><span class="p">}]}</span>
+<span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;deleted&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-eec205a9d413992850a6e32678485900&quot;</span><span class="p">}],</span><span class="s">&quot;deleted&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
+<span class="o">...</span> <span class="n">tum</span> <span class="n">tee</span> <span class="n">tum</span> <span class="o">...</span>
+<span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;updated&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;3-825cb35de44c433bfb2df415563a19de&quot;</span><span class="p">}]}</span>
+</pre></div>
+
+
 <p>Obviously, "... tum tee tum ..." does not appear in the actual response but represents a long pause before the change with <em>seq</em> 6 occurred.</p>
-<h2>Compaction</h2>
+<h2 id="compaction">Compaction</h2>
 <p>Databases may be compacted to reduce their disk usage.  For more details, see <a class="internal" href="Compaction.html">Compaction</a>.</p>
 </div>
       <div id="footer">

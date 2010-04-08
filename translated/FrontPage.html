@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - FrontPage</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,7 +56,7 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
@@ -52,14 +70,14 @@
 <p>Welcome to <a href="http://couchdb.apache.org/">Apache CouchDB Project</a> Wiki.</p>
 <p>Apache CouchDB is a distributed, fault-tolerant and schema-free document-oriented database accessible via a RESTful HTTP/JSON API. Among other features, it provides robust, incremental replication with bi-directional conflict detection and resolution, and is queryable and indexable using a table-oriented view engine with !JavaScript acting as the default view definition language.</p>
 <p>For more information see:</p>
-<h2>Overview</h2>
+<h2 id="overview">Overview</h2>
 <ul>
 <li><a class="internal" href="Introduction.html">Introduction</a></li>
 <li><a class="internal" href="Technical_Overview.html">Technical Overview</a></li>
 <li><a href="http://svn.apache.org/repos/asf/couchdb/trunk/README">README</a></li>
 <li><a href="http://svn.apache.org/repos/asf/couchdb/trunk/NEWS">NEWS</a></li>
 </ul>
-<h2>Using CouchDB</h2>
+<h2 id="using-couchdb">Using CouchDB</h2>
 <ul>
 <li><a class="internal" href="Installation.html">Installation</a>: Getting CouchDB installed and running on various operation systems</li>
 <li><a class="internal" href="Basics.html">Basics</a>: Getting started with CouchDB with different programming languages</li>
@@ -68,14 +86,14 @@
 <li><a class="internal" href="Using_Views.html">Using_Views</a>: Learn all about CouchDB views</li>
 <li>EntityRelationship: How to model relations between your objects in CouchDB</li>
 </ul>
-<h2>When things go wrong</h2>
+<h2 id="when-things-go-wrong">When things go wrong</h2>
 <ul>
 <li><a class="internal" href="Frequently_asked_questions.html">Frequently_asked_questions</a></li>
 <li><a class="internal" href="Breaking_changes.html">Breaking_changes</a></li>
 <li><a class="internal" href="Error_messages.html">Error_messages</a></li>
 <li><a class="internal" href="Troubleshooting.html">Troubleshooting</a></li>
 </ul>
-<h2>Community</h2>
+<h2 id="community">Community</h2>
 <ul>
 <li><a class="internal" href="Mailing_lists.html">Mailing lists</a> - The place for CouchDB community support and where the developers discuss and make decisions about the future of CouchDB.</li>
 <li><a href="irc://irc.freenode.net/couchdb">#couchdb</a> - CouchDB IRC channel on freenode for community support and friendly chat. Note: IRC discussions tend to exclude large parts of the community. Therefore CouchDB core technical discussions and decisions <em>must</em> take place on the mailing lists, not IRC. They don't count otherwise.</li>
@@ -84,7 +102,7 @@
 <li><a class="internal" href="Presentations.html">Presentations</a></li>
 <li>Catch up´s :<a href="http://planet.couchdb.org/">Planet</a>, <a href="http://www.reddit.com/r/CouchDB/">Subreddit</a>, <a href="http://twitter.com/CouchDB">Twitter</a>, <a href="http://rubyreflector.com/CouchDB">The Ruby Reflector - CouchDB</a></li>
 </ul>
-<h2>Get involved</h2>
+<h2 id="get-involved">Get involved</h2>
 <ul>
 <li><a class="internal" href="Getting_Help.html">Getting Help</a></li>
 <li><a class="internal" href="Development.html">Development</a></li>
@@ -92,7 +110,7 @@
 <li><a class="internal" href="Related_Projects.html">Related_Projects</a></li>
 <li><a class="internal" href="Talking_Points.html">Talking_Points</a></li>
 </ul>
-<h2>Books</h2>
+<h2 id="books">Books</h2>
 <p>As of August 2009, there are three books on CouchDB being written and due to be published in late 2009 or early 2010:</p>
 <ul>
 <li><a href="http://books.couchdb.org/relax">CouchDB: The Definitive Guide</a>, O'Reilly Media, by J Chris Anderson, Jan Lehnardt &amp; Noah Slater</li>

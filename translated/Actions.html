@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Actions</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,7 +56,7 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
@@ -46,33 +64,43 @@
 <p><strong>See also:</strong> ExternalProcesses</p>
 <p>Actions are a default included functionality that is made available by the new ExternalProcesses feature. <em>_design/</em> docs can now specify an <em>actions</em> member that is an object of <em>key</em>/<em>function</em> pairs.</p>
 <p>Action functions are specified in JavaScript and have access to a CouchDB object that can make requests to the database.</p>
-<h2>Example <em>_design/</em> Document</h2>
-<pre><code>{
-    "_id": "_design/an_action",
-    "actions": {
-        "times_two": "function(req, db) {return {code:200, json: {val: req.query.q * 2}};}"
-    }
-}
-</code></pre>
+<h2 id="example-_design-document">Example <em>_design/</em> Document</h2>
+<div class="codehilite"><pre><span class="p">{</span>
+    <span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;_design/an_action&quot;</span><span class="p">,</span>
+    <span class="s">&quot;actions&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&quot;times_two&quot;</span><span class="p">:</span> <span class="s">&quot;function(req, db) {return {code:200, json: {val: req.query.q * 2}};}&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>By default, this action is available at the URL:</p>
-<pre><code>http://127.0.0.1:5984/db_name/_external/action/times_two?q=2
-</code></pre>
-<h2>Example Using the Database</h2>
+<div class="codehilite"><pre><span class="n">http:</span><span class="sr">//</span><span class="mi">127</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">1</span><span class="p">:</span><span class="mi">5984</span><span class="sr">/db_name/</span><span class="n">_external</span><span class="sr">/action/</span><span class="n">times_two</span><span class="p">?</span><span class="n">q</span><span class="o">=</span><span class="mi">2</span>
+</pre></div>
+
+
+<h2 id="example-using-the-database">Example Using the Database</h2>
 <p>The <em>db</em> argument is a CouchDB instance. This class is defined in <em>couch.js</em> at:</p>
-<pre><code>http://127.0.0.1:5984/_utils/script/couch.js
-</code></pre>
+<div class="codehilite"><pre><span class="n">http:</span><span class="sr">//</span><span class="mi">127</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">1</span><span class="p">:</span><span class="mi">5984</span><span class="sr">/_utils/sc</span><span class="n">ript</span><span class="o">/</span><span class="n">couch</span><span class="o">.</span><span class="n">js</span>
+</pre></div>
+
+
 <p>For now the best references on the API are couch.js itself, and couch_tests.js that exercises it and most of CouchDB.</p>
-<pre><code>{
-    _id: "_design/with_db",
-    actions: {
-        "get" : "function(req, db) { var doc = db.open(req.query.docid); return {json:doc} }",
-    }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span>
+    <span class="n">_id:</span> <span class="s">&quot;_design/with_db&quot;</span><span class="p">,</span>
+    <span class="n">actions:</span> <span class="p">{</span>
+        <span class="s">&quot;get&quot;</span> <span class="p">:</span> <span class="s">&quot;function(req, db) { var doc = db.open(req.query.docid); return {json:doc} }&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Accessed via:</p>
-<pre><code>http://127.0.0.1:5984/db_name/with_db/get?docid="_design/with_db"
-</code></pre>
-<h2>Caveats</h2>
+<div class="codehilite"><pre><span class="n">http:</span><span class="sr">//</span><span class="mi">127</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">1</span><span class="p">:</span><span class="mi">5984</span><span class="sr">/db_name/</span><span class="n">with_db</span><span class="sr">/get?docid=&quot;_design/</span><span class="n">with_db</span><span class="err">&quot;</span>
+</pre></div>
+
+
+<h2 id="caveats">Caveats</h2>
 <p>The actions functionality is still a bit rough around the edges and there are efficiency questions on the implementation. Also, the error reporting is sub-par (to say the least...).</p>
 <p>That said, it helps serve as a reference (and testable) example of _external.</p>
 </div>

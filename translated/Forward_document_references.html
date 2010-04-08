@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Forward_document_references</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,11 +56,11 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h1>CouchDB Proposal: Forward document references</h1>
+  <h1 id="couchdb-proposal-forward-document-references">CouchDB Proposal: Forward document references</h1>
 <p>Within any document a single-key object with the following format will be
 considered a reference to another document within the same database.
     { "_document": "documentid" }</p>
@@ -50,33 +68,35 @@ considered a reference to another document within the same database.
 in their own document and can have a number of "friends" which are references
 to other documents in the database.
 ((Each object is a separate document, document id is noted in _id as with the HTTP API))</p>
-<pre><code>{
-  "_id": "fbigg",
-  "FirstName": "Fred",
-  "LastName": "Biggins",
-  "Friends": [
-    { "_document": "hherbert" }
-  ]
-}
+<div class="codehilite"><pre><span class="p">{</span>
+  <span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;fbigg&quot;</span><span class="p">,</span>
+  <span class="s">&quot;FirstName&quot;</span><span class="p">:</span> <span class="s">&quot;Fred&quot;</span><span class="p">,</span>
+  <span class="s">&quot;LastName&quot;</span><span class="p">:</span> <span class="s">&quot;Biggins&quot;</span><span class="p">,</span>
+  <span class="s">&quot;Friends&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span> <span class="s">&quot;_document&quot;</span><span class="p">:</span> <span class="s">&quot;hherbert&quot;</span> <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
 
-{
-  "_id": "crobin",
-  "FirstName": "Claire",
-  "LastName": "Robins",
-  "Friends": [
-    { "_document": "fbigg" }
-  ]
-}
+<span class="p">{</span>
+  <span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;crobin&quot;</span><span class="p">,</span>
+  <span class="s">&quot;FirstName&quot;</span><span class="p">:</span> <span class="s">&quot;Claire&quot;</span><span class="p">,</span>
+  <span class="s">&quot;LastName&quot;</span><span class="p">:</span> <span class="s">&quot;Robins&quot;</span><span class="p">,</span>
+  <span class="s">&quot;Friends&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span> <span class="s">&quot;_document&quot;</span><span class="p">:</span> <span class="s">&quot;fbigg&quot;</span> <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
 
-{
-  "_id": "hherbert",
-  "FirstName": "Hugh",
-  "LastName": "Herbert",
-  "Friends": [
-    { "_document": "crobin" }
-  ]
-}
-</code></pre>
+<span class="p">{</span>
+  <span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;hherbert&quot;</span><span class="p">,</span>
+  <span class="s">&quot;FirstName&quot;</span><span class="p">:</span> <span class="s">&quot;Hugh&quot;</span><span class="p">,</span>
+  <span class="s">&quot;LastName&quot;</span><span class="p">:</span> <span class="s">&quot;Herbert&quot;</span><span class="p">,</span>
+  <span class="s">&quot;Friends&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span> <span class="s">&quot;_document&quot;</span><span class="p">:</span> <span class="s">&quot;crobin&quot;</span> <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>You'll notice this structure is cycilic. This structure was picked for the example
 so we can also note how tolerant the proposal is to any sort of recursion.</p>
 <p>There are no changes to the standard API (read: all current queries to the rest
@@ -133,32 +153,34 @@ the advantage is because we are not substituting the data we can have as many
 cycilic references as we want and we do not encounter any infinite loops.</p>
 <p>In programs it is easy to handle the returned data format like so:
 ((JavaScript 1.8 pesudocode))</p>
-<pre><code>var db = new CouchDB('friends');
-var hash = db.get('fbigg', {recursive:true});
-var fbigg = hash.fbigg.Friends.map(function(friend) hash[friend._document]);
-fbigg; // JSON Structure
-{
-  "_id": "fbigg",
-  "FirstName": "Fred",
-  "LastName": "Biggins",
-  "Friends": [
-    {
-      "_id": "hherbert",
-      "FirstName": "Hugh",
-      "LastName": "Herbert`
-      "Friends": [
-        { "_document": "crobin" }
-      ]
-    }
-  ]
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">var</span> <span class="n">db</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CouchDB</span><span class="p">(</span><span class="s">&#39;friends&#39;</span><span class="p">);</span>
+<span class="n">var</span> <span class="n">hash</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;fbigg&#39;</span><span class="p">,</span> <span class="p">{</span><span class="n">recursive:true</span><span class="p">});</span>
+<span class="n">var</span> <span class="n">fbigg</span> <span class="o">=</span> <span class="n">hash</span><span class="o">.</span><span class="n">fbigg</span><span class="o">.</span><span class="n">Friends</span><span class="o">.</span><span class="nb">map</span><span class="p">(</span><span class="n">function</span><span class="p">(</span><span class="n">friend</span><span class="p">)</span> <span class="n">hash</span><span class="p">[</span><span class="n">friend</span><span class="o">.</span><span class="n">_document</span><span class="p">]);</span>
+<span class="n">fbigg</span><span class="p">;</span> <span class="sr">//</span> <span class="n">JSON</span> <span class="n">Structure</span>
+<span class="p">{</span>
+  <span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;fbigg&quot;</span><span class="p">,</span>
+  <span class="s">&quot;FirstName&quot;</span><span class="p">:</span> <span class="s">&quot;Fred&quot;</span><span class="p">,</span>
+  <span class="s">&quot;LastName&quot;</span><span class="p">:</span> <span class="s">&quot;Biggins&quot;</span><span class="p">,</span>
+  <span class="s">&quot;Friends&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;hherbert&quot;</span><span class="p">,</span>
+      <span class="s">&quot;FirstName&quot;</span><span class="p">:</span> <span class="s">&quot;Hugh&quot;</span><span class="p">,</span>
+      <span class="s">&quot;LastName&quot;</span><span class="p">:</span> <span class="s">&quot;Herbert`</span>
+<span class="s">      &quot;</span><span class="n">Friends</span><span class="s">&quot;: [</span>
+<span class="s">        { &quot;</span><span class="n">_document</span><span class="s">&quot;: &quot;</span><span class="n">crobin</span><span class="err">&quot;</span> <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>While this is a simple example, it is actually perfectly possible for a CouchDB
 client side library to find any _document keys it can find within the JSON document and replace
 those with the object for that document. This can be done in a way that preserves
 the cycilic nature and something like (fbigg.Friends[0].Friends[0].Friends[0] === fbigg)
 would return true.</p>
-<h2>Why?</h2>
+<h2 id="why">Why?</h2>
 <p>... unfinished ...
   * To note, example code for generating views for inverse document relations and index like info.</p>
 </div>

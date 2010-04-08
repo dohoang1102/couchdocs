@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Installation</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,14 +56,25 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h1>Installation of CouchDB and Dependencies</h1>
-<!-- <<TableOfContents(2)>> -->
-
-<h2>Dependencies</h2>
+  <h1 id="installation-of-couchdb-and-dependencies">Installation of CouchDB and Dependencies</h1>
+<div class="toc">
+<ul>
+<li><a href="#installation-of-couchdb-and-dependencies">Installation of CouchDB and Dependencies</a><ul>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a><ul>
+<li><a href="#installing-from-source">Installing from source</a></li>
+</ul>
+</li>
+<li><a href="#system-specific-installation-guides">System specific installation guides</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="dependencies">Dependencies</h2>
 <table>
   <tr><td rowspan="2"><strong>CouchDB</strong> <td colspan="4"> <em>Runtime</em><td colspan="2"> <em>Build</em></td></tr>
  </td><td><strong>Spidermonkey</strong></td><td><strong>Erlang</strong></td><td><strong>ICU</strong></td><td><strong>cURL</strong></td><td><strong>Automake</strong></td><td><strong>Autoconf</strong></td></tr>
@@ -54,13 +83,15 @@
  </td><td>0.11.x</td><td>>=1.7</td><td>>=5.6.5</td><td>>= 3.0</td><td>>= 7.18.0</td><td>>= 1.6.3</td><td>>= 2.59</td></tr>
 </table>
 
-<h2>Troubleshooting</h2>
-<h3>Installing from source</h3>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="installing-from-source">Installing from source</h3>
 <p><strong>Tips/Hints</strong></p>
 <p>If you have trouble/wired errors building from source, it is always good starting point to reset the repository to a clean state and retry:</p>
-<pre><code>make clean &amp;&amp; make distclean &amp;&amp; ./bootstrap &amp;&amp; ./configure &amp;&amp; make check &amp;&amp; make
-</code></pre>
-<h2>System specific installation guides</h2>
+<div class="codehilite"><pre><span class="n">make</span> <span class="n">clean</span> <span class="o">&amp;&amp;</span> <span class="n">make</span> <span class="n">distclean</span> <span class="o">&amp;&amp;</span> <span class="o">.</span><span class="sr">/bootstrap &amp;&amp; ./co</span><span class="n">nfigure</span> <span class="o">&amp;&amp;</span> <span class="n">make</span> <span class="n">check</span> <span class="o">&amp;&amp;</span> <span class="n">make</span>
+</pre></div>
+
+
+<h2 id="system-specific-installation-guides">System specific installation guides</h2>
 <p><strong>Linux and Solaris</strong></p>
 <ul>
 <li><a class="internal" href="Installing_on_RHEL4.html">Installing_on_RHEL4</a></li>

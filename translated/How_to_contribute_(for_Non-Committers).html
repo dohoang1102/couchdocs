@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - How_to_contribute_(for_Non-Committers)</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,7 +56,7 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
@@ -52,15 +70,17 @@
 <li><a href="#step3">Step 4: Create and Upload a Patch</a></li>
 <li><a href="#questions">Asking Questions And Getting Feedback</a></li>
 </ul>
-<p>&lt;<Anchor(pre)>&gt;</p>
-<h2>Prerequisites</h2>
+<!-- <<Anchor(pre)>> -->
+
+<h2 id="prerequisites">Prerequisites</h2>
 <p>Ensure that you've</p>
 <ul>
 <li>Installed from source: <a class="internal" href="Installing_from_source.html">Installing_from_source</a></li>
 <li>Got your system running in Dev mode: <a class="internal" href="Running_CouchDB_in_Dev_Mode.html">Running CouchDB in Dev Mode</a></li>
 </ul>
-<p>&lt;<Anchor(step1)>&gt;</p>
-<h2>Step 1: See if your bug/feature exists in JIRA</h2>
+<!-- <<Anchor(step1)>> -->
+
+<h2 id="step-1-see-if-your-bugfeature-exists-in-jira">Step 1: See if your bug/feature exists in JIRA</h2>
 <ul>
 <li>JIRA is the issue tracker that CouchDB uses to track items of work.</li>
 <li>Visit https://issues.apache.org/jira/browse/COUCHDB to see if your issue already exists. </li>
@@ -70,14 +90,16 @@
 <li>Either way, bookmark the link because you'll need it to comment or submit patches.</li>
 </ul>
 <p><strong>Note:</strong> You're still welcome to submit patches even if an issue has been assigned to someone else. In this case, it's probably better to add a comment before getting started. </p>
-<p>&lt;<Anchor(step2)>&gt;</p>
-<h2>Step 2: Run the tests</h2>
+<!-- <<Anchor(step2)>> -->
+
+<h2 id="step-2-run-the-tests">Step 2: Run the tests</h2>
 <ul>
 <li>Instructions are here: http://wiki.apache.org/couchdb/How_to_create_tests?action=show </li>
 <li>Run the tests at least before you start coding and when you're done.</li>
 </ul>
-<p>&lt;<Anchor(step3)>&gt;</p>
-<h2>Step 3: Go forth and code!</h2>
+<!-- <<Anchor(step3)>> -->
+
+<h2 id="step-3-go-forth-and-code">Step 3: Go forth and code!</h2>
 <ul>
 <li>Take a look at the recommended coding standards here: <a class="internal" href="Coding_Standards.html">Coding_Standards</a></li>
 <li>Before starting, make sure that your local copy is up to the latest version</li>
@@ -92,8 +114,9 @@ $ svn update</p>
 $ make dev</p>
 </li>
 </ul>
-<p>&lt;<Anchor(step4)>&gt;</p>
-<h2>Step 4: Create and Upload a Patch</h2>
+<!-- <<Anchor(step4)>> -->
+
+<h2 id="step-4-create-and-upload-a-patch">Step 4: Create and Upload a Patch</h2>
 <ul>
 <li>Once you've completed the feature/fix you will need to create a patch</li>
 <li>
@@ -108,8 +131,9 @@ $ svn diff &gt; your_patch_file_name.patch</p>
 <li>Add your file and add a comment about the change.</li>
 </ul>
 <p>And you're done!</p>
-<p>&lt;<Anchor(questions)>&gt;</p>
-<h2>Asking Questions And Getting Feedback</h2>
+<!-- <<Anchor(questions)>> -->
+
+<h2 id="asking-questions-and-getting-feedback">Asking Questions And Getting Feedback</h2>
 <p>You can contact the CouchDB developers to ask questions and propose ideas by:</p>
 <ul>
 <li>Sending a mail to the Dev mailing list: http://wiki.apache.org/couchdb/Mailing_lists or,</li>

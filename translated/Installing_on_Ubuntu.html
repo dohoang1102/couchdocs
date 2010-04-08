@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Installing_on_Ubuntu</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,14 +56,16 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <p>CouchDB has an Ubuntu package for Ubuntu 8.10 (Intrepid Ibex) and 9.04 (Jaunty Jackalope) - just do:</p>
-<pre><code>aptitude install couchdb
-</code></pre>
-<h2>From Source</h2>
+<div class="codehilite"><pre><span class="n">aptitude</span> <span class="n">install</span> <span class="n">couchdb</span>
+</pre></div>
+
+
+<h2 id="from-source">From Source</h2>
 <p>If you want the latest version of Couchdb but everything else from the repositories then:</p>
 <ul>
 <li>In Synaptic select couchdb, this will also select the dependencies (erlang etc.) then unselect couchdb and apply the dependencies</li>
@@ -60,10 +80,12 @@
 now you can run "sudo couchdb" and browse to <a href="localhost:5984/_utils">localhost:5984/_utils</a> to check it is all working</li>
 </ul>
 <p>Because you installed all the dependencies of Couchdb from synaptic, but not Couchdb itself some of the dependencies may think they are not required and update manager may suggest that they are removed. Should you do this Couchdb will fail to start, perhaps with an error such as </p>
-<pre><code>{"init terminating in do_boot",{undef,[{crypto,start,[]},{erl_eval,do_apply,5},{init,start_it,1},{init,start_em,1}]}}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span><span class="s">&quot;init terminating in do_boot&quot;</span><span class="p">,{</span><span class="nb">undef</span><span class="p">,[{</span><span class="n">crypto</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="o">[]</span><span class="p">},{</span><span class="n">erl_eval</span><span class="p">,</span><span class="n">do_apply</span><span class="p">,</span><span class="mi">5</span><span class="p">},{</span><span class="n">init</span><span class="p">,</span><span class="n">start_it</span><span class="p">,</span><span class="mi">1</span><span class="p">},{</span><span class="n">init</span><span class="p">,</span><span class="n">start_em</span><span class="p">,</span><span class="mi">1</span><span class="p">}]}}</span>
+</pre></div>
+
+
 <p>If this happens simply re-install the dependencies (possibly erlang-nox but it could vary)</p>
-<h2>External Articles</h2>
+<h2 id="external-articles">External Articles</h2>
 <ul>
 <li><a href="http://barkingiguana.com/2008/06/28/installing-couchdb-080-on-ubuntu-804">Installing CouchDB 0.8.0 on Ubuntu 8.04</a></li>
 <li><a href="http://japhr.blogspot.com/2009/03/yak-shaving-is-new-dependency-hell.html">Installing Couchdb 0.9 on Ubuntu 9.04</a></li>

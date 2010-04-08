@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Authentication_and_Authorization</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,17 +56,17 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <!-- #format wiki -->
 <!-- #language en -->
 
-<h1>Authentication and Authorization</h1>
-<h2>Disclaimer</h2>
+<h1 id="authentication-and-authorization">Authentication and Authorization</h1>
+<h2 id="disclaimer">Disclaimer</h2>
 <p>These pages attempt to collect strands of thoughts that concern authentication and authorization in CouchDB.  These pages do not describe the currently available support for authentication and authorization in CouchDB or any agreed implementation plans.</p>
-<h2>Discussion threads</h2>
+<h2 id="discussion-threads">Discussion threads</h2>
 <p>The following discussions address authentication and authorization concerns:</p>
 <p><a href="http://thread.gmane.org/gmane.comp.db.couchdb.devel/5325">2009-09-07</a> Per-DB Auth Ideas and Proposal</p>
 <p><a href="http://thread.gmane.org/gmane.comp.db.couchdb.devel/4099">2009-07-10</a> : Cookie Auth</p>
@@ -66,7 +84,7 @@
 <p><a href="http://thread.gmane.org/gmane.comp.db.couchdb.devel/3031">2009-04-21</a> : LDAP Authentication handler</p>
 <p><a href="http://thread.gmane.org/gmane.comp.db.couchdb.devel/232">2008-01-09</a> : The planned security model for CouchDB</p>
 <p><a href="http://thread.gmane.org/gmane.comp.db.couchdb.devel/942">2008-06-16</a> : How to contribute - especially authentication</p>
-<h2>JIRA issues</h2>
+<h2 id="jira-issues">JIRA issues</h2>
 <p>The following issues address authentication and authorization concerns:</p>
 <p><strike><a href="http://issues.apache.org/jira/browse/COUCHDB-34">COUCHDB-34</a></strike> : Enable replicator to use HTTP authentication.</p>
 <p><strike><a href="http://issues.apache.org/jira/browse/COUCHDB-263">COUCHDB-263</a></strike> : Require valid user for all database operations.</p>
@@ -75,10 +93,10 @@
 <p><a href="http://issues.apache.org/jira/browse/COUCHDB-329">COUCHDB-329</a> : Replication from Futon does not copy design docs with admin authentication.</p>
 <p><a href="http://issues.apache.org/jira/browse/COUCHDB-256">COUCHDB-256</a> : Replicating from a write-protected server fails</p>
 <p><a href="http://issues.apache.org/jira/browse/COUCHDB-438">COUCHDB-438</a> : Add per database (OAuth) authentication to couchdb</p>
-<h2>Definitions</h2>
+<h2 id="definitions">Definitions</h2>
 <p>Authentication:: any process by which you verify that someone is who they claim they are.
  Authorization:: any process by which someone is allowed to be where they want to go, or to have information that they want to have.</p>
-<h2>References</h2>
+<h2 id="references">References</h2>
 <p><a class="internal" href="Security_Features_Overview.html">Security_Features_Overview</a></p>
 <p><a href="http://httpd.apache.org/docs/2.2/howto/auth.html">Apache 2.2 Authentication, Authorization and Access Control</a></p>
 <p><a href="http://tomcat.apache.org/tomcat-6.0-doc/realm-howto.html">Apache Tomcat 6 Realms and AAA</a></p>
@@ -99,7 +117,7 @@
 <p><a href="http://www.ibm.com/developerworks/xml/library/x-xacml/?S_TACT=105AGX06&S_CMP=EDU">XML Security: Control information access with XACML</a></p>
 <p><a href="http://incubator.apache.org/projects/shiro.html">Incubating Shiro (aka Ki, JSecurity) project</a></p>
 <p><a href="http://www.erlang-fr.org/erlang.org/lib/inets-3.0/doc/html/mod_auth.html">Erlang inet mod_auth</a></p>
-<h2>Authentication use cases</h2>
+<h2 id="authentication-use-cases">Authentication use cases</h2>
 <p>The following use-cases describe potential usage scenarios for an authentication system.
 The catalog of use-cases could be helpful to describe the feature set of
 any proposals and to identify any architectural issues.</p>
@@ -127,15 +145,19 @@ the user.</p>
 to provide the identity.</p>
 <p>HYBRID-AUTH: An option of different means may be offered
 to validate the user.</p>
-<h2>Authentication hooks</h2>
+<h2 id="authentication-hooks">Authentication hooks</h2>
 <p>CouchDB 0.9.x allows the user to configure an authentication handler in local.ini like: </p>
-<pre><code>[httpd]
-authentication_handler = {modulename, functionname}
-</code></pre>
+<div class="codehilite"><pre><span class="k">[httpd]</span>
+<span class="na">authentication_handler</span> <span class="o">=</span> <span class="s">{modulename, functionname}</span>
+</pre></div>
+
+
 <p>SVN HEAD and 0.10.x allow specification of multiple authentication handlers using:</p>
-<pre><code>[httpd]
-authentication_handlers = {modulename, functionname}, (modulename, functionname}
-</code></pre>
+<div class="codehilite"><pre><span class="k">[httpd]</span>
+<span class="na">authentication_handlers</span> <span class="o">=</span> <span class="s">{modulename, functionname}, (modulename, functionname}</span>
+</pre></div>
+
+
 <p>The module must be available on the code path.  User provided handlers
 should be placed in ~couchdb (need to confirm that would be the current
 working directory) or in a subdirectory under ROOT/lib where root is
@@ -143,29 +165,33 @@ the Erlang/OTP installation directory.</p>
 <p>If not specified in local.ini, the authentication handler specified in default.ini, 
 {couch_httpd, default_authentication_handler}, will be used.</p>
 <p>The specified handler is called in couch_httpd::handle_request:</p>
-<pre><code>handle_request(MochiReq, DefaultFun,
-        UrlHandlers, DbUrlHandlers, DesignUrlHandlers) -&gt;
-...
-    AuthenticationFun = make_arity_1_fun(
-            couch_config:get("httpd", "authentication_handler")),
-...
+<div class="codehilite"><pre><span class="n">handle_request</span><span class="p">(</span><span class="n">MochiReq</span><span class="p">,</span> <span class="n">DefaultFun</span><span class="p">,</span>
+        <span class="n">UrlHandlers</span><span class="p">,</span> <span class="n">DbUrlHandlers</span><span class="p">,</span> <span class="n">DesignUrlHandlers</span><span class="p">)</span> <span class="o">-&gt;</span>
+<span class="o">...</span>
+    <span class="n">AuthenticationFun</span> <span class="o">=</span> <span class="n">make_arity_1_fun</span><span class="p">(</span>
+            <span class="n">couch_config:get</span><span class="p">(</span><span class="s">&quot;httpd&quot;</span><span class="p">,</span> <span class="s">&quot;authentication_handler&quot;</span><span class="p">)),</span>
+<span class="o">...</span>
 
-    {ok, Resp} 
-    try
-        HandlerFun(HttpReq#httpd{user_ctx=AuthenticationFun(HttpReq)})
-    catch
-</code></pre>
+    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="n">Resp</span><span class="p">}</span> 
+    <span class="n">try</span>
+        <span class="n">HandlerFun</span><span class="p">(</span><span class="n">HttpReq</span><span class="c1">#httpd{user_ctx=AuthenticationFun(HttpReq)})</span>
+    <span class="n">catch</span>
+</pre></div>
+
+
 <p>The handler takes an httpd record and returns an user_ctx record.  The return value replaces
 the existing user_ctx member of the httpd record and is passed to a handler for the current
 request.</p>
 <p>user_ctx is defined in src/couch_db.hrl as:</p>
-<pre><code>-record(user_ctx,
-    {name=null,
-    roles=[]
-    }).
-</code></pre>
-<h2>Authentication handlers</h2>
-<h3>couch_httpd::default_authentication_handler</h3>
+<div class="codehilite"><pre><span class="o">-</span><span class="n">record</span><span class="p">(</span><span class="n">user_ctx</span><span class="p">,</span>
+    <span class="p">{</span><span class="n">name</span><span class="o">=</span><span class="n">null</span><span class="p">,</span>
+    <span class="n">roles</span><span class="o">=[]</span>
+    <span class="p">})</span><span class="o">.</span>
+</pre></div>
+
+
+<h2 id="authentication-handlers">Authentication handlers</h2>
+<h3 id="couch_httpddefault_authentication_handler">couch_httpd::default_authentication_handler</h3>
 <p>If the http request contains basic authentication, the user name and password are checked 
 against a configured user list.  If the user is recognized as an administrator, the user name and
 &lt;&lt;"_admin"&gt;&gt; (bit stream representation of "_admin") role are added to the user context, 
@@ -173,15 +199,15 @@ otherwise, an exception is thrown.
 If basic authentication is not present and there are admins defined in the user list,
 an empty context is returned.  If basic authentication is not present and there are no admins
 defined, then the _admin role is added to the context.</p>
-<h3>couch_httpd::null_authentication_handler</h3>
+<h3 id="couch_httpdnull_authentication_handler">couch_httpd::null_authentication_handler</h3>
 <p>Any request is granted the &lt;&lt;"_admin"&gt;&gt; role.</p>
-<h3>couch_httpd::special_test_authentication_handler</h3>
+<h3 id="couch_httpdspecial_test_authentication_handler">couch_httpd::special_test_authentication_handler</h3>
 <p>If the WWW-Authentication header has a value like "X-Couch-Test-Auth username:password",
 the user name and password are checked against a hard-coded list of username/password
 combinations.  If the request matches, the user name (but not the &lt;&lt;"_admin"&gt;&gt; role) is added,
 otherwise an exception is thrown.  If the WWW-Authentication header is not present
 or does not match the pattern, the &lt;&lt;"_admin role"&gt;&gt; is added.</p>
-<h3>couch_httpd_oauth::oauth_authentication_handler</h3>
+<h3 id="couch_httpd_oauthoauth_authentication_handler">couch_httpd_oauth::oauth_authentication_handler</h3>
 <p><a href="http://issues.apache.org/jira/browse/COUCHDB-420">COUCHDB-420</a> implemented an
 <a href="http://oauth.net/">OAuth</a> authentication handler now in SVN HEAD and to be
 included in 0.10.x.  The patch also changes
@@ -214,9 +240,11 @@ user1 = admin_user</p>
 </li>
 </ol>
 <p>If all is well, you should see this response:</p>
-<pre><code>{"ok":true,"name":"admin_user","roles":["_admin"]}
-</code></pre>
-<h2>Authorization use cases</h2>
+<div class="codehilite"><pre><span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">,</span><span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;admin_user&quot;</span><span class="p">,</span><span class="s">&quot;roles&quot;</span><span class="p">:[</span><span class="s">&quot;_admin&quot;</span><span class="p">]}</span>
+</pre></div>
+
+
+<h2 id="authorization-use-cases">Authorization use cases</h2>
 <p>The following use-cases describe potential usage scenarios for an authorization system.
 The catalog of use-cases could be helpful to describe the feature set of
 any proposals and to identify any architectural issues.</p>
@@ -238,14 +266,14 @@ the values from a view, but will reject an attempt to include documents.</p>
 <p>PREAPPROVAL: User can request an evaluation if a proposed action
 would (likely) be approved.  This could be used to disable certain
 parts of a UI that are not appropriate for the user.</p>
-<h2>Authorization hooks</h2>
+<h2 id="authorization-hooks">Authorization hooks</h2>
 <p>Authorization is not configurable in CouchDB 0.9.x or the current SVN HEAD.
 The user_ctx record is examined in couch_db::check_is_admin/1 and 
 couch_db::validate_doc_update/3.</p>
 <p>The user_ctx record can be displayed using http://localhost:5984/_whoami on the SVN HEAD.</p>
 <p>validate_doc_update functions (see <a class="internal" href="Security_Features_Overview.html">Security_Features_Overview</a>) can examine the user_ctx
 and reject document modifications.</p>
-<h2>Proposals</h2>
+<h2 id="proposals">Proposals</h2>
 <p><a href="http://issues.apache.org/jira/browse/COUCHDB-441">COUCHDB-441</a> : Insert _user and _timestamp on document writes.</p>
 <p><a href="http://issues.apache.org/jira/browse/COUCHDB-442">COUCHDB-442</a> :  Add a "view" or "format" function to process source doc on query.</p>
 </div>

@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - _all_dbs</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,13 +56,13 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h1>Listing Databases</h1>
+  <h1 id="listing-databases">Listing Databases</h1>
 <p>To get the list of databases in CouchDB you can use the <code>_all_dbs</code> resource.</p>
-<pre><code>$ curl -vs http://127.0.0.1:5984/_all_dbs
+<div class="codehilite"><pre>$ curl -vs http://127.0.0.1:5984/_all_dbs
 &gt; GET /_all_dbs HTTP/1.1
 &gt; User-Agent: curl/7.19.4
 &gt; Host: 127.0.0.1:5984
@@ -58,10 +76,9 @@
 &lt; Cache-Control: must-revalidate
 &lt; 
 [
-  "my_db", 
-  "my_other_db"
-]
-</code></pre>
+  &quot;my_db&quot;, 
+  &quot;my_other_db&quot;
+]</pre></div>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

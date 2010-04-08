@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Installing_on_FreeBSD</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,76 +56,98 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h1>Installing CouchDB on FreeBSD 6.x and 7.x and 8.0</h1>
-<h2>Installation from ports</h2>
-<pre><code>cd /usr/ports/databases/couchdb
-make install clean
-</code></pre>
+  <h1 id="installing-couchdb-on-freebsd-6x-and-7x-and-80">Installing CouchDB on FreeBSD 6.x and 7.x and 8.0</h1>
+<h2 id="installation-from-ports">Installation from ports</h2>
+<div class="codehilite"><pre><span class="n">cd</span> <span class="sr">/usr/</span><span class="n">ports</span><span class="sr">/databases/co</span><span class="n">uchdb</span>
+<span class="n">make</span> <span class="n">install</span> <span class="n">clean</span>
+</pre></div>
+
+
 <p>This will install CouchDB 0.9.0 from the ports collection.</p>
-<h2>Post install</h2>
+<h2 id="post-install">Post install</h2>
 <p>In case the install script fails to install a noninteractive user "couchdb" to be used for the database, the user needs to be created manually:</p>
 <p>I used the <code>pw</code> command to add a user "couchdb" in group "couchdb":</p>
-<pre><code>shell# pw user add couchdb
-shell# pw user mod couchdb -c 'CouchDB, time to relax' -s /usr/sbin/nologin -d /var/lib/couchdb
-shell# pw group add couchdb
-</code></pre>
+<div class="codehilite"><pre><span class="n">shell</span><span class="c1"># pw user add couchdb</span>
+<span class="n">shell</span><span class="c1"># pw user mod couchdb -c &#39;CouchDB, time to relax&#39; -s /usr/sbin/nologin -d /var/lib/couchdb</span>
+<span class="n">shell</span><span class="c1"># pw group add couchdb</span>
+</pre></div>
+
+
 <p>The user is added to <code>/etc/passwd</code> and should look similar to the following:</p>
-<pre><code>shell# cat /etc/passwd |grep couchdb
-couchdb:*:1013:1013:Couchdb, time to relax:/var/lib/couchdb/:/usr/sbin/nologin
-</code></pre>
+<div class="codehilite"><pre><span class="n">shell</span><span class="c1"># cat /etc/passwd |grep couchdb</span>
+<span class="n">couchdb:</span><span class="o">*</span><span class="p">:</span><span class="mi">1013</span><span class="p">:</span><span class="mi">1013</span><span class="p">:</span><span class="n">Couchdb</span><span class="p">,</span> <span class="nb">time</span> <span class="n">to</span> <span class="n">relax:</span><span class="sr">/var/</span><span class="n">lib</span><span class="sr">/couchdb/</span><span class="p">:</span><span class="sr">/usr/s</span><span class="n">bin</span><span class="o">/</span><span class="n">nologin</span>
+</pre></div>
+
+
 <p>To change any of these settings, please refrain from editing <code>/etc/passwd</code> and instead use <code>pw user mod ...</code> or <code>vipw</code>. Make sure that the user has no shell, but instead uses <code>/usr/sbin/nologin</code>. The '*' in the second field means that this user can not login via password authorization. For details use <code>man 5 passwd</code>.</p>
-<h2>Start script</h2>
+<h2 id="start-script">Start script</h2>
 <p>On FreeBSD, you use the following to start CouchDB:</p>
-<pre><code>shell# /usr/local/etc/rc.d/couchdb start
-</code></pre>
+<div class="codehilite"><pre><span class="n">shell</span><span class="c1"># /usr/local/etc/rc.d/couchdb start</span>
+</pre></div>
+
+
 <p>This script responds to the arguments start, stop, status, rcvar etc..</p>
 <p>The following options for <code>/etc/rc.conf</code> or <code>/etc/rc.conf.local</code> are supported by the start script:</p>
-<pre><code>couchdb_enable="NO"
-couchdb_enablelogs="YES"
-couchdb_user="couchdb"
-</code></pre>
+<div class="codehilite"><pre><span class="n">couchdb_enable</span><span class="o">=</span><span class="s">&quot;NO&quot;</span>
+<span class="n">couchdb_enablelogs</span><span class="o">=</span><span class="s">&quot;YES&quot;</span>
+<span class="n">couchdb_user</span><span class="o">=</span><span class="s">&quot;couchdb&quot;</span>
+</pre></div>
+
+
 <p>(Defaults shown.)</p>
 <p>The start script will also use settings from the following config files:</p>
-<pre><code>/usr/local/etc/couchdb/default.ini
-/usr/local/etc/couchdb/local.ini
-</code></pre>
+<div class="codehilite"><pre><span class="sr">/usr/</span><span class="nb">local</span><span class="sr">/etc/co</span><span class="n">uchdb</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">ini</span>
+<span class="sr">/usr/</span><span class="nb">local</span><span class="sr">/etc/co</span><span class="n">uchdb</span><span class="o">/</span><span class="nb">local</span><span class="o">.</span><span class="n">ini</span>
+</pre></div>
+
+
 <p>Administrators should use default.ini as reference and only modify the local.ini file.</p>
 <p>The logfile is configured to be written to</p>
-<pre><code>/var/log/couchdb/couch.log
-</code></pre>
+<div class="codehilite"><pre><span class="sr">/var/</span><span class="nb">log</span><span class="sr">/couchdb/co</span><span class="n">uch</span><span class="o">.</span><span class="nb">log</span>
+</pre></div>
+
+
 <p>In case the port does not set up correct permissions on the database directory, a command analogous to the following should be used:</p>
-<pre><code>shell# chown couchdb:couchdb /var/log/couchdb
-</code></pre>
+<div class="codehilite"><pre><span class="n">shell</span><span class="c1"># chown couchdb:couchdb /var/log/couchdb</span>
+</pre></div>
+
+
 <p>command to have the couchdb process own the directory which allows it to write couch.log there. The other directories are "root:wheel" or "root:network". And I expected "/usr/local/var.." as location.</p>
 <p>Starting CouchDB with</p>
-<pre><code>shell# /usr/local/etc/rc.d/couchdb start
-</code></pre>
+<div class="codehilite"><pre><span class="n">shell</span><span class="c1"># /usr/local/etc/rc.d/couchdb start</span>
+</pre></div>
+
+
 <p>should allow you to look at "http://localhost:5984" and see this JSON doc:</p>
-<pre><code>{"couchdb":"Welcome","version":"0.9.0"}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span><span class="s">&quot;couchdb&quot;</span><span class="p">:</span><span class="s">&quot;Welcome&quot;</span><span class="p">,</span><span class="s">&quot;version&quot;</span><span class="p">:</span><span class="s">&quot;0.9.0&quot;</span><span class="p">}</span>
+</pre></div>
+
+
 <p>Then you should try "http://localhost:5984/_utils/" to see the "Futon" web interface,</p>
 <p>I tried creating a database "db1" there and got an error. The solution was to</p>
-<pre><code>shell# chown couchdb:couchdb /var/lib/couchdb
-</code></pre>
+<div class="codehilite"><pre><span class="n">shell</span><span class="c1"># chown couchdb:couchdb /var/lib/couchdb</span>
+</pre></div>
+
+
 <p>Anyway, after this futon did report OK and I found a "/var/lib/couchdb/db1.couch" data file.</p>
-<h2>Installing from sources</h2>
+<h2 id="installing-from-sources">Installing from sources</h2>
 <p>When building from sources obtained from <code>git clone git://github.com/halorgium/couchdb.git</code>, you can get a strange "<code>Syntax error: end of file unexpected</code>". You need to use <code>gmake</code> instead of <code>make</code>.</p>
 <p>If you get <code>aclocal: not found</code> on <code>./bootstrap</code> you need to <code>pkg_add -r automake19</code>.</p>
 <p>If you get <code>libtoolize: not found</code> on <code>./bootstrap</code> you need to <code>pkg_add -r libtool</code>.</p>
 <p>If you get <code>error: Could not find the js library</code> on <code>./configure</code> you need to <code>pkg_add -r spidermonkey</code>.</p>
 <p>If you get <code>error: Library requirements (ICU) not met</code> on <code>./configure</code> you need to <code>pkg_add -r icu</code>.</p>
 <p>If you get <code>error: Library requirements (curl) not met</code> on <code>./configure</code> you need to <code>pkg_add -r curl</code>.</p>
-<h1>Current TODO</h1>
+<h1 id="current-todo">Current TODO</h1>
 <ul>
 <li>Change /var/lib/couchdb/ to /var/db/couchdb/</li>
 <li>Create /var/log/couchdb/</li>
 <li>Create a couchdb user with port install</li>
 </ul>
-<h1>Questions?</h1>
+<h1 id="questions">Questions?</h1>
 <p>Please check out the github repository, or email TillKlampaeckel.</p>
 </div>
       <div id="footer">

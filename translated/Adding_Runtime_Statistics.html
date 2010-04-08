@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Adding_Runtime_Statistics</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,35 +56,41 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h1>Adding Runtime Statistics</h1>
+  <h1 id="adding-runtime-statistics">Adding Runtime Statistics</h1>
 <p>CouchDB (since 0.9) comes with a runtime statistics module ("the stats module") that gathers all sorts of information during the lifetime of a CouchDB instance. This page explains how you can make the stats module collect information; either in new modules or existing ones.</p>
 <p>see also <a class="internal" href="Runtime_Statistics.html">Runtime_Statistics</a></p>
-<h2>The Collector</h2>
+<h2 id="the-collector">The Collector</h2>
 <p>The collector does all the real-time counting of stuff. It lives in the <code>src/couchdb/couch_stats_collector.erl</code> file.</p>
 <p>There are three types of counters in the collector</p>
-<h3>Hit Counter</h3>
+<h3 id="hit-counter">Hit Counter</h3>
 <p>A hit counter is a monotonically increasing counter that simply counts events. Starting from 0 with now upper boundary. To count events, call</p>
-<pre><code>couch_stats_collector:increment({Module, Key}).
-</code></pre>
-<p>This registers the counter with the collector and increments it each time this line executed. We'll cover what <code>{Module, Key}</code> means in a minute.</p>
-<h3>Limit Counter</h3>
-<p>An limit counter is a lot like a hit counter, only that it can go down again. Think number of open databases, or currently running requests. When an event starts, the counter is incremented, when the event is over, decremented.</p>
-<pre><code>couch_stats_collector:increment({Module, Key}).
+<div class="codehilite"><pre><span class="err">couch_stats_collector:increment({Module,</span> <span class="err">Key}).</span>
+</pre></div>
 
-couch_stats_collector:decrement({Module, Key}).
-</code></pre>
-<h3>Absolute Value Counter</h3>
+
+<p>This registers the counter with the collector and increments it each time this line executed. We'll cover what <code>{Module, Key}</code> means in a minute.</p>
+<h3 id="limit-counter">Limit Counter</h3>
+<p>An limit counter is a lot like a hit counter, only that it can go down again. Think number of open databases, or currently running requests. When an event starts, the counter is incremented, when the event is over, decremented.</p>
+<div class="codehilite"><pre><span class="err">couch_stats_collector:increment({Module,</span> <span class="err">Key}).</span>
+
+<span class="err">couch_stats_collector:decrement({Module,</span> <span class="err">Key}).</span>
+</pre></div>
+
+
+<h3 id="absolute-value-counter">Absolute Value Counter</h3>
 <p>An absolute value counter is not really a counter, it collects absolute values for one second. They are good for collecting information like the amount of time spent in an event or the size of some piece of data.</p>
-<pre><code>couch_stats_collector:record({Module, Key}).
-</code></pre>
-<h2>Keys</h2>
+<div class="codehilite"><pre><span class="err">couch_stats_collector:record({Module,</span> <span class="err">Key}).</span>
+</pre></div>
+
+
+<h2 id="keys">Keys</h2>
 <p>To uniquely identify a counter, use a tuple of the form <code>{Module, Key}</code>. <code>Module</code> should be the name of the module where the event takes place. And <code>Key</code> should be the name of the counter and must be unique within a module.</p>
 <p>Look at existing counters to get a feel for the naming.</p>
-<h2>The Aggregator</h2>
+<h2 id="the-aggregator">The Aggregator</h2>
 <p>The aggregator is a second module that queries the collector module at certain intervals to collect current values and calculate aggregates like min, max, mean and stddev values. Hit and limit counters are just queried for their current value. The aggregator calculates the new aggregate values based on the previous values in constant time. Absolute value counters are queried for their current values and then flushed to avoid running out of memory.</p>
 <p>The aggregator queries the collector at predefined intervals: Every second, every minute, every five minutes and every fifteen minutes. That way you can quickly see how changes affect CouchDB's performance.</p>
 </div>

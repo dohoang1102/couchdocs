@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - How_to_intercept_document_updates_and_perform_additional_server-side_processing</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,71 +56,75 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h2>Basics</h2>
+  <h2 id="basics">Basics</h2>
 <p>CouchDB (0.10 and up) has the ability to allow server-side processing of an incoming document before it's committed. This feature allows a range of use cases such as providing a server-side last modified timestamp, etc.</p>
-<h2>Implementation</h2>
+<h2 id="implementation">Implementation</h2>
 <p>This functionality is implemented via document update handlers defined in a design doc. Specifically, in a design doc one defines an "updates" attribute that contains any number of document update handlers. The follow handlers should be self-explanatory as to what they accomplish. </p>
-<pre><code>    updates: {
+<div class="codehilite"><pre>    updates: {
 
-      "hello" : function(doc, req) {
+      &quot;hello&quot; : function(doc, req) {
         if (!doc) {
           if (req.docId) {
             return [{
               _id : req.docId
-            }, "New World"]
+            }, &quot;New World&quot;]
           }
-          return [null, "Empty World"];          
+          return [null, &quot;Empty World&quot;];          
         }
-        doc.world = "hello";
+        doc.world = &quot;hello&quot;;
         doc.edited_by = req.userCtx;
-        return [doc, "hello doc"];
+        return [doc, &quot;hello doc&quot;];
       },
 
-      "in-place" : function(doc, req) {
+      &quot;in-place&quot; : function(doc, req) {
         var field = req.query.field;
         var value = req.query.value;
-        var message = "set "+field+" to "+value;
+        var message = &quot;set &quot;+field+&quot; to &quot;+value;
         doc[field] = value;
         return [doc, message];
       },
 
-      "bump-counter" : function(doc, req) {
+      &quot;bump-counter&quot; : function(doc, req) {
         if (!doc.counter) doc.counter = 0;
         doc.counter += 1;
-        var message = "&lt;h1&gt;bumped it!&lt;/h1&gt;";
+        var message = &quot;<span class="nt">&lt;h1&gt;</span>bumped it!<span class="nt">&lt;/h1&gt;</span>&quot;;
         return [doc, message];
       },
 
-      "error" : function(doc, req) {
+      &quot;error&quot; : function(doc, req) {
         superFail.badCrash;
       },
 
-      "xml" : function(doc, req) {
-        var xml = new XML('&lt;xml&gt;&lt;/xml&gt;');
+      &quot;xml&quot; : function(doc, req) {
+        var xml = new XML(&#39;<span class="nt">&lt;xml&gt;&lt;/xml&gt;</span>&#39;);
         xml.title = doc.title;
         var posted_xml = new XML(req.body);
         doc.via_xml = posted_xml.foo.toString();
         var resp =  {
-          "headers" : {
-            "Content-Type" : "application/xml"
+          &quot;headers&quot; : {
+            &quot;Content-Type&quot; : &quot;application/xml&quot;
           },
-          "body" : xml
+          &quot;body&quot; : xml
         };
 
          return [doc, resp];
        }
     }
-</code></pre>
+</pre></div>
+
+
 <p>The handler function takes the document and the http request as parameters. It returns a two-element array: the first element is the (updated) document, which is committed to the database. The second element is the response that will be sent back to the caller.</p>
-<h2>Usage</h2>
+<h2 id="usage">Usage</h2>
 <p>To invoke a handler, one must "PUT" the document against the handler function itself (POST does not seem to be supported). Using the canonical document URL won't invoke any handlers.</p>
 <p>For example, to invoke the "in-place" handler defined above, the URL to use is:</p>
-<pre><code>http://127.0.0.1:5984/&lt;my_database&gt;/_design/&lt;my_designdoc&gt;/_update/in-place/&lt;mydocId&gt;?field=title&amp;value=test
-</code></pre>
+<div class="codehilite"><pre><span class="n">http:</span><span class="sr">//</span><span class="mi">127</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">1</span><span class="p">:</span><span class="mi">5984</span><span class="sr">/&lt;my_database&gt;/</span><span class="n">_design</span><span class="sr">/&lt;my_designdoc&gt;/</span><span class="n">_update</span><span class="sr">/in-place/</span><span class="s-Regexp">&lt;mydocId&gt;</span><span class="p">?</span><span class="n">field</span><span class="o">=</span><span class="n">title</span><span class="o">&amp;</span><span class="n">value</span><span class="o">=</span><span class="n">test</span>
+</pre></div>
+
+
 <p>This means that unlike document validators, the user's intent must be clear by calling this individual handler explicitly. In this sense, you should think about an <em>_update</em> handler as complementary to <em>_show</em> functions, not to <em>validate_doc_update</em> functions.</p>
 </div>
       <div id="footer">

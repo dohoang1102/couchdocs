@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Getting_started_with_ExtJS</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,227 +56,235 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <p>Getting started with ExtJS and the CouchDB API.</p>
-<h2>ExtJS</h2>
+<h2 id="extjs">ExtJS</h2>
 <p><a href="http://extjs.com">ExtJS</a> is a javascript library that has the idea of data stores for accessing the data. The provided ExtJS data stores will pull data from a url, but require custom coding for each insert/update/delete as most frameworks don't have a consistent API for each different data type. So updates only occur to ExtJS data stores in memory and callbacks for user functions. Since CouchDB has a consistent API for every document and a flat schema, the data store can be updated to perform these actions in a simple and consistent manner.</p>
-<h2>Simple Data Store</h2>
+<h2 id="simple-data-store">Simple Data Store</h2>
 <p>This data store assumes a database named 'databasenamehere' and a view of 'locations/all', with a simple map to find all documents that contain a location field.</p>
 <p>Here is the call to create the data store:</p>
-<pre><code>var store = new Ext.ux.data.CouchStore({
-    db:    'databasenamehere',
-    view:  'locations/all',
-    fields: [
-        {name: '_id'        },  // I'd love to get rid of this as well
-        {name: '_rev'       },  // ditto
-        {name: 'location'   },
-        {name: 'address',   },
-        {name: 'latitude',  type: 'float'},
-        {name: 'longitude', type: 'float'}
-    ]
-});
-Ext.ux.store.load({});
-</code></pre>
+<div class="codehilite"><pre><span class="n">var</span> <span class="n">store</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Ext</span><span class="o">.</span><span class="n">ux</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">CouchStore</span><span class="p">({</span>
+    <span class="n">db:</span>    <span class="s">&#39;databasenamehere&#39;</span><span class="p">,</span>
+    <span class="n">view:</span>  <span class="s">&#39;locations/all&#39;</span><span class="p">,</span>
+    <span class="n">fields:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="n">name:</span> <span class="s">&#39;_id&#39;</span>        <span class="p">},</span>  <span class="sr">//</span> <span class="n">I</span><span class="s">&#39;d love to get rid of this as well</span>
+<span class="s">        {name: &#39;</span><span class="n">_rev</span><span class="s">&#39;       },  // ditto</span>
+<span class="s">        {name: &#39;</span><span class="n">location</span><span class="s">&#39;   },</span>
+<span class="s">        {name: &#39;</span><span class="n">address</span><span class="s">&#39;,   },</span>
+<span class="s">        {name: &#39;</span><span class="n">latitude</span><span class="s">&#39;,  type: &#39;</span><span class="n">float</span><span class="s">&#39;},</span>
+<span class="s">        {name: &#39;</span><span class="n">longitude</span><span class="s">&#39;, type: &#39;</span><span class="n">float</span><span class="err">&#39;</span><span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">});</span>
+<span class="n">Ext</span><span class="o">.</span><span class="n">ux</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">load</span><span class="p">({});</span>
+</pre></div>
+
+
 <p>After the load call, all the documents are fetched into the store.</p>
 <p>An add becomes as follows:</p>
-<pre><code>x = new store.record({
-  location : 'work',
-   address  : '123 over the rainbox'
-});
+<div class="codehilite"><pre><span class="n">x</span> <span class="o">=</span> <span class="k">new</span> <span class="n">store</span><span class="o">.</span><span class="n">record</span><span class="p">({</span>
+  <span class="n">location</span> <span class="p">:</span> <span class="s">&#39;work&#39;</span><span class="p">,</span>
+   <span class="n">address</span>  <span class="p">:</span> <span class="s">&#39;123 over the rainbox&#39;</span>
+<span class="p">});</span>
 
-store.add(x);
-</code></pre>
+<span class="n">store</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+</pre></div>
+
+
 <p>An update is as follows:</p>
-<pre><code>    var r = store.getAt(0);
-    r.set('location', 'Yahoo!');
-    store.commitChanges();
-</code></pre>
+<div class="codehilite"><pre>    <span class="n">var</span> <span class="n">r</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">getAt</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s">&#39;location&#39;</span><span class="p">,</span> <span class="s">&#39;Yahoo!&#39;</span><span class="p">);</span>
+    <span class="n">store</span><span class="o">.</span><span class="n">commitChanges</span><span class="p">();</span>
+</pre></div>
+
+
 <p>And finally deleting a document:</p>
-<pre><code>   var r = store.getAt(0);
-   store.remove(r);
-</code></pre>
-<h2>CouchStore JavaScript</h2>
+<div class="codehilite"><pre>   <span class="n">var</span> <span class="n">r</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">getAt</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+   <span class="n">store</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">r</span><span class="p">);</span>
+</pre></div>
+
+
+<h2 id="couchstore-javascript">CouchStore JavaScript</h2>
 <p>This is the javascript code used to create the data store object that is compatible with CouchDB. This snippet was generated using ExtJS 2.1 and CouchDB 0.7.3a662588</p>
-<pre><code>/**
-The MIT License
+<div class="codehilite"><pre><span class="o">/**</span>
+<span class="n">The</span> <span class="n">MIT</span> <span class="n">License</span>
 
-Copyright (c) 2008, Shawn P. Garbett (www.garbett.org), Jonathan Hicks
+<span class="n">Copyright</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="mi">2008</span><span class="p">,</span> <span class="n">Shawn</span> <span class="n">P</span><span class="o">.</span> <span class="n">Garbett</span> <span class="p">(</span><span class="n">www</span><span class="o">.</span><span class="n">garbett</span><span class="o">.</span><span class="n">org</span><span class="p">),</span> <span class="n">Jonathan</span> <span class="n">Hicks</span>
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+<span class="n">Permission</span> <span class="n">is</span> <span class="n">hereby</span> <span class="n">granted</span><span class="p">,</span> <span class="n">free</span> <span class="n">of</span> <span class="n">charge</span><span class="p">,</span> <span class="n">to</span> <span class="n">any</span> <span class="n">person</span> <span class="n">obtaining</span> <span class="n">a</span> <span class="n">copy</span>
+<span class="n">of</span> <span class="n">this</span> <span class="n">software</span> <span class="ow">and</span> <span class="n">associated</span> <span class="n">documentation</span> <span class="n">files</span> <span class="p">(</span><span class="n">the</span> <span class="s">&quot;Software&quot;</span><span class="p">),</span> <span class="n">to</span> <span class="n">deal</span>
+<span class="n">in</span> <span class="n">the</span> <span class="n">Software</span> <span class="n">without</span> <span class="n">restriction</span><span class="p">,</span> <span class="n">including</span> <span class="n">without</span> <span class="n">limitation</span> <span class="n">the</span> <span class="n">rights</span>
+<span class="n">to</span> <span class="k">use</span><span class="p">,</span> <span class="n">copy</span><span class="p">,</span> <span class="n">modify</span><span class="p">,</span> <span class="n">merge</span><span class="p">,</span> <span class="n">publish</span><span class="p">,</span> <span class="n">distribute</span><span class="p">,</span> <span class="n">sublicense</span><span class="p">,</span> <span class="ow">and</span><span class="o">/</span><span class="ow">or</span> <span class="n">sell</span>
+<span class="n">copies</span> <span class="n">of</span> <span class="n">the</span> <span class="n">Software</span><span class="p">,</span> <span class="ow">and</span> <span class="n">to</span> <span class="n">permit</span> <span class="n">persons</span> <span class="n">to</span> <span class="n">whom</span> <span class="n">the</span> <span class="n">Software</span> <span class="n">is</span>
+<span class="n">furnished</span> <span class="n">to</span> <span class="k">do</span> <span class="n">so</span><span class="p">,</span> <span class="n">subject</span> <span class="n">to</span> <span class="n">the</span> <span class="n">following</span> <span class="n">conditions:</span>
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+<span class="n">The</span> <span class="n">above</span> <span class="n">copyright</span> <span class="n">notice</span> <span class="ow">and</span> <span class="n">this</span> <span class="n">permission</span> <span class="n">notice</span> <span class="n">shall</span> <span class="n">be</span> <span class="n">included</span> <span class="n">in</span>
+<span class="n">all</span> <span class="n">copies</span> <span class="ow">or</span> <span class="n">substantial</span> <span class="n">portions</span> <span class="n">of</span> <span class="n">the</span> <span class="n">Software</span><span class="o">.</span>
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+<span class="n">THE</span> <span class="n">SOFTWARE</span> <span class="n">IS</span> <span class="n">PROVIDED</span> <span class="s">&quot;AS IS&quot;</span><span class="p">,</span> <span class="n">WITHOUT</span> <span class="n">WARRANTY</span> <span class="n">OF</span> <span class="n">ANY</span> <span class="n">KIND</span><span class="p">,</span> <span class="n">EXPRESS</span> <span class="n">OR</span>
+<span class="n">IMPLIED</span><span class="p">,</span> <span class="n">INCLUDING</span> <span class="n">BUT</span> <span class="n">NOT</span> <span class="n">LIMITED</span> <span class="n">TO</span> <span class="n">THE</span> <span class="n">WARRANTIES</span> <span class="n">OF</span> <span class="n">MERCHANTABILITY</span><span class="p">,</span>
+<span class="n">FITNESS</span> <span class="n">FOR</span> <span class="n">A</span> <span class="n">PARTICULAR</span> <span class="n">PURPOSE</span> <span class="n">AND</span> <span class="n">NONINFRINGEMENT</span><span class="o">.</span> <span class="n">IN</span> <span class="n">NO</span> <span class="n">EVENT</span> <span class="n">SHALL</span> <span class="n">THE</span>
+<span class="n">AUTHORS</span> <span class="n">OR</span> <span class="n">COPYRIGHT</span> <span class="n">HOLDERS</span> <span class="n">BE</span> <span class="n">LIABLE</span> <span class="n">FOR</span> <span class="n">ANY</span> <span class="n">CLAIM</span><span class="p">,</span> <span class="n">DAMAGES</span> <span class="n">OR</span> <span class="n">OTHER</span>
+<span class="n">LIABILITY</span><span class="p">,</span> <span class="n">WHETHER</span> <span class="n">IN</span> <span class="n">AN</span> <span class="n">ACTION</span> <span class="n">OF</span> <span class="n">CONTRACT</span><span class="p">,</span> <span class="n">TORT</span> <span class="n">OR</span> <span class="n">OTHERWISE</span><span class="p">,</span> <span class="n">ARISING</span> <span class="n">FROM</span><span class="p">,</span>
+<span class="n">OUT</span> <span class="n">OF</span> <span class="n">OR</span> <span class="n">IN</span> <span class="n">CONNECTION</span> <span class="n">WITH</span> <span class="n">THE</span> <span class="n">SOFTWARE</span> <span class="n">OR</span> <span class="n">THE</span> <span class="n">USE</span> <span class="n">OR</span> <span class="n">OTHER</span> <span class="n">DEALINGS</span> <span class="n">IN</span>
+<span class="n">THE</span> <span class="n">SOFTWARE</span><span class="o">.</span>
 
- */
+ <span class="o">*/</span>
 
-Ext.namespace('Ext.ux', 'Ext.ux.data');
+<span class="n">Ext</span><span class="o">.</span><span class="n">namespace</span><span class="p">(</span><span class="s">&#39;Ext.ux&#39;</span><span class="p">,</span> <span class="s">&#39;Ext.ux.data&#39;</span><span class="p">);</span>
 
-Ext.ux.data.CouchReader = function(meta, recordType){
-  meta = meta || {};
-  Ext.ux.data.CouchReader.superclass.constructor.call(this, meta, recordType || meta.fields);
-};
-Ext.extend(Ext.ux.data.CouchReader, Ext.data.JsonReader, {
-  /**
-   * This override is primarily to default .value on values.
-   * Why so much copying is required seems like poor desing on the extjs libraries part
-   */
-  readRecords : function(o)
-  {          
-    /**
-     * After any data loads, the raw JSON data is available for further custom processing.  If no data is
-     * loaded or there is a load exception this property will be undefined.
-     * @type Object
-     */
-    this.jsonData = o;
-    if(o.metaData)
-    {
-        delete this.ef;
-        this.meta = o.metaData;
-        this.recordType = Ext.data.Record.create(o.metaData.fields);
-        this.onMetaChange(this.meta, this.recordType, o);
-    }
-    var s = this.meta, Record = this.recordType,
-        f = Record.prototype.fields, fi = f.items, fl = f.length;
+<span class="n">Ext</span><span class="o">.</span><span class="n">ux</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">CouchReader</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">recordType</span><span class="p">){</span>
+  <span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span> <span class="o">||</span> <span class="p">{};</span>
+  <span class="n">Ext</span><span class="o">.</span><span class="n">ux</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">CouchReader</span><span class="o">.</span><span class="n">superclass</span><span class="o">.</span><span class="n">constructor</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">recordType</span> <span class="o">||</span> <span class="n">meta</span><span class="o">.</span><span class="n">fields</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="n">Ext</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">Ext</span><span class="o">.</span><span class="n">ux</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">CouchReader</span><span class="p">,</span> <span class="n">Ext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">JsonReader</span><span class="p">,</span> <span class="p">{</span>
+  <span class="o">/**</span>
+   <span class="o">*</span> <span class="n">This</span> <span class="n">override</span> <span class="n">is</span> <span class="n">primarily</span> <span class="n">to</span> <span class="n">default</span> <span class="o">.</span><span class="n">value</span> <span class="n">on</span> <span class="nb">values</span><span class="o">.</span>
+   <span class="o">*</span> <span class="n">Why</span> <span class="n">so</span> <span class="n">much</span> <span class="n">copying</span> <span class="n">is</span> <span class="n">required</span> <span class="n">seems</span> <span class="n">like</span> <span class="n">poor</span> <span class="n">desing</span> <span class="n">on</span> <span class="n">the</span> <span class="n">extjs</span> <span class="n">libraries</span> <span class="n">part</span>
+   <span class="o">*/</span>
+  <span class="n">readRecords</span> <span class="p">:</span> <span class="n">function</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+  <span class="p">{</span>          
+    <span class="o">/**</span>
+     <span class="o">*</span> <span class="n">After</span> <span class="n">any</span> <span class="n">data</span> <span class="n">loads</span><span class="p">,</span> <span class="n">the</span> <span class="n">raw</span> <span class="n">JSON</span> <span class="n">data</span> <span class="n">is</span> <span class="n">available</span> <span class="k">for</span> <span class="n">further</span> <span class="n">custom</span> <span class="n">processing</span><span class="o">.</span>  <span class="n">If</span> <span class="nb">no</span> <span class="n">data</span> <span class="n">is</span>
+     <span class="o">*</span> <span class="n">loaded</span> <span class="ow">or</span> <span class="n">there</span> <span class="n">is</span> <span class="n">a</span> <span class="n">load</span> <span class="n">exception</span> <span class="n">this</span> <span class="n">property</span> <span class="n">will</span> <span class="n">be</span> <span class="n">undefined</span><span class="o">.</span>
+     <span class="o">*</span> <span class="nv">@type</span> <span class="n">Object</span>
+     <span class="o">*/</span>
+    <span class="n">this</span><span class="o">.</span><span class="n">jsonData</span> <span class="o">=</span> <span class="n">o</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">metaData</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nb">delete</span> <span class="n">this</span><span class="o">.</span><span class="n">ef</span><span class="p">;</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">metaData</span><span class="p">;</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">recordType</span> <span class="o">=</span> <span class="n">Ext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Record</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">metaData</span><span class="o">.</span><span class="n">fields</span><span class="p">);</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">onMetaChange</span><span class="p">(</span><span class="n">this</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="n">this</span><span class="o">.</span><span class="n">recordType</span><span class="p">,</span> <span class="n">o</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">var</span> <span class="n">s</span> <span class="o">=</span> <span class="n">this</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="n">Record</span> <span class="o">=</span> <span class="n">this</span><span class="o">.</span><span class="n">recordType</span><span class="p">,</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">Record</span><span class="o">.</span><span class="nb">prototype</span><span class="o">.</span><span class="n">fields</span><span class="p">,</span> <span class="n">fi</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">items</span><span class="p">,</span> <span class="n">fl</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="nb">length</span><span class="p">;</span>
 
-    // Generate extraction functions for the totalProperty, the root, the id, and for each field
-    if (!this.ef)
-    {
-      if(s.totalProperty)   { this.getTotal   = this.getJsonAccessor(s.totalProperty);   }
-      if(s.successProperty) { this.getSuccess = this.getJsonAccessor(s.successProperty); }
-      this.getRoot = s.root ? this.getJsonAccessor(s.root) : function(p){return p;};
+    <span class="sr">//</span> <span class="n">Generate</span> <span class="n">extraction</span> <span class="n">functions</span> <span class="k">for</span> <span class="n">the</span> <span class="n">totalProperty</span><span class="p">,</span> <span class="n">the</span> <span class="n">root</span><span class="p">,</span> <span class="n">the</span> <span class="n">id</span><span class="p">,</span> <span class="ow">and</span> <span class="k">for</span> <span class="nb">each</span> <span class="n">field</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">this</span><span class="o">.</span><span class="n">ef</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">totalProperty</span><span class="p">)</span>   <span class="p">{</span> <span class="n">this</span><span class="o">.</span><span class="n">getTotal</span>   <span class="o">=</span> <span class="n">this</span><span class="o">.</span><span class="n">getJsonAccessor</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">totalProperty</span><span class="p">);</span>   <span class="p">}</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">successProperty</span><span class="p">)</span> <span class="p">{</span> <span class="n">this</span><span class="o">.</span><span class="n">getSuccess</span> <span class="o">=</span> <span class="n">this</span><span class="o">.</span><span class="n">getJsonAccessor</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">successProperty</span><span class="p">);</span> <span class="p">}</span>
+      <span class="n">this</span><span class="o">.</span><span class="n">getRoot</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">root</span> <span class="p">?</span> <span class="n">this</span><span class="o">.</span><span class="n">getJsonAccessor</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">root</span><span class="p">)</span> <span class="p">:</span> <span class="n">function</span><span class="p">(</span><span class="n">p</span><span class="p">){</span><span class="k">return</span> <span class="n">p</span><span class="p">;};</span>
 
-      if (s.id)
-      {
-        var g = this.getJsonAccessor(s.id);
-        this.getId = function(rec)
-        {
-          var r = g(rec);
-          return (r === undefined || r === "") ? null : r;
-        };
-      }
-      else
-      {
-        this.getId = function(){return null;};
-      }
-      this.ef = [];
-      for(var i = 0; i &lt; fl; i++)
-      {
-        f = fi[i];
-// This is the magic line... All this copying for this one line UGH!!!
-        var map = (f.mapping !== undefined &amp;&amp; f.mapping !== null) ? f.mapping : 'value.'+f.name;
-        this.ef[i] = this.getJsonAccessor(map);
-      }
-    }
+      <span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+      <span class="p">{</span>
+        <span class="n">var</span> <span class="n">g</span> <span class="o">=</span> <span class="n">this</span><span class="o">.</span><span class="n">getJsonAccessor</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">id</span><span class="p">);</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">getId</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">rec</span><span class="p">)</span>
+        <span class="p">{</span>
+          <span class="n">var</span> <span class="n">r</span> <span class="o">=</span> <span class="n">g</span><span class="p">(</span><span class="n">rec</span><span class="p">);</span>
+          <span class="k">return</span> <span class="p">(</span><span class="n">r</span> <span class="o">===</span> <span class="n">undefined</span> <span class="o">||</span> <span class="n">r</span> <span class="o">===</span> <span class="s">&quot;&quot;</span><span class="p">)</span> <span class="p">?</span> <span class="n">null</span> <span class="p">:</span> <span class="n">r</span><span class="p">;</span>
+        <span class="p">};</span>
+      <span class="p">}</span>
+      <span class="k">else</span>
+      <span class="p">{</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">getId</span> <span class="o">=</span> <span class="n">function</span><span class="p">(){</span><span class="k">return</span> <span class="n">null</span><span class="p">;};</span>
+      <span class="p">}</span>
+      <span class="n">this</span><span class="o">.</span><span class="n">ef</span> <span class="o">=</span> <span class="o">[]</span><span class="p">;</span>
+      <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">fl</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+      <span class="p">{</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">fi</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="sr">//</span> <span class="n">This</span> <span class="n">is</span> <span class="n">the</span> <span class="n">magic</span> <span class="n">line</span><span class="o">...</span> <span class="n">All</span> <span class="n">this</span> <span class="n">copying</span> <span class="k">for</span> <span class="n">this</span> <span class="n">one</span> <span class="n">line</span> <span class="n">UGH</span><span class="o">!!!</span>
+        <span class="n">var</span> <span class="nb">map</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">mapping</span> <span class="o">!==</span> <span class="n">undefined</span> <span class="o">&amp;&amp;</span> <span class="n">f</span><span class="o">.</span><span class="n">mapping</span> <span class="o">!==</span> <span class="n">null</span><span class="p">)</span> <span class="p">?</span> <span class="n">f</span><span class="o">.</span><span class="n">mapping</span> <span class="p">:</span> <span class="s">&#39;value.&#39;</span><span class="o">+</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">;</span>
+        <span class="n">this</span><span class="o">.</span><span class="n">ef</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">this</span><span class="o">.</span><span class="n">getJsonAccessor</span><span class="p">(</span><span class="nb">map</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
 
-    var root = this.getRoot(o), c = root.length, totalRecords = c, success = true;
-    if(s.totalProperty)
-    {
-          var v = parseInt(this.getTotal(o), 10);
-          if(!isNaN(v))
-          {
-              totalRecords = v;
-          }
-    }
-    if(s.successProperty)
-    {
-          var v = this.getSuccess(o);
-          if(v === false || v === 'false')
-          {
-              success = false;
-          }
-    }
+    <span class="n">var</span> <span class="n">root</span> <span class="o">=</span> <span class="n">this</span><span class="o">.</span><span class="n">getRoot</span><span class="p">(</span><span class="n">o</span><span class="p">),</span> <span class="n">c</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="nb">length</span><span class="p">,</span> <span class="n">totalRecords</span> <span class="o">=</span> <span class="n">c</span><span class="p">,</span> <span class="n">success</span> <span class="o">=</span> <span class="n">true</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">totalProperty</span><span class="p">)</span>
+    <span class="p">{</span>
+          <span class="n">var</span> <span class="n">v</span> <span class="o">=</span> <span class="n">parseInt</span><span class="p">(</span><span class="n">this</span><span class="o">.</span><span class="n">getTotal</span><span class="p">(</span><span class="n">o</span><span class="p">),</span> <span class="mi">10</span><span class="p">);</span>
+          <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">isNaN</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+          <span class="p">{</span>
+              <span class="n">totalRecords</span> <span class="o">=</span> <span class="n">v</span><span class="p">;</span>
+          <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">successProperty</span><span class="p">)</span>
+    <span class="p">{</span>
+          <span class="n">var</span> <span class="n">v</span> <span class="o">=</span> <span class="n">this</span><span class="o">.</span><span class="n">getSuccess</span><span class="p">(</span><span class="n">o</span><span class="p">);</span>
+          <span class="k">if</span><span class="p">(</span><span class="n">v</span> <span class="o">===</span> <span class="n">false</span> <span class="o">||</span> <span class="n">v</span> <span class="o">===</span> <span class="s">&#39;false&#39;</span><span class="p">)</span>
+          <span class="p">{</span>
+              <span class="n">success</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
+          <span class="p">}</span>
+    <span class="p">}</span>
 
-    var records = [];
+    <span class="n">var</span> <span class="n">records</span> <span class="o">=</span> <span class="o">[]</span><span class="p">;</span>
 
-    for(var i = 0; i &lt; c; i++)
-    {
-      var n = root[i];
-      var values = {};
-      var id = this.getId(n);
-      for(var j = 0; j &lt; fl; j++)
-      {
-        f = fi[j];
-        var v = this.ef[j](n);
-        values[f.name] = f.convert((v !== undefined) ? v : f.defaultValue, n);
-      }
-      var record = new Record(values, id);
-      record.json = n;
-      records[i] = record;
-    }
+    <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">c</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="n">var</span> <span class="n">n</span> <span class="o">=</span> <span class="n">root</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+      <span class="n">var</span> <span class="nb">values</span> <span class="o">=</span> <span class="p">{};</span>
+      <span class="n">var</span> <span class="n">id</span> <span class="o">=</span> <span class="n">this</span><span class="o">.</span><span class="n">getId</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+      <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">fl</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+      <span class="p">{</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">fi</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+        <span class="n">var</span> <span class="n">v</span> <span class="o">=</span> <span class="n">this</span><span class="o">.</span><span class="n">ef</span><span class="p">[</span><span class="n">j</span><span class="p">](</span><span class="n">n</span><span class="p">);</span>
+        <span class="nb">values</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">convert</span><span class="p">((</span><span class="n">v</span> <span class="o">!==</span> <span class="n">undefined</span><span class="p">)</span> <span class="p">?</span> <span class="n">v</span> <span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">defaultValue</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+      <span class="p">}</span>
+      <span class="n">var</span> <span class="n">record</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Record</span><span class="p">(</span><span class="nb">values</span><span class="p">,</span> <span class="n">id</span><span class="p">);</span>
+      <span class="n">record</span><span class="o">.</span><span class="n">json</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span>
+      <span class="n">records</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">record</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    return {
-        success : success,
-        records : records,
-        totalRecords : totalRecords
-    };
-  }
-});
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">success</span> <span class="p">:</span> <span class="n">success</span><span class="p">,</span>
+        <span class="n">records</span> <span class="p">:</span> <span class="n">records</span><span class="p">,</span>
+        <span class="n">totalRecords</span> <span class="p">:</span> <span class="n">totalRecords</span>
+    <span class="p">};</span>
+  <span class="p">}</span>
+<span class="p">});</span>
 
-Ext.ux.data.CouchStore = function(c) {
-  var url = (c.url === undefined || c.url === null) ? '/'+c.db+'/_view/'+c.view : c.url;
-  Ext.ux.data.CouchStore.superclass.constructor.call(
-    this,
-    Ext.apply(c, {
-      root: 'rows',
-      totalProperty: 'total_rows',
-      url: url,
-      proxy:  !c.data ? new Ext.data.HttpProxy({url: url}) : undefined,
-      reader: new Ext.ux.data.CouchReader(c, c.fields)
-  }));
-  this.addListener('update', function(store, record, operation) {
+<span class="n">Ext</span><span class="o">.</span><span class="n">ux</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">CouchStore</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">var</span> <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">url</span> <span class="o">===</span> <span class="n">undefined</span> <span class="o">||</span> <span class="n">c</span><span class="o">.</span><span class="n">url</span> <span class="o">===</span> <span class="n">null</span><span class="p">)</span> <span class="p">?</span> <span class="s">&#39;/&#39;</span><span class="o">+</span><span class="n">c</span><span class="o">.</span><span class="n">db</span><span class="o">+</span><span class="s">&#39;/_view/&#39;</span><span class="o">+</span><span class="n">c</span><span class="o">.</span><span class="n">view</span> <span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">url</span><span class="p">;</span>
+  <span class="n">Ext</span><span class="o">.</span><span class="n">ux</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">CouchStore</span><span class="o">.</span><span class="n">superclass</span><span class="o">.</span><span class="n">constructor</span><span class="o">.</span><span class="n">call</span><span class="p">(</span>
+    <span class="n">this</span><span class="p">,</span>
+    <span class="n">Ext</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="p">{</span>
+      <span class="n">root:</span> <span class="s">&#39;rows&#39;</span><span class="p">,</span>
+      <span class="n">totalProperty:</span> <span class="s">&#39;total_rows&#39;</span><span class="p">,</span>
+      <span class="n">url:</span> <span class="n">url</span><span class="p">,</span>
+      <span class="n">proxy:</span>  <span class="o">!</span><span class="n">c</span><span class="o">.</span><span class="n">data</span> <span class="p">?</span> <span class="k">new</span> <span class="n">Ext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">HttpProxy</span><span class="p">({</span><span class="n">url:</span> <span class="n">url</span><span class="p">})</span> <span class="p">:</span> <span class="n">undefined</span><span class="p">,</span>
+      <span class="n">reader:</span> <span class="k">new</span> <span class="n">Ext</span><span class="o">.</span><span class="n">ux</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">CouchReader</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span>
+  <span class="p">}));</span>
+  <span class="n">this</span><span class="o">.</span><span class="n">addListener</span><span class="p">(</span><span class="s">&#39;update&#39;</span><span class="p">,</span> <span class="n">function</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">operation</span><span class="p">)</span> <span class="p">{</span>
 
-    if(operation != Ext.data.Record.COMMIT) return;
+    <span class="k">if</span><span class="p">(</span><span class="n">operation</span> <span class="o">!=</span> <span class="n">Ext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Record</span><span class="o">.</span><span class="n">COMMIT</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
 
-    Ext.Ajax.request({
-      url: '/'+store.db+'/'+record.data._id,
-      method: 'PUT',
-      jsonData: record.data,
-      waitMsg: (store.waitMsg === undefined || store.waitMsg === null) ? 'Saving Data...' : store.waitMsg
-    });
-  });
-  this.addListener('remove', function(store, record, index) {
-    Ext.Ajax.request({
-      url: '/'+store.db+'/'+record.data._id+'?rev='+record.data._rev,
-      method: 'DELETE',
-      waitMsg: (store.waitMsg === undefined || store.waitMsg === null) ? 'Deleting Data...' : store.waitMsg
-    });
-  });
-  this.addListener('add', function(store, records, index){
-    for(var i=0; i&lt;records.length; i++) {
-      record = records[i];
-      Ext.Ajax.request({
-        url: '/'+store.db,
-        method: 'POST',
-        jsonData: record.data,
-        waitMsg: (store.waitMsg === undefined || store.waitMsg === null) ? 'Adding Data...' : store.waitMsg
-      });
-    }    
-  });
+    <span class="n">Ext</span><span class="o">.</span><span class="n">Ajax</span><span class="o">.</span><span class="n">request</span><span class="p">({</span>
+      <span class="n">url:</span> <span class="s">&#39;/&#39;</span><span class="o">+</span><span class="n">store</span><span class="o">.</span><span class="n">db</span><span class="o">+</span><span class="s">&#39;/&#39;</span><span class="o">+</span><span class="n">record</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span>
+      <span class="n">method:</span> <span class="s">&#39;PUT&#39;</span><span class="p">,</span>
+      <span class="n">jsonData:</span> <span class="n">record</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+      <span class="n">waitMsg:</span> <span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="n">waitMsg</span> <span class="o">===</span> <span class="n">undefined</span> <span class="o">||</span> <span class="n">store</span><span class="o">.</span><span class="n">waitMsg</span> <span class="o">===</span> <span class="n">null</span><span class="p">)</span> <span class="p">?</span> <span class="s">&#39;Saving Data...&#39;</span> <span class="p">:</span> <span class="n">store</span><span class="o">.</span><span class="n">waitMsg</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+  <span class="n">this</span><span class="o">.</span><span class="n">addListener</span><span class="p">(</span><span class="s">&#39;remove&#39;</span><span class="p">,</span> <span class="n">function</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="nb">index</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">Ext</span><span class="o">.</span><span class="n">Ajax</span><span class="o">.</span><span class="n">request</span><span class="p">({</span>
+      <span class="n">url:</span> <span class="s">&#39;/&#39;</span><span class="o">+</span><span class="n">store</span><span class="o">.</span><span class="n">db</span><span class="o">+</span><span class="s">&#39;/&#39;</span><span class="o">+</span><span class="n">record</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_id</span><span class="o">+</span><span class="s">&#39;?rev=&#39;</span><span class="o">+</span><span class="n">record</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_rev</span><span class="p">,</span>
+      <span class="n">method:</span> <span class="s">&#39;DELETE&#39;</span><span class="p">,</span>
+      <span class="n">waitMsg:</span> <span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="n">waitMsg</span> <span class="o">===</span> <span class="n">undefined</span> <span class="o">||</span> <span class="n">store</span><span class="o">.</span><span class="n">waitMsg</span> <span class="o">===</span> <span class="n">null</span><span class="p">)</span> <span class="p">?</span> <span class="s">&#39;Deleting Data...&#39;</span> <span class="p">:</span> <span class="n">store</span><span class="o">.</span><span class="n">waitMsg</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+  <span class="n">this</span><span class="o">.</span><span class="n">addListener</span><span class="p">(</span><span class="s">&#39;add&#39;</span><span class="p">,</span> <span class="n">function</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">records</span><span class="p">,</span> <span class="nb">index</span><span class="p">){</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">records</span><span class="o">.</span><span class="nb">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">record</span> <span class="o">=</span> <span class="n">records</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+      <span class="n">Ext</span><span class="o">.</span><span class="n">Ajax</span><span class="o">.</span><span class="n">request</span><span class="p">({</span>
+        <span class="n">url:</span> <span class="s">&#39;/&#39;</span><span class="o">+</span><span class="n">store</span><span class="o">.</span><span class="n">db</span><span class="p">,</span>
+        <span class="n">method:</span> <span class="s">&#39;POST&#39;</span><span class="p">,</span>
+        <span class="n">jsonData:</span> <span class="n">record</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">waitMsg:</span> <span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="n">waitMsg</span> <span class="o">===</span> <span class="n">undefined</span> <span class="o">||</span> <span class="n">store</span><span class="o">.</span><span class="n">waitMsg</span> <span class="o">===</span> <span class="n">null</span><span class="p">)</span> <span class="p">?</span> <span class="s">&#39;Adding Data...&#39;</span> <span class="p">:</span> <span class="n">store</span><span class="o">.</span><span class="n">waitMsg</span>
+      <span class="p">});</span>
+    <span class="p">}</span>    
+  <span class="p">});</span>
 
-  // Disable caching till I can figure out what to do with _dc, contact couchdb guys
-  this.proxy.conn.disableCaching = false;
+  <span class="sr">//</span> <span class="n">Disable</span> <span class="n">caching</span> <span class="n">till</span> <span class="n">I</span> <span class="n">can</span> <span class="n">figure</span> <span class="n">out</span> <span class="n">what</span> <span class="n">to</span> <span class="k">do</span> <span class="n">with</span> <span class="n">_dc</span><span class="p">,</span> <span class="n">contact</span> <span class="n">couchdb</span> <span class="n">guys</span>
+  <span class="n">this</span><span class="o">.</span><span class="n">proxy</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">disableCaching</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
 
-  // Create a record creation helper
-  this.record = Ext.data.Record.create(this.fields);
-}
-Ext.extend(Ext.ux.data.CouchStore, Ext.data.Store);
-</code></pre>
+  <span class="sr">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">record</span> <span class="n">creation</span> <span class="n">helper</span>
+  <span class="n">this</span><span class="o">.</span><span class="n">record</span> <span class="o">=</span> <span class="n">Ext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Record</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">this</span><span class="o">.</span><span class="n">fields</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">Ext</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">Ext</span><span class="o">.</span><span class="n">ux</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">CouchStore</span><span class="p">,</span> <span class="n">Ext</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Store</span><span class="p">);</span>
+</pre></div>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

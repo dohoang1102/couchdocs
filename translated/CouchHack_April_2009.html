@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - CouchHack_April_2009</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,7 +56,7 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
@@ -57,7 +75,7 @@
 <p>Want to influence CouchDB but can't come? Consider becoming a CouchHack sponsor and help pay for the house or travel expenses.</p>
 <p>If you are interested in hacking or sponsoring, contact Jan Lehnardt jan@apache.org.</p>
 <p>List of <a class="internal" href="CouchHack_April_2009_Sponsors.html">CouchHack_April_2009_Sponsors</a>.</p>
-<h3>CouchDB Work Done at CouchHack</h3>
+<h3 id="couchdb-work-done-at-couchhack">CouchDB Work Done at CouchHack</h3>
 <ul>
 <li>Split <code>main.js</code> out into lots of little file. (And then Jan taught me how Makefile work)</li>
 <li>Adding a batch PUT mode (which delays commit so that we can do a bulk index update)</li>

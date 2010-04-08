@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - InstallationSurWindows</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,7 +56,7 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
@@ -46,7 +64,7 @@
 
 <p>CouchDB ne s'installe pas nativement sur  Windows mais il est possible de l'installer à la main.</p>
 <p>Merci de mettre à jour ce guide si nécessaire, nous souhaitons récupérer votre retour d'expérience afin de l'intégrer dans la procedédure d'installation officielle.</p>
-<h2>Dépendances</h2>
+<h2 id="dependances">Dépendances</h2>
 <p>Vous avez besoin des logiciels suivants installés sur votre système :</p>
 <ul>
 <li><a href="http://www.erlang.org/download.html">Erlang/OTP</a></li>
@@ -56,86 +74,118 @@
 <li><a href="http://www.icu-project.org/">ICU</a></li>
 <li><a href="http://www.mozilla.org/js/spidermonkey/">SpiderMonkey</a></li>
 </ul>
-<h2>Installation de base</h2>
+<h2 id="installation-de-base">Installation de base</h2>
 <p>Après avoir installé Erlang vous devez obtenir quelque chose de similaire à :</p>
-<pre><code>C:\Program Files\erl5.6.3
-</code></pre>
+<div class="codehilite"><pre><span class="n">C:</span><span class="o">\</span><span class="n">Program</span> <span class="n">Files</span><span class="o">\</span><span class="n">erl5</span><span class="o">.</span><span class="mi">6</span><span class="o">.</span><span class="mi">3</span>
+</pre></div>
+
+
 <p>Copiez l'arborescence complète du source de Couchdb ici :</p>
-<pre><code>C:\Program Files\erl5.6.3\lib\couchdb-0.8.0
-</code></pre>
+<div class="codehilite"><pre><span class="n">C:</span><span class="o">\</span><span class="n">Program</span> <span class="n">Files</span><span class="o">\</span><span class="n">erl5</span><span class="o">.</span><span class="mi">6</span><span class="o">.</span><span class="mi">3</span><span class="o">\</span><span class="n">lib</span><span class="o">\</span><span class="n">couchdb</span><span class="o">-</span><span class="mi">0</span><span class="o">.</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
+
+
 <p>Créeez le dossier vide suivant :</p>
-<pre><code>C:\Program Files\erl5.6.3\lib\mochiweb-0.01\ebin
-</code></pre>
+<div class="codehilite"><pre><span class="n">C:</span><span class="o">\</span><span class="n">Program</span> <span class="n">Files</span><span class="o">\</span><span class="n">erl5</span><span class="o">.</span><span class="mi">6</span><span class="o">.</span><span class="mi">3</span><span class="o">\</span><span class="n">lib</span><span class="o">\</span><span class="n">mochiweb</span><span class="o">-</span><span class="mi">0</span><span class="o">.</span><span class="mo">01</span><span class="o">\</span><span class="n">ebin</span>
+</pre></div>
+
+
 <p>À partir de ICU copiez <code>icu*.dll</code> et <code>libeay32.dll</code> vers :</p>
-<pre><code>C:\Program Files\erl5.6.3\erts-5.6.2\bin
-</code></pre>
+<div class="codehilite"><pre><span class="n">C:</span><span class="o">\</span><span class="n">Program</span> <span class="n">Files</span><span class="o">\</span><span class="n">erl5</span><span class="o">.</span><span class="mi">6</span><span class="o">.</span><span class="mi">3</span><span class="o">\</span><span class="n">erts</span><span class="o">-</span><span class="mi">5</span><span class="o">.</span><span class="mi">6</span><span class="o">.</span><span class="mi">2</span><span class="o">\</span><span class="n">bin</span>
+</pre></div>
+
+
 <p>De !SpiderMonkey copiez <code>js32.dll</code> et  <code>jsshell.exe</code> vers :</p>
-<pre><code>C:\Program Files\erl5.6.3\erts-5.6.2\bin
-</code></pre>
-<h2>Compilation C</h2>
-<h3>couchdb/couch_erl_driver.c</h3>
+<div class="codehilite"><pre><span class="n">C:</span><span class="o">\</span><span class="n">Program</span> <span class="n">Files</span><span class="o">\</span><span class="n">erl5</span><span class="o">.</span><span class="mi">6</span><span class="o">.</span><span class="mi">3</span><span class="o">\</span><span class="n">erts</span><span class="o">-</span><span class="mi">5</span><span class="o">.</span><span class="mi">6</span><span class="o">.</span><span class="mi">2</span><span class="o">\</span><span class="n">bin</span>
+</pre></div>
+
+
+<h2 id="compilation-c">Compilation C</h2>
+<h3 id="couchdbcouch_erl_driverc">couchdb/couch_erl_driver.c</h3>
 <p>C'est la couche qui fournit les fonctionnalités de ICU à CouchDB.</p>
 <p>Le plus simple pour compiler une DLL est de créer un projet Win32 DLL dans un IDE, ajoutez <code>couch_erl_driver.c</code> au projet, et changez les préférences du projet pour inclure les chemins de Erlang ERTS et des fichiers d'entêtes de ICU4C.</p>
 <p>Créez le dossier vide suivant :</p>
-<pre><code>C:\Program Files\erl5.6.3\lib\couchdb-0.8.0\priv
-</code></pre>
+<div class="codehilite"><pre><span class="n">C:</span><span class="o">\</span><span class="n">Program</span> <span class="n">Files</span><span class="o">\</span><span class="n">erl5</span><span class="o">.</span><span class="mi">6</span><span class="o">.</span><span class="mi">3</span><span class="o">\</span><span class="n">lib</span><span class="o">\</span><span class="n">couchdb</span><span class="o">-</span><span class="mi">0</span><span class="o">.</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">\</span><span class="n">priv</span>
+</pre></div>
+
+
 <p>Copiez la DDL vers :</p>
-<pre><code>C:\Program Files\erl5.6.3\lib\couchdb-0.8.0\priv\couch_erl_driver.dll
-</code></pre>
-<h3>couchdb/couch_js.c</h3>
+<div class="codehilite"><pre><span class="n">C:</span><span class="o">\</span><span class="n">Program</span> <span class="n">Files</span><span class="o">\</span><span class="n">erl5</span><span class="o">.</span><span class="mi">6</span><span class="o">.</span><span class="mi">3</span><span class="o">\</span><span class="n">lib</span><span class="o">\</span><span class="n">couchdb</span><span class="o">-</span><span class="mi">0</span><span class="o">.</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">\</span><span class="n">priv</span><span class="o">\</span><span class="n">couch_erl_driver</span><span class="o">.</span><span class="n">dll</span>
+</pre></div>
+
+
+<h3 id="couchdbcouch_jsc">couchdb/couch_js.c</h3>
 <p>C'est la couche qui fournit UTF-8 et les améliorations cache à !SpiderMonkey.</p>
 <p>Remplacez js.c par couch_js.c, et changez '#include <jsapi.h>' en '#include "jsapi.h"', ensuite compilez js.exe à nouveau, renommez le en couch_js.exe et copiez le vers :</p>
-<pre><code>C:\Program Files\erl5.6.3\erts-5.6.2\bin
-</code></pre>
-<h2>Compilation Erlang</h2>
+<div class="codehilite"><pre><span class="n">C:</span><span class="o">\</span><span class="n">Program</span> <span class="n">Files</span><span class="o">\</span><span class="n">erl5</span><span class="o">.</span><span class="mi">6</span><span class="o">.</span><span class="mi">3</span><span class="o">\</span><span class="n">erts</span><span class="o">-</span><span class="mi">5</span><span class="o">.</span><span class="mi">6</span><span class="o">.</span><span class="mi">2</span><span class="o">\</span><span class="n">bin</span>
+</pre></div>
+
+
+<h2 id="compilation-erlang">Compilation Erlang</h2>
 <p>Créez le fichier suivant :</p>
-<pre><code>C:\Program Files\erl5.6.3\lib\couchdb-0.8.0\src\Emakefile
-</code></pre>
+<div class="codehilite"><pre><span class="n">C:</span><span class="o">\</span><span class="n">Program</span> <span class="n">Files</span><span class="o">\</span><span class="n">erl5</span><span class="o">.</span><span class="mi">6</span><span class="o">.</span><span class="mi">3</span><span class="o">\</span><span class="n">lib</span><span class="o">\</span><span class="n">couchdb</span><span class="o">-</span><span class="mi">0</span><span class="o">.</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">\</span><span class="n">src</span><span class="o">\</span><span class="n">Emakefile</span>
+</pre></div>
+
+
 <p>Ajoutez le contenu suivant :</p>
-<pre><code>{'./couchdb/*', [{outdir,"../ebin"}]}.
-{'./mochiweb/*', [{outdir,"../../mochiweb-0.01/ebin"}]}.
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span><span class="s">&#39;./couchdb/*&#39;</span><span class="p">,</span> <span class="p">[{</span><span class="n">outdir</span><span class="p">,</span><span class="s">&quot;../ebin&quot;</span><span class="p">}]}</span><span class="o">.</span>
+<span class="p">{</span><span class="s">&#39;./mochiweb/*&#39;</span><span class="p">,</span> <span class="p">[{</span><span class="n">outdir</span><span class="p">,</span><span class="s">&quot;../../mochiweb-0.01/ebin&quot;</span><span class="p">}]}</span><span class="o">.</span>
+</pre></div>
+
+
 <p>Lançez <code>erl</code> (ou <code>werl</code>) et executez la commande suivante pour changer le dossier :</p>
-<pre><code>cd("C:/Program Files/erl5.6.3/lib/couchdb-0.8.0/src").
-</code></pre>
+<div class="codehilite"><pre><span class="n">cd</span><span class="p">(</span><span class="s">&quot;C:/Program Files/erl5.6.3/lib/couchdb-0.8.0/src&quot;</span><span class="p">)</span><span class="o">.</span>
+</pre></div>
+
+
 <p>Exécutez cette commande pour compiler CouchDB :</p>
-<pre><code>make:all().
-</code></pre>
-<h2>Configuration</h2>
+<div class="codehilite"><pre><span class="err">make:all().</span>
+</pre></div>
+
+
+<h2 id="configuration">Configuration</h2>
 <p>Copiez le fichier suivant :</p>
-<pre><code>C:\Program Files\erl5.6.3\lib\couchdb-0.8.0\etc\couchdb\couch.ini.tpl.in
-</code></pre>
+<div class="codehilite"><pre><span class="n">C:</span><span class="o">\</span><span class="n">Program</span> <span class="n">Files</span><span class="o">\</span><span class="n">erl5</span><span class="o">.</span><span class="mi">6</span><span class="o">.</span><span class="mi">3</span><span class="o">\</span><span class="n">lib</span><span class="o">\</span><span class="n">couchdb</span><span class="o">-</span><span class="mi">0</span><span class="o">.</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">\</span><span class="n">etc</span><span class="o">\</span><span class="n">couchdb</span><span class="o">\</span><span class="n">couch</span><span class="o">.</span><span class="n">ini</span><span class="o">.</span><span class="n">tpl</span><span class="o">.</span><span class="n">in</span>
+</pre></div>
+
+
 <p>ici :</p>
-<pre><code>C:/Program Files/erl5.6.3/bin/couch.ini
-</code></pre>
+<div class="codehilite"><pre><span class="n">C:</span><span class="sr">/Program Files/</span><span class="n">erl5</span><span class="o">.</span><span class="mi">6</span><span class="o">.</span><span class="mi">3</span><span class="sr">/bin/co</span><span class="n">uch</span><span class="o">.</span><span class="n">ini</span>
+</pre></div>
+
+
 <p>Éditez ce fichier de la façon suivante :</p>
-<pre><code>[Couch]
+<div class="codehilite"><pre><span class="k">[Couch]</span>
 
-ConsoleStartupMsg=Apache CouchDB is starting.
+<span class="na">ConsoleStartupMsg</span><span class="o">=</span><span class="s">Apache CouchDB is starting.</span>
 
-DbRootDir=C:/Path/To/Database/Directory
+<span class="na">DbRootDir</span><span class="o">=</span><span class="s">C:/Path/To/Database/Directory</span>
 
-Port=5984
+<span class="na">Port</span><span class="o">=</span><span class="s">5984</span>
 
-BindAddress=127.0.0.1
+<span class="na">BindAddress</span><span class="o">=</span><span class="s">127.0.0.1</span>
 
-DocumentRoot=C:/Program Files/erl5.6.3/lib/couchdb-0.8.0/share/www
+<span class="na">DocumentRoot</span><span class="o">=</span><span class="s">C:/Program Files/erl5.6.3/lib/couchdb-0.8.0/share/www</span>
 
-LogFile=C:/Path/To/Log/Directory
+<span class="na">LogFile</span><span class="o">=</span><span class="s">C:/Path/To/Log/Directory</span>
 
-UtilDriverDir=C:/Program Files/erl5.6.3/lib/couchdb-0.8.0/priv/couch_erl_driver.dll
+<span class="na">UtilDriverDir</span><span class="o">=</span><span class="s">C:/Program Files/erl5.6.3/lib/couchdb-0.8.0/priv/couch_erl_driver.dll</span>
 
-LogLevel=info
+<span class="na">LogLevel</span><span class="o">=</span><span class="s">info</span>
 
-[Couch Query Servers]
+<span class="k">[Couch Query Servers]</span>
 
-javascript=couch_js "C:/Program Files/erl5.6.3/lib/couchdb-0.8.0/share/server/main.js"
-</code></pre>
+<span class="na">javascript</span><span class="o">=</span><span class="s">couch_js &quot;C:/Program Files/erl5.6.3/lib/couchdb-0.8.0/share/server/main.js&quot;</span>
+</pre></div>
+
+
 <p>Make sure that the <code>DbRootDir</code> exists and that the <code>LogFile</code> can be created.</p>
-<h2>Exécution</h2>
+<h2 id="execution">Exécution</h2>
 <p>Lançez <code>erl</code> (ou <code>werl</code>) et exécutez la commande suivante :</p>
-<pre><code>couch_server:start().
-</code></pre>
+<div class="codehilite"><pre><span class="err">couch_server:start().</span>
+</pre></div>
+
+
 <p>Pour voir si tout a fonctionné à ce point de l'installation, rendez-vous avec votre navigateur sur 
 <a href="localhost:5984/_utils/index.html">localhost:5984/_utils/index.html</a> et lançez <code>test suite</code>.</p>
 </div>

@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - InstallationSpiderMonkey</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,32 +56,38 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <!-- #language fr -->
 
-<pre><code>make -f Makefile.ref
-JS_DIST=/usr/local/spidermonkey make -f Makefile.ref export
-</code></pre>
-<h2>Notes lors de l'installation sur OS X</h2>
+<div class="codehilite"><pre><span class="n">make</span> <span class="o">-</span><span class="n">f</span> <span class="n">Makefile</span><span class="o">.</span><span class="nb">ref</span>
+<span class="n">JS_DIST</span><span class="o">=</span><span class="sr">/usr/</span><span class="nb">local</span><span class="o">/</span><span class="n">spidermonkey</span> <span class="n">make</span> <span class="o">-</span><span class="n">f</span> <span class="n">Makefile</span><span class="o">.</span><span class="nb">ref</span> <span class="n">export</span>
+</pre></div>
+
+
+<h2 id="notes-lors-de-linstallation-sur-os-x">Notes lors de l'installation sur OS X</h2>
 <ul>
 <li>Le export doit être executé en tant que root utilisez donc $ sudo sh</li>
 <li>Lors du lancement de./configure pour couchdb vous devrez utiliser les paramètres --with-js-include et --with-js-lib</li>
 <li>Assurez vous que /usr/local/spidermonkey/lib est dans DYLD_LIBRARY_PATH : <code>export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/usr/local/spidermonkey/lib</code></li>
 <li>Si malgrez tous vous obtenez l'erreur <code>dyld: Library not loaded: Darwin_OPT.OBJ/libjs.dylib</code> lors du lancement de couchdb, essayez d'ajoutez le chemin js/src du code source. Il a le dossier Darwin_OPT.OBJ à l'intérieur.  <code>export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/usr/local/spidermonkey/lib:/path/to/src/js/src</code></li>
 </ul>
-<h2>Notes lors de l'installation sur Linux</h2>
+<h2 id="notes-lors-de-linstallation-sur-linux">Notes lors de l'installation sur Linux</h2>
 <p>Il est préférable d'installer la bibliothèque de SpiderMonkey à partir de votre système de gestion de paquet, ex. :</p>
-<pre><code>apt-get libmozjs-dev
-</code></pre>
+<div class="codehilite"><pre><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">libmozjs</span><span class="o">-</span><span class="n">dev</span>
+</pre></div>
+
+
 <p>Ou:</p>
-<pre><code>yum install js-devel
-</code></pre>
+<div class="codehilite"><pre><span class="n">yum</span> <span class="n">install</span> <span class="n">js</span><span class="o">-</span><span class="n">devel</span>
+</pre></div>
+
+
 <p>Cependant, si vvous avez besoin de l'installer à partir du source, assurez vous que le chemin de la bibiliothèque de SpiderMonkey est dans LD_LIBRARY_PATH :</p>
-<pre><code>export LD_LIBRARY_PATH=/usr/local/spidermonkey/lib
-</code></pre>
+<div class="codehilite"><pre><span class="n">export</span> <span class="n">LD_LIBRARY_PATH</span><span class="o">=</span><span class="sr">/usr/</span><span class="nb">local</span><span class="sr">/spidermonkey/</span><span class="n">lib</span>
+</pre></div>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

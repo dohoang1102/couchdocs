@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Formatting_with_Show_and_List</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,7 +56,7 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
@@ -46,78 +64,94 @@
 <p>The basics of formatting documents using <code>show</code> and <code>list</code> functions. These functions convert documents and views, respectively, into non-JSON formats. The rows of each view are processed individually, which keeps long lists from becoming memory hogs.</p>
 <p>They are designed to be cacheable. CouchDB handles generating Etags for show and list responses.</p>
 <p>Show and list functions are side effect free and idempotent. They can not make additional HTTP requests against CouchDB. Their purpose is to render JSON documents in other formats.</p>
-<h2>Showing Documents</h2>
+<h2 id="showing-documents">Showing Documents</h2>
 <p>Show functions are stored in your design document, under the <code>shows</code> key. Here's an example set of show functions:</p>
-<pre><code>{
-"_id" : "_design/examples",
-"shows" : {
-  "posts" : "function(doc, req) {... return responseObject;}",
-  "people" : "function(doc, req) { ... }"
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span>
+<span class="s">&quot;_id&quot;</span> <span class="p">:</span> <span class="s">&quot;_design/examples&quot;</span><span class="p">,</span>
+<span class="s">&quot;shows&quot;</span> <span class="p">:</span> <span class="p">{</span>
+  <span class="s">&quot;posts&quot;</span> <span class="p">:</span> <span class="s">&quot;function(doc, req) {... return responseObject;}&quot;</span><span class="p">,</span>
+  <span class="s">&quot;people&quot;</span> <span class="p">:</span> <span class="s">&quot;function(doc, req) { ... }&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Assuming these functions were in a design document named "<code>examples</code>" in a database named "<code>db</code>", they could be queried like this:</p>
-<pre><code>GET /db/_design/examples/_show/posts/somedocid
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/db/</span><span class="n">_design</span><span class="sr">/examples/</span><span class="n">_show</span><span class="sr">/posts/som</span><span class="n">edocid</span>
 
-GET /db/_design/examples/_show/people/otherdocid
+<span class="n">GET</span> <span class="sr">/db/</span><span class="n">_design</span><span class="sr">/examples/</span><span class="n">_show</span><span class="sr">/people/o</span><span class="n">therdocid</span>
 
-GET /db/_design/examples/_show/people/otherdocid?format=xml&amp;details=true
-</code></pre>
+<span class="n">GET</span> <span class="sr">/db/</span><span class="n">_design</span><span class="sr">/examples/</span><span class="n">_show</span><span class="sr">/people/o</span><span class="n">therdocid</span><span class="p">?</span><span class="nb">format</span><span class="o">=</span><span class="n">xml</span><span class="o">&amp;</span><span class="n">details</span><span class="o">=</span><span class="n">true</span>
+</pre></div>
+
+
 <p>The <code>show</code> function is run with two arguments. The first is the document corresponding to the requested <code>docid</code>, and the second describes the HTTP request's query string, Accept headers, and other per-request information. The function returns an object describing its HTTP response.</p>
 <p>Example <code>show</code> function</p>
-<pre><code>function(doc, req) {
-  return {
-    body: "Hello World"
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">req</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="n">body:</span> <span class="s">&quot;Hello World&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>If the show function is queried with document id that has no corresponding document in the database, <code>doc</code> is <code>null</code> and the submitted document shows up in <code>req.docId</code>. This is useful for creating new documents with a name, like in a wiki.</p>
 <p>If the show function is queried without a document id at all, doc is <code>null</code> and <code>req.docId</code> is <code>null</code>. This is useful for creating new documents where the user specifies the new document id in a user interface, like in a CMS.</p>
-<pre><code>function(doc, req) {
-  if(doc) {
-    // regular doc display logic
-  } else { // document not found
-    if(req.docId) {
-      // handle unused doc id
-    } else {
-      // handle unspecified doc id
-    }
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">req</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
+    <span class="sr">//</span> <span class="n">regular</span> <span class="n">doc</span> <span class="n">display</span> <span class="n">logic</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="sr">//</span> <span class="n">document</span> <span class="ow">not</span> <span class="n">found</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">docId</span><span class="p">)</span> <span class="p">{</span>
+      <span class="sr">//</span> <span class="n">handle</span> <span class="n">unused</span> <span class="n">doc</span> <span class="n">id</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="sr">//</span> <span class="n">handle</span> <span class="n">unspecified</span> <span class="n">doc</span> <span class="n">id</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>The request and response objects are of the same format used by <code>_external</code> functions, as documented in ExternalProcesses.</p>
-<h2>Listing Views with couchdb 0.9</h2>
+<h2 id="listing-views-with-couchdb-09">Listing Views with couchdb 0.9</h2>
 <p>List functions are stored under the <code>lists</code> key of a design document. Here's an example design doc with list functions, in addition to views:</p>
-<pre><code>{
-"_id" : "_design/examples",
-"views" {
-  "posts-by-date" : "function(doc){...}",
-  "posts-by-tag" : "function(doc){...}",
-  "people-by-name" : "function(doc) {...}"
-},
-"lists" : {
-  "index-posts" : "function(head, row, req, row_info) {...}",
-  "browse-people" : "function(head, row, req, row_info) { ... }"
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span>
+<span class="s">&quot;_id&quot;</span> <span class="p">:</span> <span class="s">&quot;_design/examples&quot;</span><span class="p">,</span>
+<span class="s">&quot;views&quot;</span> <span class="p">{</span>
+  <span class="s">&quot;posts-by-date&quot;</span> <span class="p">:</span> <span class="s">&quot;function(doc){...}&quot;</span><span class="p">,</span>
+  <span class="s">&quot;posts-by-tag&quot;</span> <span class="p">:</span> <span class="s">&quot;function(doc){...}&quot;</span><span class="p">,</span>
+  <span class="s">&quot;people-by-name&quot;</span> <span class="p">:</span> <span class="s">&quot;function(doc) {...}&quot;</span>
+<span class="p">},</span>
+<span class="s">&quot;lists&quot;</span> <span class="p">:</span> <span class="p">{</span>
+  <span class="s">&quot;index-posts&quot;</span> <span class="p">:</span> <span class="s">&quot;function(head, row, req, row_info) {...}&quot;</span><span class="p">,</span>
+  <span class="s">&quot;browse-people&quot;</span> <span class="p">:</span> <span class="s">&quot;function(head, row, req, row_info) { ... }&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>These lists are run by querying URLs like:</p>
-<pre><code>GET /db/_design/examples/_list/index-posts/posts-by-date?descending=true&amp;limit=10
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/db/</span><span class="n">_design</span><span class="sr">/examples/</span><span class="n">_list</span><span class="sr">/index-posts/</span><span class="n">posts</span><span class="o">-</span><span class="n">by</span><span class="o">-</span><span class="n">date</span><span class="p">?</span><span class="n">descending</span><span class="o">=</span><span class="n">true</span><span class="o">&amp;</span><span class="n">limit</span><span class="o">=</span><span class="mi">10</span>
 
-GET /db/_design/examples/_list/index-posts/posts-by-tag?key="howto"
+<span class="n">GET</span> <span class="sr">/db/</span><span class="n">_design</span><span class="sr">/examples/</span><span class="n">_list</span><span class="sr">/index-posts/</span><span class="n">posts</span><span class="o">-</span><span class="n">by</span><span class="o">-</span><span class="n">tag</span><span class="p">?</span><span class="n">key</span><span class="o">=</span><span class="s">&quot;howto&quot;</span>
 
-GET /db/_design/examples/_list/browse-people/people-by-name?startkey=["a"]&amp;limit=10
-</code></pre>
+<span class="n">GET</span> <span class="sr">/db/</span><span class="n">_design</span><span class="sr">/examples/</span><span class="n">_list</span><span class="sr">/browse-people/</span><span class="n">people</span><span class="o">-</span><span class="n">by</span><span class="o">-</span><span class="n">name</span><span class="p">?</span><span class="n">startkey</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;a&quot;</span><span class="p">]</span><span class="o">&amp;</span><span class="n">limit</span><span class="o">=</span><span class="mi">10</span>
+</pre></div>
+
+
 <p>[As above, we assume the database is named "db" and the design doc "examples".]</p>
 <p>Couchdb 0.10 supports an alternate form of URL which allows you to use a list function and a view from different design documents.  This is particularly useful when you want to use a different language for the list and for the view.  These URLs are very similar to the above examples, but instead of the tail portion being the name of the view, the tail portion can consist of two parts - a design doc name and the name of the view in that second document.  For example:</p>
-<pre><code>GET /db/_design/examples/_list/index-posts/other_ddoc/posts-by-tag?key="howto"
-</code></pre>
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/db/</span><span class="n">_design</span><span class="sr">/examples/</span><span class="n">_list</span><span class="sr">/index-posts/o</span><span class="n">ther_ddoc</span><span class="o">/</span><span class="n">posts</span><span class="o">-</span><span class="n">by</span><span class="o">-</span><span class="n">tag</span><span class="p">?</span><span class="n">key</span><span class="o">=</span><span class="s">&quot;howto&quot;</span>
+</pre></div>
+
+
 <p>[As above, we assume the database is named "db" and the design doc with the list is named "examples", while the design doc with the view is "other_ddoc".]</p>
 <p>A list function has a more interesting signature, as it is passed the head of the view on first invocation, then each row in turn, then called one more time for the tail of the view. The function should check the <code>head</code> and <code>row</code> parameters to identify which state it's being called in; the sequence of calls to <code>listfn</code>, for a view with three rows, would look like:</p>
-<pre><code>  listfn(head, null,    req, null    );  // Before the first row: head is non-null
-  listfn(null, rows[0], req, row_info);  // First row
-  listfn(null, rows[1], req, row_info);  // Subsequent rows...
-  listfn(null, rows[2], req, row_info);
-  listfn(null, null,    req, row_info);  // After last row: row=null
-</code></pre>
+<div class="codehilite"><pre>  <span class="n">listfn</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">null</span><span class="p">,</span>    <span class="n">req</span><span class="p">,</span> <span class="n">null</span>    <span class="p">);</span>  <span class="sr">//</span> <span class="n">Before</span> <span class="n">the</span> <span class="n">first</span> <span class="n">row:</span> <span class="n">head</span> <span class="n">is</span> <span class="n">non</span><span class="o">-</span><span class="n">null</span>
+  <span class="n">listfn</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">req</span><span class="p">,</span> <span class="n">row_info</span><span class="p">);</span>  <span class="sr">//</span> <span class="n">First</span> <span class="n">row</span>
+  <span class="n">listfn</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">rows</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">req</span><span class="p">,</span> <span class="n">row_info</span><span class="p">);</span>  <span class="sr">//</span> <span class="n">Subsequent</span> <span class="n">rows</span><span class="o">...</span>
+  <span class="n">listfn</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">rows</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">req</span><span class="p">,</span> <span class="n">row_info</span><span class="p">);</span>
+  <span class="n">listfn</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">null</span><span class="p">,</span>    <span class="n">req</span><span class="p">,</span> <span class="n">row_info</span><span class="p">);</span>  <span class="sr">//</span> <span class="n">After</span> <span class="k">last</span> <span class="n">row:</span> <span class="n">row</span><span class="o">=</span><span class="n">null</span>
+</pre></div>
+
+
 <p>The <code>head</code> parameter -- which is only passed into the first call -- contains an object with information about the view that is to be iterated over. It's much like the response object returned from a view query in the CouchDB JavaScript API; useful properties include <code>total_rows</code> and <code>offset</code>.</p>
 <p>The <code>row_info</code> parameter contains an object with information about the iteration state. Its properties include:</p>
 <ul>
@@ -126,84 +160,102 @@ GET /db/_design/examples/_list/browse-people/people-by-name?startkey=["a"]&amp;l
 <li><code>prev_key</code> (the key of the row in the previous iteration)</li>
 </ul>
 <p>Example list function:</p>
-<pre><code>function(head, row, req, row_info) {
+<div class="codehilite"><pre>function(head, row, req, row_info) {
   if (head) {
-    return "&lt;p&gt;head: "+JSON.stringify(head)+"&lt;/p&gt;&lt;ul&gt;";
+    return &quot;<span class="nt">&lt;p&gt;</span>head: &quot;+JSON.stringify(head)+&quot;<span class="nt">&lt;/p&gt;&lt;ul&gt;</span>&quot;;
   } else if (row) {
-    return "&lt;li&gt;"+JSON.stringify(row)+"&lt;/li&gt;";
+    return &quot;<span class="nt">&lt;li&gt;</span>&quot;+JSON.stringify(row)+&quot;<span class="nt">&lt;/li&gt;</span>&quot;;
   } else {
-    return "&lt;/ul&gt;&lt;h4&gt;the tail&lt;/h4&gt;"
+    return &quot;<span class="nt">&lt;/ul&gt;&lt;h4&gt;</span>the tail<span class="nt">&lt;/h4&gt;</span>&quot;
   }
 }
-</code></pre>
-<h2>Listing Views with couchdb 0.10</h2>
+</pre></div>
+
+
+<h2 id="listing-views-with-couchdb-010">Listing Views with couchdb 0.10</h2>
 <p>The list API has changed significantly from 0.9 to 0.10.</p>
 <p>Example <code>list</code> function</p>
-<pre><code>function(head, req){
-  var row;
-  while(row = getRow()) {
-    send(row.value);
-  }
-}
-</code></pre>
-<h2>Other Fun Things</h2>
-<h3>Stopping iteration in a <code>_list</code></h3>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">req</span><span class="p">){</span>
+  <span class="n">var</span> <span class="n">row</span><span class="p">;</span>
+  <span class="k">while</span><span class="p">(</span><span class="n">row</span> <span class="o">=</span> <span class="n">getRow</span><span class="p">())</span> <span class="p">{</span>
+    <span class="nb">send</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">value</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h2 id="other-fun-things">Other Fun Things</h2>
+<h3 id="stopping-iteration-in-a-_list">Stopping iteration in a <code>_list</code></h3>
 <p>If you want to terminate iteration of a <code>_list</code> early you can return a <code>{stop: true}</code> JSON object from any of the calls to the function that include a row object.</p>
-<h3>Sending a Redirect</h3>
+<h3 id="sending-a-redirect">Sending a Redirect</h3>
 <p>In the call to <code>_show</code> or when <code>_list</code> is called with a head object you can control the headers and status code sent to the client. An example of this would be to send a redirect notification.</p>
-<pre><code>function(doc)
-{
-    return {"code": 302, "body": "See other", "headers": {"Location": "/"}};
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s">&quot;code&quot;</span><span class="p">:</span> <span class="mi">302</span><span class="p">,</span> <span class="s">&quot;body&quot;</span><span class="p">:</span> <span class="s">&quot;See other&quot;</span><span class="p">,</span> <span class="s">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;Location&quot;</span><span class="p">:</span> <span class="s">&quot;/&quot;</span><span class="p">}};</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>For CouchDB version 0.9:</p>
-<pre><code>function(head, row, req, row_info) {
-  if (head) {
-    return {"code": 302, "body": "See other", "headers": {"Location": "/"}};
-  } else if (row) {
-    return {stop: true};
-  } else {
-    return "."
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">row_info</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">head</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s">&quot;code&quot;</span><span class="p">:</span> <span class="mi">302</span><span class="p">,</span> <span class="s">&quot;body&quot;</span><span class="p">:</span> <span class="s">&quot;See other&quot;</span><span class="p">,</span> <span class="s">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;Location&quot;</span><span class="p">:</span> <span class="s">&quot;/&quot;</span><span class="p">}};</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">stop:</span> <span class="n">true</span><span class="p">};</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s">&quot;.&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>For CouchDB version 0.10:</p>
-<pre><code>function(head, req) {
-  start({"code": 302, "headers": {"Location": "/"}});
-}
-</code></pre>
-<h3>Specifying Content-Type Response Header</h3>
+<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">req</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">start</span><span class="p">({</span><span class="s">&quot;code&quot;</span><span class="p">:</span> <span class="mi">302</span><span class="p">,</span> <span class="s">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;Location&quot;</span><span class="p">:</span> <span class="s">&quot;/&quot;</span><span class="p">}});</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="specifying-content-type-response-header">Specifying Content-Type Response Header</h3>
 <p>There are two ways to deal with a content-type header in the response to a show or list request. The first way is to specify the content type as a member of the _show function's response object:</p>
-<pre><code>return {
-   "headers" : {"Content-Type" : "application/xml"},
-   "body" : new XML('&lt;xml&gt;&lt;node foo="bar"/&gt;&lt;/xml&gt;')
+<div class="codehilite"><pre>return {
+   &quot;headers&quot; : {&quot;Content-Type&quot; : &quot;application/xml&quot;},
+   &quot;body&quot; : new XML(&#39;<span class="nt">&lt;xml&gt;&lt;node</span> <span class="na">foo=</span><span class="s">&quot;bar&quot;</span><span class="nt">/&gt;&lt;/xml&gt;</span>&#39;)
 }
-</code></pre>
-<h3>Responding to different Content-Type Request Headers</h3>
+</pre></div>
+
+
+<h3 id="responding-to-different-content-type-request-headers">Responding to different Content-Type Request Headers</h3>
 <p>The second way to deal with content-type headers is to rely on some global helper methods defined by CouchDB's <em><couchdb>/server/main.js</em> file. The <em>registerType</em> method lets you register a type key with one or more content-type strings. Please refer to the <em>main.js</em> file to see content-types registered by default.</p>
-<pre><code>registerType("foo", "application/foo", "application/x-foo");
-</code></pre>
+<div class="codehilite"><pre><span class="n">registerType</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span> <span class="s">&quot;application/foo&quot;</span><span class="p">,</span> <span class="s">&quot;application/x-foo&quot;</span><span class="p">);</span>
+</pre></div>
+
+
 <p>The other global helper method for handling varying Content-Type headers is <em>respondWith</em>. This helper method allows you to specify different response objects depending on the type key that corresponds to the content-type request header. The first argument is the request object, and the second argument is a key-value object that maps type keys to functions. Each function is expected to return an HTTP response object customized for the requested Content-Type.</p>
-<pre><code>//... in your show function...
-return respondWith(req, {
-         html : function() {
-           return {
-             body:"Ha ha, you said \"" + doc.word + "\"."
-           };
-         },
-         foo : function() {
-           return {
-             body: "foofoo"
-           };
-         },
-         fallback : "html"
-       });
-</code></pre>
+<div class="codehilite"><pre><span class="sr">//</span><span class="o">...</span> <span class="n">in</span> <span class="n">your</span> <span class="n">show</span> <span class="n">function</span><span class="o">...</span>
+<span class="k">return</span> <span class="n">respondWith</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="p">{</span>
+         <span class="n">html</span> <span class="p">:</span> <span class="n">function</span><span class="p">()</span> <span class="p">{</span>
+           <span class="k">return</span> <span class="p">{</span>
+             <span class="n">body:</span><span class="s">&quot;Ha ha, you said \&quot;&quot;</span> <span class="o">+</span> <span class="n">doc</span><span class="o">.</span><span class="n">word</span> <span class="o">+</span> <span class="s">&quot;\&quot;.&quot;</span>
+           <span class="p">};</span>
+         <span class="p">},</span>
+         <span class="n">foo</span> <span class="p">:</span> <span class="n">function</span><span class="p">()</span> <span class="p">{</span>
+           <span class="k">return</span> <span class="p">{</span>
+             <span class="n">body:</span> <span class="s">&quot;foofoo&quot;</span>
+           <span class="p">};</span>
+         <span class="p">},</span>
+         <span class="n">fallback</span> <span class="p">:</span> <span class="s">&quot;html&quot;</span>
+       <span class="p">});</span>
+</pre></div>
+
+
 <p>Since CouchDB 0.10.0 there is no responseWith-Method anymore. Please use the provides Method instead. For CouchDB version 0.10:</p>
-<pre><code>//... in your show function...
-provides("html", function() {return "&lt;b&gt;doc.title&lt;/b&gt;";});
-provides("xml", function() {return "&lt;text class="title"&gt;doc.title&lt;/text&gt;";});
-</code></pre>
+<div class="codehilite"><pre>//... in your show function...
+provides(&quot;html&quot;, function() {return &quot;<span class="nt">&lt;b&gt;</span>doc.title<span class="nt">&lt;/b&gt;</span>&quot;;});
+provides(&quot;xml&quot;, function() {return &quot;<span class="nt">&lt;text</span> <span class="na">class=</span><span class="s">&quot;title&quot;</span><span class="nt">&gt;</span>doc.title<span class="nt">&lt;/text&gt;</span>&quot;;});
+</pre></div>
+
+
 <p>Hopefully this is enough to get started. For a more complete set of examples, see the CouchDB test suite, especially show_documents.js and list_views.js</p>
 </div>
       <div id="footer">

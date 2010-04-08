@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - HTTP_Bulk_Document_API</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,11 +56,11 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h3>Fetch Multiple Documents With a Single Request</h3>
+  <h3 id="fetch-multiple-documents-with-a-single-request">Fetch Multiple Documents With a Single Request</h3>
 <p><code>_all_docs</code> implements the <a class="internal" href="HTTP_view_API.html">HTTP_view_API</a> where each <em>key</em> is the doc _id, and each <em>value</em> is a JSON object containing the rev. This means that:</p>
 <ul>
 <li>By adding <code>?include_docs=true</code> you can get the documents themselves, not just their id and rev</li>
@@ -61,48 +79,58 @@
 ]}</p>
 </li>
 </ul>
-<h3>Modify Multiple Documents With a Single Request</h3>
+<h3 id="modify-multiple-documents-with-a-single-request">Modify Multiple Documents With a Single Request</h3>
 <p>CouchDB provides a bulk insert/update feature. To use this, you make a <em>POST</em> request to the URI <em>/{dbname}/_bulk_docs</em>, with the request body being a JSON document containing a list of new documents to be inserted or updated.</p>
 <p>For example (with curl):</p>
-<pre><code>$ DB="http://127.0.0.1:5984/mydb"
-$ curl -v -d '{"docs":[{"key":"baz","name":"bazzel"},{"key":"bar","name":"barry"}]}' -X POST $DB/_bulk_docs
-$ curl -v -d @your_file.json -X POST $DB/_bulk_docs
-</code></pre>
+<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">DB</span><span class="o">=</span><span class="s">&quot;http://127.0.0.1:5984/mydb&quot;</span>
+<span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">v</span> <span class="o">-</span><span class="n">d</span> <span class="s">&#39;{&quot;docs&quot;:[{&quot;key&quot;:&quot;baz&quot;,&quot;name&quot;:&quot;bazzel&quot;},{&quot;key&quot;:&quot;bar&quot;,&quot;name&quot;:&quot;barry&quot;}]}&#39;</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="nv">$DB</span><span class="o">/</span><span class="n">_bulk_docs</span>
+<span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">v</span> <span class="o">-</span><span class="n">d</span> <span class="nv">@your_file</span><span class="o">.</span><span class="n">json</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="nv">$DB</span><span class="o">/</span><span class="n">_bulk_docs</span>
+</pre></div>
+
+
 <p>Doc formats below are as per CouchDB 0.9.x.</p>
-<pre><code>{
-  "docs": [
-    {"_id": "0", "integer": 0, "string": "0"},
-    {"_id": "1", "integer": 1, "string": "1"},
-    {"_id": "2", "integer": 2, "string": "2"}
-  ]
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span>
+  <span class="s">&quot;docs&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;0&quot;</span><span class="p">,</span> <span class="s">&quot;integer&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;string&quot;</span><span class="p">:</span> <span class="s">&quot;0&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;1&quot;</span><span class="p">,</span> <span class="s">&quot;integer&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;string&quot;</span><span class="p">:</span> <span class="s">&quot;1&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;2&quot;</span><span class="p">,</span> <span class="s">&quot;integer&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;string&quot;</span><span class="p">:</span> <span class="s">&quot;2&quot;</span><span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>If you omit the per-document <em>_id</em> specification, CouchDB will generate unique IDs for you, as it does for regular <em>POST</em> requests to the database URI.</p>
 <p>The response to such a bulk request would look as follows (reformatted for clarity):</p>
-<pre><code>[
-    {"id":"0","rev":"1-62657917"},
-    {"id":"1","rev":"1-2089673485"},
-    {"id":"2","rev":"1-2063452834"}
-]
-</code></pre>
+<div class="codehilite"><pre><span class="p">[</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;0&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-62657917&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;1&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-2089673485&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;2&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-2063452834&quot;</span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+
+
 <p>Updating existing documents requires setting the <em>_rev</em> member to the revision being updated. To delete a document set the <em>_deleted</em> member to true.</p>
-<pre><code>{
-  "docs": [
-    {"_id": "0", "_rev": "1-62657917", "_deleted": true},
-    {"_id": "1", "_rev": "1-2089673485", "integer": 2, "string": "2"},
-    {"_id": "2", "_rev": "1-2063452834", "integer": 3, "string": "3"}
-  ]
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span>
+  <span class="s">&quot;docs&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;0&quot;</span><span class="p">,</span> <span class="s">&quot;_rev&quot;</span><span class="p">:</span> <span class="s">&quot;1-62657917&quot;</span><span class="p">,</span> <span class="s">&quot;_deleted&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;1&quot;</span><span class="p">,</span> <span class="s">&quot;_rev&quot;</span><span class="p">:</span> <span class="s">&quot;1-2089673485&quot;</span><span class="p">,</span> <span class="s">&quot;integer&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;string&quot;</span><span class="p">:</span> <span class="s">&quot;2&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;2&quot;</span><span class="p">,</span> <span class="s">&quot;_rev&quot;</span><span class="p">:</span> <span class="s">&quot;1-2063452834&quot;</span><span class="p">,</span> <span class="s">&quot;integer&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&quot;string&quot;</span><span class="p">:</span> <span class="s">&quot;3&quot;</span><span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Note that CouchDB will return in the response an id and revision for every document passed as content to a bulk insert, even for those that were just deleted.</p>
 <p>If the _rev does not match the current version of the document, then that particular document will <em>not</em> be saved and will be reported as a conflict, but this does not prevent other documents in the batch from being saved.</p>
-<pre><code>[
-    {"id":"0","error":"conflict","reason":"Document update conflict."},
-    {"id":"1","rev":"2-1579510027"},
-    {"id":"2","rev":"2-3978456339"}
-]
-</code></pre>
-<h4>Transactional Semantics with Bulk Updates</h4>
+<div class="codehilite"><pre><span class="p">[</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;0&quot;</span><span class="p">,</span><span class="s">&quot;error&quot;</span><span class="p">:</span><span class="s">&quot;conflict&quot;</span><span class="p">,</span><span class="s">&quot;reason&quot;</span><span class="p">:</span><span class="s">&quot;Document update conflict.&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;1&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-1579510027&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;2&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-3978456339&quot;</span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+
+
+<h4 id="transactional-semantics-with-bulk-updates">Transactional Semantics with Bulk Updates</h4>
 <p>In previous releases of CouchDB, bulk updates were transactional - in particular, all requests in a bulk update failed if any request failed or was in conflict. There were a couple of problems with this approach:</p>
 <ul>
 <li>
@@ -135,18 +163,18 @@ $ curl -v -d @your_file.json -X POST $DB/_bulk_docs
 <p>All or nothing transactions should not be used to enforce referential integrity, as some or all updated documents might become losing conflicts during the update. The transaction should be used to make sure all information is captured in an atomic operation, but conflicts may need to be addressed later. Applications that rely on this functionality should be able to tolerate some documents missing or being in a conflicted state until conflict resolution can occur.</p>
 <p>Bulk updates work independently of replication, meaning document revisions originally saved as part of an all or nothing transaction will be replicated individually, not as part of a bulk transaction. This means other replica instances may only have a subset of the transaction, and if an update is rejected by the remote node during replication (e.g. not authorized error) the remote node may never have the complete transaction.</p>
 <p>Note that POSTing a single document with <code>"all_or_nothing":true</code> behaves completely differently from a regular PUT, since it will save conflicting versions rather than rejecting a conflict.</p>
-<pre><code>$ DB="http://127.0.0.1:5984/tstconf"
-$ curl -X PUT "$DB"
-{"ok":true}
-$ curl -X PUT -d '{"name":"fred"}' "$DB/person"
-{"ok":true,"id":"person","rev":"1-877727288"}
-$ curl -X POST -d '{"all_or_nothing":true,"docs":[{"_id":"person","_rev":"1-877727288","name":"jim"}]}' "$DB/_bulk_docs"
-[{"id":"person","rev":"2-3595405"}]
-$ curl -X POST -d '{"all_or_nothing":true,"docs":[{"_id":"person","_rev":"1-877727288","name":"trunky"}]}' "$DB/_bulk_docs"
-[{"id":"person","rev":"2-2835283254"}]
-$ curl "$DB/person?conflicts=true"
-{"_id":"person","_rev":"2-3595405","name":"jim","_conflicts":["2-2835283254"]}
-</code></pre>
+<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">DB</span><span class="o">=</span><span class="s">&quot;http://127.0.0.1:5984/tstconf&quot;</span>
+<span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">PUT</span> <span class="s">&quot;$DB&quot;</span>
+<span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
+<span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">PUT</span> <span class="o">-</span><span class="n">d</span> <span class="s">&#39;{&quot;name&quot;:&quot;fred&quot;}&#39;</span> <span class="s">&quot;$DB/person&quot;</span>
+<span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;person&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-877727288&quot;</span><span class="p">}</span>
+<span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">d</span> <span class="s">&#39;{&quot;all_or_nothing&quot;:true,&quot;docs&quot;:[{&quot;_id&quot;:&quot;person&quot;,&quot;_rev&quot;:&quot;1-877727288&quot;,&quot;name&quot;:&quot;jim&quot;}]}&#39;</span> <span class="s">&quot;$DB/_bulk_docs&quot;</span>
+<span class="p">[{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;person&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-3595405&quot;</span><span class="p">}]</span>
+<span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">d</span> <span class="s">&#39;{&quot;all_or_nothing&quot;:true,&quot;docs&quot;:[{&quot;_id&quot;:&quot;person&quot;,&quot;_rev&quot;:&quot;1-877727288&quot;,&quot;name&quot;:&quot;trunky&quot;}]}&#39;</span> <span class="s">&quot;$DB/_bulk_docs&quot;</span>
+<span class="p">[{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;person&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-2835283254&quot;</span><span class="p">}]</span>
+<span class="nv">$</span> <span class="nv">curl</span> <span class="s">&quot;$DB/person?conflicts=true&quot;</span>
+<span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;person&quot;</span><span class="p">,</span><span class="s">&quot;_rev&quot;</span><span class="p">:</span><span class="s">&quot;2-3595405&quot;</span><span class="p">,</span><span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;jim&quot;</span><span class="p">,</span><span class="s">&quot;_conflicts&quot;</span><span class="p">:[</span><span class="s">&quot;2-2835283254&quot;</span><span class="p">]}</span>
+</pre></div>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Reserved_words</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,34 +56,34 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <p>This document details item names that have a special system meaning. It also details recommended item names which are not enforced by the system, but may help interoperability of databases if consistent names are used.</p>
-<h2>Reserved Item Names</h2>
+<h2 id="reserved-item-names">Reserved Item Names</h2>
 <p>System reserved items start with underscore, the other items listed are conventions. 
 CouchDb does not allow any user-defined property to begin with an underscore.</p>
-<h3>_id</h3>
+<h3 id="_id">_id</h3>
 <p>this is the unique ID of the document</p>
-<h3>_rev</h3>
+<h3 id="_rev">_rev</h3>
 <p>This is the revision reference of the document</p>
-<h3>_attachments</h3>
+<h3 id="_attachments">_attachments</h3>
 <p>This is an array of attachments on the document.</p>
-<h3>_conflicts</h3>
+<h3 id="_conflicts">_conflicts</h3>
 <p>This attribute is set if the document has a conflict.</p>
-<h1>Proposals</h1>
+<h1 id="proposals">Proposals</h1>
 <p>These recommended names have never been used for anything and are proposals for future use.</p>
-<h2>Reserved Document IDs</h2>
-<h3>favicon</h3>
+<h2 id="reserved-document-ids">Reserved Document IDs</h2>
+<h3 id="favicon">favicon</h3>
 <p>This contains an image representing the database. The icon is an attachment to this document, it can be in SVG or PNG format. A client application may scan all databases on a CouchDB server retrieving their icons.</p>
-<h3>Security</h3>
+<h3 id="security">Security</h3>
 <p>The security document may contain a datastructure that defines the rights users have to all or parts of the database. This may be enforced by a client library or perhaps by the database.</p>
-<h3>form</h3>
+<h3 id="form">form</h3>
 <p>This contains a single text string to identify the user interface to be used to display the document. The text string could be the ID of another couchdb document which contains the definition of the form.</p>
-<h3>subject</h3>
+<h3 id="subject">subject</h3>
 <p>The subject should contain a single text string with a human readable description of the document.</p>
-<h3>security</h3>
+<h3 id="security_1">security</h3>
 <p>The security item contains a javascript function defining the identity of people and things allowed to read, update and delete this document. The function would be passed the document, the database security document, an object representing the person's LDAP entry (so groups etc can be looked up) and the operation requested (normally one of "read", "update", "delete" but others could be invented). It returns true to allow the operation to continue or false to prevent it. Using javascript in this way would allow time based security rules (e.g. allow updates for 1 hour after creation) and much more.</p>
 </div>
       <div id="footer">

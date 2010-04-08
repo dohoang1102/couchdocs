@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Regenerating_views_on_update</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,249 +56,473 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h1>Update views on document save</h1>
+  <h1 id="update-views-on-document-save">Update views on document save</h1>
 <p>CouchDB defaults to regenerating views the first time they are accessed. This behavior is preferable in most cases as it optimizes the resource utilization on the database server. 
 On the other hand, in some situations the benefit of always having fast and updated views far outweigh the cost of regenerating them every time the database server receives updates. This can be achieved by supplying an updater script that calls the views when needed.</p>
-<h2>Example using ruby</h2>
-<h3>couch.ini</h3>
+<h2 id="example-using-ruby">Example using ruby</h2>
+<h3 id="couchini">couch.ini</h3>
 <p>(0.8) Add the following line to the couch.ini file 
         DbUpdateNotificationProcess=/PATH/TO/view_updater.rb</p>
 <p>(0.9) Add the following section to the local.ini file: 
     [update_notification]
     view_updater=/PATH/TO/view_updater.rb</p>
-<h3>view_updater.rb</h3>
+<h3 id="view_updaterrb">view_updater.rb</h3>
 <p>The following script updates the views for each tenth update made to the database or at most once every second when a lot of saves are performed </p>
-<pre><code>&lt;!-- #!/usr/bin/ruby --&gt;
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98</pre></div></td><td class="code"><div class="codehilite"><pre><span class="o">&lt;!--</span> <span class="c1">#!/usr/bin/ruby --&gt;</span>
 
-&lt;!-- ################### --&gt;
-&lt;!-- # CONF            # --&gt;
-&lt;!-- ################### --&gt;
+<span class="o">&lt;!--</span> <span class="c1">################### --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># CONF            # --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1">################### --&gt;</span>
 
-&lt;!-- # The smallest amount of changed documents before the views are updated --&gt;
+<span class="o">&lt;!--</span> <span class="c1"># The smallest amount of changed documents before the views are updated --&gt;</span>
 
-MIN_NUM_OF_CHANGED_DOCS = 10
+<span class="n">MIN_NUM_OF_CHANGED_DOCS</span> <span class="o">=</span> <span class="mi">10</span>
 
-&lt;!-- # URL to the DB on the CouchDB server --&gt;
+<span class="o">&lt;!--</span> <span class="c1"># URL to the DB on the CouchDB server --&gt;</span>
 
-URL = "http://localhost:5984"
+<span class="n">URL</span> <span class="o">=</span> <span class="s">&quot;http://localhost:5984&quot;</span>
 
-&lt;!-- # Set the minimum pause between calls to the database --&gt;
+<span class="o">&lt;!--</span> <span class="c1"># Set the minimum pause between calls to the database --&gt;</span>
 
-PAUSE = 1 # seconds
+<span class="n">PAUSE</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># seconds</span>
 
-&lt;!-- # One entry for each design document --&gt;
-&lt;!-- # in each database --&gt;
+<span class="o">&lt;!--</span> <span class="c1"># One entry for each design document --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># in each database --&gt;</span>
 
-VIEWS = {"my_db"  =&gt; {"design_doc" =&gt; "view_name"}}
+<span class="n">VIEWS</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;my_db&quot;</span>  <span class="o">=&gt;</span> <span class="p">{</span><span class="s">&quot;design_doc&quot;</span> <span class="o">=&gt;</span> <span class="s">&quot;view_name&quot;</span><span class="p">}}</span>
 
-&lt;!-- ################### --&gt;
-&lt;!-- # RUNTIME         # --&gt;
-&lt;!-- ################### --&gt;
+<span class="o">&lt;!--</span> <span class="c1">################### --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1"># RUNTIME         # --&gt;</span>
+<span class="o">&lt;!--</span> <span class="c1">################### --&gt;</span>
 
-run = true
-number_of_changed_docs = {}
+<span class="n">run</span> <span class="o">=</span> <span class="n">true</span>
+<span class="n">number_of_changed_docs</span> <span class="o">=</span> <span class="p">{}</span>
 
-threads = []
+<span class="n">threads</span> <span class="o">=</span> <span class="o">[]</span>
 
-&lt;!-- # Updates the views --&gt;
+<span class="o">&lt;!--</span> <span class="c1"># Updates the views --&gt;</span>
 
-threads &lt;&lt; Thread.new do
+<span class="n">threads</span> <span class="o">&lt;&lt;</span> <span class="n">Thread</span><span class="o">.</span><span class="k">new</span> <span class="k">do</span>
 
-  while run do
+  <span class="k">while</span> <span class="n">run</span> <span class="k">do</span>
 
-    number_of_changed_docs.each_pair do |db_name, number_of_docs|
-      if number_of_docs &gt;= MIN_NUM_OF_CHANGED_DOCS
+    <span class="n">number_of_changed_docs</span><span class="o">.</span><span class="n">each_pair</span> <span class="k">do</span> <span class="o">|</span><span class="n">db_name</span><span class="p">,</span> <span class="n">number_of_docs</span><span class="o">|</span>
+      <span class="k">if</span> <span class="n">number_of_docs</span> <span class="o">&gt;=</span> <span class="n">MIN_NUM_OF_CHANGED_DOCS</span>
 
-        # Reset the value
-        number_of_changed_docs[db_name] = 0
+        <span class="c1"># Reset the value</span>
+        <span class="n">number_of_changed_docs</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
 
-        # If there are views in the database, get them
-        if VIEWS[db_name]
-          VIEWS[db_name].each do |design, view|
-            `curl #{URL}/#{db_name}/_design/#{design}/_view/#{view}?limit=0`
-          end  
-        end
+        <span class="c1"># If there are views in the database, get them</span>
+        <span class="k">if</span> <span class="n">VIEWS</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+          <span class="n">VIEWS</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span><span class="o">.</span><span class="nb">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">design</span><span class="p">,</span> <span class="n">view</span><span class="o">|</span>
+            <span class="sb">`curl #{URL}/#{db_name}/_design/#{design}/_view/#{view}?limit=0`</span>
+          <span class="n">end</span>  
+        <span class="n">end</span>
 
-      end
-    end
+      <span class="n">end</span>
+    <span class="n">end</span>
 
-    # Pause before starting over again
-    sleep PAUSE
+    <span class="c1"># Pause before starting over again</span>
+    <span class="nb">sleep</span> <span class="n">PAUSE</span>
 
-  end
+  <span class="n">end</span>
 
-end
+<span class="n">end</span>
 
-&lt;!-- # Receives the update notification from CouchDB --&gt;
+<span class="o">&lt;!--</span> <span class="c1"># Receives the update notification from CouchDB --&gt;</span>
 
-threads &lt;&lt; Thread.new do
+<span class="n">threads</span> <span class="o">&lt;&lt;</span> <span class="n">Thread</span><span class="o">.</span><span class="k">new</span> <span class="k">do</span>
 
-  while run do
+  <span class="k">while</span> <span class="n">run</span> <span class="k">do</span>
 
-    STDERR &lt;&lt; "Waiting for input\n"
-    update_call = gets
+    <span class="bp">STDERR</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Waiting for input\n&quot;</span>
+    <span class="n">update_call</span> <span class="o">=</span> <span class="n">gets</span>
 
-    # When CouchDB exits the script gets called with
-    # a never ending series of nil
-    if update_call == nil
-      run = false
-    else
+    <span class="c1"># When CouchDB exits the script gets called with</span>
+    <span class="c1"># a never ending series of nil</span>
+    <span class="k">if</span> <span class="n">update_call</span> <span class="o">==</span> <span class="n">nil</span>
+      <span class="n">run</span> <span class="o">=</span> <span class="n">false</span>
+    <span class="k">else</span>
 
-      # Get the database name out of the call data
-      # The data looks somethind like this:
-      # {"type":"updated","db":"DB_NAME"}\n
-      update_call =~ /\"db\":\"(\w+)\"/
-      database_name = $1
+      <span class="c1"># Get the database name out of the call data</span>
+      <span class="c1"># The data looks somethind like this:</span>
+      <span class="c1"># {&quot;type&quot;:&quot;updated&quot;,&quot;db&quot;:&quot;DB_NAME&quot;}\n</span>
+      <span class="n">update_call</span> <span class="o">=~</span><span class="sr"> /\&quot;db\&quot;:\&quot;(\w+)\&quot;/</span>
+      <span class="n">database_name</span> <span class="o">=</span> <span class="nv">$1</span>
 
-      # Set to 0 if it hasn't been initialized before
-      number_of_changed_docs[$1] ||= 0
+      <span class="c1"># Set to 0 if it hasn&#39;t been initialized before</span>
+      <span class="n">number_of_changed_docs</span><span class="p">[</span><span class="nv">$1</span><span class="p">]</span> <span class="o">||=</span> <span class="mi">0</span>
 
-      # Add one pending changed document to the list of documents
-      # in the DB
-      number_of_changed_docs[$1] += 1
+      <span class="c1"># Add one pending changed document to the list of documents</span>
+      <span class="c1"># in the DB</span>
+      <span class="n">number_of_changed_docs</span><span class="p">[</span><span class="nv">$1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
 
-    end
+    <span class="n">end</span>
 
-  end
+  <span class="n">end</span>
 
-end
+<span class="n">end</span>
 
-&lt;!-- # Good bye --&gt;
+<span class="o">&lt;!--</span> <span class="c1"># Good bye --&gt;</span>
 
-threads.each {|thr| thr.join}
-</code></pre>
+<span class="n">threads</span><span class="o">.</span><span class="nb">each</span> <span class="p">{</span><span class="o">|</span><span class="n">thr</span><span class="o">|</span> <span class="n">thr</span><span class="o">.</span><span class="nb">join</span><span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
 <p>The view_updater.rb itself has to be made executable by CouchDB (chmod 0700?).</p>
-<h2>Example using Python</h2>
-<pre><code>&lt;!-- #!/usr/bin/env python --&gt;
-&lt;!-- # -*- coding: utf-8 -*- --&gt;
+<h2 id="example-using-python">Example using Python</h2>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125</pre></div></td><td class="code"><div class="codehilite"><pre><span class="o">&lt;</span><span class="err">!</span><span class="o">--</span> <span class="c">#!/usr/bin/env python --&gt;</span>
+<span class="o">&lt;</span><span class="err">!</span><span class="o">--</span> <span class="c"># -*- coding: utf-8 -*- --&gt;</span>
 
-"""Updater script to regenerate couchdb views on update.
-"""
+<span class="sd">&quot;&quot;&quot;Updater script to regenerate couchdb views on update.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
-import logging
-logging.basicConfig(level=logging.INFO)
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
 
-import os
-import re
-import signal
-import sys
-import time
-import urllib2
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">urllib2</span>
 
-from threading import Thread
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
 
-flags = {
-    'is_running': True
-}
+<span class="n">flags</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;is_running&#39;</span><span class="p">:</span> <span class="bp">True</span>
+<span class="p">}</span>
 
-changed_docs = {}
+<span class="n">changed_docs</span> <span class="o">=</span> <span class="p">{}</span>
 
-class ViewUpdater(object):
-    """Updates the views.
-    """
+<span class="k">class</span> <span class="nc">ViewUpdater</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Updates the views.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-    # The smallest amount of changed documents before the views are updated
-    MIN_NUM_OF_CHANGED_DOCS = 50
+    <span class="c"># The smallest amount of changed documents before the views are updated</span>
+    <span class="n">MIN_NUM_OF_CHANGED_DOCS</span> <span class="o">=</span> <span class="mi">50</span>
 
-    # Set the minimum pause between calls to the database
-    PAUSE = 5 # seconds
+    <span class="c"># Set the minimum pause between calls to the database</span>
+    <span class="n">PAUSE</span> <span class="o">=</span> <span class="mi">5</span> <span class="c"># seconds</span>
 
-    # URL to the DB on the CouchDB server
-    URL = "http://localhost:5984"
+    <span class="c"># URL to the DB on the CouchDB server</span>
+    <span class="n">URL</span> <span class="o">=</span> <span class="s">&quot;http://localhost:5984&quot;</span>
 
-    # One entry for each design document 
-    # in each database
-    VIEWS = {
-        'my_db': {
-            'design_doc': [
-                'view_name',
-                # ...
-            ]
-        }
-    }
+    <span class="c"># One entry for each design document </span>
+    <span class="c"># in each database</span>
+    <span class="n">VIEWS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;my_db&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">&#39;design_doc&#39;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s">&#39;view_name&#39;</span><span class="p">,</span>
+                <span class="c"># ...</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
 
-    def start(self):
-        Thread(target=self._run).start()
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
-    def _run(self):
-        """Loop, checking for enough ``changed_docs`` to trigger a
-          request to couchdb to re-index.
-        """
+    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Loop, checking for enough ``changed_docs`` to trigger a</span>
+<span class="sd">          request to couchdb to re-index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
-        while flags['is_running']:
-            try:
-                for db_name, number_of_docs in changed_docs.items():
-                    if number_of_docs &gt;= self.MIN_NUM_OF_CHANGED_DOCS:
-                        # Reset the value
-                        del changed_docs[db_name]
-                        # If there are views in the database, get them
-                        if db_name in self.VIEWS:
-                            logging.info('regenerating %s' % db_name)
-                            db_views = self.VIEWS[db_name]
-                            for design, views in db_views.iteritems():
-                                for view in views:
-                                    url = '%s/%s/_design/%s/_view/%s?limit=0' % (
-                                        self.URL, db_name, design, view
-                                    )
-                                    urllib2.urlopen(url)
-                time.sleep(self.PAUSE)
-            except Exception:
-                flags['is_running'] = False
-                raise
+        <span class="k">while</span> <span class="n">flags</span><span class="p">[</span><span class="s">&#39;is_running&#39;</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">db_name</span><span class="p">,</span> <span class="n">number_of_docs</span> <span class="ow">in</span> <span class="n">changed_docs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">number_of_docs</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MIN_NUM_OF_CHANGED_DOCS</span><span class="p">:</span>
+                        <span class="c"># Reset the value</span>
+                        <span class="k">del</span> <span class="n">changed_docs</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+                        <span class="c"># If there are views in the database, get them</span>
+                        <span class="k">if</span> <span class="n">db_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">VIEWS</span><span class="p">:</span>
+                            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;regenerating </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">db_name</span><span class="p">)</span>
+                            <span class="n">db_views</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">VIEWS</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
+                            <span class="k">for</span> <span class="n">design</span><span class="p">,</span> <span class="n">views</span> <span class="ow">in</span> <span class="n">db_views</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                                <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">views</span><span class="p">:</span>
+                                    <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">/_design/</span><span class="si">%s</span><span class="s">/_view/</span><span class="si">%s</span><span class="s">?limit=0&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">URL</span><span class="p">,</span> <span class="n">db_name</span><span class="p">,</span> <span class="n">design</span><span class="p">,</span> <span class="n">view</span>
+                                    <span class="p">)</span>
+                                    <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PAUSE</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">flags</span><span class="p">[</span><span class="s">&#39;is_running&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">raise</span>
 
-class NotificationConsumer(object):
-    """Receives the update notification from CouchDB.
-    """
+<span class="k">class</span> <span class="nc">NotificationConsumer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Receives the update notification from CouchDB.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-    DB_NAME_EXPRESSION = re.compile(r'\"db\":\"(\w+)\"')
+    <span class="n">DB_NAME_EXPRESSION</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;\&quot;db\&quot;:\&quot;(\w+)\&quot;&#39;</span><span class="p">)</span>
 
-    def _run(self):
-        """Consume update notifications from stdin.
-        """
+    <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Consume update notifications from stdin.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
-        while flags['is_running']:
-            try:
-                data = sys.stdin.readline()
-            except:
-                continue
-            else:
-                if not data: # exit
-                    flags['is_running'] = False
-                    break
-                result = self.DB_NAME_EXPRESSION.search(data)
-                if result:
-                    db_name = result.groups()[0]
-                    # Set to 0 if it hasn't been initialized before
-                    if db_name not in changed_docs:
-                        changed_docs[db_name] = 0
-                    # Add one pending changed document to the list
-                    # of documents in the DB
-                    changed_docs[db_name] += 1
+        <span class="k">while</span> <span class="n">flags</span><span class="p">[</span><span class="s">&#39;is_running&#39;</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span> <span class="c"># exit</span>
+                    <span class="n">flags</span><span class="p">[</span><span class="s">&#39;is_running&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="k">break</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DB_NAME_EXPRESSION</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+                    <span class="n">db_name</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="c"># Set to 0 if it hasn&#39;t been initialized before</span>
+                    <span class="k">if</span> <span class="n">db_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">changed_docs</span><span class="p">:</span>
+                        <span class="n">changed_docs</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="c"># Add one pending changed document to the list</span>
+                    <span class="c"># of documents in the DB</span>
+                    <span class="n">changed_docs</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
 
-    def start(self):
-        t = Thread(target=self._run)
-        t.start()
-        return t
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">t</span>
 
-def main():
-    logging.info('update_notification handler (re)starting')
-    consumer = NotificationConsumer()
-    updater = ViewUpdater()
-    updater.start()
-    t = consumer.start()
-    try:
-        while flags['is_running']:
-            t.join(10)
-    except KeyboardInterrupt, err:
-        flags['is_running'] = False
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;update_notification handler (re)starting&#39;</span><span class="p">)</span>
+    <span class="n">consumer</span> <span class="o">=</span> <span class="n">NotificationConsumer</span><span class="p">()</span>
+    <span class="n">updater</span> <span class="o">=</span> <span class="n">ViewUpdater</span><span class="p">()</span>
+    <span class="n">updater</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">consumer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">while</span> <span class="n">flags</span><span class="p">[</span><span class="s">&#39;is_running&#39;</span><span class="p">]:</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">,</span> <span class="n">err</span><span class="p">:</span>
+        <span class="n">flags</span><span class="p">[</span><span class="s">&#39;is_running&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
 
-if _\_name__ == '_\_main_\_':
-    main()
-</code></pre>
+<span class="k">if</span> <span class="n">_</span>\<span class="n">_name__</span> <span class="o">==</span> <span class="s">&#39;_\_main_\_&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</td></tr></table>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

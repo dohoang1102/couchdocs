@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Storing_GeoData</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,11 +56,11 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h1>Using CouchDB For Storing Google Geocoded JSON Data</h1>
+  <h1 id="using-couchdb-for-storing-google-geocoded-json-data">Using CouchDB For Storing Google Geocoded JSON Data</h1>
 <p>Google provides a free service that takes any string as an input and returns a bunch of JSON encoded data if that string matches a physical location.  Check it out here: http://code.google.com/apis/maps/documentation/services.html#Geocoding</p>
 <p>Unfortunately, Google's geocoding service is limited to 15k requests per day per IP.  Sounds like a lot, but for certain applications this limit can be reached very quickly.</p>
 <p>The following small library can help you get around these limitations by storing a local repository of data in CouchDB.  This is a nice fit because CouchDB is JSON-native and the data returned from google is JSON-native.</p>
@@ -53,179 +71,181 @@
 <li>A Google API Key (http://code.google.com/apis/maps/signup.html)</li>
 </ul>
 <p>Download the file here: http://geocouch.googlecode.com/files/geocouch.php.  You can also find the full source at the bottom of the page.</p>
-<h2>Usage</h2>
-<pre><code>&lt;?php
-    require ('geocouch.php');
+<h2 id="usage">Usage</h2>
+<div class="codehilite"><pre><span class="cp">&lt;?php</span>
+    <span class="k">require</span> <span class="p">(</span><span class="s1">&#39;geocouch.php&#39;</span><span class="p">);</span>
 
-    /*
+    <span class="cm">/*</span>
 
-     * Don't forget to edit the $GeoCouch-&gt;conf parameters!
-     */
-    $GeoCouch = new GeoCouch();
+<span class="cm">     * Don&#39;t forget to edit the $GeoCouch-&gt;conf parameters!</span>
+<span class="cm">     */</span>
+    <span class="nv">$GeoCouch</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">GeoCouch</span><span class="p">();</span>
 
-    /*
-     * The all-in-one method.
-     * This geocodes the string and writes it to CouchDB
-     * The second parameter is any other fields other
-     * than the Google data that you want to save along
-     * with this document.
-     * 
-     * NOTE: if this address already exists in CouchDB
-     * a new revision is created.
-     * 
-     * Returns the CouchDB response, i.e.:
-     * {"ok" : true, "rev":"3825793742", "id" : "dallas-tx" }
-     */
-    $GeoCouch-&gt;save('Dallas, TX', array('custom_field' =&gt; 'value'));
+    <span class="cm">/*</span>
+<span class="cm">     * The all-in-one method.</span>
+<span class="cm">     * This geocodes the string and writes it to CouchDB</span>
+<span class="cm">     * The second parameter is any other fields other</span>
+<span class="cm">     * than the Google data that you want to save along</span>
+<span class="cm">     * with this document.</span>
+<span class="cm">     * </span>
+<span class="cm">     * NOTE: if this address already exists in CouchDB</span>
+<span class="cm">     * a new revision is created.</span>
+<span class="cm">     * </span>
+<span class="cm">     * Returns the CouchDB response, i.e.:</span>
+<span class="cm">     * {&quot;ok&quot; : true, &quot;rev&quot;:&quot;3825793742&quot;, &quot;id&quot; : &quot;dallas-tx&quot; }</span>
+<span class="cm">     */</span>
+    <span class="nv">$GeoCouch</span><span class="o">-&gt;</span><span class="na">save</span><span class="p">(</span><span class="s1">&#39;Dallas, TX&#39;</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;custom_field&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;value&#39;</span><span class="p">));</span>
 
-    /*
-     * Simply geo coding.  
-     * Does not write to CouchDB.
-     * Returns an Google Geocoded Object.
-     */
-    $geoObj = $GeoCouch-&gt;geoCode('Dallas, TX');
+    <span class="cm">/*</span>
+<span class="cm">     * Simply geo coding.  </span>
+<span class="cm">     * Does not write to CouchDB.</span>
+<span class="cm">     * Returns an Google Geocoded Object.</span>
+<span class="cm">     */</span>
+    <span class="nv">$geoObj</span> <span class="o">=</span> <span class="nv">$GeoCouch</span><span class="o">-&gt;</span><span class="na">geoCode</span><span class="p">(</span><span class="s1">&#39;Dallas, TX&#39;</span><span class="p">);</span>
 
-    /*
-     * Write some Geo JSON to CouchDB.
-     * First parameter is a unique name for the data
-     * Second parameter is the JSON - in 
-     * this case the json_encoded $geoObj from above.
-     */
-    $GeoCouch-&gt;put('Dallas, TX', json_encode($geoObj));
+    <span class="cm">/*</span>
+<span class="cm">     * Write some Geo JSON to CouchDB.</span>
+<span class="cm">     * First parameter is a unique name for the data</span>
+<span class="cm">     * Second parameter is the JSON - in </span>
+<span class="cm">     * this case the json_encoded $geoObj from above.</span>
+<span class="cm">     */</span>
+    <span class="nv">$GeoCouch</span><span class="o">-&gt;</span><span class="na">put</span><span class="p">(</span><span class="s1">&#39;Dallas, TX&#39;</span><span class="p">,</span> <span class="nx">json_encode</span><span class="p">(</span><span class="nv">$geoObj</span><span class="p">));</span>
 
-    /*
-     * Get some existing geo data
-     */
-    $geoObj = $GeoCouch-&gt;get('Dallas, TX');
-?&gt;
-</code></pre>
-<h2>GeoCouch Class</h2>
-<pre><code>&lt;?php
+    <span class="cm">/*</span>
+<span class="cm">     * Get some existing geo data</span>
+<span class="cm">     */</span>
+    <span class="nv">$geoObj</span> <span class="o">=</span> <span class="nv">$GeoCouch</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;Dallas, TX&#39;</span><span class="p">);</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
 
-    class GeoCouch
-    {
-        var $conf = array(
-            'host' =&gt; 'localhost',
-            'port' =&gt; '5984',
-            'db' =&gt; 'sf_geo',
-            'geocoder' =&gt; array(
-                    'url' =&gt; 'http://maps.google.com/maps/geo?key=',
-                    'key' =&gt; 'Your Google API Key',
-                ),
-        );
 
-        var $address;
-        var $geoJSONResponse;
-        var $geoObj;
+<h2 id="geocouch-class">GeoCouch Class</h2>
+<div class="codehilite"><pre><span class="cp">&lt;?php</span>
 
-        function GeoCouch() {
+    <span class="k">class</span> <span class="nc">GeoCouch</span>
+    <span class="p">{</span>
+        <span class="k">var</span> <span class="nv">$conf</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+            <span class="s1">&#39;host&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;localhost&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;port&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;5984&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;db&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;sf_geo&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;geocoder&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
+                    <span class="s1">&#39;url&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;http://maps.google.com/maps/geo?key=&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Your Google API Key&#39;</span><span class="p">,</span>
+                <span class="p">),</span>
+        <span class="p">);</span>
 
-        }
+        <span class="k">var</span> <span class="nv">$address</span><span class="p">;</span>
+        <span class="k">var</span> <span class="nv">$geoJSONResponse</span><span class="p">;</span>
+        <span class="k">var</span> <span class="nv">$geoObj</span><span class="p">;</span>
 
-        function geoCode($address = null)
-        {
-            $this-&gt;address = $address;
-            $url = $this-&gt;conf['geocoder']['url'].$this-&gt;conf['geocoder']['key'];
-            $url .= '&amp;q='.urlencode($address);
+        <span class="k">function</span> <span class="nf">GeoCouch</span><span class="p">()</span> <span class="p">{</span>
 
-            $this-&gt;geoJSONResponse = $this-&gt;_geoCodeRequest($url);
-            $this-&gt;geoObj = json_decode($this-&gt;geoJSONResponse);
+        <span class="p">}</span>
 
-            if(empty($this-&gt;geoObj-&gt;Status-&gt;code) || $this-&gt;geoObj-&gt;Status-&gt;code != 200) {
-                return false;
-            } else {
-                return $this-&gt;geoJSONResponse;
-            }   
-        }
+        <span class="k">function</span> <span class="nf">geoCode</span><span class="p">(</span><span class="nv">$address</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">address</span> <span class="o">=</span> <span class="nv">$address</span><span class="p">;</span>
+            <span class="nv">$url</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">conf</span><span class="p">[</span><span class="s1">&#39;geocoder&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">]</span><span class="o">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">conf</span><span class="p">[</span><span class="s1">&#39;geocoder&#39;</span><span class="p">][</span><span class="s1">&#39;key&#39;</span><span class="p">];</span>
+            <span class="nv">$url</span> <span class="o">.=</span> <span class="s1">&#39;&amp;q=&#39;</span><span class="o">.</span><span class="nb">urlencode</span><span class="p">(</span><span class="nv">$address</span><span class="p">);</span>
 
-        function _geoCodeRequest($url) 
-        {
-            $ch = curl_init();
-            curl_setopt ($ch, CURLOPT_URL, $url);
-            curl_setopt ($ch, CURLOPT_HEADER, 0);
-            ob_start();
-            curl_exec ($ch);
-            curl_close ($ch);
-            $string = ob_get_contents();
-            ob_end_clean();
-            return $string;
-        }
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">geoJSONResponse</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">_geoCodeRequest</span><span class="p">(</span><span class="nv">$url</span><span class="p">);</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">geoObj</span> <span class="o">=</span> <span class="nx">json_decode</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">geoJSONResponse</span><span class="p">);</span>
 
-        function locationName($str) {
-            return trim(preg_replace('/[^a-z0-9]+/i', '-', $str), '_');
-        }
+            <span class="k">if</span><span class="p">(</span><span class="k">empty</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">geoObj</span><span class="o">-&gt;</span><span class="na">Status</span><span class="o">-&gt;</span><span class="na">code</span><span class="p">)</span> <span class="o">||</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">geoObj</span><span class="o">-&gt;</span><span class="na">Status</span><span class="o">-&gt;</span><span class="na">code</span> <span class="o">!=</span> <span class="m">200</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">geoJSONResponse</span><span class="p">;</span>
+            <span class="p">}</span>   
+        <span class="p">}</span>
 
-        function save($address, $extra = array())
-        {
-            $existing = $this-&gt;get($address);
+        <span class="k">function</span> <span class="nf">_geoCodeRequest</span><span class="p">(</span><span class="nv">$url</span><span class="p">)</span> 
+        <span class="p">{</span>
+            <span class="nv">$ch</span> <span class="o">=</span> <span class="nb">curl_init</span><span class="p">();</span>
+            <span class="nb">curl_setopt</span> <span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_URL</span><span class="p">,</span> <span class="nv">$url</span><span class="p">);</span>
+            <span class="nb">curl_setopt</span> <span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_HEADER</span><span class="p">,</span> <span class="m">0</span><span class="p">);</span>
+            <span class="nb">ob_start</span><span class="p">();</span>
+            <span class="nb">curl_exec</span> <span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+            <span class="nb">curl_close</span> <span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+            <span class="nv">$string</span> <span class="o">=</span> <span class="nb">ob_get_contents</span><span class="p">();</span>
+            <span class="nb">ob_end_clean</span><span class="p">();</span>
+            <span class="k">return</span> <span class="nv">$string</span><span class="p">;</span>
+        <span class="p">}</span>
 
-            if($this-&gt;geoCode($address)) 
-            {
-                if(!empty($existing-&gt;_rev)) {
-                    $this-&gt;geoObj-&gt;_rev = $existing-&gt;_rev;
-                }
+        <span class="k">function</span> <span class="nf">locationName</span><span class="p">(</span><span class="nv">$str</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nb">trim</span><span class="p">(</span><span class="nb">preg_replace</span><span class="p">(</span><span class="s1">&#39;/[^a-z0-9]+/i&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="nv">$str</span><span class="p">),</span> <span class="s1">&#39;_&#39;</span><span class="p">);</span>
+        <span class="p">}</span>
 
-                foreach($extra as $field =&gt; $value) {
-                    $this-&gt;geoObj-&gt;$field = $value;
-                }
+        <span class="k">function</span> <span class="nf">save</span><span class="p">(</span><span class="nv">$address</span><span class="p">,</span> <span class="nv">$extra</span> <span class="o">=</span> <span class="k">array</span><span class="p">())</span>
+        <span class="p">{</span>
+            <span class="nv">$existing</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="nv">$address</span><span class="p">);</span>
 
-                return $this-&gt;put($address, json_encode($this-&gt;geoObj));
-            }
-            else {
-                return false;
-            }
-        }
+            <span class="k">if</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">geoCode</span><span class="p">(</span><span class="nv">$address</span><span class="p">))</span> 
+            <span class="p">{</span>
+                <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="k">empty</span><span class="p">(</span><span class="nv">$existing</span><span class="o">-&gt;</span><span class="na">_rev</span><span class="p">))</span> <span class="p">{</span>
+                    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">geoObj</span><span class="o">-&gt;</span><span class="na">_rev</span> <span class="o">=</span> <span class="nv">$existing</span><span class="o">-&gt;</span><span class="na">_rev</span><span class="p">;</span>
+                <span class="p">}</span>
 
-        function get($name = null)
-        {
-            $s = $this-&gt;openSock();
+                <span class="k">foreach</span><span class="p">(</span><span class="nv">$extra</span> <span class="k">as</span> <span class="nv">$field</span> <span class="o">=&gt;</span> <span class="nv">$value</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">geoObj</span><span class="o">-&gt;</span><span class="nv">$field</span> <span class="o">=</span> <span class="nv">$value</span><span class="p">;</span>
+                <span class="p">}</span>
 
-            $url = '/'.$this-&gt;conf['db'].'/'.$this-&gt;locationName($name);
-            $request = 'GET '.$url.' HTTP/1.0'. "\r\n";
-            $request .= 'Host: localhost'. "\r\n\r\n";
-            fwrite($s, $request);
+                <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">put</span><span class="p">(</span><span class="nv">$address</span><span class="p">,</span> <span class="nx">json_encode</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">geoObj</span><span class="p">));</span>
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
 
-            return $this-&gt;parseCouchResponse($s);       
-        }
+        <span class="k">function</span> <span class="nf">get</span><span class="p">(</span><span class="nv">$name</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="nv">$s</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">openSock</span><span class="p">();</span>
 
-        function put($name = null, $json = null)
-        {
-            $s = $this-&gt;openSock();
+            <span class="nv">$url</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">conf</span><span class="p">[</span><span class="s1">&#39;db&#39;</span><span class="p">]</span><span class="o">.</span><span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">locationName</span><span class="p">(</span><span class="nv">$name</span><span class="p">);</span>
+            <span class="nv">$request</span> <span class="o">=</span> <span class="s1">&#39;GET &#39;</span><span class="o">.</span><span class="nv">$url</span><span class="o">.</span><span class="s1">&#39; HTTP/1.0&#39;</span><span class="o">.</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">;</span>
+            <span class="nv">$request</span> <span class="o">.=</span> <span class="s1">&#39;Host: localhost&#39;</span><span class="o">.</span> <span class="s2">&quot;</span><span class="se">\r\n\r\n</span><span class="s2">&quot;</span><span class="p">;</span>
+            <span class="nb">fwrite</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span> <span class="nv">$request</span><span class="p">);</span>
 
-            $url = '/'.$this-&gt;conf['db'].'/'.$this-&gt;locationName($name);
-            $request = 'PUT '.$url.' HTTP/1.0'. "\r\n";
-            $request .= 'Host: localhost'. "\r\n";
-            $request .= 'Content-Length: '.strlen($json)."\r\n\r\n";
-            $request .= $json."\r\n";
-            fwrite($s, $request);
+            <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">parseCouchResponse</span><span class="p">(</span><span class="nv">$s</span><span class="p">);</span>       
+        <span class="p">}</span>
 
-            return $this-&gt;parseCouchResponse($s);   
-        }
+        <span class="k">function</span> <span class="nf">put</span><span class="p">(</span><span class="nv">$name</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$json</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="nv">$s</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">openSock</span><span class="p">();</span>
 
-        function openSock() 
-        {
-            $s = fsockopen($this-&gt;conf['host'], $this-&gt;conf['port'], $errno, $errstr);
-            if(!$s) {
-                return $errno.':'.$errstr;
-            } else {
-                return $s;
-            }
-        }
+            <span class="nv">$url</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">conf</span><span class="p">[</span><span class="s1">&#39;db&#39;</span><span class="p">]</span><span class="o">.</span><span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">locationName</span><span class="p">(</span><span class="nv">$name</span><span class="p">);</span>
+            <span class="nv">$request</span> <span class="o">=</span> <span class="s1">&#39;PUT &#39;</span><span class="o">.</span><span class="nv">$url</span><span class="o">.</span><span class="s1">&#39; HTTP/1.0&#39;</span><span class="o">.</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">;</span>
+            <span class="nv">$request</span> <span class="o">.=</span> <span class="s1">&#39;Host: localhost&#39;</span><span class="o">.</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">;</span>
+            <span class="nv">$request</span> <span class="o">.=</span> <span class="s1">&#39;Content-Length: &#39;</span><span class="o">.</span><span class="nb">strlen</span><span class="p">(</span><span class="nv">$json</span><span class="p">)</span><span class="o">.</span><span class="s2">&quot;</span><span class="se">\r\n\r\n</span><span class="s2">&quot;</span><span class="p">;</span>
+            <span class="nv">$request</span> <span class="o">.=</span> <span class="nv">$json</span><span class="o">.</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">;</span>
+            <span class="nb">fwrite</span><span class="p">(</span><span class="nv">$s</span><span class="p">,</span> <span class="nv">$request</span><span class="p">);</span>
 
-        function parseCouchResponse($s) 
-        {
-            $response = '';
-            while(!feof($s)) {
-                $response .= fgets($s);
-            }
-            fclose($s);
+            <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">parseCouchResponse</span><span class="p">(</span><span class="nv">$s</span><span class="p">);</span>   
+        <span class="p">}</span>
 
-            list($headers, $body) = explode("\r\n\r\n", $response);
-            return json_decode($body);
-        }
-    }
-?&gt;
-</code></pre>
+        <span class="k">function</span> <span class="nf">openSock</span><span class="p">()</span> 
+        <span class="p">{</span>
+            <span class="nv">$s</span> <span class="o">=</span> <span class="nb">fsockopen</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">conf</span><span class="p">[</span><span class="s1">&#39;host&#39;</span><span class="p">],</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">conf</span><span class="p">[</span><span class="s1">&#39;port&#39;</span><span class="p">],</span> <span class="nv">$errno</span><span class="p">,</span> <span class="nv">$errstr</span><span class="p">);</span>
+            <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nv">$s</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nv">$errno</span><span class="o">.</span><span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="nv">$errstr</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nv">$s</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="k">function</span> <span class="nf">parseCouchResponse</span><span class="p">(</span><span class="nv">$s</span><span class="p">)</span> 
+        <span class="p">{</span>
+            <span class="nv">$response</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+            <span class="k">while</span><span class="p">(</span><span class="o">!</span><span class="nb">feof</span><span class="p">(</span><span class="nv">$s</span><span class="p">))</span> <span class="p">{</span>
+                <span class="nv">$response</span> <span class="o">.=</span> <span class="nb">fgets</span><span class="p">(</span><span class="nv">$s</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="nb">fclose</span><span class="p">(</span><span class="nv">$s</span><span class="p">);</span>
+
+            <span class="k">list</span><span class="p">(</span><span class="nv">$headers</span><span class="p">,</span> <span class="nv">$body</span><span class="p">)</span> <span class="o">=</span> <span class="nb">explode</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n\r\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nv">$response</span><span class="p">);</span>
+            <span class="k">return</span> <span class="nx">json_decode</span><span class="p">(</span><span class="nv">$body</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="cp">?&gt;</span><span class="x"></span>
+</pre></div>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

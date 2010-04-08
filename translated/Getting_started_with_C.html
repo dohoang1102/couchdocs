@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Getting_started_with_C</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,7 +56,7 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
@@ -46,252 +64,262 @@
 
 <p>If you want to operate CouchDB with C, you must use HTTP requests. You can directly invoke socket to do that, or accomplish it with a library that encapsulates HTTP. CURL is one such library. To obtain a copy of the CURL library or information on it like its usage, just access its website http://curl.haxx.se/.</p>
 <p>After CURL is installed, simply include its C header file as below</p>
-<pre><code>&lt;!-- #include &lt;curl/curl.h&gt; --&gt;
-</code></pre>
+<div class="codehilite"><pre><span class="o">&lt;!--</span> <span class="c1">#include &lt;curl/curl.h&gt; --&gt;</span>
+</pre></div>
+
+
 <p>and link its library file (the file name of which contains string "libcurl") into the executable file.</p>
 <p>The following code segment shows an example of operating CouchDB with CURL.</p>
-<pre><code>CURL *curl;
-FILE *fp;
-struct stat file_info;
+<div class="codehilite"><pre><span class="n">CURL</span> <span class="o">*</span><span class="n">curl</span><span class="p">;</span>
+<span class="n">FILE</span> <span class="o">*</span><span class="n">fp</span><span class="p">;</span>
+<span class="n">struct</span> <span class="nb">stat</span> <span class="n">file_info</span><span class="p">;</span>
 
-/* the name of the file containing json data */
-const char *const file_name = "data_source";
+<span class="sr">/* the name of the file containing json data */</span>
+<span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">const</span> <span class="n">file_name</span> <span class="o">=</span> <span class="s">&quot;data_source&quot;</span><span class="p">;</span>
 
-curl_global_init(CURL_GLOBAL_ALL);
+<span class="n">curl_global_init</span><span class="p">(</span><span class="n">CURL_GLOBAL_ALL</span><span class="p">);</span>
 
-stat(file_name, &amp;file_info);
-fp = fopen(file_name, "r");
+<span class="nb">stat</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">file_info</span><span class="p">);</span>
+<span class="n">fp</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">);</span>
 
-curl = curl_easy_init();
-if(curl) {
-  /* uses HTTP PUT */
-  curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+<span class="n">curl</span> <span class="o">=</span> <span class="n">curl_easy_init</span><span class="p">();</span>
+<span class="k">if</span><span class="p">(</span><span class="n">curl</span><span class="p">)</span> <span class="p">{</span>
+  <span class="sr">/* uses HTTP PUT */</span>
+  <span class="n">curl_easy_setopt</span><span class="p">(</span><span class="n">curl</span><span class="p">,</span> <span class="n">CURLOPT_UPLOAD</span><span class="p">,</span> <span class="mi">1</span><span class="n">L</span><span class="p">);</span>
 
-  /* URL */
-  curl_easy_setopt(curl, CURLOPT_URL, "http://192.168.0.40:5984/test_db/test_doc");
+  <span class="sr">/* URL */</span>
+  <span class="n">curl_easy_setopt</span><span class="p">(</span><span class="n">curl</span><span class="p">,</span> <span class="n">CURLOPT_URL</span><span class="p">,</span> <span class="s">&quot;http://192.168.0.40:5984/test_db/test_doc&quot;</span><span class="p">);</span>
 
-  /* input file */
-  curl_easy_setopt(curl, CURLOPT_READDATA, fp);
+  <span class="sr">/* input file */</span>
+  <span class="n">curl_easy_setopt</span><span class="p">(</span><span class="n">curl</span><span class="p">,</span> <span class="n">CURLOPT_READDATA</span><span class="p">,</span> <span class="n">fp</span><span class="p">);</span>
 
-  /* file size */
-  curl_easy_setopt(curl, CURLOPT_INFILESIZE, (long)file_info.st_size);
+  <span class="sr">/* file size */</span>
+  <span class="n">curl_easy_setopt</span><span class="p">(</span><span class="n">curl</span><span class="p">,</span> <span class="n">CURLOPT_INFILESIZE</span><span class="p">,</span> <span class="p">(</span><span class="n">long</span><span class="p">)</span><span class="n">file_info</span><span class="o">.</span><span class="n">st_size</span><span class="p">);</span>
 
-  /* data type */
-  struct curl_slist *slist = NULL;
-  slist = curl_slist_append(slist, "Content-Type: application/json");
-  curl_easy_setopt(curl, CURLOPT_HTTPHEADER, slist);
+  <span class="sr">/* data type */</span>
+  <span class="n">struct</span> <span class="n">curl_slist</span> <span class="o">*</span><span class="n">slist</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">;</span>
+  <span class="n">slist</span> <span class="o">=</span> <span class="n">curl_slist_append</span><span class="p">(</span><span class="n">slist</span><span class="p">,</span> <span class="s">&quot;Content-Type: application/json&quot;</span><span class="p">);</span>
+  <span class="n">curl_easy_setopt</span><span class="p">(</span><span class="n">curl</span><span class="p">,</span> <span class="n">CURLOPT_HTTPHEADER</span><span class="p">,</span> <span class="n">slist</span><span class="p">);</span>
 
-  /* makes the request */
-  curl_easy_perform(curl);
+  <span class="sr">/* makes the request */</span>
+  <span class="n">curl_easy_perform</span><span class="p">(</span><span class="n">curl</span><span class="p">);</span>
 
-  curl_slist_free_all(slist);
+  <span class="n">curl_slist_free_all</span><span class="p">(</span><span class="n">slist</span><span class="p">);</span>
 
-  curl_easy_cleanup(curl);
-}
+  <span class="n">curl_easy_cleanup</span><span class="p">(</span><span class="n">curl</span><span class="p">);</span>
+<span class="p">}</span>
 
-fclose(fp);
+<span class="n">fclose</span><span class="p">(</span><span class="n">fp</span><span class="p">);</span>
 
-curl_global_cleanup();
-</code></pre>
+<span class="n">curl_global_cleanup</span><span class="p">();</span>
+</pre></div>
+
+
 <p>This one is horribly out of date. Don't read it. If you need a C API, you've got to write one. Then update this page accordingly, thanks :)</p>
 <p>Getting started with C and the CouchDB API.</p>
-<h2>Startup</h2>
+<h2 id="startup">Startup</h2>
 <p>This HOWTO aims to show you how you can easily use the CouchDB C API. You should have basic knowledge of how CouchDB and pointers/structures in C work. Generally the C API should build on every POSIX Operating System (Windows support might be added later). It depends on two important libraries: libcurl and libxml2 (every common GNU/Linux, BSD distribution and Mac OS X ship these libraries). Okay, let's try to compile to API:</p>
-<pre><code>cd /home/user/couchdb/CouchProjects/Libraries/c/src/
-make
-make install (as root)
-</code></pre>
+<div class="codehilite"><pre><span class="n">cd</span> <span class="sr">/home/</span><span class="n">user</span><span class="sr">/couchdb/</span><span class="n">CouchProjects</span><span class="sr">/Libraries/c/src/</span>
+<span class="n">make</span>
+<span class="n">make</span> <span class="n">install</span> <span class="p">(</span><span class="n">as</span> <span class="n">root</span><span class="p">)</span>
+</pre></div>
+
+
 <p>If you get errors like libxml2 or curl support missing, have a look at the Makefile.inc in the src/ directory (some distributions might install these libs in /usr/local..). These two files must now be present on your system: /usr/local/include/libcouchdb.h and /usr/local/lib/libcouchdb.so</p>
-<h2>Ready To Go</h2>
+<h2 id="ready-to-go">Ready To Go</h2>
 <p>Okay, now let's come to the fun part, using couchdb in your C program. Here is an example that shows you the general usage:</p>
-<pre><code>&lt;!-- #include &lt;libcouchdb.h&gt; --&gt;
+<div class="codehilite"><pre><span class="o">&lt;!--</span> <span class="c1">#include &lt;libcouchdb.h&gt; --&gt;</span>
 
-int main ( void )
-{
-    Couch *c = NULL;
-    CouchDocument *doc = NULL;
+<span class="nb">int</span> <span class="n">main</span> <span class="p">(</span> <span class="n">void</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Couch</span> <span class="o">*</span><span class="n">c</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">;</span>
+    <span class="n">CouchDocument</span> <span class="o">*</span><span class="n">doc</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">;</span>
 
-    /* Initialize the couch-api.
+    <span class="o">/*</span> <span class="n">Initialize</span> <span class="n">the</span> <span class="n">couch</span><span class="o">-</span><span class="n">api</span><span class="o">.</span>
 
-     * The first parameter is the adresse of the server
-     * with the port number. You can use either a full qualified domain name or just
-     * the ip address.
-     * The second parameter allows you to set the database that should be used for
-     * further actions, if you want to do that later on (because you want to create a
-     * database first as we do here) you can set this to NULL.
-     */
-    c = couch_init ( "mycouchserver.mynetwork.net:5984", NULL );
+     <span class="o">*</span> <span class="n">The</span> <span class="n">first</span> <span class="n">parameter</span> <span class="n">is</span> <span class="n">the</span> <span class="n">adresse</span> <span class="n">of</span> <span class="n">the</span> <span class="n">server</span>
+     <span class="o">*</span> <span class="n">with</span> <span class="n">the</span> <span class="n">port</span> <span class="n">number</span><span class="o">.</span> <span class="n">You</span> <span class="n">can</span> <span class="k">use</span> <span class="n">either</span> <span class="n">a</span> <span class="n">full</span> <span class="n">qualified</span> <span class="n">domain</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">just</span>
+     <span class="o">*</span> <span class="n">the</span> <span class="n">ip</span> <span class="n">address</span><span class="o">.</span>
+     <span class="o">*</span> <span class="n">The</span> <span class="n">second</span> <span class="n">parameter</span> <span class="n">allows</span> <span class="n">you</span> <span class="n">to</span> <span class="n">set</span> <span class="n">the</span> <span class="n">database</span> <span class="n">that</span> <span class="n">should</span> <span class="n">be</span> <span class="n">used</span> <span class="k">for</span>
+     <span class="o">*</span> <span class="n">further</span> <span class="n">actions</span><span class="p">,</span> <span class="k">if</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="k">do</span> <span class="n">that</span> <span class="n">later</span> <span class="n">on</span> <span class="p">(</span><span class="n">because</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">create</span> <span class="n">a</span>
+     <span class="o">*</span> <span class="n">database</span> <span class="n">first</span> <span class="n">as</span> <span class="n">we</span> <span class="k">do</span> <span class="n">here</span><span class="p">)</span> <span class="n">you</span> <span class="n">can</span> <span class="n">set</span> <span class="n">this</span> <span class="n">to</span> <span class="n">NULL</span><span class="o">.</span>
+     <span class="o">*/</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">couch_init</span> <span class="p">(</span> <span class="s">&quot;mycouchserver.mynetwork.net:5984&quot;</span><span class="p">,</span> <span class="n">NULL</span> <span class="p">);</span>
 
-    /* Our connection is ready, so create our first database "mydb" */
-    couch_db_create ( c, "mydb" );
+    <span class="sr">/* Our connection is ready, so create our first database &quot;mydb&quot; */</span>
+    <span class="n">couch_db_create</span> <span class="p">(</span> <span class="n">c</span><span class="p">,</span> <span class="s">&quot;mydb&quot;</span> <span class="p">);</span>
 
-    /* In order to make further actions possible (creating/deleting databases is not
-     * that thrilling ;-) ) you have to select, which database we want to use.
-     * If you want to work with more than one database just init as many couches as you
-     * need.
-     */
-    couch_db_use ( c, "mydb" );
+    <span class="sr">/* In order to make further actions possible (creating/</span><span class="n">deleting</span> <span class="n">databases</span> <span class="n">is</span> <span class="ow">not</span>
+     <span class="o">*</span> <span class="n">that</span> <span class="n">thrilling</span> <span class="p">;</span><span class="o">-</span><span class="p">)</span> <span class="p">)</span> <span class="n">you</span> <span class="n">have</span> <span class="n">to</span> <span class="nb">select</span><span class="p">,</span> <span class="n">which</span> <span class="n">database</span> <span class="n">we</span> <span class="n">want</span> <span class="n">to</span> <span class="k">use</span><span class="o">.</span>
+     <span class="o">*</span> <span class="n">If</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">work</span> <span class="n">with</span> <span class="n">more</span> <span class="n">than</span> <span class="n">one</span> <span class="n">database</span> <span class="n">just</span> <span class="n">init</span> <span class="n">as</span> <span class="n">many</span> <span class="n">couches</span> <span class="n">as</span> <span class="n">you</span>
+     <span class="o">*</span> <span class="n">need</span><span class="o">.</span>
+     <span class="o">*/</span>
+    <span class="n">couch_db_use</span> <span class="p">(</span> <span class="n">c</span><span class="p">,</span> <span class="s">&quot;mydb&quot;</span> <span class="p">);</span>
 
-    /* Good, we are now ready to create documents in our database "mydb". The following
-     * function will not instantly create the document but provide us a way to handle
-     * them easily. The creation of the document is done by couch_doc_save() (see below).
-     * You can give your document either a static name or let couchdb generated an
-     * uniue document id for you (this is recommended) with the first parameter.
-     * NULL will let the couchdb generate an id for you.
-     */
-    doc = couch_doc_create ( NULL );
+    <span class="o">/*</span> <span class="n">Good</span><span class="p">,</span> <span class="n">we</span> <span class="n">are</span> <span class="n">now</span> <span class="n">ready</span> <span class="n">to</span> <span class="n">create</span> <span class="n">documents</span> <span class="n">in</span> <span class="k">our</span> <span class="n">database</span> <span class="s">&quot;mydb&quot;</span><span class="o">.</span> <span class="n">The</span> <span class="n">following</span>
+     <span class="o">*</span> <span class="n">function</span> <span class="n">will</span> <span class="ow">not</span> <span class="n">instantly</span> <span class="n">create</span> <span class="n">the</span> <span class="n">document</span> <span class="n">but</span> <span class="n">provide</span> <span class="n">us</span> <span class="n">a</span> <span class="n">way</span> <span class="n">to</span> <span class="n">handle</span>
+     <span class="o">*</span> <span class="n">them</span> <span class="n">easily</span><span class="o">.</span> <span class="n">The</span> <span class="n">creation</span> <span class="n">of</span> <span class="n">the</span> <span class="n">document</span> <span class="n">is</span> <span class="n">done</span> <span class="n">by</span> <span class="n">couch_doc_save</span><span class="p">()</span> <span class="p">(</span><span class="n">see</span> <span class="n">below</span><span class="p">)</span><span class="o">.</span>
+     <span class="o">*</span> <span class="n">You</span> <span class="n">can</span> <span class="n">give</span> <span class="n">your</span> <span class="n">document</span> <span class="n">either</span> <span class="n">a</span> <span class="n">static</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">let</span> <span class="n">couchdb</span> <span class="n">generated</span> <span class="n">an</span>
+     <span class="o">*</span> <span class="n">uniue</span> <span class="n">document</span> <span class="n">id</span> <span class="k">for</span> <span class="n">you</span> <span class="p">(</span><span class="n">this</span> <span class="n">is</span> <span class="n">recommended</span><span class="p">)</span> <span class="n">with</span> <span class="n">the</span> <span class="n">first</span> <span class="n">parameter</span><span class="o">.</span>
+     <span class="o">*</span> <span class="n">NULL</span> <span class="n">will</span> <span class="n">let</span> <span class="n">the</span> <span class="n">couchdb</span> <span class="n">generate</span> <span class="n">an</span> <span class="n">id</span> <span class="k">for</span> <span class="n">you</span><span class="o">.</span>
+     <span class="o">*/</span>
+    <span class="n">doc</span> <span class="o">=</span> <span class="n">couch_doc_create</span> <span class="p">(</span> <span class="n">NULL</span> <span class="p">);</span>
 
-    /* Okay, give the document some content.
-     * You will (hopefully) notice two important things: you can give a field
-     * ("Subject", "Body, "Access") more than one value and the last parameter has
-     * always to be NULL. Your program will die a horrible death if you don't use
-     * NULL as the last parameter, so simply do it ;-)
-     */
-    couch_doc_set ( doc, "Subject", "This is my first document", NULL );
-    couch_doc_set ( doc, "Body", "Hello there. I'm currently working on the creation of my first document in C. It's really easy.", NULL );
-    couch_doc_set ( doc, "Access", "joe", "foo", "bar", NULL );
+    <span class="o">/*</span> <span class="n">Okay</span><span class="p">,</span> <span class="n">give</span> <span class="n">the</span> <span class="n">document</span> <span class="n">some</span> <span class="n">content</span><span class="o">.</span>
+     <span class="o">*</span> <span class="n">You</span> <span class="n">will</span> <span class="p">(</span><span class="n">hopefully</span><span class="p">)</span> <span class="n">notice</span> <span class="n">two</span> <span class="n">important</span> <span class="n">things:</span> <span class="n">you</span> <span class="n">can</span> <span class="n">give</span> <span class="n">a</span> <span class="n">field</span>
+     <span class="o">*</span> <span class="p">(</span><span class="s">&quot;Subject&quot;</span><span class="p">,</span> <span class="s">&quot;Body, &quot;</span><span class="n">Access</span><span class="s">&quot;) more than one value and the last parameter has</span>
+<span class="s">     * always to be NULL. Your program will die a horrible death if you don&#39;t use</span>
+<span class="s">     * NULL as the last parameter, so simply do it ;-)</span>
+<span class="s">     */</span>
+<span class="s">    couch_doc_set ( doc, &quot;</span><span class="n">Subject</span><span class="s">&quot;, &quot;</span><span class="n">This</span> <span class="n">is</span> <span class="k">my</span> <span class="n">first</span> <span class="n">document</span><span class="s">&quot;, NULL );</span>
+<span class="s">    couch_doc_set ( doc, &quot;</span><span class="n">Body</span><span class="s">&quot;, &quot;</span><span class="n">Hello</span> <span class="n">there</span><span class="o">.</span> <span class="n">I</span><span class="s">&#39;m currently working on the creation of my first document in C. It&#39;</span><span class="n">s</span> <span class="n">really</span> <span class="n">easy</span><span class="o">.</span><span class="s">&quot;, NULL );</span>
+<span class="s">    couch_doc_set ( doc, &quot;</span><span class="n">Access</span><span class="s">&quot;, &quot;</span><span class="n">joe</span><span class="s">&quot;, &quot;</span><span class="n">foo</span><span class="s">&quot;, &quot;</span><span class="n">bar</span><span class="s">&quot;, NULL );</span>
 
-    /* you can also give existing fields new values with the same function */
-    couch_doc_set ( doc, "Subject", "This is my very first document", NULL );
+<span class="s">    /* you can also give existing fields new values with the same function */</span>
+<span class="s">    couch_doc_set ( doc, &quot;</span><span class="n">Subject</span><span class="s">&quot;, &quot;</span><span class="n">This</span> <span class="n">is</span> <span class="k">my</span> <span class="n">very</span> <span class="n">first</span> <span class="n">document</span><span class="s">&quot;, NULL );</span>
 
-    /* So the contents of the document is ready, now we need to send the document
-     * to the couchdb-server.
-     */
-    couch_doc_save ( c, doc );
+<span class="s">    /* So the contents of the document is ready, now we need to send the document</span>
+<span class="s">     * to the couchdb-server.</span>
+<span class="s">     */</span>
+<span class="s">    couch_doc_save ( c, doc );</span>
 
-    /* We made it! The document should now be created in the database "mydb".
-     * The last thing we have to do is to cleanup some of the used memory (yes, it's
-     * still c and dynamic memory have to be free()d). Note that you have to use the
-     * reference to the pointer for the cleanup function, because they will set the
-     * doc and c pointers to NULL, just in case a lazy programmer forgets to do that
-     * ;-)
-     */
-    couch_doc_cleanup ( &amp;doc );
-    couch_cleanup ( &amp;c );
+<span class="s">    /* We made it! The document should now be created in the database &quot;</span><span class="n">mydb</span><span class="err">&quot;</span><span class="o">.</span>
+     <span class="o">*</span> <span class="n">The</span> <span class="k">last</span> <span class="n">thing</span> <span class="n">we</span> <span class="n">have</span> <span class="n">to</span> <span class="k">do</span> <span class="n">is</span> <span class="n">to</span> <span class="n">cleanup</span> <span class="n">some</span> <span class="n">of</span> <span class="n">the</span> <span class="n">used</span> <span class="n">memory</span> <span class="p">(</span><span class="n">yes</span><span class="p">,</span> <span class="n">it</span><span class="err">&#39;</span><span class="n">s</span>
+     <span class="o">*</span> <span class="n">still</span> <span class="n">c</span> <span class="ow">and</span> <span class="n">dynamic</span> <span class="n">memory</span> <span class="n">have</span> <span class="n">to</span> <span class="n">be</span> <span class="n">free</span><span class="p">()</span><span class="n">d</span><span class="p">)</span><span class="o">.</span> <span class="n">Note</span> <span class="n">that</span> <span class="n">you</span> <span class="n">have</span> <span class="n">to</span> <span class="k">use</span> <span class="n">the</span>
+     <span class="o">*</span> <span class="n">reference</span> <span class="n">to</span> <span class="n">the</span> <span class="n">pointer</span> <span class="k">for</span> <span class="n">the</span> <span class="n">cleanup</span> <span class="n">function</span><span class="p">,</span> <span class="n">because</span> <span class="n">they</span> <span class="n">will</span> <span class="n">set</span> <span class="n">the</span>
+     <span class="o">*</span> <span class="n">doc</span> <span class="ow">and</span> <span class="n">c</span> <span class="n">pointers</span> <span class="n">to</span> <span class="n">NULL</span><span class="p">,</span> <span class="n">just</span> <span class="n">in</span> <span class="k">case</span> <span class="n">a</span> <span class="n">lazy</span> <span class="n">programmer</span> <span class="n">forgets</span> <span class="n">to</span> <span class="k">do</span> <span class="n">that</span>
+     <span class="o">*</span> <span class="p">;</span><span class="o">-</span><span class="p">)</span>
+     <span class="o">*/</span>
+    <span class="n">couch_doc_cleanup</span> <span class="p">(</span> <span class="o">&amp;</span><span class="n">doc</span> <span class="p">);</span>
+    <span class="n">couch_cleanup</span> <span class="p">(</span> <span class="o">&amp;</span><span class="n">c</span> <span class="p">);</span>
 
-    return 1;
-}
-</code></pre>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Please keep in mind that this simple example don't do any error handling, it shouldn't crash though, but better keep an eye on the return values of the different functions. There are two different possible error situations: A system error and a database error. System errors might occur if not enough free memory was available, the connection to the server was lost and such things. Our int functions will return -1 in that case, you can check errno what error exactly blew up the program. The database errors occur if you tried to do something silly. For example deleting the same document twice, try to alter a document with another revision and so on. The exact error code is stored in c-&gt;result-&gt;code (where c is a Couch structure), the error message is stored in c-&gt;result-&gt;error. Better check the result-code after each transaction with the database (couch_db_create(), couch_doc_save()...).</p>
-<h2>Get Things Rolling</h2>
+<h2 id="get-things-rolling">Get Things Rolling</h2>
 <p>You now know the basics concept behind this API, most of the other available functions are quite self-explaining (couch_db_remove(), couch_doc_remove(), ...), but we are still missing two very important things: The built-in double-linked lists (returned by couch_db_get_all(), couch_doc_get_all() and couch_table_compute()) and the table handling. Because using tables also includes using the build-in list this is best topic to start with. Have a look at the code below (I only commented new stuff).</p>
-<pre><code>&lt;!-- #include &lt;libcouchdb.h&gt; --&gt;
+<div class="codehilite"><pre><span class="o">&lt;!--</span> <span class="c1">#include &lt;libcouchdb.h&gt; --&gt;</span>
 
-int process_list ( void *data, void *data_user );
-int process_list_content ( void *data, void *data_user );
-int process_list_content_field ( void *data, void *data_user );
+<span class="nb">int</span> <span class="n">process_list</span> <span class="p">(</span> <span class="n">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">data_user</span> <span class="p">);</span>
+<span class="nb">int</span> <span class="n">process_list_content</span> <span class="p">(</span> <span class="n">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">data_user</span> <span class="p">);</span>
+<span class="nb">int</span> <span class="n">process_list_content_field</span> <span class="p">(</span> <span class="n">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">data_user</span> <span class="p">);</span>
 
-int main ( void )
-{
-    Couch *c = NULL;
-    CouchDocument *doc = NULL;
-    List *l = NULL;
+<span class="nb">int</span> <span class="n">main</span> <span class="p">(</span> <span class="n">void</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">Couch</span> <span class="o">*</span><span class="n">c</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">;</span>
+    <span class="n">CouchDocument</span> <span class="o">*</span><span class="n">doc</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">;</span>
+    <span class="n">List</span> <span class="o">*</span><span class="n">l</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">;</span>
 
-    c = couch_init ( "mycouchserver.mynetwork.net:5984", "mydb" );
+    <span class="n">c</span> <span class="o">=</span> <span class="n">couch_init</span> <span class="p">(</span> <span class="s">&quot;mycouchserver.mynetwork.net:5984&quot;</span><span class="p">,</span> <span class="s">&quot;mydb&quot;</span> <span class="p">);</span>
 
-    /* Tables are just special documents, but don't forget to give them uniue names! */
-    doc = couch_doc_create ( "tabletest" );
+    <span class="sr">/* Tables are just special documents, but don&#39;t forget to give them uniue names! */</span>
+    <span class="n">doc</span> <span class="o">=</span> <span class="n">couch_doc_create</span> <span class="p">(</span> <span class="s">&quot;tabletest&quot;</span> <span class="p">);</span>
 
-    /* Set the table statement. You can use the fabric language for that.
+    <span class="o">/*</span> <span class="n">Set</span> <span class="n">the</span> <span class="n">table</span> <span class="n">statement</span><span class="o">.</span> <span class="n">You</span> <span class="n">can</span> <span class="k">use</span> <span class="n">the</span> <span class="n">fabric</span> <span class="n">language</span> <span class="k">for</span> <span class="n">that</span><span class="o">.</span>
 
-     * Note that every field has to start with $table_ !
-     */
-    couch_doc_set ( doc, "$table_all", "SELECT *;", NULL );
-    couch_doc_set ( doc, "$table_private", "SELECT Access=Joe; COLUMN Subject;", NULL );
+     <span class="o">*</span> <span class="n">Note</span> <span class="n">that</span> <span class="n">every</span> <span class="n">field</span> <span class="n">has</span> <span class="n">to</span> <span class="n">start</span> <span class="n">with</span> <span class="nv">$table_</span> <span class="o">!</span>
+     <span class="o">*/</span>
+    <span class="n">couch_doc_set</span> <span class="p">(</span> <span class="n">doc</span><span class="p">,</span> <span class="s">&quot;$table_all&quot;</span><span class="p">,</span> <span class="s">&quot;SELECT *;&quot;</span><span class="p">,</span> <span class="n">NULL</span> <span class="p">);</span>
+    <span class="n">couch_doc_set</span> <span class="p">(</span> <span class="n">doc</span><span class="p">,</span> <span class="s">&quot;$table_private&quot;</span><span class="p">,</span> <span class="s">&quot;SELECT Access=Joe; COLUMN Subject;&quot;</span><span class="p">,</span> <span class="n">NULL</span> <span class="p">);</span>
 
-    /* Save the table. */
-    couch_doc_save ( c, doc );
+    <span class="sr">/* Save the table. */</span>
+    <span class="n">couch_doc_save</span> <span class="p">(</span> <span class="n">c</span><span class="p">,</span> <span class="n">doc</span> <span class="p">);</span>
 
-    /* now use the table to query the database */
-    l = couch_table_compute ( c, "tabletest:private" );
+    <span class="sr">/* now use the table to query the database */</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">couch_table_compute</span> <span class="p">(</span> <span class="n">c</span><span class="p">,</span> <span class="s">&quot;tabletest:private&quot;</span> <span class="p">);</span>
 
-    /* okay we have now a list with the result. in the most cases, we want to go
-     * through the list and look at it's entries. This is the best way to do that
-     * (though others are possible).
-     */
-    list_foreach ( l, process_list, NULL );
+    <span class="o">/*</span> <span class="n">okay</span> <span class="n">we</span> <span class="n">have</span> <span class="n">now</span> <span class="n">a</span> <span class="n">list</span> <span class="n">with</span> <span class="n">the</span> <span class="n">result</span><span class="o">.</span> <span class="n">in</span> <span class="n">the</span> <span class="n">most</span> <span class="n">cases</span><span class="p">,</span> <span class="n">we</span> <span class="n">want</span> <span class="n">to</span> <span class="n">go</span>
+     <span class="o">*</span> <span class="n">through</span> <span class="n">the</span> <span class="n">list</span> <span class="ow">and</span> <span class="n">look</span> <span class="n">at</span> <span class="n">it</span><span class="s">&#39;s entries. This is the best way to do that</span>
+<span class="s">     * (though others are possible).</span>
+<span class="s">     */</span>
+<span class="s">    list_foreach ( l, process_list, NULL );</span>
 
-    /* we're done, cleanup plz! */
-    couch_list_cleanup ( &amp;l );
-    couch_doc_cleanup ( &amp;doc );
-    couch_cleanup ( &amp;c );
-}
+<span class="s">    /* we&#39;</span><span class="n">re</span> <span class="n">done</span><span class="p">,</span> <span class="n">cleanup</span> <span class="n">plz</span><span class="o">!</span> <span class="o">*/</span>
+    <span class="n">couch_list_cleanup</span> <span class="p">(</span> <span class="o">&amp;</span><span class="n">l</span> <span class="p">);</span>
+    <span class="n">couch_doc_cleanup</span> <span class="p">(</span> <span class="o">&amp;</span><span class="n">doc</span> <span class="p">);</span>
+    <span class="n">couch_cleanup</span> <span class="p">(</span> <span class="o">&amp;</span><span class="n">c</span> <span class="p">);</span>
+<span class="p">}</span>
 
-/* return values might be:
- * -1: error -&gt; terminate the loop
- *  0: don't jump to the next item -&gt; process this item again
- *  1: everything is fine, go on
- *
- * parameters:
- *   data - pointer to the current item
- *   data_user - pointer to the data of the last parameter of list_foreach().
- *               this data is always the same for each item - unless you change it
- *               in this function of course ;-)
- */
-int process_list ( void *data, void *data_user )
-{
-    CouchDocument *doc = NULL;
+<span class="o">/*</span> <span class="k">return</span> <span class="nb">values</span> <span class="n">might</span> <span class="n">be:</span>
+ <span class="o">*</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">error</span> <span class="o">-&gt;</span> <span class="n">terminate</span> <span class="n">the</span> <span class="n">loop</span>
+ <span class="o">*</span>  <span class="mi">0</span><span class="p">:</span> <span class="n">don</span><span class="s">&#39;t jump to the next item -&gt; process this item again</span>
+<span class="s"> *  1: everything is fine, go on</span>
+<span class="s"> *</span>
+<span class="s"> * parameters:</span>
+<span class="s"> *   data - pointer to the current item</span>
+<span class="s"> *   data_user - pointer to the data of the last parameter of list_foreach().</span>
+<span class="s"> *               this data is always the same for each item - unless you change it</span>
+<span class="s"> *               in this function of course ;-)</span>
+<span class="s"> */</span>
+<span class="s">int process_list ( void *data, void *data_user )</span>
+<span class="s">{</span>
+<span class="s">    CouchDocument *doc = NULL;</span>
 
-    if ( !data || data_user )
-        return -1;
+<span class="s">    if ( !data || data_user )</span>
+<span class="s">        return -1;</span>
 
-    /* the list don't know which item it holds, so we need to cast them.
-     * in the case of couch_table_compute(), we'll get a list of documents and their
-     * contents.
-     */
-    doc = (CouchDocument *)data;
+<span class="s">    /* the list don&#39;</span><span class="n">t</span> <span class="n">know</span> <span class="n">which</span> <span class="n">item</span> <span class="n">it</span> <span class="n">holds</span><span class="p">,</span> <span class="n">so</span> <span class="n">we</span> <span class="n">need</span> <span class="n">to</span> <span class="n">cast</span> <span class="n">them</span><span class="o">.</span>
+     <span class="o">*</span> <span class="n">in</span> <span class="n">the</span> <span class="k">case</span> <span class="n">of</span> <span class="n">couch_table_compute</span><span class="p">(),</span> <span class="n">we</span><span class="err">&#39;</span><span class="n">ll</span> <span class="n">get</span> <span class="n">a</span> <span class="n">list</span> <span class="n">of</span> <span class="n">documents</span> <span class="ow">and</span> <span class="n">their</span>
+     <span class="o">*</span> <span class="n">contents</span><span class="o">.</span>
+     <span class="o">*/</span>
+    <span class="n">doc</span> <span class="o">=</span> <span class="p">(</span><span class="n">CouchDocument</span> <span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">;</span>
 
-    /* now we can do cool things with the document. what about just print them to the
-     * screen? ;-)
-     */
-    printf ( "Document: %s\n", doc-&gt;docid );
+    <span class="o">/*</span> <span class="n">now</span> <span class="n">we</span> <span class="n">can</span> <span class="k">do</span> <span class="n">cool</span> <span class="n">things</span> <span class="n">with</span> <span class="n">the</span> <span class="n">document</span><span class="o">.</span> <span class="n">what</span> <span class="n">about</span> <span class="n">just</span> <span class="k">print</span> <span class="n">them</span> <span class="n">to</span> <span class="n">the</span>
+     <span class="o">*</span> <span class="n">screen</span><span class="p">?</span> <span class="p">;</span><span class="o">-</span><span class="p">)</span>
+     <span class="o">*/</span>
+    <span class="nb">printf</span> <span class="p">(</span> <span class="s">&quot;Document: %s\n&quot;</span><span class="p">,</span> <span class="n">doc</span><span class="o">-&gt;</span><span class="n">docid</span> <span class="p">);</span>
 
-    /* what about the document fields? */
-    list_foreach ( doc-&gt;content, process_list_content, NULL );
+    <span class="sr">/* what about the document fields? */</span>
+    <span class="n">list_foreach</span> <span class="p">(</span> <span class="n">doc</span><span class="o">-&gt;</span><span class="n">content</span><span class="p">,</span> <span class="n">process_list_content</span><span class="p">,</span> <span class="n">NULL</span> <span class="p">);</span>
 
-    /* everything is fine, go ahead */
-    return 1;
-}
+    <span class="sr">/* everything is fine, go ahead */</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
 
-int process_list_content ( void *data, void *data_user )
-{
-    CouchDocumentField *f = NULL;
+<span class="nb">int</span> <span class="n">process_list_content</span> <span class="p">(</span> <span class="n">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">data_user</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">CouchDocumentField</span> <span class="o">*</span><span class="n">f</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">;</span>
 
-    if ( !data || data_user )
-        return -1;
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">data</span> <span class="o">||</span> <span class="n">data_user</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
 
-    /* now the items are CouchDocumentFields. */
-    f = (CouchDocumentField *)data;
+    <span class="sr">/* now the items are CouchDocumentFields. */</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">CouchDocumentField</span> <span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">;</span>
 
-    /* print the name of the field. */
-    printf ( "  Field: %s\n", f-&gt;name );
+    <span class="sr">/* print the name of the field. */</span>
+    <span class="nb">printf</span> <span class="p">(</span> <span class="s">&quot;  Field: %s\n&quot;</span><span class="p">,</span> <span class="n">f</span><span class="o">-&gt;</span><span class="n">name</span> <span class="p">);</span>
 
-    /* hey, what about the values of a field? yes, third loop ;-) */
-    list_foreach ( f-&gt;values, process_list_content_field, NULL );
+    <span class="sr">/* hey, what about the values of a field? yes, third loop ;-) */</span>
+    <span class="n">list_foreach</span> <span class="p">(</span> <span class="n">f</span><span class="o">-&gt;</span><span class="nb">values</span><span class="p">,</span> <span class="n">process_list_content_field</span><span class="p">,</span> <span class="n">NULL</span> <span class="p">);</span>
 
-    /* go go! */
-    return 1;
-}
+    <span class="sr">/* go go! */</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
 
-int process_list_content_field ( void *data, void *data_user )
-{
-    CouchDocumentFieldContent *c = NULL,
+<span class="nb">int</span> <span class="n">process_list_content_field</span> <span class="p">(</span> <span class="n">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="n">void</span> <span class="o">*</span><span class="n">data_user</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">CouchDocumentFieldContent</span> <span class="o">*</span><span class="n">c</span> <span class="o">=</span> <span class="n">NULL</span><span class="p">,</span>
 
-    if ( !data || data_user )
-        return -1;
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="n">data</span> <span class="o">||</span> <span class="n">data_user</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
 
-    /* see above ;-) */
-    c = (CouchDocumentFieldContent *)data;
+    <span class="sr">/* see above ;-) */</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">CouchDocumentFieldContent</span> <span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">;</span>
 
-    /* print the values */
-    printf ( "      Content: %s\n", c-&gt;value );
+    <span class="sr">/* print the values */</span>
+    <span class="nb">printf</span> <span class="p">(</span> <span class="s">&quot;      Content: %s\n&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">value</span> <span class="p">);</span>
 
-    /* what about... no, forget that ;-) */
+    <span class="sr">/* what about... no, forget that ;-) */</span>
 
-    /* go to the next item */
-    return 1;
-}
-</code></pre>
+    <span class="sr">/* go to the next item */</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>You have a clean code that is separated in logical steps (not one big bloated function) and you can do much more things with a double-linked list than with for example an array. Take a look at the list.h in the inc/ directory of the C API source, there are quite some other possibilities (you can even put everything in one bloated function if you like). So, be sure that this was the most complex task that is possible with this API, if you did understand everything you're ready to write your first CouchDB application!</p>
 </div>
       <div id="footer">

@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Transaction_model_use_cases</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,18 +56,18 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <p>This page describes use cases that require a transaction model not currently supported by CouchDB: inter-document all-or-nothing transactions with conflict checking.</p>
 <p>Please add real world use cases with enough details as to explain why the transactions might be necessary, the consequences of not having it, etc. Then we can examine the use cases and see if the current CouchDB models can work, or if CouchDB is really appropriate, or if we need new transaction models to support the use cases.</p>
-<h2>Template</h2>
+<h2 id="template">Template</h2>
 <p>Description of a real-world use case of why single-node, inter-document transaction are needed.</p>
 <p><strong><em>Discussion as to how to model the above use case in CouchDB without single-node, inter-document transactions</em></strong></p>
-<h2>DVCS</h2>
+<h2 id="dvcs">DVCS</h2>
 <p>I may as well throw this one out there -- it seems like an obvious use case for a document-oriented db in general and Couch in particular. Given the constant arguments over the available choices there's clearly no <em>winner</em> yet, so what the hell -- why not in Couch? The only way I can imagine an implementation with the current transaction semantics is to keep each branch as a document and drop docs in as attachments, but this is probably less than optimal. Correct me if I'm wrong.</p>
-<h2>Update Product and Categories</h2>
+<h2 id="update-product-and-categories">Update Product and Categories</h2>
 <p>I'm trying to model a simple shopping cart solution on couchdb, just to find out the solutions to the problems that have come to my mind so far. Let's say, I have 2 types of documents, products and categories, where product may belong to multiple categories. I expect product to hold an array of category ids. A simple use case:
  1. user A updates an existing product, and updates a category(-ies), say, increasing product count property
  2. the same category at the same time is being updated by user B, by uploading an updated image to it</p>
@@ -57,7 +75,7 @@
 <p>***I do realize that I can rework the model in this specific scenario. Maybe it's a bad example as is... -Andrius'''''</p>
 <p>If the operations happen in this exact order (1,2), user B will get a concurrent modification warning, and will have to reapply his changes.</p>
 <p>But what if the product gets updated, then the category gets updated with a new image, and then the product count is increased on that category? The last step will fail, and the data in the system will remain in (logically) inconsistent state.</p>
-<h2>Simple example involving money</h2>
+<h2 id="simple-example-involving-money">Simple example involving money</h2>
 <p>documents Account A (1000$), Account B (1000$), with balance property.</p>
 <p>2 operations in progress:
  1. Transfer 100$ from A to B
@@ -67,7 +85,7 @@
  2. B+50$, balance = 1050$
  3. B+100$, update fails because B's revision is not the one being expected. Balance A(900), B(1050), 100$ short.</p>
 <p><strong><em>The proper way to do this is treat CouchDB as a ledger, with each line item as a new document. Then to do a transfer a single document that shows the money subtracted from account A and added to account B. To get the balance of an account, create a view of transactions by account and use a reduction to add up all the transactions for each account.</em></strong></p>
-<h2>Harder example involving money</h2>
+<h2 id="harder-example-involving-money">Harder example involving money</h2>
 <p>Documents store a transaction log -- from account, recipient account and amount transfered. A view exists to give a balance for each account. At all times, every accounts' balance should be greater-or-equal to zero. Balance of account A is $100. Two transactions proposed, "Transfer $80 from A to B", and "Transfer $60 from
 A to C":</p>
 <ol>
@@ -88,7 +106,7 @@ A to C":</p>
 <li>Otherwise: delete transaction</li>
 </ol>
 <p>might be feasible, but getting the right semantics for the second step seems hard.</p>
-<h2>Users, groups and relationships</h2>
+<h2 id="users-groups-and-relationships">Users, groups and relationships</h2>
 <p>Documents: User, Group;
 User has a list of group id's he belongs to. </p>
 <ol>
@@ -103,7 +121,7 @@ User has a list of group id's he belongs to. </p>
 <p><strong><em>Store the users name in the group document, not the other way around.</em></strong></p>
 <p>Alternative use case: user is being deleted. References need to be removed from multiple groups. Database dies in the middle because of the power outage?</p>
 <p><strong><em>Put the user into an "about to delete" state. Then remove the user from all groups, then completely delete the user. To deal with failures in the process, periodically search for users in the "about to delete" state and remove them from all groups, then delete the user. This is how Lotus Notes handles it.</em></strong></p>
-<h2>User content publishing system</h2>
+<h2 id="user-content-publishing-system">User content publishing system</h2>
 <p>There's a MMO community portal, where users are able to publish their own content. The content is moderated. The users might get one of a few bonuses for publishing good articles, i.e., 30 pieces of virtual silver. Articles might be pretty big (with attachments and such), so you can't embed them directly into the user document. The user has a log of transactions, that specify what bonuses and when he received, with reference to the article id. Transaction log can't be moved to the article document either, because it may contain any type of micro-payments to and by the user. </p>
 <ol>
 <li>User writes an article, and submits it; </li>

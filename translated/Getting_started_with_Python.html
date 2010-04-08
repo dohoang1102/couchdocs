@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Getting_started_with_Python</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,277 +56,382 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <p>Getting started with Python and the CouchDB API.</p>
-<h2>Library</h2>
-<h3>couchdbkit</h3>
+<h2 id="library">Library</h2>
+<h3 id="couchdbkit">couchdbkit</h3>
 <p>. http://couchdbkit.org/</p>
 <p>Start using Couchdbkit by reading the <a href="http://couchdbkit.org/docs/gettingstarted.html">Getting Started tutorial</a>.</p>
 <p>For django use the <a href="http://www.couchdbkit.org/docs/django-extension.html">django extension</a> of couchdbkit. Other extension exists for <a href="http://docs.formalchemy.org/ext/couchdb.html">formalchemy</a>.</p>
-<h3>couchdb-python</h3>
+<h3 id="couchdb-python">couchdb-python</h3>
 <p>The code for the Python library can be obtained from:</p>
 <p>. http://code.google.com/p/couchdb-python</p>
 <p>From a terminal window:</p>
-<pre><code>$ wget http://peak.telecommunity.com/dist/ez_setup.py
-$ sudo python ez_setup.py
-$ wget http://pypi.python.org/packages/2.5/C/CouchDB/CouchDB-0.6-py2.5.egg
-$ sudo easy_install CouchDB-0.6-py2.5.egg
-</code></pre>
+<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">wget</span> <span class="n">http:</span><span class="sr">//</span><span class="n">peak</span><span class="o">.</span><span class="n">telecommunity</span><span class="o">.</span><span class="n">com</span><span class="sr">/dist/</span><span class="n">ez_setup</span><span class="o">.</span><span class="n">py</span>
+<span class="nv">$</span> <span class="nv">sudo</span> <span class="n">python</span> <span class="n">ez_setup</span><span class="o">.</span><span class="n">py</span>
+<span class="nv">$</span> <span class="nv">wget</span> <span class="n">http:</span><span class="sr">//</span><span class="n">pypi</span><span class="o">.</span><span class="n">python</span><span class="o">.</span><span class="n">org</span><span class="sr">/packages/</span><span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="sr">/C/</span><span class="n">CouchDB</span><span class="o">/</span><span class="n">CouchDB</span><span class="o">-</span><span class="mi">0</span><span class="o">.</span><span class="mi">6</span><span class="o">-</span><span class="n">py2</span><span class="o">.</span><span class="mi">5</span><span class="o">.</span><span class="n">egg</span>
+<span class="nv">$</span> <span class="nv">sudo</span> <span class="n">easy_install</span> <span class="n">CouchDB</span><span class="o">-</span><span class="mi">0</span><span class="o">.</span><span class="mi">6</span><span class="o">-</span><span class="n">py2</span><span class="o">.</span><span class="mi">5</span><span class="o">.</span><span class="n">egg</span>
+</pre></div>
+
+
 <p>This first downloads and installs the <em>ez_setup.py</em> script which runs python <em>.egg</em> files. The second part downloads the <em>.egg</em> file for CouchDB and installs it along with its dependencies.</p>
-<h3>couchquery</h3>
+<h3 id="couchquery">couchquery</h3>
 <p>. http://mikeal.github.com/couchquery/</p>
-<h2>Tutorial on using couchdb-python with Django</h2>
+<h2 id="tutorial-on-using-couchdb-python-with-django">Tutorial on using couchdb-python with Django</h2>
 <p>A tutorial on using Django (a Python framework) with CouchDb can be found at</p>
 <p>. http://lethain.com/entry/2008/aug/18/an-introduction-to-using-couchdb-with-django/ http://www.eflorenzano.com/blog/post/using-couchdb-django/</p>
 <p>Alternatively you can view just the source for that example at</p>
 <p>. http://github.com/lethain/comfy-django-example/tree/master</p>
-<h2>Example Wrapper Class</h2>
+<h2 id="example-wrapper-class">Example Wrapper Class</h2>
 <p>Demonstration of basic API-interaction using Python. (note: as of python 2.6, one can use "import json" for the same functionality in this script.)</p>
-<pre><code>&lt;!-- #! /usr/bin/python2.4 --&gt;
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100</pre></div></td><td class="code"><div class="codehilite"><pre><span class="o">&lt;!--</span> <span class="c1">#! /usr/bin/python2.4 --&gt;</span>
 
-import httplib, simplejson  # http://cheeseshop.python.org/pypi/simplejson
-                            # Here only used for prettyprinting
+<span class="nb">import</span> <span class="n">httplib</span><span class="p">,</span> <span class="n">simplejson</span>  <span class="c1"># http://cheeseshop.python.org/pypi/simplejson</span>
+                            <span class="c1"># Here only used for prettyprinting</span>
 
-def prettyPrint(s):
-    """Prettyprints the json response of an HTTPResponse object"""
+<span class="n">def</span> <span class="n">prettyPrint</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="s">&quot;&quot;&quot;Prettyprints the json response of an HTTPResponse object&quot;&quot;&quot;</span>
 
-    # HTTPResponse instance -&gt; Python object -&gt; str
-    print simplejson.dumps(simplejson.loads(s.read()), sort_keys=True, indent=4)
+    <span class="c1"># HTTPResponse instance -&gt; Python object -&gt; str</span>
+    <span class="k">print</span> <span class="n">simplejson</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">simplejson</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="nb">read</span><span class="p">()),</span> <span class="n">sort_keys</span><span class="o">=</span><span class="n">True</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 
-class Couch:
-    """Basic wrapper class for operations on a couchDB"""
+<span class="n">class</span> <span class="n">Couch:</span>
+    <span class="s">&quot;&quot;&quot;Basic wrapper class for operations on a couchDB&quot;&quot;&quot;</span>
 
-    def _\_init_\_(self, host, port=5984, options=None):
-        self.host = host
-        self.port = port
+    <span class="n">def</span> <span class="n">_</span><span class="o">\</span><span class="n">_init_</span><span class="o">\</span><span class="n">_</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">5984</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">None</span><span class="p">):</span>
+        <span class="n">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="n">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
 
-    def connect(self):
-        return httplib.HTTPConnection(self.host, self.port) # No close()
+    <span class="n">def</span> <span class="nb">connect</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">httplib</span><span class="o">.</span><span class="n">HTTPConnection</span><span class="p">(</span><span class="n">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span> <span class="c1"># No close()</span>
 
-    # Database operations
+    <span class="c1"># Database operations</span>
 
-    def createDb(self, dbName):
-        """Creates a new database on the server"""
+    <span class="n">def</span> <span class="n">createDb</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">dbName</span><span class="p">):</span>
+        <span class="s">&quot;&quot;&quot;Creates a new database on the server&quot;&quot;&quot;</span>
 
-        r = self.put(''.join(['/',dbName,'/']), "")
-        prettyPrint(r)
+        <span class="n">r</span> <span class="o">=</span> <span class="n">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="nb">join</span><span class="p">([</span><span class="s">&#39;/&#39;</span><span class="p">,</span><span class="n">dbName</span><span class="p">,</span><span class="s">&#39;/&#39;</span><span class="p">]),</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">prettyPrint</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
-    def deleteDb(self, dbName):
-        """Deletes the database on the server"""
+    <span class="n">def</span> <span class="n">deleteDb</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">dbName</span><span class="p">):</span>
+        <span class="s">&quot;&quot;&quot;Deletes the database on the server&quot;&quot;&quot;</span>
 
-        r = self.delete(''.join(['/',dbName,'/']))
-        prettyPrint(r)
+        <span class="n">r</span> <span class="o">=</span> <span class="n">self</span><span class="o">.</span><span class="nb">delete</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="nb">join</span><span class="p">([</span><span class="s">&#39;/&#39;</span><span class="p">,</span><span class="n">dbName</span><span class="p">,</span><span class="s">&#39;/&#39;</span><span class="p">]))</span>
+        <span class="n">prettyPrint</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
-    def listDb(self):
-        """List the databases on the server"""
+    <span class="n">def</span> <span class="n">listDb</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="s">&quot;&quot;&quot;List the databases on the server&quot;&quot;&quot;</span>
 
-        prettyPrint(self.get('/_all_dbs'))
+        <span class="n">prettyPrint</span><span class="p">(</span><span class="n">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;/_all_dbs&#39;</span><span class="p">))</span>
 
-    def infoDb(self, dbName):
-        """Returns info about the couchDB"""
-        r = self.get(''.join(['/', dbName, '/']))
-        prettyPrint(r)
+    <span class="n">def</span> <span class="n">infoDb</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">dbName</span><span class="p">):</span>
+        <span class="s">&quot;&quot;&quot;Returns info about the couchDB&quot;&quot;&quot;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="nb">join</span><span class="p">([</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">dbName</span><span class="p">,</span> <span class="s">&#39;/&#39;</span><span class="p">]))</span>
+        <span class="n">prettyPrint</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
-    # Document operations
+    <span class="c1"># Document operations</span>
 
-    def listDoc(self, dbName):
-        """List all documents in a given database"""
+    <span class="n">def</span> <span class="n">listDoc</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">dbName</span><span class="p">):</span>
+        <span class="s">&quot;&quot;&quot;List all documents in a given database&quot;&quot;&quot;</span>
 
-        r = self.get(''.join(['/', dbName, '/', '_all_docs']))
-        prettyPrint(r)
+        <span class="n">r</span> <span class="o">=</span> <span class="n">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="nb">join</span><span class="p">([</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">dbName</span><span class="p">,</span> <span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="s">&#39;_all_docs&#39;</span><span class="p">]))</span>
+        <span class="n">prettyPrint</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
-    def openDoc(self, dbName, docId):
-        """Open a document in a given database"""
-        r = self.get(''.join(['/', dbName, '/', docId,]))
-        prettyPrint(r)
+    <span class="n">def</span> <span class="n">openDoc</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">dbName</span><span class="p">,</span> <span class="n">docId</span><span class="p">):</span>
+        <span class="s">&quot;&quot;&quot;Open a document in a given database&quot;&quot;&quot;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="nb">join</span><span class="p">([</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">dbName</span><span class="p">,</span> <span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">docId</span><span class="p">,]))</span>
+        <span class="n">prettyPrint</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
-    def saveDoc(self, dbName, body, docId=None):
-        """Save/create a document to/in a given database"""
-        if docId:
-            r = self.put(''.join(['/', dbName, '/', docId]), body)
-        else:
-            r = self.post(''.join(['/', dbName, '/']), body)
-        prettyPrint(r)
+    <span class="n">def</span> <span class="n">saveDoc</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">dbName</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">docId</span><span class="o">=</span><span class="n">None</span><span class="p">):</span>
+        <span class="s">&quot;&quot;&quot;Save/create a document to/in a given database&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">docId:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="nb">join</span><span class="p">([</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">dbName</span><span class="p">,</span> <span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">docId</span><span class="p">]),</span> <span class="n">body</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">self</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="nb">join</span><span class="p">([</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">dbName</span><span class="p">,</span> <span class="s">&#39;/&#39;</span><span class="p">]),</span> <span class="n">body</span><span class="p">)</span>
+        <span class="n">prettyPrint</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
-    def deleteDoc(self, dbName, docId):
-        # XXX Crashed if resource is non-existent; not so for DELETE on db. Bug?
-        # XXX Does not work any more, on has to specify an revid
-        #     Either do html head to get the recten revid or provide it as parameter
-        r = self.delete(''.join(['/', dbName, '/', docId]))
-        prettyPrint(r)
+    <span class="n">def</span> <span class="n">deleteDoc</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">dbName</span><span class="p">,</span> <span class="n">docId</span><span class="p">):</span>
+        <span class="c1"># XXX Crashed if resource is non-existent; not so for DELETE on db. Bug?</span>
+        <span class="c1"># XXX Does not work any more, on has to specify an revid</span>
+        <span class="c1">#     Either do html head to get the recten revid or provide it as parameter</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">self</span><span class="o">.</span><span class="nb">delete</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="nb">join</span><span class="p">([</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">dbName</span><span class="p">,</span> <span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">docId</span><span class="p">]))</span>
+        <span class="n">prettyPrint</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
-    # Basic http methods
+    <span class="c1"># Basic http methods</span>
 
-    def get(self, uri):
-        c = self.connect()
-        headers = {"Accept": "application/json"}
-        c.request("GET", uri, None, headers)
-        return c.getresponse()
+    <span class="n">def</span> <span class="n">get</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">self</span><span class="o">.</span><span class="nb">connect</span><span class="p">()</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Accept&quot;</span><span class="p">:</span> <span class="s">&quot;application/json&quot;</span><span class="p">}</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s">&quot;GET&quot;</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">None</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">c</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
 
-    def post(self, uri, body):
-        c = self.connect()
-        headers = {"Content-type": "application/json"}
-        c.request('POST', uri, body, headers)
-        return c.getresponse()
+    <span class="n">def</span> <span class="n">post</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">self</span><span class="o">.</span><span class="nb">connect</span><span class="p">()</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Content-type&quot;</span><span class="p">:</span> <span class="s">&quot;application/json&quot;</span><span class="p">}</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">c</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
 
-    def put(self, uri, body):
-        c = self.connect()
-        if len(body) &gt; 0:
-            headers = {"Content-type": "application/json"}
-            c.request("PUT", uri, body, headers)
-        else:
-            c.request("PUT", uri, body)
-        return c.getresponse()
+    <span class="n">def</span> <span class="n">put</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">self</span><span class="o">.</span><span class="nb">connect</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">len</span><span class="p">(</span><span class="n">body</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Content-type&quot;</span><span class="p">:</span> <span class="s">&quot;application/json&quot;</span><span class="p">}</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s">&quot;PUT&quot;</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">body</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s">&quot;PUT&quot;</span><span class="p">,</span> <span class="n">uri</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">c</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
 
-    def delete(self, uri):
-        c = self.connect()
-        c.request("DELETE", uri)
-        return c.getresponse()
-</code></pre>
-<h2>Usage Example</h2>
-<pre><code>def test():
-    foo = Couch('localhost', '5984')
+    <span class="n">def</span> <span class="nb">delete</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">uri</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">self</span><span class="o">.</span><span class="nb">connect</span><span class="p">()</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s">&quot;DELETE&quot;</span><span class="p">,</span> <span class="n">uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">c</span><span class="o">.</span><span class="n">getresponse</span><span class="p">()</span>
+</pre></div>
+</td></tr></table>
 
-    print "\nCreate database 'mydb':"
-    foo.createDb('mydb')
+<h2 id="usage-example">Usage Example</h2>
+<div class="codehilite"><pre><span class="n">def</span> <span class="n">test</span><span class="p">():</span>
+    <span class="n">foo</span> <span class="o">=</span> <span class="n">Couch</span><span class="p">(</span><span class="s">&#39;localhost&#39;</span><span class="p">,</span> <span class="s">&#39;5984&#39;</span><span class="p">)</span>
 
-    print "\nList databases on server:"
-    foo.listDb()
+    <span class="k">print</span> <span class="s">&quot;\nCreate database &#39;mydb&#39;:&quot;</span>
+    <span class="n">foo</span><span class="o">.</span><span class="n">createDb</span><span class="p">(</span><span class="s">&#39;mydb&#39;</span><span class="p">)</span>
 
-    print "\nCreate a document 'mydoc' in database 'mydb':"
-    doc = """
-    {
-        "value":
-        {
-            "Subject":"I like Planktion",
-            "Author":"Rusty",
-            "PostedDate":"2006-08-15T17:30:12-04:00",
-            "Tags":["plankton", "baseball", "decisions"],
-            "Body":"I decided today that I don't like baseball. I like plankton."
-        }
-    }
-    """
-    foo.saveDoc('mydb', doc, 'mydoc')
+    <span class="k">print</span> <span class="s">&quot;\nList databases on server:&quot;</span>
+    <span class="n">foo</span><span class="o">.</span><span class="n">listDb</span><span class="p">()</span>
 
-    print "\nCreate a document, using an assigned docId:"
-    foo.saveDoc('mydb', doc)
+    <span class="k">print</span> <span class="s">&quot;\nCreate a document &#39;mydoc&#39; in database &#39;mydb&#39;:&quot;</span>
+    <span class="n">doc</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">    {</span>
+<span class="s">        &quot;</span><span class="n">value</span><span class="s">&quot;:</span>
+<span class="s">        {</span>
+<span class="s">            &quot;</span><span class="n">Subject</span><span class="s">&quot;:&quot;</span><span class="n">I</span> <span class="n">like</span> <span class="n">Planktion</span><span class="s">&quot;,</span>
+<span class="s">            &quot;</span><span class="n">Author</span><span class="s">&quot;:&quot;</span><span class="n">Rusty</span><span class="s">&quot;,</span>
+<span class="s">            &quot;</span><span class="n">PostedDate</span><span class="s">&quot;:&quot;</span><span class="mi">2006</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">15</span><span class="n">T17:30:12</span><span class="o">-</span><span class="mo">04</span><span class="p">:</span><span class="mo">00</span><span class="s">&quot;,</span>
+<span class="s">            &quot;</span><span class="n">Tags</span><span class="s">&quot;:[&quot;</span><span class="n">plankton</span><span class="s">&quot;, &quot;</span><span class="n">baseball</span><span class="s">&quot;, &quot;</span><span class="n">decisions</span><span class="s">&quot;],</span>
+<span class="s">            &quot;</span><span class="n">Body</span><span class="s">&quot;:&quot;</span><span class="n">I</span> <span class="n">decided</span> <span class="n">today</span> <span class="n">that</span> <span class="n">I</span> <span class="n">don</span><span class="s">&#39;t like baseball. I like plankton.&quot;</span>
+<span class="s">        }</span>
+<span class="s">    }</span>
+<span class="s">    &quot;&quot;&quot;</span>
+<span class="s">    foo.saveDoc(&#39;</span><span class="n">mydb</span><span class="s">&#39;, doc, &#39;</span><span class="n">mydoc</span><span class="s">&#39;)</span>
 
-    print "\nList all documents in database 'mydb'"
-    foo.listDoc('mydb')
+<span class="s">    print &quot;\nCreate a document, using an assigned docId:&quot;</span>
+<span class="s">    foo.saveDoc(&#39;</span><span class="n">mydb</span><span class="s">&#39;, doc)</span>
 
-    print "\nRetrieve document 'mydoc' in database 'mydb':"
-    foo.openDoc('mydb', 'mydoc')
+<span class="s">    print &quot;\nList all documents in database &#39;</span><span class="n">mydb</span><span class="s">&#39;&quot;</span>
+<span class="s">    foo.listDoc(&#39;</span><span class="n">mydb</span><span class="s">&#39;)</span>
 
-    print "\nDelete document 'mydoc' in database 'mydb':"
-    foo.deleteDoc('mydb', 'mydoc')
+<span class="s">    print &quot;\nRetrieve document &#39;</span><span class="n">mydoc</span><span class="s">&#39; in database &#39;</span><span class="n">mydb</span><span class="s">&#39;:&quot;</span>
+<span class="s">    foo.openDoc(&#39;</span><span class="n">mydb</span><span class="s">&#39;, &#39;</span><span class="n">mydoc</span><span class="s">&#39;)</span>
 
-    print "\nList all documents in database 'mydb'"
-    foo.listDoc('mydb')
+<span class="s">    print &quot;\nDelete document &#39;</span><span class="n">mydoc</span><span class="s">&#39; in database &#39;</span><span class="n">mydb</span><span class="s">&#39;:&quot;</span>
+<span class="s">    foo.deleteDoc(&#39;</span><span class="n">mydb</span><span class="s">&#39;, &#39;</span><span class="n">mydoc</span><span class="s">&#39;)</span>
 
-    print "\nList info about database 'mydb':"
-    foo.infoDb('mydb')
+<span class="s">    print &quot;\nList all documents in database &#39;</span><span class="n">mydb</span><span class="s">&#39;&quot;</span>
+<span class="s">    foo.listDoc(&#39;</span><span class="n">mydb</span><span class="s">&#39;)</span>
 
-    print "\nDelete database 'mydb':"
-    foo.deleteDb('mydb')
+<span class="s">    print &quot;\nList info about database &#39;</span><span class="n">mydb</span><span class="s">&#39;:&quot;</span>
+<span class="s">    foo.infoDb(&#39;</span><span class="n">mydb</span><span class="s">&#39;)</span>
 
-    print "\nList databases on server:"
-    foo.listDb()
+<span class="s">    print &quot;\nDelete database &#39;</span><span class="n">mydb</span><span class="s">&#39;:&quot;</span>
+<span class="s">    foo.deleteDb(&#39;</span><span class="n">mydb</span><span class="err">&#39;</span><span class="p">)</span>
 
-if _\_name__ == "_\_main_\_":
-    test()
-</code></pre>
-<h2>Sample Output</h2>
-<pre><code>Create database 'mydb':
-{
-    "ok": true
-}
+    <span class="k">print</span> <span class="s">&quot;\nList databases on server:&quot;</span>
+    <span class="n">foo</span><span class="o">.</span><span class="n">listDb</span><span class="p">()</span>
 
-List databases on server:
-[
-    "mydb"
-]
+<span class="k">if</span> <span class="n">_</span><span class="o">\</span><span class="n">_name__</span> <span class="o">==</span> <span class="s">&quot;_\_main_\_&quot;</span><span class="p">:</span>
+    <span class="n">test</span><span class="p">()</span>
+</pre></div>
 
-Create a document 'mydoc' in database 'mydb':
-{
-    "_id": "mydoc",
-    "_rev": 362213977,
-    "ok": true
-}
 
-Create a document, using an assigned docId:
-{
-    "_id": "CF29360495B2AAB44C7E43E5752A5123",
-    "_rev": 627930386,
-    "ok": true
-}
+<h2 id="sample-output">Sample Output</h2>
+<div class="codehilite"><pre><span class="n">Create</span> <span class="n">database</span> <span class="s">&#39;mydb&#39;</span><span class="p">:</span>
+<span class="p">{</span>
+    <span class="s">&quot;ok&quot;</span><span class="p">:</span> <span class="n">true</span>
+<span class="p">}</span>
 
-List all documents in database 'mydb'
-{
-    "rows": [
-        {
-            "_id": "CF29360495B2AAB44C7E43E5752A5123",
-            "_rev": 627930386
-        },
-        {
-            "_id": "mydoc",
-            "_rev": 362213977
-        }
-    ],
-    "view": "_all_docs"
-}
+<span class="n">List</span> <span class="n">databases</span> <span class="n">on</span> <span class="n">server:</span>
+<span class="p">[</span>
+    <span class="s">&quot;mydb&quot;</span>
+<span class="p">]</span>
 
-Retrieve document 'mydoc' in database 'mydb':
-{
-    "_id": "mydoc",
-    "_rev": 362213977,
-    "value": {
-        "Author": "Rusty",
-        "Body": "I decided today that I don't like baseball. I like plankton.",
-        "PostedDate": "2006-08-15T17:30:12-04:00",
-        "Subject": "I like Planktion",
-        "Tags": [
-            "plankton",
-            "baseball",
-            "decisions"
-        ]
-    }
-}
+<span class="n">Create</span> <span class="n">a</span> <span class="n">document</span> <span class="s">&#39;mydoc&#39;</span> <span class="n">in</span> <span class="n">database</span> <span class="s">&#39;mydb&#39;</span><span class="p">:</span>
+<span class="p">{</span>
+    <span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;mydoc&quot;</span><span class="p">,</span>
+    <span class="s">&quot;_rev&quot;</span><span class="p">:</span> <span class="mi">362213977</span><span class="p">,</span>
+    <span class="s">&quot;ok&quot;</span><span class="p">:</span> <span class="n">true</span>
+<span class="p">}</span>
 
-Delete document 'mydoc' in database 'mydb':
-{
-    "_rev": 3811288472,
-    "ok": true
-}
+<span class="n">Create</span> <span class="n">a</span> <span class="n">document</span><span class="p">,</span> <span class="n">using</span> <span class="n">an</span> <span class="n">assigned</span> <span class="n">docId:</span>
+<span class="p">{</span>
+    <span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;CF29360495B2AAB44C7E43E5752A5123&quot;</span><span class="p">,</span>
+    <span class="s">&quot;_rev&quot;</span><span class="p">:</span> <span class="mi">627930386</span><span class="p">,</span>
+    <span class="s">&quot;ok&quot;</span><span class="p">:</span> <span class="n">true</span>
+<span class="p">}</span>
 
-List all documents in database 'mydb'
-{
-    "rows": [
-        {
-            "_id": "CF29360495B2AAB44C7E43E5752A5123",
-            "_rev": 627930386
-        }
-    ],
-    "view": "_all_docs"
-}
+<span class="n">List</span> <span class="n">all</span> <span class="n">documents</span> <span class="n">in</span> <span class="n">database</span> <span class="s">&#39;mydb&#39;</span>
+<span class="p">{</span>
+    <span class="s">&quot;rows&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;CF29360495B2AAB44C7E43E5752A5123&quot;</span><span class="p">,</span>
+            <span class="s">&quot;_rev&quot;</span><span class="p">:</span> <span class="mi">627930386</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;mydoc&quot;</span><span class="p">,</span>
+            <span class="s">&quot;_rev&quot;</span><span class="p">:</span> <span class="mi">362213977</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s">&quot;view&quot;</span><span class="p">:</span> <span class="s">&quot;_all_docs&quot;</span>
+<span class="p">}</span>
 
-List info about database 'mydb':
-{
-    "db_name": "mydb",
-    "doc_count": 1,
-    "update_seq": 3
-}
+<span class="n">Retrieve</span> <span class="n">document</span> <span class="s">&#39;mydoc&#39;</span> <span class="n">in</span> <span class="n">database</span> <span class="s">&#39;mydb&#39;</span><span class="p">:</span>
+<span class="p">{</span>
+    <span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;mydoc&quot;</span><span class="p">,</span>
+    <span class="s">&quot;_rev&quot;</span><span class="p">:</span> <span class="mi">362213977</span><span class="p">,</span>
+    <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&quot;Author&quot;</span><span class="p">:</span> <span class="s">&quot;Rusty&quot;</span><span class="p">,</span>
+        <span class="s">&quot;Body&quot;</span><span class="p">:</span> <span class="s">&quot;I decided today that I don&#39;t like baseball. I like plankton.&quot;</span><span class="p">,</span>
+        <span class="s">&quot;PostedDate&quot;</span><span class="p">:</span> <span class="s">&quot;2006-08-15T17:30:12-04:00&quot;</span><span class="p">,</span>
+        <span class="s">&quot;Subject&quot;</span><span class="p">:</span> <span class="s">&quot;I like Planktion&quot;</span><span class="p">,</span>
+        <span class="s">&quot;Tags&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s">&quot;plankton&quot;</span><span class="p">,</span>
+            <span class="s">&quot;baseball&quot;</span><span class="p">,</span>
+            <span class="s">&quot;decisions&quot;</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-Delete database 'mydb':
-{
-    "ok": true
-}
+<span class="n">Delete</span> <span class="n">document</span> <span class="s">&#39;mydoc&#39;</span> <span class="n">in</span> <span class="n">database</span> <span class="s">&#39;mydb&#39;</span><span class="p">:</span>
+<span class="p">{</span>
+    <span class="s">&quot;_rev&quot;</span><span class="p">:</span> <span class="mi">3811288472</span><span class="p">,</span>
+    <span class="s">&quot;ok&quot;</span><span class="p">:</span> <span class="n">true</span>
+<span class="p">}</span>
 
-List databases on server:
-[]
-</code></pre>
+<span class="n">List</span> <span class="n">all</span> <span class="n">documents</span> <span class="n">in</span> <span class="n">database</span> <span class="s">&#39;mydb&#39;</span>
+<span class="p">{</span>
+    <span class="s">&quot;rows&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;CF29360495B2AAB44C7E43E5752A5123&quot;</span><span class="p">,</span>
+            <span class="s">&quot;_rev&quot;</span><span class="p">:</span> <span class="mi">627930386</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s">&quot;view&quot;</span><span class="p">:</span> <span class="s">&quot;_all_docs&quot;</span>
+<span class="p">}</span>
+
+<span class="n">List</span> <span class="n">info</span> <span class="n">about</span> <span class="n">database</span> <span class="s">&#39;mydb&#39;</span><span class="p">:</span>
+<span class="p">{</span>
+    <span class="s">&quot;db_name&quot;</span><span class="p">:</span> <span class="s">&quot;mydb&quot;</span><span class="p">,</span>
+    <span class="s">&quot;doc_count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s">&quot;update_seq&quot;</span><span class="p">:</span> <span class="mi">3</span>
+<span class="p">}</span>
+
+<span class="n">Delete</span> <span class="n">database</span> <span class="s">&#39;mydb&#39;</span><span class="p">:</span>
+<span class="p">{</span>
+    <span class="s">&quot;ok&quot;</span><span class="p">:</span> <span class="n">true</span>
+<span class="p">}</span>
+
+<span class="n">List</span> <span class="n">databases</span> <span class="n">on</span> <span class="n">server:</span>
+<span class="o">[]</span>
+</pre></div>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

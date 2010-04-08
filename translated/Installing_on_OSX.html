@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Installing_on_OSX</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,46 +56,60 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h2>Unofficial Binary Packages</h2>
+  <h2 id="unofficial-binary-packages">Unofficial Binary Packages</h2>
 <ul>
 <li>If you just want to give CouchDB a shot and don't like the command line based installation, you can get this unofficial binary release for Mac OS X 10.5 Leopard and Intel Macs only: http://janl.github.com/couchdbx/</li>
 <li>Nightly build of CouchDB for OS X: http://couch.lstoll.net/nightly/</li>
 </ul>
-<h2>MacPorts</h2>
+<h2 id="macports">MacPorts</h2>
 <p>To install CouchDB using MacPorts</p>
-<pre><code>$ sudo port install couchdb
-</code></pre>
+<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">sudo</span> <span class="n">port</span> <span class="n">install</span> <span class="n">couchdb</span>
+</pre></div>
+
+
 <p>should be enough. MacPorts takes care of installing all necessary dependencies. If you have already installed some of the CouchDB dependencies via MacPorts, run this command to check and upgrade any outdated ones, <em>after installing CouchDB</em>:</p>
-<pre><code>$ sudo port upgrade couchdb
-</code></pre>
+<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">sudo</span> <span class="n">port</span> <span class="n">upgrade</span> <span class="n">couchdb</span>
+</pre></div>
+
+
 <p>This will upgrade dependencies recursively, if there are more recent versions available. If you want to run CouchDB as a service controlled by the OS, load the launchd configuration which comes with the project, with this command:</p>
-<pre><code>$ sudo launchctl load -w /opt/local/Library/LaunchDaemons/org.apache.couchdb.plist
-</code></pre>
+<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">sudo</span> <span class="n">launchctl</span> <span class="n">load</span> <span class="o">-</span><span class="n">w</span> <span class="sr">/opt/</span><span class="nb">local</span><span class="sr">/Library/</span><span class="n">LaunchDaemons</span><span class="o">/</span><span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">couchdb</span><span class="o">.</span><span class="n">plist</span>
+</pre></div>
+
+
 <p>and it should be up and accessible via http://127.0.0.1:5984/_utils/index.html. It should also be restarted automatically after reboot (because of the -w flag).</p>
 <p>If not, be sure to check permissions on couchdb files and repair them if neccessary:</p>
-<pre><code>$ sudo chown -R couchdb:couchdb /opt/local/var/lib/couchdb/ /opt/local/var/log/couchdb/
-</code></pre>
+<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">sudo</span> <span class="nb">chown</span> <span class="o">-</span><span class="n">R</span> <span class="n">couchdb:couchdb</span> <span class="sr">/opt/</span><span class="nb">local</span><span class="sr">/var/</span><span class="n">lib</span><span class="sr">/couchdb/</span> <span class="sr">/opt/</span><span class="nb">local</span><span class="sr">/var/</span><span class="nb">log</span><span class="sr">/couchdb/</span>
+</pre></div>
+
+
 <p>Updating the ports collection. The collection of port files has to be updated to reflect the latest versions of available packages. In order to do that run:</p>
-<pre><code>$ sudo port selfupdate
-</code></pre>
+<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">sudo</span> <span class="n">port</span> <span class="n">selfupdate</span>
+</pre></div>
+
+
 <p>to update the port tree, and then install just as explained.</p>
-<h2>Dependencies - Erlang</h2>
+<h2 id="dependencies-erlang">Dependencies - Erlang</h2>
 <p>If Erlang fails to build with the error:</p>
-<pre><code>Command output: megaco_flex_scanner_drv.flex:31: unknown error processing section 1
-</code></pre>
+<div class="codehilite"><pre><span class="n">Command</span> <span class="n">output:</span> <span class="n">megaco_flex_scanner_drv</span><span class="o">.</span><span class="n">flex:31:</span> <span class="n">unknown</span> <span class="n">error</span> <span class="n">processing</span> <span class="n">section</span> <span class="mi">1</span>
+</pre></div>
+
+
 <p>You will need to upgrade flex: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=465039</p>
-<h2>Typical build process of a CouchDB developer build</h2>
-<pre><code>$ svn co http://svn.apache.org/repos/asf/couchdb/trunk couchdb
-$ cd couchdb
-$ ./bootstrap &amp;&amp; ./configure
-$ make
-$ sudo make install
-</code></pre>
-<h2>Installing from source on Mac OS X 10.6 Snow Leopard</h2>
+<h2 id="typical-build-process-of-a-couchdb-developer-build">Typical build process of a CouchDB developer build</h2>
+<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">svn</span> <span class="n">co</span> <span class="n">http:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/couchdb/</span><span class="n">trunk</span> <span class="n">couchdb</span>
+<span class="nv">$</span> <span class="nv">cd</span> <span class="n">couchdb</span>
+<span class="nv">$</span> <span class="err">./</span><span class="nv">bootstrap</span> <span class="o">&amp;&amp;</span> <span class="o">./</span><span class="n">configure</span>
+<span class="nv">$</span> <span class="nv">make</span>
+<span class="nv">$</span> <span class="nv">sudo</span> <span class="n">make</span> <span class="n">install</span>
+</pre></div>
+
+
+<h2 id="installing-from-source-on-mac-os-x-106-snow-leopard">Installing from source on Mac OS X 10.6 Snow Leopard</h2>
 <p>Here is a recipe to install CouchDB from source on Mac OS X 10.6 Snow Leopard with needed dependencies.</p>
 <ol>
 <li>
@@ -94,35 +126,45 @@ $ sudo make install</p>
 </li>
 </ol>
 <p>We need <a href="http://svn.macports.org/repository/macports/trunk/dports/lang/spidermonkey/files/patch-jsprf.c">jsprf patch</a> from the MacPorts project to install SpiderMonkey.</p>
-<pre><code>$ curl -O http://ftp.mozilla.org/pub/mozilla.org/js/js-1.7.0.tar.gz
-$ curl -O http://svn.macports.org/repository/macports/trunk/dports/lang/spidermonkey/files/patch-jsprf.c
-$ tar xvzf js-1.7.0.tar.gz
-$ cd js/src
-$ patch -p0 -i ../../patch-jsprf.c
-$ make -f Makefile.ref
-$ sudo su
-$ JS_DIST=/usr/local/spidermonkey make -f Makefile.ref export
-$ exit
-$ sudo ranlib /usr/local/spidermonkey/lib/libjs.a
-</code></pre>
-<p><strong>NOTE:</strong> You may receive the following warning. You should be safe to ignore it and proceed with the instructions.</p>
-<pre><code>ranlib: file: /usr/local/spidermonkey/lib/libjs.a(jslock.o) has no symbols
-</code></pre>
-<h4>Using DYLD_LIBRARY_PATH</h4>
-<p>add to your .profile this line :</p>
-<pre><code>export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/usr/local/spidermonkey/lib
-</code></pre>
-<p>then reload your env :</p>
-<pre><code>$ . ~/.profile
-</code></pre>
-<h4>Avoding DYLD_LIBRARY_PATH</h4>
-<p>Not using DYLD_LIBRARY_PATH means that you don't need to worry about setting the environment for other users (ie, the couchdb user or root). Also, it avoids the need to tell the CouchDB ./configure script where to find spidermonkey.</p>
-<pre><code>$ sudo ln -s /usr/local/spidermonkey/include /usr/local/include/js
-$ sudo ln -s /usr/local/spidermonkey/lib/libjs.dylib /usr/local/lib/libjs.dylib
-&lt;!-- # If you're feeling saucey, the js shell can be useful for quick syntax checking and the like. --&gt;
+<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">O</span> <span class="n">http:</span><span class="sr">//</span><span class="n">ftp</span><span class="o">.</span><span class="n">mozilla</span><span class="o">.</span><span class="n">org</span><span class="sr">/pub/mo</span><span class="n">zilla</span><span class="o">.</span><span class="n">org</span><span class="sr">/js/</span><span class="n">js</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">7</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">O</span> <span class="n">http:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">macports</span><span class="o">.</span><span class="n">org</span><span class="sr">/repository/m</span><span class="n">acports</span><span class="sr">/trunk/</span><span class="n">dports</span><span class="sr">/lang/s</span><span class="n">pidermonkey</span><span class="sr">/files/</span><span class="n">patch</span><span class="o">-</span><span class="n">jsprf</span><span class="o">.</span><span class="n">c</span>
+<span class="nv">$</span> <span class="nv">tar</span> <span class="n">xvzf</span> <span class="n">js</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">7</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="nv">$</span> <span class="nv">cd</span> <span class="n">js</span><span class="o">/</span><span class="n">src</span>
+<span class="nv">$</span> <span class="nv">patch</span> <span class="o">-</span><span class="n">p0</span> <span class="o">-</span><span class="n">i</span> <span class="o">..</span><span class="sr">/../</span><span class="n">patch</span><span class="o">-</span><span class="n">jsprf</span><span class="o">.</span><span class="n">c</span>
+<span class="nv">$</span> <span class="nv">make</span> <span class="o">-</span><span class="n">f</span> <span class="n">Makefile</span><span class="o">.</span><span class="nb">ref</span>
+<span class="nv">$</span> <span class="nv">sudo</span> <span class="n">su</span>
+<span class="nv">$</span> <span class="nv">JS_DIST</span><span class="o">=</span><span class="sr">/usr/</span><span class="nb">local</span><span class="o">/</span><span class="n">spidermonkey</span> <span class="n">make</span> <span class="o">-</span><span class="n">f</span> <span class="n">Makefile</span><span class="o">.</span><span class="nb">ref</span> <span class="n">export</span>
+<span class="nv">$</span> <span class="nv">exit</span>
+<span class="nv">$</span> <span class="nv">sudo</span> <span class="n">ranlib</span> <span class="sr">/usr/</span><span class="nb">local</span><span class="sr">/spidermonkey/</span><span class="n">lib</span><span class="o">/</span><span class="n">libjs</span><span class="o">.</span><span class="n">a</span>
+</pre></div>
 
-$ sudo ln -s /usr/local/spidermonkey/bin/js /usr/local/bin/js
-</code></pre>
+
+<p><strong>NOTE:</strong> You may receive the following warning. You should be safe to ignore it and proceed with the instructions.</p>
+<div class="codehilite"><pre><span class="err">ranlib:</span> <span class="err">file:</span> <span class="err">/usr/local/spidermonkey/lib/libjs.a(jslock.o)</span> <span class="err">has</span> <span class="err">no</span> <span class="err">symbols</span>
+</pre></div>
+
+
+<h4 id="using-dyld_library_path">Using DYLD_LIBRARY_PATH</h4>
+<p>add to your .profile this line :</p>
+<div class="codehilite"><pre><span class="n">export</span> <span class="n">DYLD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$DYLD_LIBRARY_PATH:</span><span class="sr">/usr/</span><span class="nb">local</span><span class="sr">/spidermonkey/</span><span class="n">lib</span>
+</pre></div>
+
+
+<p>then reload your env :</p>
+<div class="codehilite"><pre><span class="nv">$</span> <span class="err">.</span> <span class="err">~/.</span><span class="nv">profile</span>
+</pre></div>
+
+
+<h4 id="avoding-dyld_library_path">Avoding DYLD_LIBRARY_PATH</h4>
+<p>Not using DYLD_LIBRARY_PATH means that you don't need to worry about setting the environment for other users (ie, the couchdb user or root). Also, it avoids the need to tell the CouchDB ./configure script where to find spidermonkey.</p>
+<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="sr">/usr/</span><span class="nb">local</span><span class="sr">/spidermonkey/i</span><span class="n">nclude</span> <span class="sr">/usr/</span><span class="nb">local</span><span class="sr">/include/</span><span class="n">js</span>
+<span class="nv">$</span> <span class="nv">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="sr">/usr/</span><span class="nb">local</span><span class="sr">/spidermonkey/</span><span class="n">lib</span><span class="sr">/libjs.dylib /</span><span class="n">usr</span><span class="sr">/local/</span><span class="n">lib</span><span class="o">/</span><span class="n">libjs</span><span class="o">.</span><span class="n">dylib</span>
+<span class="o">&lt;!--</span> <span class="c1"># If you&#39;re feeling saucey, the js shell can be useful for quick syntax checking and the like. --&gt;</span>
+
+<span class="nv">$</span> <span class="nv">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="sr">/usr/</span><span class="nb">local</span><span class="sr">/spidermonkey/</span><span class="n">bin</span><span class="sr">/js /</span><span class="n">usr</span><span class="sr">/local/</span><span class="n">bin</span><span class="o">/</span><span class="n">js</span>
+</pre></div>
+
+
 <ol>
 <li>
 <p>Install Erlang R13B01</p>
@@ -138,20 +180,22 @@ $ sudo make install</p>
 </li>
 </ol>
 <p>We will install it from the trunk, but installation from released source should work</p>
-<pre><code>$ svn co http://svn.apache.org/repos/asf/couchdb/trunk couchdb
-$ cd couchdb
-$ ./bootstrap &amp;&amp; ./configure --with-js-include=/usr/local/spidermonkey/include --with-js-lib=/usr/local/spidermonkey/lib
-$ make
-</code></pre>
-<h4>NOTE</h4>
+<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">svn</span> <span class="n">co</span> <span class="n">http:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/couchdb/</span><span class="n">trunk</span> <span class="n">couchdb</span>
+<span class="nv">$</span> <span class="nv">cd</span> <span class="n">couchdb</span>
+<span class="nv">$</span> <span class="err">./</span><span class="nv">bootstrap</span> <span class="o">&amp;&amp;</span> <span class="o">.</span><span class="sr">/configure --with-js-include=/</span><span class="n">usr</span><span class="sr">/local/s</span><span class="n">pidermonkey</span><span class="sr">/include --with-js-lib=/</span><span class="n">usr</span><span class="sr">/local/s</span><span class="n">pidermonkey</span><span class="o">/</span><span class="n">lib</span>
+<span class="nv">$</span> <span class="nv">make</span>
+</pre></div>
+
+
+<h4 id="note">NOTE</h4>
 <p>If you avoided using DYLD_LIBRARY_PATH when installing spidermonkey, you won't need to use the --with-js-[include|lib] flags.</p>
 <ol>
 <li>Running</li>
 </ol>
 <p>If you want to install run <code>make install</code> . For developement use do :</p>
-<pre><code>$ make dev
-$ ./utils/run
-</code></pre>
+<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">make</span> <span class="n">dev</span>
+<span class="nv">$</span> <span class="err">./</span><span class="nv">utils</span><span class="o">/</span><span class="n">run</span>
+</pre></div>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - HTTP_view_API</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,90 +56,117 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h1>HTTP View API</h1>
-<!-- <<TableOfContents(2)>> -->
-
+  <h1 id="http-view-api">HTTP View API</h1>
+<div class="toc">
+<ul>
+<li><a href="#http-view-api">HTTP View API</a><ul>
+<li><a href="#basics">Basics</a></li>
+<li><a href="#creating-views">Creating Views</a></li>
+<li><a href="#alteringchanging-views">Altering/Changing Views</a></li>
+<li><a href="#accessquery">Access/Query</a></li>
+<li><a href="#querying-options">Querying Options</a></li>
+<li><a href="#getting-information-about-design-documents-and-their-views">Getting Information about Design Documents (and their Views)</a><ul>
+<li><a href="#meaning-of-the-status-hash">Meaning of the status hash</a></li>
+</ul>
+</li>
+<li><a href="#debugging-views">Debugging Views</a></li>
+<li><a href="#sharing-code-between-views">Sharing Code Between Views</a></li>
+<li><a href="#view-cleanup">View Cleanup</a></li>
+<li><a href="#view-compaction">View Compaction</a><ul>
+<li><a href="#temporary-views">Temporary Views</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
 <p>An introduction to the CouchDB HTTP view API.</p>
-<h2>Basics</h2>
+<h2 id="basics">Basics</h2>
 <p>Views are the primary tool used for querying and reporting on CouchDB databases. They are defined in !JavaScript (although there are other query servers available). For a more detailed introduction to views see <a class="internal" href="Introduction_to_CouchDB_views.html">Introduction_to_CouchDB_views</a>.</p>
-<h2>Creating Views</h2>
+<h2 id="creating-views">Creating Views</h2>
 <p>To create a permanent view, the functions must first be saved into special <em>design documents</em> (well, they are not really special, we just call them special but in reality, they are regular documents, just with a special ID). The IDs of design documents must begin with <em>_design/</em> and have a special views attribute that have a <em>map</em> member and an optional <em>reduce</em> member to hold the view functions. All the views in one design document are indexed whenever any of them gets queried.</p>
 <p>A design document that defines <em>all</em>, <em>by_lastname</em>, and <em>total_purchases</em> views might look like this:</p>
-<pre><code>{
-  "_id":"_design/company",
-  "_rev":"12345",
-  "language": "javascript",
-  "views":
-  {
-    "all": {
-      "map": "function(doc) { if (doc.Type == 'customer')  emit(null, doc) }"
-    },
-    "by_lastname": {
-      "map": "function(doc) { if (doc.Type == 'customer')  emit(doc.LastName, doc) }"
-    },
-    "total_purchases": {
-      "map": "function(doc) { if (doc.Type == 'purchase')  emit(doc.Customer, doc.Amount) }",
-      "reduce": "function(keys, values) { return sum(values) }"
-    }
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span>
+  <span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;_design/company&quot;</span><span class="p">,</span>
+  <span class="s">&quot;_rev&quot;</span><span class="p">:</span><span class="s">&quot;12345&quot;</span><span class="p">,</span>
+  <span class="s">&quot;language&quot;</span><span class="p">:</span> <span class="s">&quot;javascript&quot;</span><span class="p">,</span>
+  <span class="s">&quot;views&quot;</span><span class="p">:</span>
+  <span class="p">{</span>
+    <span class="s">&quot;all&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s">&quot;map&quot;</span><span class="p">:</span> <span class="s">&quot;function(doc) { if (doc.Type == &#39;customer&#39;)  emit(null, doc) }&quot;</span>
+    <span class="p">},</span>
+    <span class="s">&quot;by_lastname&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s">&quot;map&quot;</span><span class="p">:</span> <span class="s">&quot;function(doc) { if (doc.Type == &#39;customer&#39;)  emit(doc.LastName, doc) }&quot;</span>
+    <span class="p">},</span>
+    <span class="s">&quot;total_purchases&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s">&quot;map&quot;</span><span class="p">:</span> <span class="s">&quot;function(doc) { if (doc.Type == &#39;purchase&#39;)  emit(doc.Customer, doc.Amount) }&quot;</span><span class="p">,</span>
+      <span class="s">&quot;reduce&quot;</span><span class="p">:</span> <span class="s">&quot;function(keys, values) { return sum(values) }&quot;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>The <em>language</em> property tells CouchDB the language of the view functions, which it uses to select the appropriate ViewServer (as specified in your couch.ini file). The default is to assume Javascript, so this property can be omitted for Javascript views.</p>
-<h2>Altering/Changing Views</h2>
+<h2 id="alteringchanging-views">Altering/Changing Views</h2>
 <p>To change a view or multiple view just alter the design document (see HttpDocumentApi) they are stored in and save it as a new revision.</p>
-<h2>Access/Query</h2>
+<h2 id="accessquery">Access/Query</h2>
 <p>Once this document is saved into a database, then the <em>all</em> view can be retrieved at the URL:</p>
 <p>http://localhost:5984/database/_design/company/_view/all</p>
 <p>Example:</p>
-<pre><code>GET /some_database/_design/company/_view/all HTTP/1.0
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-</code></pre>
-<p>And will result in the following response:</p>
-<pre><code> HTTP/1.1 200 OK
- Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
- Content-Length: 318
- Connection: close
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/some_database/</span><span class="n">_design</span><span class="sr">/company/</span><span class="n">_view</span><span class="sr">/all HTTP/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+</pre></div>
 
- {
-    "total_rows": 3,
-    "offset": 0,
-    "rows": [{
-        "id":"64ACF01B05F53ACFEC48C062A5D01D89",
-        "key": null,
-        "value": {
-          "LastName":"Katz",
-          "FirstName":"Damien",
-          "Address":"2407 Sawyer drive, Charlotte NC",
-          "Phone":012555754211
-        }
-      }, {
-        "id":"5D01D8964ACF01B05F53ACFEC48C062A",
-        "key": null,
-        "value": {
-          "LastName":"Kerr",
-          "FirstName":"Wayne",
-          "Address":"123 Fake st., such and such",
-          "Phone":88721320939
-        }
-      }, {
-        "id":"EC48C062A5D01D8964ACF01B05F53ACF",
-        "key": null,
-        "value":
-        {
-          "LastName":"McCracken",
-          "FirstName":"Phil",
-          "Address":"1234 Fake st., such and such",
-          "Phone":7766552342
-        }
-      }
-    ]
- }
-</code></pre>
-<h2>Querying Options</h2>
+
+<p>And will result in the following response:</p>
+<div class="codehilite"><pre> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">200</span> <span class="n">OK</span>
+ <span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+ <span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">318</span>
+ <span class="n">Connection:</span> <span class="nb">close</span>
+
+ <span class="p">{</span>
+    <span class="s">&quot;total_rows&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="s">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s">&quot;rows&quot;</span><span class="p">:</span> <span class="p">[{</span>
+        <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;64ACF01B05F53ACFEC48C062A5D01D89&quot;</span><span class="p">,</span>
+        <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
+        <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s">&quot;LastName&quot;</span><span class="p">:</span><span class="s">&quot;Katz&quot;</span><span class="p">,</span>
+          <span class="s">&quot;FirstName&quot;</span><span class="p">:</span><span class="s">&quot;Damien&quot;</span><span class="p">,</span>
+          <span class="s">&quot;Address&quot;</span><span class="p">:</span><span class="s">&quot;2407 Sawyer drive, Charlotte NC&quot;</span><span class="p">,</span>
+          <span class="s">&quot;Phone&quot;</span><span class="p">:</span><span class="mo">012555754211</span>
+        <span class="p">}</span>
+      <span class="p">},</span> <span class="p">{</span>
+        <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;5D01D8964ACF01B05F53ACFEC48C062A&quot;</span><span class="p">,</span>
+        <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
+        <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s">&quot;LastName&quot;</span><span class="p">:</span><span class="s">&quot;Kerr&quot;</span><span class="p">,</span>
+          <span class="s">&quot;FirstName&quot;</span><span class="p">:</span><span class="s">&quot;Wayne&quot;</span><span class="p">,</span>
+          <span class="s">&quot;Address&quot;</span><span class="p">:</span><span class="s">&quot;123 Fake st., such and such&quot;</span><span class="p">,</span>
+          <span class="s">&quot;Phone&quot;</span><span class="p">:</span><span class="mi">88721320939</span>
+        <span class="p">}</span>
+      <span class="p">},</span> <span class="p">{</span>
+        <span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;EC48C062A5D01D8964ACF01B05F53ACF&quot;</span><span class="p">,</span>
+        <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
+        <span class="s">&quot;value&quot;</span><span class="p">:</span>
+        <span class="p">{</span>
+          <span class="s">&quot;LastName&quot;</span><span class="p">:</span><span class="s">&quot;McCracken&quot;</span><span class="p">,</span>
+          <span class="s">&quot;FirstName&quot;</span><span class="p">:</span><span class="s">&quot;Phil&quot;</span><span class="p">,</span>
+          <span class="s">&quot;Address&quot;</span><span class="p">:</span><span class="s">&quot;1234 Fake st., such and such&quot;</span><span class="p">,</span>
+          <span class="s">&quot;Phone&quot;</span><span class="p">:</span><span class="mi">7766552342</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+ <span class="p">}</span>
+</pre></div>
+
+
+<h2 id="querying-options">Querying Options</h2>
 <p>Columns can be a list of values, there is no set limit to the number of values or amount of data that columns can hold.</p>
 <p>The following URL query arguments are allowed:</p>
 <ul>
@@ -157,27 +202,31 @@ Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
 <p>If a view contains both a map and reduce function, querying that view will by default return the result of the reduce function. The result of the map function only may be retrieved by passing <em>reduce=false</em> as a query parameter.</p>
 <p>The <em>include_docs</em> option will include the associated document. Although, the user should keep in mind that there is a race condition when using this option. It is possible that between reading the view data and fetching the corresponding document that the document has changed. If you want to alleviate such concerns you should emit an object with a _rev attribute as in <em>emit(key, {"_rev": doc._rev})</em>. This alleviates the race condition but leaves the possiblity that the returned document has been deleted (in which case, it includes the <em>"_deleted": true</em> attribute).</p>
 <p>The <em>inclusive_end</em> option controls whether the <em>endkey</em> is included in the result. It defaults to true.</p>
-<h2>Getting Information about Design Documents (and their Views)</h2>
+<h2 id="getting-information-about-design-documents-and-their-views">Getting Information about Design Documents (and their Views)</h2>
 <p>You can query the design document (<em>_design/test</em> in this case) by GET for some information on the view:</p>
-<pre><code>curl -X GET http://localhost:5984/databasename/_design/test/_info
-</code></pre>
+<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">GET</span> <span class="n">http:</span><span class="sr">//</span><span class="n">localhost:5984</span><span class="sr">/databasename/</span><span class="n">_design</span><span class="sr">/test/</span><span class="n">_info</span>
+</pre></div>
+
+
 <p>will produce something like this:</p>
-<pre><code>{
-    "name": "test", 
-    "view_index": {
-        "compact_running": false, 
-        "disk_size": 4188, 
-        "language": "javascript", 
-        "purge_seq": 0, 
-        "signature": "07ca32cf9b0de9c915c5d9ce653cdca3", 
-        "update_seq": 4, 
-        "updater_running": false, 
-        "waiting_clients": 0, 
-        "waiting_commit": false
-    }
-}
-</code></pre>
-<h3>Meaning of the status hash</h3>
+<div class="codehilite"><pre><span class="p">{</span>
+    <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;test&quot;</span><span class="p">,</span> 
+    <span class="s">&quot;view_index&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&quot;compact_running&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span> 
+        <span class="s">&quot;disk_size&quot;</span><span class="p">:</span> <span class="mi">4188</span><span class="p">,</span> 
+        <span class="s">&quot;language&quot;</span><span class="p">:</span> <span class="s">&quot;javascript&quot;</span><span class="p">,</span> 
+        <span class="s">&quot;purge_seq&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
+        <span class="s">&quot;signature&quot;</span><span class="p">:</span> <span class="s">&quot;07ca32cf9b0de9c915c5d9ce653cdca3&quot;</span><span class="p">,</span> 
+        <span class="s">&quot;update_seq&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> 
+        <span class="s">&quot;updater_running&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span> 
+        <span class="s">&quot;waiting_clients&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
+        <span class="s">&quot;waiting_commit&quot;</span><span class="p">:</span> <span class="n">false</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="meaning-of-the-status-hash">Meaning of the status hash</h3>
 <p>||<strong>Key</strong>||&lt;-2&gt;<strong>Description</strong>||
 ||<em>name</em>||&lt;-2&gt;Name of the design document without the <em>_design</em> prefix (string)||
 ||<em>view_index</em>||&lt;-2&gt;Contains information on the views (JSON object)||
@@ -191,13 +240,15 @@ Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
 || ||<em>waiting_clients</em>||How many clients are waiting on views of this design document (int)||
 || ||<em>update_seq</em>||The update sequence of the corresponding database that has been indexed (int)||
 || ||<em>purge_seq</em>||The purge sequence that has been processed (int)||</p>
-<h2>Debugging Views</h2>
+<h2 id="debugging-views">Debugging Views</h2>
 <p>When creating views, CouchDB will check the syntax of the submitted JSON, but the view functions themselves will not be syntax checked by the Javascript interpreter. And if any one of the view functions has a syntax error, none of the view functions in that design document will execute. Perhaps test your functions in a temporary view before saving them in the database.</p>
 <p>As of r660140 there is a log function available in the views, which logs to the couch.log. It can be helpful for debugging but hinders performance, so it should be used sparingly in production systems.</p>
-<pre><code>{
-  "map": "function(doc) { log(doc); }"
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span>
+  <span class="s">&quot;map&quot;</span><span class="p">:</span> <span class="s">&quot;function(doc) { log(doc); }&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Playing with (malformed) views is currently the best way to bring the couchdb server in an unstable state. Also the Futon Web-Client does not interact very well with errors in views. Some suggestions for view development:</p>
 <ul>
 <li>Develop views on a separate server instance, not on your production systems</li>
@@ -207,41 +258,49 @@ Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
 <li>Work with only a few hundred documents for testing.</li>
 <li>Keep in mind that the the Futon Web-Client silently adds <em>group=true</em> to your views.</li>
 </ul>
-<h2>Sharing Code Between Views</h2>
+<h2 id="sharing-code-between-views">Sharing Code Between Views</h2>
 <p>There are no development plans to share code/functions between views.  Each view function is stored according to a hash of their byte representation, so it is important that a function does not load any additional code, changing its behavior without changing its byte-string.  Hence the use-case for <a href="http://github.com/couchapp/couchapp">CouchApp</a>.</p>
-<h2>View Cleanup</h2>
+<h2 id="view-cleanup">View Cleanup</h2>
 <p>Old view output remains on disk until you explicitly run cleanup. To run cleanup for a particular database;</p>
-<pre><code>POST /some_database/_view_cleanup
-</code></pre>
-<h2>View Compaction</h2>
+<div class="codehilite"><pre><span class="n">POST</span> <span class="sr">/some_database/</span><span class="n">_view_cleanup</span>
+</pre></div>
+
+
+<h2 id="view-compaction">View Compaction</h2>
 <p>If you have very large views or are tight on space, you might consider <a class="internal" href="Compaction.html">Compaction</a> as well. To run compact for a particular view on a particular database;</p>
-<pre><code>POST /some_database/_compact/designname
-</code></pre>
+<div class="codehilite"><pre><span class="n">POST</span> <span class="sr">/some_database/</span><span class="n">_compact</span><span class="o">/</span><span class="n">designname</span>
+</pre></div>
+
+
 <p>In my case, views that were 26G, 27G, 39G, and 40G, shrank to 2.8G, 2.8G, 3.4G, and 3.5G, respectively.<br />
 </p>
-<h4>Temporary Views</h4>
+<h4 id="temporary-views">Temporary Views</h4>
 <p>One-off queries (eg. views you don't want to save in the CouchDB database) can be done via the special view <em>_temp_view</em>. Temporary views are only good during development. Final code should not rely on them as they are very expensive to compute each time they get called and they get increasingly slower the more data you have in a database. If you think you can't solve something in a permanent view that you can solve in an ad-hoc view, you might want to reconsider. (TODO: add typical examples and solutions).</p>
-<pre><code>POST /some_database/_temp_view  HTTP/1.0
-Content-Length: 48
-Date: Mon, 10 Sep 2007 17:11:10 +0200
-Content-Type: application/json
+<div class="codehilite"><pre><span class="n">POST</span> <span class="sr">/some_database/</span><span class="n">_temp_view</span>  <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">48</span>
+<span class="n">Date:</span> <span class="n">Mon</span><span class="p">,</span> <span class="mi">10</span> <span class="n">Sep</span> <span class="mi">2007</span> <span class="mi">17</span><span class="p">:</span><span class="mi">11</span><span class="p">:</span><span class="mi">10</span> <span class="o">+</span><span class="mo">0200</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
 
-{
-  "map" : "function(doc) { if (doc.foo=='bar') { emit(null, doc.foo); } }"
-}
-</code></pre>
+<span class="p">{</span>
+  <span class="s">&quot;map&quot;</span> <span class="p">:</span> <span class="s">&quot;function(doc) { if (doc.foo==&#39;bar&#39;) { emit(null, doc.foo); } }&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Could result in the following response:</p>
-<pre><code>{
-  "total_rows": 1,
-  "offset": 0,
-  "rows": [{
-      "id": "AE1AD84316B903AD46EF396CAFE8E50F",
-      "key": null,
-      "foo": "bar"
-    }
-  ]
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span>
+  <span class="s">&quot;total_rows&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="s">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="s">&quot;rows&quot;</span><span class="p">:</span> <span class="p">[{</span>
+      <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;AE1AD84316B903AD46EF396CAFE8E50F&quot;</span><span class="p">,</span>
+      <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
+      <span class="s">&quot;foo&quot;</span><span class="p">:</span> <span class="s">&quot;bar&quot;</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>NOTE: couchdb 0.9.0 requires <code>Content-Type: application/json</code> on POSTs to _temp_view</p>
 </div>
       <div id="footer">

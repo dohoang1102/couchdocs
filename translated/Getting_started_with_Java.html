@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Getting_started_with_Java</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,26 +56,26 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <p>Getting started with Java and the CouchDB API.</p>
-<h1>JRelax</h1>
+<h1 id="jrelax">JRelax</h1>
 <p>Relax was born out of necessity of building a scalable and flexible persistence model on top of CouchDB for a startup company.  The API was build from real usage patterns which were extracted from real use cases.  I wanted to ensure that the API is consistent and pleasant to use.</p>
 <p>See <a href="http://wiki.github.com/isterin/jrelax">JRelax project at github</a>.</p>
-<h3>Dependencies</h3>
+<h3 id="dependencies">Dependencies</h3>
 <ul>
 <li>Restlet 2.0 (http://www.restlet.org/)</li>
 <li>Jackson (JSON Processor - http://jackson.codehaus.org/)</li>
 </ul>
-<h1>jcouchdb</h1>
+<h1 id="jcouchdb">jcouchdb</h1>
 <p>jcouchdb is a new java5 CouchDB driver which allows you to choose your favourite style of combining Java and CouchDB. From totally schema-less, collections-based Documents to a graph of your own java objects or something in between.</p>
 <p>See the <a href="http://code.google.com/p/jcouchdb/">jcouchdb project at google code</a> for more details.</p>
-<h1>CouchDB4J</h1>
+<h1 id="couchdb4j">CouchDB4J</h1>
 <p>CouchDB4J is an updated Java library for CouchDB. It handles the REST style calls to the CouchDB server behind the scenes, and give you a handle on the JSON objects directly. CouchDB4J uses JSON-lib to handle mapping to/from JSON objects, which makes getting/setting properties on the objects very easy. You can even map Java objects to JSON objects and back to make the process easier.</p>
 <p>With CouchDB4J, you create a Session object that handles the CouchDB server communication. From here, you can get a handle on your Database. From the <em>Database</em> you can run views or retrieve <em>Documents</em>. A <em>!ViewResult</em> is a special type of <em>Document</em> which contains the id's of the <em>Documents</em> that matched your view function.</p>
-<h2>Dependencies</h2>
+<h2 id="dependencies_1">Dependencies</h2>
 <ul>
 <li>http://code.google.com/p/couchdb4j</li>
 <li><a href="http://commons.apache.org/">Apache commons</a></li>
@@ -71,37 +89,39 @@
 <li>json-lib-2.0</li>
 <li>ezmorph</li>
 </ul>
-<h2>Sample Usage</h2>
-<pre><code>Session s = new Session("localhost",5984);
-Database db = s.getDatabase("foodb");
+<h2 id="sample-usage">Sample Usage</h2>
+<div class="codehilite"><pre><span class="n">Session</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Session</span><span class="p">(</span><span class="s">&quot;localhost&quot;</span><span class="p">,</span><span class="mi">5984</span><span class="p">);</span>
+<span class="n">Database</span> <span class="n">db</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">getDatabase</span><span class="p">(</span><span class="s">&quot;foodb&quot;</span><span class="p">);</span>
 
-Document doc = db.getDocument("documentid1234");
-doc.put("foo","bar");
-db.saveDocument(doc);
+<span class="n">Document</span> <span class="n">doc</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">getDocument</span><span class="p">(</span><span class="s">&quot;documentid1234&quot;</span><span class="p">);</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="s">&quot;bar&quot;</span><span class="p">);</span>
+<span class="n">db</span><span class="o">.</span><span class="n">saveDocument</span><span class="p">(</span><span class="n">doc</span><span class="p">);</span>
 
-Document newdoc = new Document();
-newdoc.put("foo","baz"); // same as JSON: { foo: "baz"; }
-newdoc.saveDocument(newdoc); // auto-generated id given by the database
+<span class="n">Document</span> <span class="n">newdoc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Document</span><span class="p">();</span>
+<span class="n">newdoc</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span><span class="s">&quot;baz&quot;</span><span class="p">);</span> <span class="sr">//</span> <span class="n">same</span> <span class="n">as</span> <span class="n">JSON:</span> <span class="p">{</span> <span class="n">foo:</span> <span class="s">&quot;baz&quot;</span><span class="p">;</span> <span class="p">}</span>
+<span class="n">newdoc</span><span class="o">.</span><span class="n">saveDocument</span><span class="p">(</span><span class="n">newdoc</span><span class="p">);</span> <span class="sr">//</span> <span class="n">auto</span><span class="o">-</span><span class="n">generated</span> <span class="n">id</span> <span class="n">given</span> <span class="n">by</span> <span class="n">the</span> <span class="n">database</span>
 
-// Running a view
-ViewResults result = db.getAllDocuments(); // same as db.view("_all_dbs");
-for (Document d: result.getResults()) {
-        System.out.println(d.getId());
+<span class="sr">//</span> <span class="n">Running</span> <span class="n">a</span> <span class="n">view</span>
+<span class="n">ViewResults</span> <span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">getAllDocuments</span><span class="p">();</span> <span class="sr">//</span> <span class="n">same</span> <span class="n">as</span> <span class="n">db</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="s">&quot;_all_dbs&quot;</span><span class="p">);</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">Document</span> <span class="n">d:</span> <span class="n">result</span><span class="o">.</span><span class="n">getResults</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">getId</span><span class="p">());</span>
 
-        /*
-                ViewResults may not actually contain the full document, only what the view
-                returned.  So, in order to get the full document, you need to request a
-                new copy from the database.
+        <span class="o">/*</span>
+                <span class="n">ViewResults</span> <span class="n">may</span> <span class="ow">not</span> <span class="n">actually</span> <span class="n">contain</span> <span class="n">the</span> <span class="n">full</span> <span class="n">document</span><span class="p">,</span> <span class="n">only</span> <span class="n">what</span> <span class="n">the</span> <span class="n">view</span>
+                <span class="n">returned</span><span class="o">.</span>  <span class="n">So</span><span class="p">,</span> <span class="n">in</span> <span class="n">order</span> <span class="n">to</span> <span class="n">get</span> <span class="n">the</span> <span class="n">full</span> <span class="n">document</span><span class="p">,</span> <span class="n">you</span> <span class="n">need</span> <span class="n">to</span> <span class="n">request</span> <span class="n">a</span>
+                <span class="k">new</span> <span class="n">copy</span> <span class="n">from</span> <span class="n">the</span> <span class="n">database</span><span class="o">.</span>
 
-        */
+        <span class="o">*/</span>
 
-        Document full = db.getDocument(d.getId());
-}
+        <span class="n">Document</span> <span class="n">full</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">getDocument</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">getId</span><span class="p">());</span>
+<span class="p">}</span>
 
-// Ad-Hoc view
-ViewResults resultAdHoc = db.adhoc("function (doc) { if (doc.foo=='bar') { return doc; }}");
-</code></pre>
-<h2>Older Libraries</h2>
+<span class="sr">//</span> <span class="n">Ad</span><span class="o">-</span><span class="n">Hoc</span> <span class="n">view</span>
+<span class="n">ViewResults</span> <span class="n">resultAdHoc</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">adhoc</span><span class="p">(</span><span class="s">&quot;function (doc) { if (doc.foo==&#39;bar&#39;) { return doc; }}&quot;</span><span class="p">);</span>
+</pre></div>
+
+
+<h2 id="older-libraries">Older Libraries</h2>
 <p>Older CouchDB Java library (doesn't support newer JSON syntax):</p>
 <p>. http://code.google.com/p/couchdb-lib/</p>
 </div>

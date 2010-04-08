@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Troubleshooting</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,18 +56,20 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h2>Upgrade</h2>
+  <h2 id="upgrade">Upgrade</h2>
 <p>Have you built CouchDB from the Subversion repository?</p>
 <p>Did you do a <code>svn up</code> that seemed to break everything?</p>
 <p>After every update you must run the following command:</p>
-<pre><code>./bootstrap
-</code></pre>
+<div class="codehilite"><pre><span class="o">./</span><span class="n">bootstrap</span>
+</pre></div>
+
+
 <p>If you still have problems building try the next troubleshooting tip.</p>
-<h2>First Run</h2>
+<h2 id="first-run">First Run</h2>
 <p>Having problems getting CouchDB to run for the first time?</p>
 <p>Follow this simple procedure and report back to mailing list (or IRC) with the
 output of each step.</p>
@@ -95,46 +115,56 @@ output of each step.</p>
 <p>Report back to the mailing list (or IRC) with the output from each step.</p>
 </li>
 </ol>
-<h2>invalid UTF-8 JSON</h2>
+<h2 id="invalid-utf-8-json">invalid UTF-8 JSON</h2>
 <p>When upgrading from old versions of CouchDB, it is best to really get rid of everything old.  If you get strange errors and all but the simplest actions appear to be broken, and especially if you are seeing {"error":"bad_request","reason":"invalid UTF-8 JSON"} type of errors in Futon, then you should try something like the following:</p>
-<pre><code>find /usr/local -name \*couch* | xargs rm -rf 
-make &amp;&amp; sudo make install
-</code></pre>
+<div class="codehilite"><pre><span class="n">find</span> <span class="sr">/usr/</span><span class="nb">local</span> <span class="o">-</span><span class="n">name</span> <span class="o">\*</span><span class="n">couch</span><span class="o">*</span> <span class="o">|</span> <span class="n">xargs</span> <span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> 
+<span class="n">make</span> <span class="o">&amp;&amp;</span> <span class="n">sudo</span> <span class="n">make</span> <span class="n">install</span>
+</pre></div>
+
+
 <p>This was discussed on 13 Dec 2009 on the users mailing list, and the resolution is discussed 
 <a href="http://mail-archives.apache.org/mod_mbox/couchdb-user/200912.mbox/%3c200912130717.39605.sh@widetrail.dk%3e">here</a> and 
 <a href="http://mail-archives.apache.org/mod_mbox/couchdb-user/200912.mbox/%3c20091214091547.GA7543@uk.tiscali.com%3e">here</a></p>
-<h2>Misc Errors</h2>
+<h2 id="misc-errors">Misc Errors</h2>
 <p>CouchDB using a lot of memory (several hundred MB) on startup?  This one seems to especially affect Dreamhost installs.  It's really an issue with the Erlang VM pre-allocating data structures when ulimit is very large or unlimited.  A detailed dicussion can be found <a href="http://www.erlang.org/cgi-bin/ezmlm-cgi/4/46168">on the erlang-questions list</a>, but the short answer is that you should decrease ulimit -n or define ERL_MAX_PORTS to something reasonable like 1024.</p>
 <p>Erlang backtraces are quite "hard" to read for non-Erlangers. The list here tries to give keywords to help you pinpointing your problem and suggests possible solutions</p>
 <p>system_limit, erlang, open_port:: Erlang has a default limit of 1024 ports, where each FD, tcp connection, and linked-in driver uses one port. You seem to have exceeded this. You can change it at runtime using the ERL_MAX_PORTS env variable.
  (by Adam Kocoloski, <a href="bugs.edge.launchpad.net/ubuntu/+source/couchdb/+bug/459241">bugs.edge.launchpad.net/ubuntu/+source/couchdb/+bug/459241</a>)</p>
-<h2>Map/Reduce debugging</h2>
+<h2 id="mapreduce-debugging">Map/Reduce debugging</h2>
 <p>You can debug your Map and Reduce functions in the js command line. The fact that documents and function definitions are real javascript code makes it trivial to copy and paste both into SpiderMonkey.</p>
 <p>First you assign a document to a variable. I like to copy from the Source tab of a doc in Futon:</p>
-<pre><code>js&gt; doc = {
-   "_id": "image-5",
-   "_rev": "3-3e1b61291d9102d84e71e27cb46266fc",
-   "status": 200,
-   "style": "original"
-}
-[object Object]
-</code></pre>
+<div class="codehilite"><pre><span class="n">js</span><span class="o">&gt;</span> <span class="n">doc</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;image-5&quot;</span><span class="p">,</span>
+   <span class="s">&quot;_rev&quot;</span><span class="p">:</span> <span class="s">&quot;3-3e1b61291d9102d84e71e27cb46266fc&quot;</span><span class="p">,</span>
+   <span class="s">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+   <span class="s">&quot;style&quot;</span><span class="p">:</span> <span class="s">&quot;original&quot;</span>
+<span class="p">}</span>
+<span class="p">[</span><span class="n">object</span> <span class="n">Object</span><span class="p">]</span>
+</pre></div>
+
+
 <p>Next you assign your function to another variable. Again I like to copy from the Source tab of a design doc in Futon:</p>
-<pre><code>js&gt; map = function(doc) { emit(doc.style, doc) }
-function (doc) {
-    emit(doc.style, doc);
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">js</span><span class="o">&gt;</span> <span class="nb">map</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span> <span class="n">emit</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">style</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span> <span class="p">}</span>
+<span class="n">function</span> <span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">emit</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">style</span><span class="p">,</span> <span class="n">doc</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Don't forget to define the emit function as well. I just alias the print function:</p>
-<pre><code>js&gt; emit = print
-function print() {
-    [native code]
-}
-</code></pre>
+<div class="codehilite"><pre><span class="n">js</span><span class="o">&gt;</span> <span class="n">emit</span> <span class="o">=</span> <span class="k">print</span>
+<span class="n">function</span> <span class="k">print</span><span class="p">()</span> <span class="p">{</span>
+    <span class="p">[</span><span class="n">native</span> <span class="n">code</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>Now you can manually apply your map function to this document, and see what gets emitted:</p>
-<pre><code>js&gt; map(doc)
-original [object Object]
-</code></pre>
+<div class="codehilite"><pre><span class="n">js</span><span class="o">&gt;</span> <span class="nb">map</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+<span class="n">original</span> <span class="p">[</span><span class="n">object</span> <span class="n">Object</span><span class="p">]</span>
+</pre></div>
+
+
 <p>From here, just keep redefining map and applying it to doc until you are emitting the desired output.</p>
 </div>
       <div id="footer">

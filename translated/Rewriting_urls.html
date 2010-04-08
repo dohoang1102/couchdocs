@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Rewriting_urls</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,28 +56,30 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
   <p>This is an overview of http rewrite handler</p>
-<h2>The HTTP Rewrite Handler</h2>
+<h2 id="the-http-rewrite-handler">The HTTP Rewrite Handler</h2>
 <p>The http rewrite handler. All rewriting is done from 
 /dbname/_design/ddocname/_rewrite by default.</p>
 <p>each rules should be in rewrites member of the design doc.
 Ex of a complete rule :</p>
-<pre><code>{ 
-    .... 
-    "rewrites": [ 
-    { 
-        "from": "", 
-        "to": "index.html", 
-        "method": "GET", 
-        "query": {} 
-    } 
-    ] 
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span> 
+    <span class="o">....</span> 
+    <span class="s">&quot;rewrites&quot;</span><span class="p">:</span> <span class="p">[</span> 
+    <span class="p">{</span> 
+        <span class="s">&quot;from&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="p">,</span> 
+        <span class="s">&quot;to&quot;</span><span class="p">:</span> <span class="s">&quot;index.html&quot;</span><span class="p">,</span> 
+        <span class="s">&quot;method&quot;</span><span class="p">:</span> <span class="s">&quot;GET&quot;</span><span class="p">,</span> 
+        <span class="s">&quot;query&quot;</span><span class="p">:</span> <span class="p">{}</span> 
+    <span class="p">}</span> 
+    <span class="p">]</span> 
+<span class="p">}</span>
+</pre></div>
+
+
 <ul>
 <li><strong>from</strong>: is the path rule used to bind current uri to the rule. It use pattern matching for that.</li>
 <li><strong>to</strong>: rule to rewrite an url. It can contain variables depending on binding variables discovered during pattern matching and query args (url args and from the query member.)</li>

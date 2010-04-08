@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - Full_text_search</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,28 +56,32 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h2>Full-text Indexing and Searching</h2>
+  <h2 id="full-text-indexing-and-searching">Full-text Indexing and Searching</h2>
 <p>Lucene integration with CouchDB is available with an external project called couchdb-lucene (http://github.com/rnewson/couchdb-lucene).</p>
-<h3>Index interface</h3>
+<h3 id="index-interface">Index interface</h3>
 <p>couchdb-lucene's indexing process is configured with update notification as follows;</p>
-<pre><code>[update_notification]
-indexer=/usr/bin/java -jar /path/to/couchdb-lucene-&lt;version&gt;-jar-with-dependencies.jar -index
-</code></pre>
-<h3>Search interface</h3>
+<div class="codehilite"><pre><span class="k">[update_notification]</span>
+<span class="na">indexer</span><span class="o">=</span><span class="s">/usr/bin/java -jar /path/to/couchdb-lucene-&lt;version&gt;-jar-with-dependencies.jar -index</span>
+</pre></div>
+
+
+<h3 id="search-interface">Search interface</h3>
 <p>couchdb-lucene's search process is configured as an external process accessible via an httpd_handler as follows;</p>
-<pre><code>[couchdb]
-os_process_timeout=60000 ; increase the timeout to 60 seconds.
+<div class="codehilite"><pre><span class="k">[couchdb]</span>
+<span class="na">os_process_timeout</span><span class="o">=</span><span class="s">60000 ; increase the timeout to 60 seconds.</span>
 
-[external]
-fti=/usr/bin/java -jar /path/to/couchdb-lucene-&lt;version&gt;-jar-with-dependencies.jar -search
+<span class="k">[external]</span>
+<span class="na">fti</span><span class="o">=</span><span class="s">/usr/bin/java -jar /path/to/couchdb-lucene-&lt;version&gt;-jar-with-dependencies.jar -search</span>
 
-[httpd_db_handlers]
-_fti = {couch_httpd_external, handle_external_req, &lt;&lt;"fti"&gt;&gt;}
-</code></pre>
+<span class="k">[httpd_db_handlers]</span>
+<span class="na">_fti</span> <span class="o">=</span> <span class="s">{couch_httpd_external, handle_external_req, &lt;&lt;&quot;fti&quot;&gt;&gt;}</span>
+</pre></div>
+
+
 <p>You can install the httpd_handler as anything you like, but the name must match between the [external] and [httpd_db_handlers] section. The rest of the document assumes 'fti'.</p>
 <p>q:: the query to run (e.g, subject:hello)
  sort:: the comma-separated fields to sort on. Prefix with / for ascending order and  for descending order (ascending is the default if not specified).
@@ -68,29 +90,33 @@ _fti = {couch_httpd_external, handle_external_req, &lt;&lt;"fti"&gt;&gt;}
  include_docs::  whether to include the source docs
  stale=ok:: If you set the stale option ok, couchdb-lucene may not perform any refreshing on the index. Searches may be faster as Lucene caches important data (especially for sorting). A query without stale=ok will use the  latest data committed to the index.
  debug:: if false, a normal application/json response with results appears. if true, an pretty-printed HTML blob is returned instead.</p>
-<h3>Lucene reference implementation</h3>
+<h3 id="lucene-reference-implementation">Lucene reference implementation</h3>
 <p>You must supply a index function in order to enable couchdb-lucene as by default, nothing will be indexed.</p>
 <p>You may add any number of index views in any number of design documents. All searches will be constrained to documents emitted by those view functions.</p>
 <p>Declare your functions as follows;</p>
-<pre><code>{
-  "views": {
-    // conventional view code goes here
-  },
-  "fulltext": {
-    "by_subject": {
-      "defaults": { "store":"yes" },
-      "index":"function(doc) { var ret=new Document(); ret.add(doc.subject); return ret }"
-    }
-  }
-}
-</code></pre>
+<div class="codehilite"><pre><span class="p">{</span>
+  <span class="s">&quot;views&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="sr">//</span> <span class="n">conventional</span> <span class="n">view</span> <span class="n">code</span> <span class="n">goes</span> <span class="n">here</span>
+  <span class="p">},</span>
+  <span class="s">&quot;fulltext&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s">&quot;by_subject&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s">&quot;defaults&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="s">&quot;store&quot;</span><span class="p">:</span><span class="s">&quot;yes&quot;</span> <span class="p">},</span>
+      <span class="s">&quot;index&quot;</span><span class="p">:</span><span class="s">&quot;function(doc) { var ret=new Document(); ret.add(doc.subject); return ret }&quot;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
 <p>You can perform queries within this view with a URL such as;</p>
-<pre><code>http://localhost:5984/dbname/_fti/design_doc_name/by_subject?q=hello
-</code></pre>
-<h4>Dependencies</h4>
+<div class="codehilite"><pre><span class="n">http:</span><span class="sr">//</span><span class="n">localhost:5984</span><span class="sr">/dbname/</span><span class="n">_fti</span><span class="sr">/design_doc_name/</span><span class="n">by_subject</span><span class="p">?</span><span class="n">q</span><span class="o">=</span><span class="n">hello</span>
+</pre></div>
+
+
+<h4 id="dependencies">Dependencies</h4>
 <p>couchdb-lucene uses Maven 2 to manage dependencies, so you shouldn't have to deal with them directly.</p>
 <p>At least Java version 5 is needed.</p>
-<h4>Compiling</h4>
+<h4 id="compiling">Compiling</h4>
 <p>The Lucene search engine is not build as part of the CouchDB. </p>
 <p>You need to:</p>
 <ul>

@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>CouchDocs - How_to_add_client-side_security</title>
-    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
   </head>
   <body>
     <div id="wrapper"> 
@@ -11,7 +12,24 @@
           <h1><a href="/">CouchDocs</a></h1>
       </div>
       <div id="menu">
-        <ul>
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
         <li>Overview</li>
         <li>Installation</li>
         <li>Introduction</li>
@@ -38,14 +56,14 @@
         <li>Client Libraries</li>
         <li>How do I?</li>
         <li>FAQ</li>
-      </ul>
+      </ul> -->
         
 </div>
       <div id="content">
-  <h2>Adding Client-Side Security with a Translucent Database</h2>
+  <h2 id="adding-client-side-security-with-a-translucent-database">Adding Client-Side Security with a Translucent Database</h2>
 <p>Many applications do not require a thick layer of security at the server. It is possible to use a modest amount of encryption and one-way functions to obscure the sensitive columns or key-value pairs, a technique often called a <em>translucent database</em>. (See <a href="http://www.wayner.org/node/52">description</a>.)</p>
 <p>The simplest solutions use one-way function like SHA-256 at the client to scramble the name and password before storing the information. Here's a quick example of what a table of store purchases might look like <em>before</em> the data is scrambled:</p>
-<h4>Before Translucency</h4>
+<h4 id="before-translucency">Before Translucency</h4>
 <p><table>
 <tr><td><em>name</em></td><td><em>password</em></td><td><em>product name</em></td><td><em>purchase date</em></td><td><em>size 1</em></td><td><em>size 2</em></td></tr>
 <tr><td>Bob Jones</td><td>Swordfish</td><td>Brawny Pants</td><td>Jan 24 2009</td><td>32</td><td>34</td></tr>
@@ -54,7 +72,7 @@
 <tr><td>Mary Smith</td><td>plastics</td><td>Shopping Pants</td><td>Jan 25 2009</td><td>26</td><td>28</td></tr>
 <tr><td>Constance Dalmation</td><td>greeny</td><td>Shopping Pants</td><td>Jan 26 2009</td><td>25</td><td>27</td></tr>
 </table></p>
-<h4>After Translucency</h4>
+<h4 id="after-translucency">After Translucency</h4>
 <table>
 <tr><td><em>SHA256(name&amp;password)</em></td><td><em>product name</em></td><td><em>purchase date</em></td><td><em>size 1</em></td><td><em>size 2</em></td></tr>
 <tr><td>a67373bc873aacd99392</td><td>Brawny Pants</td><td>Jan 24 2009</td><td>32</td><td>34</td></tr>
@@ -87,7 +105,7 @@
 <li><a href="http://www.wayner.org/node/46"><em>Libraries</em></a></li>
 <li><a href="http://www.wayner.org/node/21"><em>Department Stores</em></a></li>
 </ul>
-<h3>Client-Side Libraries</h3>
+<h3 id="client-side-libraries">Client-Side Libraries</h3>
 <p>Here are some Javascript libraries for implementing client-side security:</p>
 <ul>
 <li>
