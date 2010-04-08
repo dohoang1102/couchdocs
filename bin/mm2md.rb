@@ -120,7 +120,7 @@ def mm2md(input)
         :replacement => %Q{<a href="\\1">\\1</a>},
       },
       {
-        :regexp => /(<<TableOfContents\(.\)>>)/,
+        :regexp => /(<<TableOfContents\(\d*\)>>)/,
         :replacement => '[TOC]'
       },
 
