@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -60,35 +60,104 @@
         
 </div>
       <div id="content">
-  <p>CouchDB has an Ubuntu package for Ubuntu 8.10 (Intrepid Ibex) and 9.04 (Jaunty Jackalope) - just do:</p>
-<div class="codehilite"><pre><span class="n">aptitude</span> <span class="n">install</span> <span class="n">couchdb</span>
+  <h2 id="batteries-included">Batteries Included</h2>
+<p>Newer versions of Ubuntu have CouchDB  included in their respective software repositories.  You can install CouchDB with the <strong>Synaptic GUI</strong>, or from the command line with the <strong>apt</strong> or <strong>aptitude</strong> utilities, which ever you prefer.  However, to get the newest version of CouchDB you may have to install from source, or other package repositories that have newer pre-built CouchDB packages.</p>
+<p><strong>Example 1:</strong></p>
+<div class="codehilite"><pre><span class="n">sudo</span> <span class="n">aptitude</span> <span class="n">install</span> <span class="n">couchdb</span>
 </pre></div>
 
 
-<h2 id="from-source">From Source</h2>
-<p>If you want the latest version of Couchdb but everything else from the repositories then:</p>
+<h2 id="installing-from-source">Installing From Source</h2>
+<p>This is a basic outline of the steps required to build CouchDB from source on Ubuntu.  Like many things, there are multiple ways to achieve the same task. With that in mind, these steps may or may not be the best method for you.</p>
 <ul>
-<li>In Synaptic select couchdb, this will also select the dependencies (erlang etc.) then unselect couchdb and apply the dependencies</li>
-<li>sudo apt-get build-dep couchdb</li>
-<li>sudo apt-get install libmozjs-dev libicu-dev libcurl4-gnutls-dev libtool</li>
-<li>download the latest couchdb .tar.gz file</li>
-<li>tar -zxvf apache-couchdb-0.9.0.tar.gz</li>
-<li>cd apache-couchdb-0.9.0</li>
-<li>./configure</li>
-<li>make</li>
-<li>sudo make install
-now you can run "sudo couchdb" and browse to <a href="localhost:5984/_utils">localhost:5984/_utils</a> to check it is all working</li>
+<li>Install CouchDBs first set of dependencies: sudo apt-get build-dep couchdb</li>
+<li>Install CouchDBs second set of dependencies: sudo apt-get install libmozjs-dev libicu-dev libcurl4-gnutls-dev libtool
+ <strong>(<em>NOTICE</em>: In Ubuntu 10.04, libmozjs-dev is no longer available.  You should use xulrunner-dev instead)</strong></li>
+<li>Then download the latest CouchDB source file.  The wget utility is a useful utility for this. For example: wget <a href="http://mirrors.axint.net/apache/couchdb/0.11.0/apache-couchdb-0.11.0.tar.gz">http://mirrors.axint.net/apache/couchdb/0.11.0/apache-couchdb-0.11.0.tar.gz</a>  * Untar (decompress) the source file: tar -zxvf apache-couchdb-<em>.</em>.*.tar.gz</li>
+<li>Change into the expanded directory: cd apache-couchdb-<em>.</em>.*</li>
+<li>Configure the build: ./configure (You may need to specify build options like the installation directory, etc.  Please reference the example(s) below.)</li>
+<li>Build or Compile the source: make  (You shouldn't have any errors when this process is done.  If you do you should fix them before moving to the next step.)</li>
+<li>Install your newly built CouchDB: sudo make install</li>
+<li>Once the installation completes successfully, you will need to make sure that there is a CouchDB user, and that the CouchDB user owns the necessary files and directories.</li>
+<li>Now you can run CouchDB manually by changing into the /bin folder of the installed directory, and running the following command: "sudo -u couchdb ./couchdb "</li>
+<li>Once the server is running you can browse to http://localhost:5984/_utils.  This should take you to the Futon Web GUI.</li>
+<li>To be thorough, you should run the built in tests to ensure that CouchDB is working properly.  To run the tests, click on the "Test Suite" link on the right hand side of the Futon Web GUI, then click on "Run All" to execute all of the built in tests.  All of tests should run without error on Ubuntu.</li>
+<li>Once CoucDB is working properly you can add CouchDB to your startup scripts if desired.</li>
 </ul>
-<p>Because you installed all the dependencies of Couchdb from synaptic, but not Couchdb itself some of the dependencies may think they are not required and update manager may suggest that they are removed. Should you do this Couchdb will fail to start, perhaps with an error such as </p>
+<p>Note: If you installed all the dependencies of Couchdb from the Synaptic GUI, but not Couchdb itself, some of the dependencies may think they are not required and the update manager may suggest that they are removed. Should you remove these dependencies, CouchDB may fail to start, perhaps with an error such as:</p>
 <div class="codehilite"><pre><span class="p">{</span><span class="s">&quot;init terminating in do_boot&quot;</span><span class="p">,{</span><span class="nb">undef</span><span class="p">,[{</span><span class="n">crypto</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="o">[]</span><span class="p">},{</span><span class="n">erl_eval</span><span class="p">,</span><span class="n">do_apply</span><span class="p">,</span><span class="mi">5</span><span class="p">},{</span><span class="n">init</span><span class="p">,</span><span class="n">start_it</span><span class="p">,</span><span class="mi">1</span><span class="p">},{</span><span class="n">init</span><span class="p">,</span><span class="n">start_em</span><span class="p">,</span><span class="mi">1</span><span class="p">}]}}</span>
 </pre></div>
 
 
 <p>If this happens simply re-install the dependencies (possibly erlang-nox but it could vary)</p>
+<h2 id="ubuntu-1004">Ubuntu 10.04</h2>
+<h3 id="installing-couchdb-from-source-on-ubuntu-1004-example-1">Installing CouchDB from source on Ubuntu 10.04 (Example 1):</h3>
+<div class="codehilite"><pre>sudo su
+<span class="c">&lt;!-- # Install dependencies required to build couchdb from sourece --&gt;</span>
+
+apt-get build-dep couchdb
+cd /opt
+<span class="c">&lt;!-- # download the latest release from &lt;a href=&quot;http://couchdb.apache.org/downloads.html&quot;&gt;http://couchdb.apache.org/downloads.html&lt;/a&gt; --&gt;</span>
+<span class="c">&lt;!-- # wget &lt;url&gt; --&gt;</span>
+
+tar xvzf <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;apache-couchdb-x.xx.x.tar.gz&quot;</span><span class="nt">&gt;</span>apache-couchdb-x.xx.x.tar.gz<span class="nt">&lt;/a&gt;</span>     cd apache-couchdb-x.xx.x
+./configure --with-js-lib=/usr/lib/xulrunner-devel-1.9.2.3/lib --with-js-include=/usr/lib/xulrunner-devel-1.9.2.3/include
+<span class="c">&lt;!-- # Note: To install couchdb in the default location use --prefix= in the configure statement --&gt;</span>
+
+make <span class="err">&amp;&amp;</span> make install
+<span class="c">&lt;!-- # Add couchdb user account --&gt;</span>
+
+useradd -d /var/lib/couchdb couchdb
+chown -R couchdb: /var/lib/couchdb /var/log/couchdb
+<span class="c">&lt;!-- # start couchdb --&gt;</span>
+
+/etc/init.d/couchdb start
+
+<span class="c">&lt;!-- # Start couchdb on system start --&gt;</span>
+
+update-rc.d couchdb defaults
+
+<span class="c">&lt;!-- # Verify couchdb is running --&gt;</span>
+
+curl http://127.0.0.1:5984/
+<span class="c">&lt;!-- # {&quot;couchdb&quot;:&quot;Welcome&quot;,&quot;version&quot;:&quot;0.11.0&quot;} --&gt;</span>
+</pre></div>
+
+
+<h3 id="installing-couchdb-and-couchdb-lucen-example-2">Installing CouchDB and CouchDB-Lucen (Example 2):</h3>
+<ul>
+<li>This attached document describes how to install CouchDB and CouchDB-Lucene on Ubunut 10.04 Lucid Lynx (please correct any errors you find): <a href="http://wiki.apache.org/couchdb/Installing_on_Ubuntu?action=AttachFile&do=view&target=How-to+Install+CouchDB+and+CouchDB-Lucene+on+Ubunut+Lucid">You can download the document here</a>.</li>
+</ul>
+<h3 id="additional-notes">Additional Notes</h3>
+<p>In Ubuntu 10.04 you may get an error similar to this:</p>
+<div class="codehilite"><pre><span class="n">OS</span> <span class="n">Process</span> <span class="n">Error</span> <span class="s-Regexp">&lt;0.4649.0&gt;</span> <span class="o">::</span> <span class="p">{</span><span class="n">os_process_error</span><span class="p">,{</span><span class="n">exit_status</span><span class="p">,</span><span class="mi">127</span><span class="p">}}</span>
+<span class="sr">/opt/co</span><span class="n">uchdb</span><span class="sr">/lib/co</span><span class="n">uchdb</span><span class="sr">/bin/co</span><span class="n">uchjs:</span> <span class="n">error</span> <span class="k">while</span> <span class="n">loading</span> <span class="n">shared</span> <span class="n">libraries:</span> <span class="n">libmozjs</span><span class="o">.</span><span class="n">so:</span> <span class="n">cannot</span> <span class="nb">open</span> <span class="n">shared</span> <span class="n">object</span> <span class="n">file:</span> <span class="n">No</span> <span class="n">such</span> <span class="n">file</span> <span class="ow">or</span> <span class="n">directory</span>
+</pre></div>
+
+
+<p>This is can be resolved by creating an xulrunner configuration as follows:</p>
+<div class="codehilite"><pre><span class="n">sudo</span> <span class="n">vi</span> <span class="sr">/etc/</span><span class="n">ld</span><span class="o">.</span><span class="n">so</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">xulrunner</span><span class="o">.</span><span class="n">conf</span>
+</pre></div>
+
+
+<p>Then add the following lines to the file (You may need to change the library version to match whats installed):</p>
+<div class="codehilite"><pre><span class="sr">/usr/</span><span class="n">lib</span><span class="o">/</span><span class="n">xulrunner</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">9</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">3</span>
+<span class="sr">/usr/</span><span class="n">lib</span><span class="o">/</span><span class="n">xulrunner</span><span class="o">-</span><span class="n">devel</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">9</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">3</span>
+</pre></div>
+
+
+<p>Once the configuration files is created and saved, you will need to run ldconfig:</p>
+<div class="codehilite"><pre><span class="n">sudo</span> <span class="sr">/sbin/</span><span class="n">ldconfig</span>
+</pre></div>
+
+
+<p>This solution is referenced in this bug report @ <a href="https://bugs.launchpad.net/ubuntu/+source/xulrunner-1.9/+bug/557275">https://bugs.launchpad.net/ubuntu/+source/xulrunner-1.9/+bug/557275</a> </p>
 <h2 id="external-articles">External Articles</h2>
 <ul>
+<li><a href="http://www.owengriffin.com/posts/2010/04/27/CouchDB_0.11_and_CouchApp_Notes.html#comment-48272833">CouchDB 0.11 and CouchApp Notes</a></li>
 <li><a href="http://barkingiguana.com/2008/06/28/installing-couchdb-080-on-ubuntu-804">Installing CouchDB 0.8.0 on Ubuntu 8.04</a></li>
 <li><a href="http://japhr.blogspot.com/2009/03/yak-shaving-is-new-dependency-hell.html">Installing Couchdb 0.9 on Ubuntu 9.04</a></li>
+<li><a href="http://depth-first.com/articles/2010/01/28/pubcouch-install-couchdb-on-ubuntu-karmic-from-source">Install CouchDB on Ubuntu Karmic From Source</a> <em>Unfortunately, the Karmic CouchDB binary distribution is broken</em></li>
 </ul>
 </div>
       <div id="footer">

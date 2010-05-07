@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -61,31 +61,61 @@
 </div>
       <div id="content">
   <h1 id="external-processes">External Processes</h1>
+<div class="toc">
+<ul>
+<li><a href="#external-processes">External Processes</a><ul>
+<li><a href="#json-requests">JSON Requests</a></li>
+<li><a href="#json-response">JSON Response</a></li>
+<li><a href="#common-pitfalls">Common Pitfalls</a></li>
+<li><a href="#configuration">Configuration</a></li>
+<li><a href="#example-external-process">Example External Process</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <p>CouchDB now allows for the ability to develop custom behaviors via processes that communicate over <em>stdin</em> and <em>stdout</em>. Requests to CouchDB that are captured by the external process handler are passed via JSON object to the external process over <em>stdin</em> and reads a JSON object from <em>stdout</em>. Without further ado...</p>
 <h2 id="json-requests">JSON Requests</h2>
 <p>Requests capture information about the incoming HTTP request and transform it into a JSON object. I've formatted the object here, though in real life this object would contain no new lines and all embedded white space would be normalized to a single ' ' (space) character.</p>
 <p>An example object:</p>
-<div class="codehilite"><pre><span class="p">{</span>
-    <span class="s">&#39;body&#39;</span><span class="p">:</span> <span class="s">&#39;undefined&#39;</span><span class="p">,</span>
-    <span class="s">&#39;cookie&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s">&#39;_\_utma&#39;</span><span class="p">:</span> <span class="s">&#39;96992031.3087658685658095000.1224404084.1226129950.1226169567.5&#39;</span><span class="p">,</span>
-        <span class="s">&#39;_\_utmz&#39;</span><span class="p">:</span> <span class="s">&#39;96992031.1224404084.1.1.utmcsr&#39;</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span>
+    <span class="s1">&#39;body&#39;</span><span class="o">:</span> <span class="s1">&#39;undefined&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;cookie&#39;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s1">&#39;_\_utma&#39;</span><span class="o">:</span> <span class="s1">&#39;96992031.3087658685658095000.1224404084.1226129950.1226169567.5&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;_\_utmz&#39;</span><span class="o">:</span> <span class="s1">&#39;96992031.1224404084.1.1.utmcsr&#39;</span>
     <span class="p">},</span>
-    <span class="s">&#39;form&#39;</span><span class="p">:</span> <span class="p">{},</span>
-    <span class="s">&#39;info&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s">&#39;compact_running&#39;</span><span class="p">:</span> <span class="n">False</span><span class="p">,</span>
-        <span class="s">&#39;db_name&#39;</span><span class="p">:</span> <span class="s">&#39;couchbox&#39;</span><span class="p">,</span>
-        <span class="s">&#39;disk_size&#39;</span><span class="p">:</span> <span class="mi">50559251</span><span class="p">,</span>
-        <span class="s">&#39;doc_count&#39;</span><span class="p">:</span> <span class="mi">9706</span><span class="p">,</span>
-        <span class="s">&#39;doc_del_count&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s">&#39;purge_seq&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="s">&#39;update_seq&#39;</span><span class="p">:</span> <span class="mi">9706</span><span class="p">},</span>
-    <span class="s">&#39;path&#39;</span><span class="p">:</span> <span class="o">[]</span><span class="p">,</span>
-    <span class="s">&#39;query&#39;</span><span class="p">:</span> <span class="p">{},</span>
-    <span class="s">&#39;method&#39;</span><span class="p">:</span> <span class="s">&#39;GET&#39;</span>
+    <span class="s1">&#39;form&#39;</span><span class="o">:</span> <span class="p">{},</span>
+    <span class="s1">&#39;info&#39;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s1">&#39;compact_running&#39;</span><span class="o">:</span> <span class="nx">False</span><span class="p">,</span>
+        <span class="s1">&#39;db_name&#39;</span><span class="o">:</span> <span class="s1">&#39;couchbox&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;disk_size&#39;</span><span class="o">:</span> <span class="mi">50559251</span><span class="p">,</span>
+        <span class="s1">&#39;doc_count&#39;</span><span class="o">:</span> <span class="mi">9706</span><span class="p">,</span>
+        <span class="s1">&#39;doc_del_count&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;purge_seq&#39;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;update_seq&#39;</span><span class="o">:</span> <span class="mi">9706</span><span class="p">},</span>
+    <span class="s1">&#39;path&#39;</span><span class="o">:</span> <span class="p">[],</span>
+    <span class="s1">&#39;query&#39;</span><span class="o">:</span> <span class="p">{},</span>
+    <span class="s1">&#39;method&#39;</span><span class="o">:</span> <span class="s1">&#39;GET&#39;</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>In order:</p>
 <ul>
@@ -114,6 +144,9 @@
 <li>All interaction is in the form of single lines. Each response should include <em>exactly</em> one new line that terminates the JSON object.</li>
 <li>When using base64 encoders, be sure to strip any CRLF from the result - most encoders will add CRLF after 76 characters and at the end.</li>
 <li>CouchDB 0.10 looks for a case-sensitive match of the Content-Type header -- a user-defined header must specify "Content-Type", not "content-type" or "CoNtEnT-type".  This is fixed in future releases.</li>
+<li>When developing handlers you need to restart CouchDB after each change  as it doesn't see the changes until you restart the server.</li>
+<li><strong>Notes for OSX users:</strong>
+ If  you are using launchctl to load and unload your CouchDB instance, it by  default starts the couchdb instance with user couchdb. External  handlers won't run if they are not executable by this user. Calls to  them will fail with a 'OS Process timeout' error stack trace from  Erlang. If you start couchdb with sudo couchdb things will work fine.  Here is an article in more detail <a href="http://www.vertigrated.com/blog/2010/04/couchdb-launchctl-external-httpd-handlers-madness/">http://www.vertigrated.com/blog/2010/04/couchdb-launchctl-external-httpd-handlers-madness/</a> </li>
 </ul>
 <h2 id="configuration">Configuration</h2>
 <p>Adding external processes is as easy as pie. Simply place key=command pairs in the <em>[external]</em> section of your <em>local.ini</em> and then map those handlers in the <em>[httpd_db_handlers]</em> section, like:</p>
@@ -140,36 +173,61 @@
 
 <h2 id="example-external-process">Example External Process</h2>
 <p>Here is a complete Python external process that does a whole lot of nothing except show the mechanics.</p>
-<div class="codehilite"><pre><span class="nb">import</span> <span class="n">sys</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="n">try:</span>
-    <span class="c1"># Python 2.6</span>
-    <span class="nb">import</span> <span class="n">json</span>
-<span class="n">except:</span>
-    <span class="c1"># Prior to 2.6 requires simplejson</span>
-    <span class="nb">import</span> <span class="n">simplejson</span> <span class="n">as</span> <span class="n">json</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="c"># Python 2.6</span>
+    <span class="kn">import</span> <span class="nn">json</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="c"># Prior to 2.6 requires simplejson</span>
+    <span class="kn">import</span> <span class="nn">simplejson</span> <span class="kn">as</span> <span class="nn">json</span>
 
-<span class="n">def</span> <span class="n">requests</span><span class="p">():</span>
-    <span class="c1"># &#39;for line in sys.stdin&#39; won&#39;t work here</span>
-    <span class="n">line</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="nb">readline</span><span class="p">()</span>
-    <span class="k">while</span> <span class="n">line:</span>
-        <span class="n">yield</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-        <span class="n">line</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="nb">readline</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">requests</span><span class="p">():</span>
+    <span class="c"># &#39;for line in sys.stdin&#39; won&#39;t work here</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">line</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 
-<span class="n">def</span> <span class="n">respond</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{},</span> <span class="n">headers</span><span class="o">=</span><span class="p">{}):</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="nb">write</span><span class="p">(</span><span class="s">&quot;%s\n&quot;</span> <span class="nv">%</span> <span class="nv">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">&quot;code&quot;</span><span class="p">:</span> <span class="n">code</span><span class="p">,</span> <span class="s">&quot;json&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span> <span class="s">&quot;headers&quot;</span><span class="p">:</span> <span class="n">headers</span><span class="p">}))</span>
+<span class="k">def</span> <span class="nf">respond</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{},</span> <span class="n">headers</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">&quot;code&quot;</span><span class="p">:</span> <span class="n">code</span><span class="p">,</span> <span class="s">&quot;json&quot;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span> <span class="s">&quot;headers&quot;</span><span class="p">:</span> <span class="n">headers</span><span class="p">}))</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
-<span class="n">def</span> <span class="n">main</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">req</span> <span class="n">in</span> <span class="n">requests</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">req</span> <span class="ow">in</span> <span class="n">requests</span><span class="p">():</span>
         <span class="n">respond</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;qs&quot;</span><span class="p">:</span> <span class="n">req</span><span class="p">[</span><span class="s">&quot;query&quot;</span><span class="p">]})</span>
 
-<span class="k">if</span> <span class="n">_</span><span class="o">\</span><span class="n">_name__</span> <span class="o">==</span> <span class="s">&quot;_\_main_\_&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">_</span>\<span class="n">_name__</span> <span class="o">==</span> <span class="s">&quot;_\_main_\_&quot;</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
+</td></tr></table>
 
-
-<p>A Java example can be found here: http://daily.profeth.de/2009/12/apache-couchdb-external-process-using.html</p>
+<p>A Java example can be found here: <a href="http://daily.profeth.de/2009/12/apache-couchdb-external-process-using.html">http://daily.profeth.de/2009/12/apache-couchdb-external-process-using.html</a> </p>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

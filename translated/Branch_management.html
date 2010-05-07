@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -65,17 +65,16 @@
 <p>All branches are kept directly under the <code>incubator/couchdb/branches/</code> directory in the repository.</p>
 <h3 id="creating-a-branch">Creating a Branch</h3>
 <p>Feature branches are usually based on trunk. To create a branch, something like the following svn incantation should be used:</p>
-<div class="codehilite"><pre>  <span class="n">svn</span> <span class="n">cp</span> <span class="n">https:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/incubator/co</span><span class="n">uchdb</span><span class="o">/</span><span class="n">trunk</span> <span class="o">\</span>
-    <span class="n">https:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/incubator/co</span><span class="n">uchdb</span><span class="sr">/branches/</span><span class="n">feature</span><span class="o">-</span><span class="n">name</span>
+<div class="codehilite"><pre>  svn cp <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;https://svn.apache.org/repos/asf/incubator/couchdb/trunk&quot;</span><span class="nt">&gt;</span>https://svn.apache.org/repos/asf/incubator/couchdb/trunk<span class="nt">&lt;/a&gt;</span> \
+    <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;https://svn.apache.org/repos/asf/incubator/couchdb/branches/feature-name&quot;</span><span class="nt">&gt;</span>https://svn.apache.org/repos/asf/incubator/couchdb/branches/feature-name<span class="nt">&lt;/a&gt;</span>
 </pre></div>
 
 
 <p>Note that it's preferable to create the branch by specifying the full URLs to <code>svn cp</code>, as that won't let you end up with a branch based on different revisions of trunk, possibly because you forgot to <code>svn up</code> before creating the copy.</p>
 <p>When that's done, checkout the new branch and initialize <a href="http://www.orcaware.com/svn/wiki/Svnmerge.py">svnmerge</a>, which we'll use to keep the branch in sync with trunk. For example:</p>
-<div class="codehilite"><pre>  <span class="n">svn</span> <span class="n">co</span> <span class="n">https:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/incubator/co</span><span class="n">uchdb</span><span class="sr">/branches/</span><span class="n">feature</span><span class="o">-</span><span class="n">name</span>
-  <span class="n">cd</span> <span class="n">feature</span><span class="o">-</span><span class="n">name</span>
-  <span class="n">svnmerge</span> <span class="n">init</span>
-  <span class="n">svn</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s">&quot;Initialized svnmerge.&quot;</span>
+<div class="codehilite"><pre>  svn co <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;https://svn.apache.org/repos/asf/incubator/couchdb/branches/feature-name&quot;</span><span class="nt">&gt;</span>https://svn.apache.org/repos/asf/incubator/couchdb/branches/feature-name<span class="nt">&lt;/a&gt;</span>       cd feature-name
+  svnmerge init
+  svn commit -m &quot;Initialized svnmerge.&quot;
 </pre></div>
 
 

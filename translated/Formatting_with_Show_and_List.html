@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -60,20 +60,45 @@
         
 </div>
       <div id="content">
-  <p>Note that this is only available in CouchDB 0.9 or newer — The API might still change.</p>
+  <h1 id="formatting-with-show-and-list">Formatting with Show and List</h1>
+<div class="toc">
+<ul>
+<li><a href="#formatting-with-show-and-list">Formatting with Show and List</a><ul>
+<li><a href="#showing-documents">Showing Documents</a></li>
+<li><a href="#listing-views-with-couchdb-09">Listing Views with couchdb 0.9</a></li>
+<li><a href="#listing-views-with-couchdb-010">Listing Views with couchdb 0.10</a></li>
+<li><a href="#other-fun-things">Other Fun Things</a><ul>
+<li><a href="#stopping-iteration-in-a-_list">Stopping iteration in a <code>_list</code></a></li>
+<li><a href="#sending-a-redirect">Sending a Redirect</a></li>
+<li><a href="#specifying-content-type-response-header">Specifying Content-Type Response Header</a></li>
+<li><a href="#responding-to-different-content-type-request-headers">Responding to different Content-Type Request Headers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Note that this is only available in CouchDB 0.9 or newer — The API might still change.</p>
 <p>The basics of formatting documents using <code>show</code> and <code>list</code> functions. These functions convert documents and views, respectively, into non-JSON formats. The rows of each view are processed individually, which keeps long lists from becoming memory hogs.</p>
 <p>They are designed to be cacheable. CouchDB handles generating Etags for show and list responses.</p>
 <p>Show and list functions are side effect free and idempotent. They can not make additional HTTP requests against CouchDB. Their purpose is to render JSON documents in other formats.</p>
 <h2 id="showing-documents">Showing Documents</h2>
 <p>Show functions are stored in your design document, under the <code>shows</code> key. Here's an example set of show functions:</p>
-<div class="codehilite"><pre><span class="p">{</span>
-<span class="s">&quot;_id&quot;</span> <span class="p">:</span> <span class="s">&quot;_design/examples&quot;</span><span class="p">,</span>
-<span class="s">&quot;shows&quot;</span> <span class="p">:</span> <span class="p">{</span>
-  <span class="s">&quot;posts&quot;</span> <span class="p">:</span> <span class="s">&quot;function(doc, req) {... return responseObject;}&quot;</span><span class="p">,</span>
-  <span class="s">&quot;people&quot;</span> <span class="p">:</span> <span class="s">&quot;function(doc, req) { ... }&quot;</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span>
+    <span class="s2">&quot;_id&quot;</span><span class="o">:</span> <span class="s2">&quot;_design/examples&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;shows&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;posts&quot;</span><span class="o">:</span> <span class="s2">&quot;function(doc, req) { /*...*/ return responseObject;}&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;people&quot;</span><span class="o">:</span> <span class="s2">&quot;function(doc, req) { /*...*/ }&quot;</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>Assuming these functions were in a design document named "<code>examples</code>" in a database named "<code>db</code>", they could be queried like this:</p>
 <div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/db/</span><span class="n">_design</span><span class="sr">/examples/</span><span class="n">_show</span><span class="sr">/posts/som</span><span class="n">edocid</span>
@@ -86,46 +111,72 @@
 
 <p>The <code>show</code> function is run with two arguments. The first is the document corresponding to the requested <code>docid</code>, and the second describes the HTTP request's query string, Accept headers, and other per-request information. The function returns an object describing its HTTP response.</p>
 <p>Example <code>show</code> function</p>
-<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">req</span><span class="p">)</span> <span class="p">{</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">return</span> <span class="p">{</span>
-    <span class="n">body:</span> <span class="s">&quot;Hello World&quot;</span>
+    <span class="nx">body</span><span class="o">:</span> <span class="s2">&quot;Hello World&quot;</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>If the show function is queried with document id that has no corresponding document in the database, <code>doc</code> is <code>null</code> and the submitted document shows up in <code>req.docId</code>. This is useful for creating new documents with a name, like in a wiki.</p>
 <p>If the show function is queried without a document id at all, doc is <code>null</code> and <code>req.docId</code> is <code>null</code>. This is useful for creating new documents where the user specifies the new document id in a user interface, like in a CMS.</p>
-<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">req</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
-    <span class="sr">//</span> <span class="n">regular</span> <span class="n">doc</span> <span class="n">display</span> <span class="n">logic</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="sr">//</span> <span class="n">document</span> <span class="ow">not</span> <span class="n">found</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">docId</span><span class="p">)</span> <span class="p">{</span>
-      <span class="sr">//</span> <span class="n">handle</span> <span class="n">unused</span> <span class="n">doc</span> <span class="n">id</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// regular doc display logic</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> <span class="c1">// document not found</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">docId</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// handle unused doc id</span>
     <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="sr">//</span> <span class="n">handle</span> <span class="n">unspecified</span> <span class="n">doc</span> <span class="n">id</span>
+      <span class="c1">// handle unspecified doc id</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>The request and response objects are of the same format used by <code>_external</code> functions, as documented in ExternalProcesses.</p>
 <h2 id="listing-views-with-couchdb-09">Listing Views with couchdb 0.9</h2>
 <p>List functions are stored under the <code>lists</code> key of a design document. Here's an example design doc with list functions, in addition to views:</p>
-<div class="codehilite"><pre><span class="p">{</span>
-<span class="s">&quot;_id&quot;</span> <span class="p">:</span> <span class="s">&quot;_design/examples&quot;</span><span class="p">,</span>
-<span class="s">&quot;views&quot;</span> <span class="p">{</span>
-  <span class="s">&quot;posts-by-date&quot;</span> <span class="p">:</span> <span class="s">&quot;function(doc){...}&quot;</span><span class="p">,</span>
-  <span class="s">&quot;posts-by-tag&quot;</span> <span class="p">:</span> <span class="s">&quot;function(doc){...}&quot;</span><span class="p">,</span>
-  <span class="s">&quot;people-by-name&quot;</span> <span class="p">:</span> <span class="s">&quot;function(doc) {...}&quot;</span>
-<span class="p">},</span>
-<span class="s">&quot;lists&quot;</span> <span class="p">:</span> <span class="p">{</span>
-  <span class="s">&quot;index-posts&quot;</span> <span class="p">:</span> <span class="s">&quot;function(head, row, req, row_info) {...}&quot;</span><span class="p">,</span>
-  <span class="s">&quot;browse-people&quot;</span> <span class="p">:</span> <span class="s">&quot;function(head, row, req, row_info) { ... }&quot;</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span>
+    <span class="s2">&quot;_id&quot;</span><span class="o">:</span> <span class="s2">&quot;_design/examples&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;views&quot;</span> <span class="p">{</span>
+        <span class="s2">&quot;posts-by-date&quot;</span><span class="o">:</span> <span class="s2">&quot;function(doc){ /*...*/ }&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;posts-by-tag&quot;</span><span class="o">:</span> <span class="s2">&quot;function(doc){ /*...*/ }&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;people-by-name&quot;</span><span class="o">:</span> <span class="s2">&quot;function(doc) { /*...*/ }&quot;</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;lists&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;index-posts&quot;</span><span class="o">:</span> <span class="s2">&quot;function(head, row, req, row_info) { /*...*/ }&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;browse-people&quot;</span><span class="o">:</span> <span class="s2">&quot;function(head, row, req, row_info) { /*...*/ }&quot;</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>These lists are run by querying URLs like:</p>
 <div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/db/</span><span class="n">_design</span><span class="sr">/examples/</span><span class="n">_list</span><span class="sr">/index-posts/</span><span class="n">posts</span><span class="o">-</span><span class="n">by</span><span class="o">-</span><span class="n">date</span><span class="p">?</span><span class="n">descending</span><span class="o">=</span><span class="n">true</span><span class="o">&amp;</span><span class="n">limit</span><span class="o">=</span><span class="mi">10</span>
@@ -136,7 +187,7 @@
 </pre></div>
 
 
-<p>[As above, we assume the database is named "db" and the design doc "examples".]</p>
+<p>As above, we assume the database is named "db" and the design doc "examples".</p>
 <p>Couchdb 0.10 supports an alternate form of URL which allows you to use a list function and a view from different design documents.  This is particularly useful when you want to use a different language for the list and for the view.  These URLs are very similar to the above examples, but instead of the tail portion being the name of the view, the tail portion can consist of two parts - a design doc name and the name of the view in that second document.  For example:</p>
 <div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/db/</span><span class="n">_design</span><span class="sr">/examples/</span><span class="n">_list</span><span class="sr">/index-posts/o</span><span class="n">ther_ddoc</span><span class="o">/</span><span class="n">posts</span><span class="o">-</span><span class="n">by</span><span class="o">-</span><span class="n">tag</span><span class="p">?</span><span class="n">key</span><span class="o">=</span><span class="s">&quot;howto&quot;</span>
 </pre></div>
@@ -144,13 +195,17 @@
 
 <p>[As above, we assume the database is named "db" and the design doc with the list is named "examples", while the design doc with the view is "other_ddoc".]</p>
 <p>A list function has a more interesting signature, as it is passed the head of the view on first invocation, then each row in turn, then called one more time for the tail of the view. The function should check the <code>head</code> and <code>row</code> parameters to identify which state it's being called in; the sequence of calls to <code>listfn</code>, for a view with three rows, would look like:</p>
-<div class="codehilite"><pre>  <span class="n">listfn</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">null</span><span class="p">,</span>    <span class="n">req</span><span class="p">,</span> <span class="n">null</span>    <span class="p">);</span>  <span class="sr">//</span> <span class="n">Before</span> <span class="n">the</span> <span class="n">first</span> <span class="n">row:</span> <span class="n">head</span> <span class="n">is</span> <span class="n">non</span><span class="o">-</span><span class="n">null</span>
-  <span class="n">listfn</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">req</span><span class="p">,</span> <span class="n">row_info</span><span class="p">);</span>  <span class="sr">//</span> <span class="n">First</span> <span class="n">row</span>
-  <span class="n">listfn</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">rows</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">req</span><span class="p">,</span> <span class="n">row_info</span><span class="p">);</span>  <span class="sr">//</span> <span class="n">Subsequent</span> <span class="n">rows</span><span class="o">...</span>
-  <span class="n">listfn</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">rows</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">req</span><span class="p">,</span> <span class="n">row_info</span><span class="p">);</span>
-  <span class="n">listfn</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">null</span><span class="p">,</span>    <span class="n">req</span><span class="p">,</span> <span class="n">row_info</span><span class="p">);</span>  <span class="sr">//</span> <span class="n">After</span> <span class="k">last</span> <span class="n">row:</span> <span class="n">row</span><span class="o">=</span><span class="n">null</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="codehilite"><pre><span class="nx">listfn</span><span class="p">(</span><span class="nx">head</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span>    <span class="nx">req</span><span class="p">,</span> <span class="kc">null</span>    <span class="p">);</span>  <span class="c1">// Before the first row: head is non-null</span>
+<span class="nx">listfn</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">rows</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">req</span><span class="p">,</span> <span class="nx">row_info</span><span class="p">);</span>  <span class="c1">// First row</span>
+<span class="nx">listfn</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">rows</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">req</span><span class="p">,</span> <span class="nx">row_info</span><span class="p">);</span>  <span class="c1">// Subsequent rows...</span>
+<span class="nx">listfn</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">rows</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nx">req</span><span class="p">,</span> <span class="nx">row_info</span><span class="p">);</span>
+<span class="nx">listfn</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span>    <span class="nx">req</span><span class="p">,</span> <span class="nx">row_info</span><span class="p">);</span>  <span class="c1">// After last row: row=null</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>The <code>head</code> parameter -- which is only passed into the first call -- contains an object with information about the view that is to be iterated over. It's much like the response object returned from a view query in the CouchDB JavaScript API; useful properties include <code>total_rows</code> and <code>offset</code>.</p>
 <p>The <code>row_info</code> parameter contains an object with information about the iteration state. Its properties include:</p>
@@ -160,103 +215,145 @@
 <li><code>prev_key</code> (the key of the row in the previous iteration)</li>
 </ul>
 <p>Example list function:</p>
-<div class="codehilite"><pre>function(head, row, req, row_info) {
-  if (head) {
-    return &quot;<span class="nt">&lt;p&gt;</span>head: &quot;+JSON.stringify(head)+&quot;<span class="nt">&lt;/p&gt;&lt;ul&gt;</span>&quot;;
-  } else if (row) {
-    return &quot;<span class="nt">&lt;li&gt;</span>&quot;+JSON.stringify(row)+&quot;<span class="nt">&lt;/li&gt;</span>&quot;;
-  } else {
-    return &quot;<span class="nt">&lt;/ul&gt;&lt;h4&gt;</span>the tail<span class="nt">&lt;/h4&gt;</span>&quot;
-  }
-}
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kd">function</span><span class="p">(</span><span class="nx">head</span><span class="p">,</span> <span class="nx">row</span><span class="p">,</span> <span class="nx">req</span><span class="p">,</span> <span class="nx">row_info</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">head</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s2">&quot;&lt;p&gt;head: &quot;</span><span class="o">+</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">head</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;&lt;/p&gt;&lt;ul&gt;&quot;</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">row</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s2">&quot;&lt;li&gt;&quot;</span><span class="o">+</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">row</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;&lt;/li&gt;&quot;</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s2">&quot;&lt;/ul&gt;&lt;h4&gt;the tail&lt;/h4&gt;&quot;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <h2 id="listing-views-with-couchdb-010">Listing Views with couchdb 0.10</h2>
 <p>The list API has changed significantly from 0.9 to 0.10.</p>
 <p>Example <code>list</code> function</p>
-<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">req</span><span class="p">){</span>
-  <span class="n">var</span> <span class="n">row</span><span class="p">;</span>
-  <span class="k">while</span><span class="p">(</span><span class="n">row</span> <span class="o">=</span> <span class="n">getRow</span><span class="p">())</span> <span class="p">{</span>
-    <span class="nb">send</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">value</span><span class="p">);</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kd">function</span><span class="p">(</span><span class="nx">head</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">row</span><span class="p">;</span>
+  <span class="k">while</span><span class="p">(</span><span class="nx">row</span> <span class="o">=</span> <span class="nx">getRow</span><span class="p">())</span> <span class="p">{</span>
+    <span class="nx">send</span><span class="p">(</span><span class="nx">row</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <h2 id="other-fun-things">Other Fun Things</h2>
 <h3 id="stopping-iteration-in-a-_list">Stopping iteration in a <code>_list</code></h3>
 <p>If you want to terminate iteration of a <code>_list</code> early you can return a <code>{stop: true}</code> JSON object from any of the calls to the function that include a row object.</p>
 <h3 id="sending-a-redirect">Sending a Redirect</h3>
 <p>In the call to <code>_show</code> or when <code>_list</code> is called with a head object you can control the headers and status code sent to the client. An example of this would be to send a redirect notification.</p>
-<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s">&quot;code&quot;</span><span class="p">:</span> <span class="mi">302</span><span class="p">,</span> <span class="s">&quot;body&quot;</span><span class="p">:</span> <span class="s">&quot;See other&quot;</span><span class="p">,</span> <span class="s">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;Location&quot;</span><span class="p">:</span> <span class="s">&quot;/&quot;</span><span class="p">}};</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">302</span><span class="p">,</span> <span class="s2">&quot;body&quot;</span><span class="o">:</span> <span class="s2">&quot;See other&quot;</span><span class="p">,</span> <span class="s2">&quot;headers&quot;</span><span class="o">:</span> <span class="p">{</span><span class="s2">&quot;Location&quot;</span><span class="o">:</span> <span class="s2">&quot;/&quot;</span><span class="p">}};</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>For CouchDB version 0.9:</p>
-<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">row_info</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">head</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s">&quot;code&quot;</span><span class="p">:</span> <span class="mi">302</span><span class="p">,</span> <span class="s">&quot;body&quot;</span><span class="p">:</span> <span class="s">&quot;See other&quot;</span><span class="p">,</span> <span class="s">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;Location&quot;</span><span class="p">:</span> <span class="s">&quot;/&quot;</span><span class="p">}};</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="p">{</span><span class="n">stop:</span> <span class="n">true</span><span class="p">};</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kd">function</span><span class="p">(</span><span class="nx">head</span><span class="p">,</span> <span class="nx">row</span><span class="p">,</span> <span class="nx">req</span><span class="p">,</span> <span class="nx">row_info</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">head</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">302</span><span class="p">,</span> <span class="s2">&quot;body&quot;</span><span class="o">:</span> <span class="s2">&quot;See other&quot;</span><span class="p">,</span> <span class="s2">&quot;headers&quot;</span><span class="o">:</span> <span class="p">{</span><span class="s2">&quot;Location&quot;</span><span class="o">:</span> <span class="s2">&quot;/&quot;</span><span class="p">}};</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">row</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span><span class="nx">stop</span><span class="o">:</span> <span class="kc">true</span><span class="p">};</span>
   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="s">&quot;.&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;.&quot;</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>For CouchDB version 0.10:</p>
-<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">req</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">start</span><span class="p">({</span><span class="s">&quot;code&quot;</span><span class="p">:</span> <span class="mi">302</span><span class="p">,</span> <span class="s">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s">&quot;Location&quot;</span><span class="p">:</span> <span class="s">&quot;/&quot;</span><span class="p">}});</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kd">function</span><span class="p">(</span><span class="nx">head</span><span class="p">,</span> <span class="nx">req</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">start</span><span class="p">({</span><span class="s2">&quot;code&quot;</span><span class="o">:</span> <span class="mi">302</span><span class="p">,</span> <span class="s2">&quot;headers&quot;</span><span class="o">:</span> <span class="p">{</span><span class="s2">&quot;Location&quot;</span><span class="o">:</span> <span class="s2">&quot;/&quot;</span><span class="p">}});</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <h3 id="specifying-content-type-response-header">Specifying Content-Type Response Header</h3>
 <p>There are two ways to deal with a content-type header in the response to a show or list request. The first way is to specify the content type as a member of the _show function's response object:</p>
-<div class="codehilite"><pre>return {
-   &quot;headers&quot; : {&quot;Content-Type&quot; : &quot;application/xml&quot;},
-   &quot;body&quot; : new XML(&#39;<span class="nt">&lt;xml&gt;&lt;node</span> <span class="na">foo=</span><span class="s">&quot;bar&quot;</span><span class="nt">/&gt;&lt;/xml&gt;</span>&#39;)
-}
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="codehilite"><pre><span class="k">return</span> <span class="p">{</span>
+   <span class="s2">&quot;headers&quot;</span> <span class="o">:</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span> <span class="o">:</span> <span class="s2">&quot;application/xml&quot;</span><span class="p">},</span>
+   <span class="s2">&quot;body&quot;</span> <span class="o">:</span> <span class="k">new</span> <span class="nx">XML</span><span class="p">(</span><span class="s1">&#39;&lt;xml&gt;&lt;node foo=&quot;bar&quot;/&gt;&lt;/xml&gt;&#39;</span><span class="p">)</span>
+<span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <h3 id="responding-to-different-content-type-request-headers">Responding to different Content-Type Request Headers</h3>
 <p>The second way to deal with content-type headers is to rely on some global helper methods defined by CouchDB's <em><couchdb>/server/main.js</em> file. The <em>registerType</em> method lets you register a type key with one or more content-type strings. Please refer to the <em>main.js</em> file to see content-types registered by default.</p>
-<div class="codehilite"><pre><span class="n">registerType</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span> <span class="s">&quot;application/foo&quot;</span><span class="p">,</span> <span class="s">&quot;application/x-foo&quot;</span><span class="p">);</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span class="nx">registerType</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;application/foo&quot;</span><span class="p">,</span> <span class="s2">&quot;application/x-foo&quot;</span><span class="p">);</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>The other global helper method for handling varying Content-Type headers is <em>respondWith</em>. This helper method allows you to specify different response objects depending on the type key that corresponds to the content-type request header. The first argument is the request object, and the second argument is a key-value object that maps type keys to functions. Each function is expected to return an HTTP response object customized for the requested Content-Type.</p>
-<div class="codehilite"><pre><span class="sr">//</span><span class="o">...</span> <span class="n">in</span> <span class="n">your</span> <span class="n">show</span> <span class="n">function</span><span class="o">...</span>
-<span class="k">return</span> <span class="n">respondWith</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="p">{</span>
-         <span class="n">html</span> <span class="p">:</span> <span class="n">function</span><span class="p">()</span> <span class="p">{</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1">//... in your show function...</span>
+<span class="k">return</span> <span class="nx">respondWith</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="p">{</span>
+         <span class="nx">html</span> <span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
            <span class="k">return</span> <span class="p">{</span>
-             <span class="n">body:</span><span class="s">&quot;Ha ha, you said \&quot;&quot;</span> <span class="o">+</span> <span class="n">doc</span><span class="o">.</span><span class="n">word</span> <span class="o">+</span> <span class="s">&quot;\&quot;.&quot;</span>
+             <span class="nx">body</span><span class="o">:</span><span class="s2">&quot;Ha ha, you said \&quot;&quot;</span> <span class="o">+</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">word</span> <span class="o">+</span> <span class="s2">&quot;\&quot;.&quot;</span>
            <span class="p">};</span>
          <span class="p">},</span>
-         <span class="n">foo</span> <span class="p">:</span> <span class="n">function</span><span class="p">()</span> <span class="p">{</span>
+         <span class="nx">foo</span> <span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
            <span class="k">return</span> <span class="p">{</span>
-             <span class="n">body:</span> <span class="s">&quot;foofoo&quot;</span>
+             <span class="nx">body</span><span class="o">:</span> <span class="s2">&quot;foofoo&quot;</span>
            <span class="p">};</span>
          <span class="p">},</span>
-         <span class="n">fallback</span> <span class="p">:</span> <span class="s">&quot;html&quot;</span>
+         <span class="nx">fallback</span> <span class="o">:</span> <span class="s2">&quot;html&quot;</span>
        <span class="p">});</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>Since CouchDB 0.10.0 there is no responseWith-Method anymore. Please use the provides Method instead. For CouchDB version 0.10:</p>
-<div class="codehilite"><pre>//... in your show function...
-provides(&quot;html&quot;, function() {return &quot;<span class="nt">&lt;b&gt;</span>doc.title<span class="nt">&lt;/b&gt;</span>&quot;;});
-provides(&quot;xml&quot;, function() {return &quot;<span class="nt">&lt;text</span> <span class="na">class=</span><span class="s">&quot;title&quot;</span><span class="nt">&gt;</span>doc.title<span class="nt">&lt;/text&gt;</span>&quot;;});
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1">//... in your show function...</span>
+<span class="nx">provides</span><span class="p">(</span><span class="s2">&quot;html&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="k">return</span> <span class="s2">&quot;&lt;b&gt;doc.title&lt;/b&gt;&quot;</span><span class="p">;});</span>
+<span class="nx">provides</span><span class="p">(</span><span class="s2">&quot;xml&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="k">return</span> <span class="s2">&quot;&lt;text class=&quot;</span><span class="nx">title</span><span class="s2">&quot;&gt;doc.title&lt;/text&gt;&quot;</span><span class="p">;});</span>
 </pre></div>
+</td></tr></table>
 
-
-<p>Hopefully this is enough to get started. For a more complete set of examples, see the CouchDB test suite, especially show_documents.js and list_views.js</p>
+<p>Hopefully this is enough to get started. For a more complete set of examples, see the CouchDB test suite, especially <a href="show_documents.js">show_documents.js</a> and <a href="list_views.js">list_views.js</a> </p>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -63,44 +63,38 @@
   <!-- ## page was renamed from FAQ -->
 <!-- ## page was renamed from Faq -->
 
+<h1 id="frequently-asked-questions">Frequently Asked Questions</h1>
 <p>A handy FAQ for all your CouchDB related questions.</p>
-<h3 id="about-couchdb">About Couchdb</h3>
+<div class="toc">
 <ul>
-<li><a href="#what_is_couchdb">What is CouchDB?</a></li>
-<li><a href="#is_couchdb_ready_for_production">Is CouchDB Ready for Production?</a></li>
-<li><a href="#what_does_couch_mean">What Does Couch Mean?</a></li>
-<li><a href="#what_language">What Language is CouchDB Written in?</a></li>
-<li><a href="#what_platform">What Platforms are Supported?</a></li>
-<li><a href="#what_license">What is the License?</a></li>
+<li><a href="#frequently-asked-questions">Frequently Asked Questions</a><ul>
+<li><a href="#what-is-couchdb">What is CouchDB?</a></li>
+<li><a href="#is-couchdb-ready-for-production">Is CouchDB Ready for Production?</a></li>
+<li><a href="#what-does-couch-mean">What Does Couch Mean?</a></li>
+<li><a href="#what-language-is-couchdb-written-in">What Language is CouchDB Written in?</a></li>
+<li><a href="#what-platforms-are-supported">What Platforms are Supported?</a></li>
+<li><a href="#what-is-the-license">What is the License?</a></li>
+<li><a href="#how-much-stuff-can-i-store-in-couchdb">How Much Stuff can I Store in CouchDB?</a></li>
+<li><a href="#how-do-i-do-sequences">How Do I Do Sequences?</a></li>
+<li><a href="#how-do-i-use-replication">How Do I Use Replication?</a></li>
+<li><a href="#how-do-i-review-conflicts-occured-during-replication">How do I review conflicts occured during replication?</a></li>
+<li><a href="#how-can-i-spread-load-across-multiple-nodes">How can I spread load across multiple nodes?</a></li>
+<li><a href="#why-does-couchdb-not-use-mnesia">Why Does CouchDB Not Use Mnesia?</a></li>
+<li><a href="#can-i-talk-to-couchdb-without-going-through-the-http-api">Can I talk to CouchDB without going through the HTTP API?</a></li>
+<li><a href="#erlang-has-been-slow-to-adopt-unicode-is-unicode-or-utf-8-a-problem-with-couchdb">Erlang has been slow to adopt Unicode. Is Unicode or UTF-8 a problem with CouchDB?</a></li>
+<li><a href="#how-do-i-use-transactions-with-couchdb">How do I use transactions with CouchDB?</a></li>
+<li><a href="#i-want-to-update-my-view-indexes-more-often-than-only-when-a-user-reads-it-how-do-i-do-that-best">I want to update my view indexes more often than only when a user reads it. How do I do that best?</a></li>
+<li><a href="#i-use-couchdb-on-a-remote-server-and-i-dont-want-it-to-listen-on-a-public-port-for-security-reasons-is-there-a-way-to-connect-to-it-from-my-local-machine-or-can-i-still-use-futon-with-it">I use CouchDB on a remote server and I don't want it to listen on a public port for security reasons. Is there a way to connect to it from my local machine or can I still use Futon with it?</a></li>
+<li><a href="#how-fast-are-couchdb-views">How Fast are CouchDB Views?</a></li>
+<li><a href="#creating-my-view-index-takes-ages-wtf">Creating my view index takes ages, WTF?</a></li>
+<li><a href="#how-do-i-model-relationships-in-couchdb-where-are-my-joins">How do I model relationships in CouchDB? / Where are my JOINs?</a></li>
+<li><a href="#how-do-i-share-codefunctions-between-views-why-can-i-not">How do I share code/functions between views? / Why can I not?</a></li>
+<li><a href="#can-views-update-documents-or-databases">Can Views update documents or databases?</a></li>
+<li><a href="#where-are-the-couchdb-logfiles-located">Where are the CouchDB logfiles located?</a></li>
 </ul>
-<h3 id="using-couchdb">Using Couchdb</h3>
-<ul>
-<li><a href="#how_much_stuff">How Much Stuff can I Store in CouchDB?</a></li>
-<li><a href="#how_sequences">How Do I Do Sequences?</a></li>
-<li><a href="#how_replication">How Do I Use Replication?</a></li>
-<li><a href="#how_find_conflicts">How do I find out which conflicts occurred during replication</a></li>
-<li><a href="#how_spread_load">How can I spread load across multiple nodes?</a></li>
-<li><a href="#why_no_mnesia">Why Does CouchDB Not Use Mnesia?</a></li>
-<li><a href="#i_can_has_no_http">Can I talk to CouchDB without going through the HTTP API?</a></li>
-<li><a href="#unicode_data">Erlang has been slow to adopt Unicode. Is Unicode or UTF-8 a problem with CouchDB?</a></li>
-<li><a href="#transactions">How do I use transactions with CouchDB?</a></li>
+</li>
 </ul>
-<h3 id="views">Views</h3>
-<ul>
-<li><a href="#how_fast_views">How Fast are CouchDB Views?</a></li>
-<li><a href="#slow_view_building">Creating my view index takes ages, WTF?</a></li>
-<li><a href="#update_views_more_often">I want to update my view indexes more often than only when a user reads it. How do I do that best?</a></li>
-<li><a href="#relationships">How do I model relationships in CouchDB? / Where are my JOINs?</a></li>
-<li><a href="#view_share_code">How do I share code/functions between views? / Why can I not?</a></li>
-</ul>
-<h3 id="security">Security</h3>
-<ul>
-<li><a href="#secure_remote_server">I use CouchDB on a remote server and I don't want it to listen on a public port for security reasons. Is there a way to connect to it from my local machine or can I still use Futon with it?</a></li>
-</ul>
-<h3 id="couchdb-on-your-system">Couchdb on your system</h3>
-<ul>
-<li><a href="#finding_the_logfiles">Where are the Couchdb logfiles located?</a></li>
-</ul>
+</div>
 <p>If you have a question not yet answered in this FAQ please hit the edit button and add your question at the end. Check back in a few days, someone may have provided an answer.</p>
 <!-- <<Anchor(what_is_couchdb)>> -->
 
@@ -185,12 +179,14 @@
 <p>It's deceptively simple, really. You can reframe many normal transaction based scenarios for CouchDB. You do need to sort of throw out your RDBMS domain knowledge when learning CouchDB, though. It's helpful to approach problems from a higher level, rather than attempting to mold Couch to a SQL based world.</p>
 <p>Keeping track of inventory</p>
 <p>The problem you outlined is primarily an inventory issue. If you have a document describing an item, and it includes a field for "quantity available", you can handle concurrency issues like this:</p>
-<p>Retrieve the document, take note of the _rev property that CouchDB sends along
-Decrement the quantity field, if it's greater than zero
-Send the updated document back, using the _rev property
-If the _rev matches the currently stored number, be done!
-If there's a conflict (when _rev doesn't match), retrieve the newest document version
-In this instance, there are two possible failure scenarios to think about. If the most recent document version has a quantity of 0, you handle it just like you would in a RDBMS and alert the user that they can't actually buy what they wanted to purchase. If the most recent document version has a quantity greater than 0, you simply repeat the operation with the updated data, and start back at the beginning. This forces you to do a bit more work than an RDBMS would, and could get a little annoying if there are frequent, conflicting updates.</p>
+<ul>
+<li>Retrieve the document, take note of the _rev property that CouchDB sends along</li>
+<li>Decrement the quantity field, if it's greater than zero</li>
+<li>Send the updated document back, using the _rev property</li>
+<li>If the _rev matches the currently stored number, be done!</li>
+<li>If there's a conflict (when _rev doesn't match), retrieve the newest document version</li>
+</ul>
+<p>In this instance, there are two possible failure scenarios to think about. If the most recent document version has a quantity of 0, you handle it just like you would in a RDBMS and alert the user that they can't actually buy what they wanted to purchase. If the most recent document version has a quantity greater than 0, you simply repeat the operation with the updated data, and start back at the beginning. This forces you to do a bit more work than an RDBMS would, and could get a little annoying if there are frequent, conflicting updates.</p>
 <p>Now, the answer I just gave presupposes that you're going to do things in CouchDB in much the same way that you would in an RDBMS. I might approach this problem a bit differently:</p>
 <p>I'd start with a "master product" document that includes all the descriptor data (name, picture, description, price, etc). Then I'd add an "inventory ticket" document for each specific instance, with fields for product_key and claimed_by. If you're selling a model of hammer, and have 20 of them to sell, you might have documents with keys like hammer-1, hammer-2, etc, to represent each available hammer.</p>
 <p>Then, I'd create a view that gives me a list of available hammers, with a reduce function that lets me see a "total". These are completely off the cuff, but should give you an idea of what a working view would look like.</p>
@@ -215,7 +211,7 @@ In this instance, there are two possible failure scenarios to think about. If th
 <p>This reduce function simply returns the total number of unclaimed inventory_ticket items, so you can tell how many "hammers" are available for purchase.</p>
 <p>Caveats</p>
 <p>This solution represents roughly 3.5 minutes of total thinking for the particular problem you've presented. There may be better ways of doing this! That said, it does substantially reduce conflicting updates, and cuts down on the need to respond to a conflict with a new update. Under this model, you won't have multiple users attempting to change data in primary product entry. At the very worst, you'll have multiple users attempting to claim a single ticket, and if you've grabbed several of those from your view, you simply move on to the next ticket and try again</p>
-<p>(This FaQ entry was borrowed from <a href="stackoverflow.com/questions/299723/can-i-do-transactions-and-locks-in-couchdb">stackoverflow.com/questions/299723/can-i-do-transactions-and-locks-in-couchdb</a> with permission from the author.)</p>
+<p>(This FaQ entry was borrowed from <a href="http">http</a> with permission from the author.)</p>
 <!-- <<Anchor(update_views_more_often)>> -->
 
 <h2 id="i-want-to-update-my-view-indexes-more-often-than-only-when-a-user-reads-it-how-do-i-do-that-best">I want to update my view indexes more often than only when a user reads it. How do I do that best?</h2>
@@ -244,7 +240,7 @@ whatever suits you best.</p>
 <p>On you local machine, set up an ssh tunnel to your server and 
 tell it to forward requests to the local port 5984 to the remote
 server's port 5984:</p>
-<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">ssh</span> <span class="o">-</span><span class="n">L5984:127</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">1</span><span class="p">:</span><span class="mi">5984</span> <span class="n">ssh</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span>
+<div class="codehilite"><pre>$ ssh -L5984:127.0.0.1:5984 <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;ssh.example.com&quot;</span><span class="nt">&gt;</span>ssh.example.com<span class="nt">&lt;/a&gt;</span>
 </pre></div>
 
 
@@ -254,7 +250,7 @@ http://localhost:5984/</p>
 
 <h2 id="how-fast-are-couchdb-views">How Fast are CouchDB Views?</h2>
 <p>It would be quite hard to give out any numbers that make much sense. From the architecture point of view, a view on a table is much like a (multi-column) index on a table in an RDBMS that just performs a quick look-up. So this theoretically should be pretty quick.</p>
-<p>The major advantage of the architecture is, however, that it is designed for high traffic. No locking occurs is the storage module (MVCC and all that) allowing any number of parallel readers as well as serialized writes. With replication, you can even set up multiple machines for a horizontal scale-out and data partitioning (in the future) will let you cope with huge volumes of data. (See <a href="http://jan.prima.de/~jan/plok/archives/72-Some-Context.html">slide 13 of Jan Lehnardt's essay</a> for more on the storage module or the whole post for detailed info in general).</p>
+<p>The major advantage of the architecture is, however, that it is designed for high traffic. No locking occurs in the storage module (MVCC and all that) allowing any number of parallel readers as well as serialized writes. With replication, you can even set up multiple machines for a horizontal scale-out and data partitioning (in the future) will let you cope with huge volumes of data. (See <a href="http://jan.prima.de/~jan/plok/archives/72-Some-Context.html">slide 13 of Jan Lehnardt's essay</a> for more on the storage module or the whole post for detailed info in general).</p>
 <!-- <<Anchor(slow_view_building)>> -->
 
 <h2 id="creating-my-view-index-takes-ages-wtf">Creating my view index takes ages, WTF?</h2>
@@ -266,32 +262,32 @@ http://localhost:5984/</p>
 <!-- <<Anchor(relationships)>> -->
 
 <h2 id="how-do-i-model-relationships-in-couchdb-where-are-my-joins">How do I model relationships in CouchDB? / Where are my JOINs?</h2>
-<p>See: http://www.cmlenz.net/archives/2007/10/couchdb-joins</p>
+<p>See: <a href="http://www.cmlenz.net/archives/2007/10/couchdb-joins">http://www.cmlenz.net/archives/2007/10/couchdb-joins</a> </p>
 <!-- <<Anchor(view_share_code)>> -->
 
 <h2 id="how-do-i-share-codefunctions-between-views-why-can-i-not">How do I share code/functions between views? / Why can I not?</h2>
-<p>See: [[HTTP_view_API#view_share_code]]</p>
+<p>See: [[HTTP_view_API#Sharing_Code_Between_Views]]</p>
+<!-- <<Anchor(views_update_docs)>> -->
+
+<h2 id="can-views-update-documents-or-databases">Can Views update documents or databases?</h2>
+<p>No. Views are always read-only to databases and their documents.</p>
 <!-- <<Anchor(finding_the_logfiles)>> -->
 
-<h2 id="where-are-the-couchdb-logfiles-located">Where are the Couchdb logfiles located?</h2>
+<h2 id="where-are-the-couchdb-logfiles-located">Where are the CouchDB logfiles located?</h2>
 <ul>
 <li>
 <p>For a default linux/unix installation the logfiles are located here:</p>
 <p>/usr/local/var/log/couchdb/couch.log</p>
 </li>
-</ul>
-<p>This is set in the { { {default.ini} } } file located here:</p>
-<div class="codehilite"><pre><span class="sr">/etc/co</span><span class="n">uchdb</span><span class="o">/</span><span class="n">default</span><span class="o">.</span><span class="n">ini</span>
-</pre></div>
-
-
-<ul>
+<li>
+<p>This is set in the <code>default.ini</code> file located here:</p>
+<p>/etc/couchdb/default.ini</p>
+</li>
 <li>
 <p>If you've installed from source and are running couchdb in dev mode the logfiles are located here:</p>
 <p>YOUR-COUCHDB-SOURCE-DIRECTORY/tmp/log/couch.log</p>
 </li>
 </ul>
-<p>Read <a class="internal" href="Running_Couchdb_in_Dev_Mode.html">Running_Couchdb_in_Dev_Mode</a> for more information.</p>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

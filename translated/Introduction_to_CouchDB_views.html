@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -104,33 +104,44 @@
 <h2 id="basics">Basics</h2>
 <h3 id="map-functions">Map Functions</h3>
 <p>Here is the simplest example of a map function:</p>
-<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">emit</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="n">doc</span><span class="p">);</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">emit</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">doc</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>This function defines a table that contains all the documents in a CouchDB database, with no particular key.</p>
 <p>A view function should accept a single argument: the document object. To produce results, it should call the implicitly available <em>emit(key, value)</em> function. For every invocation of that function, a result row is added to the view (if neither the <em>key</em> nor the <em>value</em> are undefined). As documents are added, edited and deleted, the rows in the computed table are updated automatically.</p>
 <p>Here is a slightly more complex example of a function that defines a view on values computed from customer documents:</p>
-<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s">&quot;customer&quot;</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">emit</span><span class="p">(</span><span class="n">null</span><span class="p">,</span> <span class="p">{</span><span class="n">LastName:</span> <span class="n">doc</span><span class="o">.</span><span class="n">LastName</span><span class="p">,</span> <span class="n">FirstName:</span> <span class="n">doc</span><span class="o">.</span><span class="n">FirstName</span><span class="p">,</span> <span class="n">Address:</span> <span class="n">doc</span><span class="o">.</span><span class="n">Address</span><span class="p">});</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">Type</span> <span class="o">==</span> <span class="s2">&quot;customer&quot;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">emit</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="p">{</span><span class="nx">LastName</span><span class="o">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">LastName</span><span class="p">,</span> <span class="nx">FirstName</span><span class="o">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">FirstName</span><span class="p">,</span> <span class="nx">Address</span><span class="o">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">Address</span><span class="p">});</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>For each document in the database that has a Type field with the value <em>customer</em>, a row is created in the view. The <em>value</em> column of the view contains the <em>!LastName</em>, <em>!FirstName</em>, and <em>Address</em> fields for each document. The key for all the documents is null in this case.</p>
 <p>To be able to filter or sort the view by some document property, you would use that property for the key. For example, the following view would allow you to lookup customer documents by the <em>!LastName</em> or <em>!FirstName</em> fields:</p>
-<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s">&quot;customer&quot;</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">emit</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">LastName</span><span class="p">,</span> <span class="p">{</span><span class="n">FirstName:</span> <span class="n">doc</span><span class="o">.</span><span class="n">FirstName</span><span class="p">,</span> <span class="n">Address:</span> <span class="n">doc</span><span class="o">.</span><span class="n">Address</span><span class="p">});</span>
-    <span class="n">emit</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">FirstName</span><span class="p">,</span> <span class="p">{</span><span class="n">LastName:</span> <span class="n">doc</span><span class="o">.</span><span class="n">LastName</span><span class="p">,</span> <span class="n">Address:</span> <span class="n">doc</span><span class="o">.</span><span class="n">Address</span><span class="p">});</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">Type</span> <span class="o">==</span> <span class="s2">&quot;customer&quot;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">emit</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">LastName</span><span class="p">,</span> <span class="p">{</span><span class="nx">FirstName</span><span class="o">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">FirstName</span><span class="p">,</span> <span class="nx">Address</span><span class="o">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">Address</span><span class="p">});</span>
+    <span class="nx">emit</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">FirstName</span><span class="p">,</span> <span class="p">{</span><span class="nx">LastName</span><span class="o">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">LastName</span><span class="p">,</span> <span class="nx">Address</span><span class="o">:</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">Address</span><span class="p">});</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>Here is an example of the results of such a view:</p>
 <div class="codehilite"><pre><span class="p">{</span>
@@ -182,7 +193,7 @@
 <!-- <<Anchor(reduce_functions)>> -->
 
 <h3 id="reduce-functions">Reduce Functions</h3>
-<p>Reduce is a powerful feature of CouchDB but is often misused which leads to performance problems. From 0.10 onwards, CouchDB uses a heuristic to detect reduce functions that won't scale to give the developer an early warning. A reduce function must reduce the input values to a smaller output value. If you are building a composite return structure in your reduce, or only transforming the values field, rather than summarizing it, you might be misusing this feature. See <a href="#reduced_value_sizes">Reduced Value Sizes</a> for more details.</p>
+<p>Reduce is a powerful feature of CouchDB but is often misused which leads to performance problems. From 0.10 onwards, CouchDB uses a heuristic to detect reduce functions that won't scale to give the developer an early warning. A reduce function must reduce the input values to a smaller output value. If you are building a composite return structure in your reduce, or only transforming the values field, rather than summarizing it, you might be misusing this feature. See [[#reduced_value_sizes]] for more details.</p>
 <p>If a view has a reduce function, it is used to produce aggregate results for that view. A reduce function is passed a set of intermediate values and combines them to a single value. Reduce functions must accept, as input, results emitted by its corresponding map function <strong>as well as results returned by the reduce function itself</strong>. The latter case is referred to as a <em>rereduce</em>.</p>
 <p>Here is an example of a reduce function:</p>
 <div class="codehilite"><pre><span class="n">function</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">values</span><span class="p">,</span> <span class="n">rereduce</span><span class="p">)</span> <span class="p">{</span>
@@ -217,7 +228,7 @@
 <p>Often, reduce functions can be written to handle rereduce calls without any extra code, like the summation function above. In that case, the <em>rereduce</em> argument can be ignored and in JavaScript, it can be omitted from the function definition entirely.</p>
 <h3 id="reduce-vs-rereduce">Reduce vs rereduce</h3>
 <p>On a large database objects to be reduced will be sent to your reduce function in batches. These batches will be broken up on B-tree boundaries, which may occur in arbitrary places.</p>
-<p><a href="http://mail-archives.apache.org/mod_mbox/couchdb-user/200903.mbox/klzzwxh:0046">For example</a>, suppose you have a view which emits key-&gt;value pairs like this:</p>
+<p><a href="http://mail-archives.apache.org/mod_mbox/couchdb-user/200903.mbox/klzzwxh:0044">For example</a>, suppose you have a view which emits key-&gt;value pairs like this:</p>
 <div class="codehilite"><pre><span class="p">[</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>  <span class="o">-&gt;</span> <span class="n">Object_A</span>
 <span class="p">[</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="o">-&gt;</span> <span class="n">Object_B1</span>
 <span class="p">[</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="o">-&gt;</span> <span class="n">Object_B1</span>
@@ -271,7 +282,7 @@
 <h3 id="lookup-views">Lookup Views</h3>
 <p>The second parameter of the <em>emit()</em> function can be <em>null</em>. CouchDB then only stores the [key,docid] in the view. You can use the view as a compact lookup mechanism and fetch the document's details, if needed, in subsequent requests or by adding parameter <em>include_docs=true</em></p>
 <h3 id="linked-documents">Linked documents</h3>
-<p><em>This is a new feature in couchdb trunk / 0.11</em></p>
+<p><em>This is a new feature in couchdb 0.11</em></p>
 <p>If you emit an object value which has '''{'_id': XXX}'* then include_docs will fetch the document with id XXX rather than the document which was processed to emit the key/value pair.</p>
 <p>This means that if one document contains the ids of other documents, it can cause those documents to be fetched in the view too, adjacent to the same key if required.</p>
 <p>For example, if you have the following hierarchically-linked documents:</p>
@@ -369,9 +380,7 @@
 <h2 id="implementation">Implementation</h2>
 <p>These blog posts include information about how map/reduce works, including how reduce values are kept in btree nodes.</p>
 <ul>
-<li>http://damienkatz.net/2008/02/incremental_map.html</li>
-<li>http://damienkatz.net/2008/02/incremental_map_1.html</li>
-<li>http://horicky.blogspot.com/2008/10/couchdb-implementation.html</li>
+<li><a href="http://damienkatz.net/2008/02/incremental_map.html">http://damienkatz.net/2008/02/incremental_map.html</a>  * <a href="http://damienkatz.net/2008/02/incremental_map_1.html">http://damienkatz.net/2008/02/incremental_map_1.html</a>  * <a href="http://horicky.blogspot.com/2008/10/couchdb-implementation.html">http://horicky.blogspot.com/2008/10/couchdb-implementation.html</a> </li>
 </ul>
 </div>
       <div id="footer">

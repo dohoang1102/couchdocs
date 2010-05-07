@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -179,11 +179,11 @@
 
 
 <p>The key emitted from the view is <code>["token","field"]</code>. This allows terms to be searched per field while also allowing the use of group_level=1 to combine the results of all fields. Combining results of multiple fields currently eliminates the use of positions.</p>
-<p>To reduce the amount of information passed during view generation the whiteSpaceAnalyzer function can be moved to the main.js file.</p>
+<p>To reduce the amount of information passed during view generation the whiteSpaceAnalyzer function can be moved to the <a href="main.js">main.js</a> file.</p>
 <p>Is this worth pursuing further?
 <em>_</em></p>
 <p>After pursuing this a little further, here's an expanded version of the above m/r functions, modified to support stemming (via porter), optional case-insensitivity, min-length for tokens, wider whitespace handling (still english-centric though).</p>
-<p>Here's the map function: options can be set in the options object at the top, as well whitespace and ignore words, then the porter stemming function (which could get sucked into main.js as noted by Dan). I still have no idea how to do any kind of boolean operations.</p>
+<p>Here's the map function: options can be set in the options object at the top, as well whitespace and ignore words, then the porter stemming function (which could get sucked into <a href="main.js">main.js</a> as noted by Dan). I still have no idea how to do any kind of boolean operations.</p>
 <div class="codehilite"><pre><span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
   <span class="n">stem:</span> <span class="n">porter_stem</span><span class="p">,</span>
   <span class="n">min_length:</span> <span class="mi">3</span><span class="p">,</span>
@@ -219,8 +219,7 @@
 <span class="s">//  Porter, 1980, An algorithm for suffix stripping, Program, Vol. 14,</span>
 <span class="s">//  no. 3, pp 130-137,</span>
 <span class="s">//</span>
-<span class="s">// see also http://www.tartarus.org/~martin/PorterStemmer</span>
-
+<span class="s">// see also &lt;a href=&quot;http://www.tartarus.org/~martin/PorterStemmer&quot;&gt;http://www.tartarus.org/~martin/PorterStemmer&lt;/a&gt;     </span>
 <span class="s">// Release 1</span>
 
 <span class="s">step2list = new Array();</span>

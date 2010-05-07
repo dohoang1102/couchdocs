@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -60,25 +60,62 @@
         
 </div>
       <div id="content">
-  <h2 id="api">API</h2>
+  <h1 id="couchdb-reference">CouchDB Reference</h1>
+<div class="toc">
+<ul>
+<li><a href="#couchdb-reference">CouchDB Reference</a><ul>
+<li><a href="#api">API</a><ul>
+<li><a href="#server-level">Server-Level</a></li>
+<li><a href="#database-level">Database-Level</a><ul>
+<li><a href="#views">Views</a></li>
+</ul>
+</li>
+<li><a href="#document-level">Document-Level</a></li>
+</ul>
+</li>
+<li><a href="#configuration">Configuration</a></li>
+<li><a href="#external-processes">External Processes</a></li>
+<li><a href="#security-and-validation">Security and Validation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="api">API</h2>
 <ul>
 <li><a class="internal" href="API_Cheatsheet.html">API_Cheatsheet</a></li>
+<li><a class="internal" href="Error_messages.html">Error_messages</a></li>
+<li><a class="internal" href="HTTP_status_list.html">HTTP_status_list</a></li>
+<li><a class="internal" href="URI_templates.html">URI_templates</a></li>
+</ul>
+<h3 id="server-level">Server-Level</h3>
+<ul>
 <li><a class="internal" href="Compaction.html">Compaction</a></li>
 <li><a class="internal" href="Replication.html">Replication</a></li>
-<li><a class="internal" href="Document_revisions.html">Document_revisions</a></li>
-<li><a class="internal" href="Error_messages.html">Error_messages</a></li>
-<li><a class="internal" href="HTTP_database_API.html">HTTP_database_API</a></li>
-<li><a class="internal" href="HTTP_Document_API.html">HTTP_Document_API</a></li>
-<li><a class="internal" href="HTTP_Bulk_Document_API.html">HTTP_Bulk_Document_API</a></li>
-<li><a class="internal" href="HTTP_REST_API.html">HTTP_REST_API</a></li>
-<li><a class="internal" href="HTTP_view_API.html">HTTP_view_API</a></li>
-<li><a class="internal" href="HTTP_status_list.html">HTTP_status_list</a></li>
-<li><a class="internal" href="Reserved_words.html">Reserved_words</a></li>
-<li><a class="internal" href="URI_templates.html">URI_templates</a></li>
-<li><a class="internal" href="Formatting_with_Show_and_List.html">Formatting_with_Show_and_List</a></li>
-<li><a class="internal" href="Rewriting_urls.html">Rewriting_urls</a></li>
-<li><a class="internal" href="How_to_intercept_document_updates_and_perform_additional_server-side_processing.html">How_to_intercept_document_updates_and_perform_additional_server-side_processing</a></li>
 <li><a class="internal" href="Runtime_Statistics.html">Runtime_Statistics</a></li>
+<li>Virtual Hosts</li>
+</ul>
+<h3 id="database-level">Database-Level</h3>
+<ul>
+<li><a class="internal" href="HTTP_Bulk_Document_API.html">HTTP_Bulk_Document_API</a></li>
+<li><a class="internal" href="HTTP_database_API.html">HTTP_database_API</a></li>
+<li><a class="internal" href="HTTP_view_API.html">HTTP_view_API</a></li>
+<li><a class="internal" href="Rewriting_urls.html">Rewriting_urls</a></li>
+<li><a class="internal" href="Document_Update_Handlers.html">Document_Update_Handlers</a></li>
+<li><a class="internal" href="Document_Update_Validation.html">Document_Update_Validation</a></li>
+</ul>
+<h4 id="views">Views</h4>
+<ul>
+<li><a class="internal" href="Introduction_to_CouchDB_views.html">Introduction_to_CouchDB_views</a></li>
+<li><a class="internal" href="CommonJS_Modules.html">CommonJS_Modules</a> (code sharing in show, list, update, and validation functions)</li>
+<li><a class="internal" href="View_collation.html">View_collation</a></li>
+<li><a class="internal" href="View_server.html">View_server</a></li>
+<li><a class="internal" href="View_Snippets.html">View_Snippets</a></li>
+</ul>
+<h3 id="document-level">Document-Level</h3>
+<ul>
+<li><a class="internal" href="Document_revisions.html">Document_revisions</a></li>
+<li><a class="internal" href="Formatting_with_Show_and_List.html">Formatting_with_Show_and_List</a></li>
+<li><a class="internal" href="HTTP_Document_API.html">HTTP_Document_API</a></li>
 </ul>
 <h2 id="configuration">Configuration</h2>
 <ul>
@@ -90,17 +127,9 @@
 <li><a class="internal" href="Actions.html">Actions</a></li>
 <li>ExternalProcesses</li>
 </ul>
-<h2 id="views">Views</h2>
-<ul>
-<li><a class="internal" href="Introduction_to_CouchDB_views.html">Introduction_to_CouchDB_views</a></li>
-<li><a class="internal" href="Regenerating_views_on_update.html">Regenerating_views_on_update</a></li>
-<li><a class="internal" href="View_collation.html">View_collation</a></li>
-<li><a class="internal" href="View_server.html">View_server</a></li>
-<li><a class="internal" href="View_Snippets.html">View_Snippets</a></li>
-</ul>
 <h2 id="security-and-validation">Security and Validation</h2>
 <ul>
-<li><a class="internal" href="Security_Features_Overview.html">Security_Features_Overview</a> - Overview of security features that ship "out of the box" with CouchDB </li>
+<li><a class="internal" href="Security_Features_Overview.html">Security_Features_Overview</a> - Overview of security features that ship "out of the box" with CouchDB</li>
 <li><a class="internal" href="Setting_up_an_Admin_account.html">Setting_up_an_Admin_account</a></li>
 </ul>
 </div>

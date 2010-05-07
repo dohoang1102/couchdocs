@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -60,77 +60,131 @@
         
 </div>
       <div id="content">
-  <h3 id="fetch-multiple-documents-with-a-single-request">Fetch Multiple Documents With a Single Request</h3>
+  <h1 id="http-bulk-document-api">HTTP Bulk Document API</h1>
+<div class="toc">
+<ul>
+<li><a href="#http-bulk-document-api">HTTP Bulk Document API</a><ul>
+<li><a href="#fetch-multiple-documents-with-a-single-request">Fetch Multiple Documents With a Single Request</a></li>
+<li><a href="#modify-multiple-documents-with-a-single-request">Modify Multiple Documents With a Single Request</a><ul>
+<li><a href="#transactional-semantics-with-bulk-updates">Transactional Semantics with Bulk Updates</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#javascript">!javascript</a></li>
+</ul>
+</div>
+<h2 id="fetch-multiple-documents-with-a-single-request">Fetch Multiple Documents With a Single Request</h2>
 <p><code>_all_docs</code> implements the <a class="internal" href="HTTP_view_API.html">HTTP_view_API</a> where each <em>key</em> is the doc _id, and each <em>value</em> is a JSON object containing the rev. This means that:</p>
 <ul>
 <li>By adding <code>?include_docs=true</code> you can get the documents themselves, not just their id and rev</li>
 <li>By adding <code>?startkey="xx"&amp;endkey="yy"</code> you can get the documents with keys in a certain range</li>
-<li>
-<p>By POSTing to _all_docs you can get a set of documents with arbitrary keys</p>
-<p>$ curl -d '{"keys":["bar","baz"]}' -X POST http://127.0.0.1:5984/foo/_all_docs?include_docs=true
-{"total_rows":3,"offset":0,"rows":[
-{"id":"bar","key":"bar","value":{"rev":"1-4057566831"},"doc":{"_id":"bar","_rev":"1-4057566831","name":"jim"}},
-{"id":"baz","key":"baz","value":{"rev":"1-2842770487"},"doc":{"_id":"baz","_rev":"1-2842770487","name":"trunky"}}
-]}</p>
-<p>$ curl 'http://127.0.0.1:5984/foo/_all_docs?include_docs=true&amp;startkey="ba"&amp;endkey="bb"'
-{"total_rows":3,"offset":0,"rows":[
-{"id":"bar","key":"bar","value":{"rev":"1-4057566831"},"doc":{"_id":"bar","_rev":"1-4057566831","name":"jim"}},
-{"id":"baz","key":"baz","value":{"rev":"1-2842770487"},"doc":{"_id":"baz","_rev":"1-2842770487","name":"trunky"}}
-]}</p>
-</li>
+<li>By POSTing to _all_docs you can get a set of documents with arbitrary keys</li>
 </ul>
-<h3 id="modify-multiple-documents-with-a-single-request">Modify Multiple Documents With a Single Request</h3>
+<p>Simple exmple to fetch the keys <code>bar</code> and <code>baz</code> and include the complete document in the result set:</p>
+<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">d</span> <span class="s">&#39;{&quot;keys&quot;:[&quot;bar&quot;,&quot;baz&quot;]}&#39;</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="n">http:</span><span class="sr">//</span><span class="mi">127</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">1</span><span class="p">:</span><span class="mi">5984</span><span class="sr">/foo/</span><span class="n">_all_docs</span><span class="p">?</span><span class="n">include_docs</span><span class="o">=</span><span class="n">true</span>
+</pre></div>
+
+
+<p>Result:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span><span class="s2">&quot;total_rows&quot;</span><span class="o">:</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;offset&quot;</span><span class="o">:</span><span class="mi">0</span><span class="p">,</span><span class="s2">&quot;rows&quot;</span><span class="o">:</span><span class="p">[</span>
+<span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span><span class="s2">&quot;key&quot;</span><span class="o">:</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span><span class="s2">&quot;value&quot;</span><span class="o">:</span><span class="p">{</span><span class="s2">&quot;rev&quot;</span><span class="o">:</span><span class="s2">&quot;1-4057566831&quot;</span><span class="p">},</span><span class="s2">&quot;doc&quot;</span><span class="o">:</span><span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="o">:</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span><span class="s2">&quot;_rev&quot;</span><span class="o">:</span><span class="s2">&quot;1-4057566831&quot;</span><span class="p">,</span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="s2">&quot;jim&quot;</span><span class="p">}},</span>
+<span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;baz&quot;</span><span class="p">,</span><span class="s2">&quot;key&quot;</span><span class="o">:</span><span class="s2">&quot;baz&quot;</span><span class="p">,</span><span class="s2">&quot;value&quot;</span><span class="o">:</span><span class="p">{</span><span class="s2">&quot;rev&quot;</span><span class="o">:</span><span class="s2">&quot;1-2842770487&quot;</span><span class="p">},</span><span class="s2">&quot;doc&quot;</span><span class="o">:</span><span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="o">:</span><span class="s2">&quot;baz&quot;</span><span class="p">,</span><span class="s2">&quot;_rev&quot;</span><span class="o">:</span><span class="s2">&quot;1-2842770487&quot;</span><span class="p">,</span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="s2">&quot;trunky&quot;</span><span class="p">}}</span>
+<span class="p">]}</span>
+</pre></div>
+</td></tr></table>
+
+<p>Example with startkey and endkey (<strong>be aware</strong> of correct url encoding!):</p>
+<div class="codehilite"><pre><span class="n">curl</span> <span class="s">&#39;http://127.0.0.1:5984/foo/_all_docs?include_docs=true&amp;startkey=&quot;ba&quot;&amp;endkey=&quot;bb&quot;&#39;</span>
+</pre></div>
+
+
+<p>Result:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span><span class="s2">&quot;total_rows&quot;</span><span class="o">:</span><span class="mi">3</span><span class="p">,</span><span class="s2">&quot;offset&quot;</span><span class="o">:</span><span class="mi">0</span><span class="p">,</span><span class="s2">&quot;rows&quot;</span><span class="o">:</span><span class="p">[</span>
+<span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span><span class="s2">&quot;key&quot;</span><span class="o">:</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span><span class="s2">&quot;value&quot;</span><span class="o">:</span><span class="p">{</span><span class="s2">&quot;rev&quot;</span><span class="o">:</span><span class="s2">&quot;1-4057566831&quot;</span><span class="p">},</span><span class="s2">&quot;doc&quot;</span><span class="o">:</span><span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="o">:</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span><span class="s2">&quot;_rev&quot;</span><span class="o">:</span><span class="s2">&quot;1-4057566831&quot;</span><span class="p">,</span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="s2">&quot;jim&quot;</span><span class="p">}},</span>
+<span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;baz&quot;</span><span class="p">,</span><span class="s2">&quot;key&quot;</span><span class="o">:</span><span class="s2">&quot;baz&quot;</span><span class="p">,</span><span class="s2">&quot;value&quot;</span><span class="o">:</span><span class="p">{</span><span class="s2">&quot;rev&quot;</span><span class="o">:</span><span class="s2">&quot;1-2842770487&quot;</span><span class="p">},</span><span class="s2">&quot;doc&quot;</span><span class="o">:</span><span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="o">:</span><span class="s2">&quot;baz&quot;</span><span class="p">,</span><span class="s2">&quot;_rev&quot;</span><span class="o">:</span><span class="s2">&quot;1-2842770487&quot;</span><span class="p">,</span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="s2">&quot;trunky&quot;</span><span class="p">}}</span>
+<span class="p">]}</span>
+</pre></div>
+</td></tr></table>
+
+<h2 id="modify-multiple-documents-with-a-single-request">Modify Multiple Documents With a Single Request</h2>
 <p>CouchDB provides a bulk insert/update feature. To use this, you make a <em>POST</em> request to the URI <em>/{dbname}/_bulk_docs</em>, with the request body being a JSON document containing a list of new documents to be inserted or updated.</p>
 <p>For example (with curl):</p>
 <div class="codehilite"><pre><span class="nv">$</span> <span class="nv">DB</span><span class="o">=</span><span class="s">&quot;http://127.0.0.1:5984/mydb&quot;</span>
-<span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">v</span> <span class="o">-</span><span class="n">d</span> <span class="s">&#39;{&quot;docs&quot;:[{&quot;key&quot;:&quot;baz&quot;,&quot;name&quot;:&quot;bazzel&quot;},{&quot;key&quot;:&quot;bar&quot;,&quot;name&quot;:&quot;barry&quot;}]}&#39;</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="nv">$DB</span><span class="o">/</span><span class="n">_bulk_docs</span>
-<span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">v</span> <span class="o">-</span><span class="n">d</span> <span class="nv">@your_file</span><span class="o">.</span><span class="n">json</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="nv">$DB</span><span class="o">/</span><span class="n">_bulk_docs</span>
+<span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">d</span> <span class="s">&#39;{&quot;docs&quot;:[{&quot;key&quot;:&quot;baz&quot;,&quot;name&quot;:&quot;bazzel&quot;},{&quot;key&quot;:&quot;bar&quot;,&quot;name&quot;:&quot;barry&quot;}]}&#39;</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="nv">$DB</span><span class="o">/</span><span class="n">_bulk_docs</span>
+<span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">d</span> <span class="nv">@your_file</span><span class="o">.</span><span class="n">json</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="nv">$DB</span><span class="o">/</span><span class="n">_bulk_docs</span>
 </pre></div>
 
 
 <p>Doc formats below are as per CouchDB 0.9.x.</p>
-<div class="codehilite"><pre><span class="p">{</span>
-  <span class="s">&quot;docs&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;0&quot;</span><span class="p">,</span> <span class="s">&quot;integer&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;string&quot;</span><span class="p">:</span> <span class="s">&quot;0&quot;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;1&quot;</span><span class="p">,</span> <span class="s">&quot;integer&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;string&quot;</span><span class="p">:</span> <span class="s">&quot;1&quot;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;2&quot;</span><span class="p">,</span> <span class="s">&quot;integer&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;string&quot;</span><span class="p">:</span> <span class="s">&quot;2&quot;</span><span class="p">}</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span>
+  <span class="s2">&quot;docs&quot;</span><span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="o">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;integer&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="o">:</span> <span class="s2">&quot;0&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="o">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;integer&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="o">:</span> <span class="s2">&quot;1&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="o">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;integer&quot;</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="o">:</span> <span class="s2">&quot;2&quot;</span><span class="p">}</span>
   <span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>If you omit the per-document <em>_id</em> specification, CouchDB will generate unique IDs for you, as it does for regular <em>POST</em> requests to the database URI.</p>
 <p>The response to such a bulk request would look as follows (reformatted for clarity):</p>
-<div class="codehilite"><pre><span class="p">[</span>
-    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;0&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-62657917&quot;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;1&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-2089673485&quot;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;2&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-2063452834&quot;</span><span class="p">}</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;0&quot;</span><span class="p">,</span><span class="s2">&quot;rev&quot;</span><span class="o">:</span><span class="s2">&quot;1-62657917&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="s2">&quot;rev&quot;</span><span class="o">:</span><span class="s2">&quot;1-2089673485&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;2&quot;</span><span class="p">,</span><span class="s2">&quot;rev&quot;</span><span class="o">:</span><span class="s2">&quot;1-2063452834&quot;</span><span class="p">}</span>
 <span class="p">]</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>Updating existing documents requires setting the <em>_rev</em> member to the revision being updated. To delete a document set the <em>_deleted</em> member to true.</p>
-<div class="codehilite"><pre><span class="p">{</span>
-  <span class="s">&quot;docs&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;0&quot;</span><span class="p">,</span> <span class="s">&quot;_rev&quot;</span><span class="p">:</span> <span class="s">&quot;1-62657917&quot;</span><span class="p">,</span> <span class="s">&quot;_deleted&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">},</span>
-    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;1&quot;</span><span class="p">,</span> <span class="s">&quot;_rev&quot;</span><span class="p">:</span> <span class="s">&quot;1-2089673485&quot;</span><span class="p">,</span> <span class="s">&quot;integer&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;string&quot;</span><span class="p">:</span> <span class="s">&quot;2&quot;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="s">&quot;2&quot;</span><span class="p">,</span> <span class="s">&quot;_rev&quot;</span><span class="p">:</span> <span class="s">&quot;1-2063452834&quot;</span><span class="p">,</span> <span class="s">&quot;integer&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&quot;string&quot;</span><span class="p">:</span> <span class="s">&quot;3&quot;</span><span class="p">}</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span>
+  <span class="s2">&quot;docs&quot;</span><span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="o">:</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;_rev&quot;</span><span class="o">:</span> <span class="s2">&quot;1-62657917&quot;</span><span class="p">,</span> <span class="s2">&quot;_deleted&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="o">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;_rev&quot;</span><span class="o">:</span> <span class="s2">&quot;1-2089673485&quot;</span><span class="p">,</span> <span class="s2">&quot;integer&quot;</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="o">:</span> <span class="s2">&quot;2&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="o">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;_rev&quot;</span><span class="o">:</span> <span class="s2">&quot;1-2063452834&quot;</span><span class="p">,</span> <span class="s2">&quot;integer&quot;</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;string&quot;</span><span class="o">:</span> <span class="s2">&quot;3&quot;</span><span class="p">}</span>
   <span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>Note that CouchDB will return in the response an id and revision for every document passed as content to a bulk insert, even for those that were just deleted.</p>
 <p>If the _rev does not match the current version of the document, then that particular document will <em>not</em> be saved and will be reported as a conflict, but this does not prevent other documents in the batch from being saved.</p>
-<div class="codehilite"><pre><span class="p">[</span>
-    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;0&quot;</span><span class="p">,</span><span class="s">&quot;error&quot;</span><span class="p">:</span><span class="s">&quot;conflict&quot;</span><span class="p">,</span><span class="s">&quot;reason&quot;</span><span class="p">:</span><span class="s">&quot;Document update conflict.&quot;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;1&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-1579510027&quot;</span><span class="p">},</span>
-    <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;2&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-3978456339&quot;</span><span class="p">}</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;0&quot;</span><span class="p">,</span><span class="s2">&quot;error&quot;</span><span class="o">:</span><span class="s2">&quot;conflict&quot;</span><span class="p">,</span><span class="s2">&quot;reason&quot;</span><span class="o">:</span><span class="s2">&quot;Document update conflict.&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;1&quot;</span><span class="p">,</span><span class="s2">&quot;rev&quot;</span><span class="o">:</span><span class="s2">&quot;2-1579510027&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;2&quot;</span><span class="p">,</span><span class="s2">&quot;rev&quot;</span><span class="o">:</span><span class="s2">&quot;2-3978456339&quot;</span><span class="p">}</span>
 <span class="p">]</span>
 </pre></div>
+</td></tr></table>
 
-
-<h4 id="transactional-semantics-with-bulk-updates">Transactional Semantics with Bulk Updates</h4>
+<h3 id="transactional-semantics-with-bulk-updates">Transactional Semantics with Bulk Updates</h3>
 <p>In previous releases of CouchDB, bulk updates were transactional - in particular, all requests in a bulk update failed if any request failed or was in conflict. There were a couple of problems with this approach:</p>
 <ul>
 <li>
@@ -148,6 +202,7 @@
 </li>
 <li>
 <p><strong>all-or-nothing</strong> - To use this mode, include <code>"all_or_nothing":true</code> as part of the request.  In the case of a power failure, when the database restarts either all the changes will have been saved or none of them.  However, it does not do conflict checking, so the documents will be committed even if this creates conflicts.</p>
+<h1 id="javascript">!javascript</h1>
 <p>{
   "all_or_nothing": true,
   "docs": [
@@ -165,16 +220,53 @@
 <p>Note that POSTing a single document with <code>"all_or_nothing":true</code> behaves completely differently from a regular PUT, since it will save conflicting versions rather than rejecting a conflict.</p>
 <div class="codehilite"><pre><span class="nv">$</span> <span class="nv">DB</span><span class="o">=</span><span class="s">&quot;http://127.0.0.1:5984/tstconf&quot;</span>
 <span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">PUT</span> <span class="s">&quot;$DB&quot;</span>
-<span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
-<span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">PUT</span> <span class="o">-</span><span class="n">d</span> <span class="s">&#39;{&quot;name&quot;:&quot;fred&quot;}&#39;</span> <span class="s">&quot;$DB/person&quot;</span>
-<span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;person&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-877727288&quot;</span><span class="p">}</span>
-<span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">d</span> <span class="s">&#39;{&quot;all_or_nothing&quot;:true,&quot;docs&quot;:[{&quot;_id&quot;:&quot;person&quot;,&quot;_rev&quot;:&quot;1-877727288&quot;,&quot;name&quot;:&quot;jim&quot;}]}&#39;</span> <span class="s">&quot;$DB/_bulk_docs&quot;</span>
-<span class="p">[{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;person&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-3595405&quot;</span><span class="p">}]</span>
-<span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">d</span> <span class="s">&#39;{&quot;all_or_nothing&quot;:true,&quot;docs&quot;:[{&quot;_id&quot;:&quot;person&quot;,&quot;_rev&quot;:&quot;1-877727288&quot;,&quot;name&quot;:&quot;trunky&quot;}]}&#39;</span> <span class="s">&quot;$DB/_bulk_docs&quot;</span>
-<span class="p">[{</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;person&quot;</span><span class="p">,</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-2835283254&quot;</span><span class="p">}]</span>
-<span class="nv">$</span> <span class="nv">curl</span> <span class="s">&quot;$DB/person?conflicts=true&quot;</span>
-<span class="p">{</span><span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;person&quot;</span><span class="p">,</span><span class="s">&quot;_rev&quot;</span><span class="p">:</span><span class="s">&quot;2-3595405&quot;</span><span class="p">,</span><span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;jim&quot;</span><span class="p">,</span><span class="s">&quot;_conflicts&quot;</span><span class="p">:[</span><span class="s">&quot;2-2835283254&quot;</span><span class="p">]}</span>
 </pre></div>
+
+
+<p>Result:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span><span class="s2">&quot;ok&quot;</span><span class="o">:</span><span class="kc">true</span><span class="p">}</span>
+
+<span class="nx">$</span> <span class="nx">curl</span> <span class="o">-</span><span class="nx">X</span> <span class="nx">PUT</span> <span class="o">-</span><span class="nx">d</span> <span class="s1">&#39;{&quot;name&quot;:&quot;fred&quot;}&#39;</span> <span class="s2">&quot;$DB/person&quot;</span>
+
+<span class="err">#</span><span class="o">!</span><span class="nx">javascript</span>
+<span class="p">{</span><span class="s2">&quot;ok&quot;</span><span class="o">:</span><span class="kc">true</span><span class="p">,</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;person&quot;</span><span class="p">,</span><span class="s2">&quot;rev&quot;</span><span class="o">:</span><span class="s2">&quot;1-877727288&quot;</span><span class="p">}</span>
+
+<span class="nx">$</span> <span class="nx">curl</span> <span class="o">-</span><span class="nx">X</span> <span class="nx">POST</span> <span class="o">-</span><span class="nx">d</span> <span class="s1">&#39;{&quot;all_or_nothing&quot;:true,&quot;docs&quot;:[{&quot;_id&quot;:&quot;person&quot;,&quot;_rev&quot;:&quot;1-877727288&quot;,&quot;name&quot;:&quot;jim&quot;}]}&#39;</span> <span class="s2">&quot;$DB/_bulk_docs&quot;</span>
+
+<span class="err">#</span><span class="o">!</span><span class="nx">javascript</span>
+<span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;person&quot;</span><span class="p">,</span><span class="s2">&quot;rev&quot;</span><span class="o">:</span><span class="s2">&quot;2-3595405&quot;</span><span class="p">}]</span>
+
+<span class="nx">$</span> <span class="nx">curl</span> <span class="o">-</span><span class="nx">X</span> <span class="nx">POST</span> <span class="o">-</span><span class="nx">d</span> <span class="s1">&#39;{&quot;all_or_nothing&quot;:true,&quot;docs&quot;:[{&quot;_id&quot;:&quot;person&quot;,&quot;_rev&quot;:&quot;1-877727288&quot;,&quot;name&quot;:&quot;trunky&quot;}]}&#39;</span> <span class="s2">&quot;$DB/_bulk_docs&quot;</span>
+
+<span class="err">#</span><span class="o">!</span><span class="nx">javascript</span>
+<span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="s2">&quot;person&quot;</span><span class="p">,</span><span class="s2">&quot;rev&quot;</span><span class="o">:</span><span class="s2">&quot;2-2835283254&quot;</span><span class="p">}]</span>
+
+<span class="nx">$</span> <span class="nx">curl</span> <span class="s2">&quot;$DB/person?conflicts=true&quot;</span>
+
+<span class="err">#</span><span class="o">!</span><span class="nx">javascript</span>
+<span class="p">{</span><span class="s2">&quot;_id&quot;</span><span class="o">:</span><span class="s2">&quot;person&quot;</span><span class="p">,</span><span class="s2">&quot;_rev&quot;</span><span class="o">:</span><span class="s2">&quot;2-3595405&quot;</span><span class="p">,</span><span class="s2">&quot;name&quot;</span><span class="o">:</span><span class="s2">&quot;jim&quot;</span><span class="p">,</span><span class="s2">&quot;_conflicts&quot;</span><span class="o">:</span><span class="p">[</span><span class="s2">&quot;2-2835283254&quot;</span><span class="p">]}</span>
+</pre></div>
+</td></tr></table>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

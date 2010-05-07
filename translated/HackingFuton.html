@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -63,10 +63,8 @@
   <h2 id="a-caveat">A Caveat</h2>
 <p>If you're running a version of CouchDB that's too out of date, Futon might do weird things. The entire point of this exercise is to make sure that you don't need to build CouchDB by hand just to hack on Futon though, so I'll just leave it as an exercise to the reader to keep things in sync. I'll post corresponding SVN URL's towards the bottom.</p>
 <h2 id="bleeding-edge-instructions">Bleeding Edge Instructions</h2>
-<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">svn</span> <span class="n">co</span> <span class="n">http:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/couchdb/</span><span class="n">trunk</span><span class="sr">/share/</span><span class="n">www</span> <span class="n">futon</span>
-<span class="nv">$</span> <span class="nv">wget</span> <span class="n">http:</span><span class="sr">//gi</span><span class="n">thub</span><span class="o">.</span><span class="n">com</span><span class="sr">/davisp/</span><span class="n">futonproxy</span><span class="sr">/raw/</span><span class="mi">617</span><span class="n">b47b138a5ce5ddece13db16f6ac7ca1ba192f</span><span class="o">/</span><span class="n">futonproxy</span><span class="o">.</span><span class="n">py</span>
-<span class="nv">$</span> <span class="nv">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="n">futonproxy</span><span class="o">.</span><span class="n">py</span>
-<span class="nv">$</span> <span class="err">./</span><span class="nv">futonproxy</span><span class="o">.</span><span class="n">py</span> <span class="n">futon</span>
+<div class="codehilite"><pre>$ svn co <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://svn.apache.org/repos/asf/couchdb/trunk/share/www&quot;</span><span class="nt">&gt;</span>http://svn.apache.org/repos/asf/couchdb/trunk/share/www<span class="nt">&lt;/a&gt;</span> futon
+$ wget <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://github.com/davisp/futonproxy/raw/617b47b138a5ce5ddece13db16f6ac7ca1ba192f/futonproxy.py&quot;</span><span class="nt">&gt;</span>http://github.com/davisp/futonproxy/raw/617b47b138a5ce5ddece13db16f6ac7ca1ba192f/futonproxy.py<span class="nt">&lt;/a&gt;</span>     $ chmod +x <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;futonproxy.py&quot;</span><span class="nt">&gt;</span>futonproxy.py<span class="nt">&lt;/a&gt;</span>     $ ./futonproxy.py futon
 </pre></div>
 
 
@@ -77,14 +75,14 @@
 <p>If you're on Mac OS X 10.5 or newer, there are single click installers available to use. These directions should work just fine if you would like to use one of those. The installers can be found on <a href="http://github.com/janl/couchdbx-core/downloads">GitHub</a></p>
 <h2 id="futon-versions">Futon Versions</h2>
 <p>If you're using an older version of CouchDB to run Futon against, you can check out a closer version of the HTML sources by adjusting the SVN url.</p>
-<div class="codehilite"><pre><span class="o">&lt;!--</span> <span class="c1"># 0.10.x --&gt;</span>
+<div class="codehilite"><pre><span class="c">&lt;!-- # 0.10.x --&gt;</span>
 
-<span class="nv">$</span> <span class="nv">svn</span> <span class="n">co</span> <span class="n">http:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/couchdb/</span><span class="n">branches</span><span class="sr">/0.10.x/s</span><span class="n">hare</span><span class="o">/</span><span class="n">www</span> <span class="n">futon</span>
-<span class="o">&lt;!--</span> <span class="c1"># 0.9.x --&gt;</span>
+$ svn co <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://svn.apache.org/repos/asf/couchdb/branches/0.10.x/share/www&quot;</span><span class="nt">&gt;</span>http://svn.apache.org/repos/asf/couchdb/branches/0.10.x/share/www<span class="nt">&lt;/a&gt;</span> futon
+<span class="c">&lt;!-- # 0.9.x --&gt;</span>
 
-<span class="nv">$</span> <span class="nv">svn</span> <span class="n">co</span> <span class="n">http:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/couchdb/</span><span class="n">branches</span><span class="sr">/0.9.x/s</span><span class="n">hare</span><span class="o">/</span><span class="n">www</span> <span class="n">futon</span>
-<span class="o">&lt;!--</span> <span class="c1"># 0.8.x --&gt;</span>
-<span class="o">&lt;!--</span> <span class="c1"># Time to upgrade! --&gt;</span>
+$ svn co <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://svn.apache.org/repos/asf/couchdb/branches/0.9.x/share/www&quot;</span><span class="nt">&gt;</span>http://svn.apache.org/repos/asf/couchdb/branches/0.9.x/share/www<span class="nt">&lt;/a&gt;</span> futon
+<span class="c">&lt;!-- # 0.8.x --&gt;</span>
+<span class="c">&lt;!-- # Time to upgrade! --&gt;</span>
 </pre></div>
 </div>
       <div id="footer">

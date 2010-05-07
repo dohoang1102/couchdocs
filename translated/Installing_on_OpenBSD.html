@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -74,65 +74,60 @@
 
 <h2 id="alternatives-not-needed-anymore-due-to-port">Alternatives (not needed anymore due to port)</h2>
 <p>This worked for me on a brand new install of <a href="http://www.openbsd.org/">OpenBSD 4.4</a></p>
-<div class="codehilite"><pre><span class="o">&lt;!--</span> <span class="c1"># pre-requisite: spidermonkey --&gt;</span>
+<div class="codehilite"><pre><span class="c">&lt;!-- # pre-requisite: spidermonkey --&gt;</span>
 
-<span class="n">cd</span> <span class="sr">/usr/</span><span class="n">ports</span><span class="sr">/lang/s</span><span class="n">pidermonkey</span>
-<span class="n">make</span>
-<span class="n">make</span> <span class="n">install</span>
-<span class="n">make</span> <span class="n">clean</span>
-<span class="o">&lt;!--</span> <span class="c1"># prerequisite: icu --&gt;</span>
+cd /usr/ports/lang/spidermonkey
+make
+make install
+make clean
+<span class="c">&lt;!-- # prerequisite: icu --&gt;</span>
 
-<span class="n">cd</span> <span class="sr">/usr/</span><span class="n">ports</span><span class="sr">/textproc/ic</span><span class="n">u4c</span>
-<span class="n">make</span>
-<span class="n">make</span> <span class="n">install</span>
-<span class="n">make</span> <span class="n">clean</span>
-<span class="o">&lt;!--</span> <span class="c1"># pre-requisite: erlang --&gt;</span>
+cd /usr/ports/textproc/icu4c
+make
+make install
+make clean
+<span class="c">&lt;!-- # pre-requisite: erlang --&gt;</span>
 
-<span class="n">cd</span>
-<span class="n">pkg_add</span> <span class="n">erlang</span>
-<span class="o">&lt;!--</span> <span class="c1"># yes, but i would prefer the latest erlang --&gt;</span>
+cd
+pkg_add erlang
+<span class="c">&lt;!-- # yes, but i would prefer the latest erlang --&gt;</span>
 
-<span class="n">pkg_add</span> <span class="n">wget</span>
-<span class="n">pkg_add</span> <span class="n">gmake</span>
-<span class="nb">mkdir</span> <span class="sr">/usr/</span><span class="n">tools</span>
-<span class="n">cd</span> <span class="sr">/usr/</span><span class="n">tools</span>
-<span class="nb">mkdir</span> <span class="n">erlang</span>
-<span class="n">cd</span> <span class="n">erlang</span>
-<span class="n">wget</span> <span class="n">http:</span><span class="sr">//</span><span class="n">www</span><span class="o">.</span><span class="n">erlang</span><span class="o">.</span><span class="n">org</span><span class="sr">/download/o</span><span class="n">tp_src_R12B</span><span class="o">-</span><span class="mi">5</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
-<span class="n">tar</span> <span class="n">zxf</span> <span class="n">otp_src_R12B</span><span class="o">-</span><span class="mi">5</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
-<span class="nb">mkdir</span> <span class="n">otp_R12B</span><span class="o">-</span><span class="mi">5</span>
-<span class="n">cd</span> <span class="n">otp_src_R12B</span><span class="o">-</span><span class="mi">5</span>
-<span class="n">export</span> <span class="n">LANG</span><span class="o">=</span><span class="n">C</span>
-<span class="o">./</span><span class="n">configure</span> <span class="o">--</span><span class="n">help</span>
-<span class="o">.</span><span class="sr">/configure --prefix=/</span><span class="n">usr</span><span class="sr">/tools/</span><span class="n">erlang</span><span class="o">/</span><span class="n">otp_R12B</span><span class="o">-</span><span class="mi">5</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">ssl</span>
-<span class="n">gmake</span>
-<span class="n">gmake</span> <span class="n">install</span>
-<span class="n">PATH</span><span class="o">=</span><span class="sr">/usr/</span><span class="n">tools</span><span class="sr">/erlang/o</span><span class="n">tp_R12B</span><span class="o">-</span><span class="mi">5</span><span class="o">/</span><span class="n">bin:</span><span class="nv">$PATH</span>
-<span class="n">cd</span> <span class="sr">/usr/</span><span class="n">tools</span>
-<span class="nb">mkdir</span> <span class="n">couchdb</span>
-<span class="n">cd</span> <span class="n">couchdb</span>
-<span class="o">&lt;!--</span> <span class="c1"># the following url is a copy/paste from what --&gt;</span>
-<span class="o">&lt;!--</span> <span class="c1"># http://www.apache.org/dyn/closer.cgi?path=/incubator/couchdb/0.8.1-incubating/apache-couchdb-0.8.1-incubating.tar.gz --&gt;</span>
-<span class="o">&lt;!--</span> <span class="c1"># gave as a link --&gt;</span>
+pkg_add wget
+pkg_add gmake
+mkdir /usr/tools
+cd /usr/tools
+mkdir erlang
+cd erlang
+wget <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://www.erlang.org/download/otp_src_R12B-5.tar.gz&quot;</span><span class="nt">&gt;</span>http://www.erlang.org/download/otp_src_R12B-5.tar.gz<span class="nt">&lt;/a&gt;</span>     tar zxf <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;otp_src_R12B-5.tar.gz&quot;</span><span class="nt">&gt;</span>otp_src_R12B-5.tar.gz<span class="nt">&lt;/a&gt;</span>     mkdir otp_R12B-5
+cd otp_src_R12B-5
+export LANG=C
+./configure --help
+./configure --prefix=/usr/tools/erlang/otp_R12B-5 --with-ssl
+gmake
+gmake install
+PATH=/usr/tools/erlang/otp_R12B-5/bin:$PATH
+cd /usr/tools
+mkdir couchdb
+cd couchdb
+<span class="c">&lt;!-- # the following url is a copy/paste from what --&gt;</span>
+<span class="c">&lt;!-- # http://www.apache.org/dyn/closer.cgi?path=/incubator/couchdb/0.8.1-incubating/apache-couchdb-0.8.1-incubating.tar.gz --&gt;</span>
+<span class="c">&lt;!-- # gave as a link --&gt;</span>
 
-<span class="n">wget</span> <span class="n">http:</span><span class="sr">//mi</span><span class="n">r2</span><span class="o">.</span><span class="n">ovh</span><span class="o">.</span><span class="n">net</span><span class="sr">/ftp.apache.org/</span><span class="n">dist</span><span class="sr">/incubator/co</span><span class="n">uchdb</span><span class="sr">/0.8.1-incubating/</span><span class="n">apache</span><span class="o">-</span><span class="n">couchdb</span><span class="o">-</span><span class="mi">0</span><span class="o">.</span><span class="mi">8</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="n">incubating</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
-<span class="n">tar</span> <span class="n">zxf</span> <span class="n">apache</span><span class="o">-</span><span class="n">couchdb</span><span class="o">-</span><span class="mi">0</span><span class="o">.</span><span class="mi">8</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="n">incubating</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
-<span class="nb">mkdir</span> <span class="n">couchdb</span><span class="o">-</span><span class="mi">0</span><span class="o">.</span><span class="mi">8</span><span class="o">.</span><span class="mi">1</span>
-<span class="n">cd</span> <span class="n">apache</span><span class="o">-</span><span class="n">couchdb</span><span class="o">-</span><span class="mi">0</span><span class="o">.</span><span class="mi">8</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="n">incubating</span>
-<span class="o">.</span><span class="sr">/configure --prefix=/</span><span class="n">usr</span><span class="sr">/tools/co</span><span class="n">uchdb</span><span class="o">/</span><span class="n">couchdb</span><span class="o">-</span><span class="mi">0</span><span class="o">.</span><span class="mi">8</span><span class="o">.</span><span class="mi">1</span>
-<span class="n">gmake</span>
-<span class="n">gmake</span> <span class="n">install</span>
-<span class="n">cd</span> <span class="o">..</span><span class="sr">/couchdb-0.8.1/</span><span class="n">bin</span>
-<span class="o">./</span><span class="n">couchdb</span><span class="o">&amp;</span>
-<span class="n">cd</span> <span class="o">/</span><span class="n">tmp</span>
-<span class="n">wget</span> <span class="n">localhost:5984</span>
-<span class="n">cat</span> <span class="nb">index</span><span class="o">.</span><span class="n">html</span>
+wget <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://mir2.ovh.net/ftp.apache.org/dist/incubator/couchdb/0.8.1-incubating/apache-couchdb-0.8.1-incubating.tar.gz&quot;</span><span class="nt">&gt;</span>http://mir2.ovh.net/ftp.apache.org/dist/incubator/couchdb/0.8.1-incubating/apache-couchdb-0.8.1-incubating.tar.gz<span class="nt">&lt;/a&gt;</span>     tar zxf <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;apache-couchdb-0.8.1-incubating.tar.gz&quot;</span><span class="nt">&gt;</span>apache-couchdb-0.8.1-incubating.tar.gz<span class="nt">&lt;/a&gt;</span>     mkdir couchdb-0.8.1
+cd apache-couchdb-0.8.1-incubating
+./configure --prefix=/usr/tools/couchdb/couchdb-0.8.1
+gmake
+gmake install
+cd ../couchdb-0.8.1/bin
+./couchdb<span class="err">&amp;</span>
+cd /tmp
+wget localhost:5984
+cat index.html
 </pre></div>
 
 
 <p>You could also use this ports tested on -current and 4.3 :<br />
-</p>
-<p>http://benoitc.org/files/couchdb.tgz<br />
+ <a href="http://benoitc.org/files/couchdb.tgz">http://benoitc.org/files/couchdb.tgz</a><br />
 </p>
 <p>Don't forget to make update-plist to reflect latest changes.</p>
 </div>

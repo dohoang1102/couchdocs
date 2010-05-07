@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -172,19 +172,29 @@
 
 
 <p>The server's response is a JSON object similar to the following:</p>
-<div class="codehilite"><pre><span class="p">{</span>
-    <span class="s">&quot;compact_running&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span> 
-    <span class="s">&quot;db_name&quot;</span><span class="p">:</span> <span class="s">&quot;dj&quot;</span><span class="p">,</span> 
-    <span class="s">&quot;disk_format_version&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> 
-    <span class="s">&quot;disk_size&quot;</span><span class="p">:</span> <span class="mi">12377</span><span class="p">,</span> 
-    <span class="s">&quot;doc_count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
-    <span class="s">&quot;doc_del_count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
-    <span class="s">&quot;instance_start_time&quot;</span><span class="p">:</span> <span class="s">&quot;1267612389906234&quot;</span><span class="p">,</span> 
-    <span class="s">&quot;purge_seq&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
-    <span class="s">&quot;update_seq&quot;</span><span class="p">:</span> <span class="mi">4</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span>
+    <span class="s2">&quot;compact_running&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span> 
+    <span class="s2">&quot;db_name&quot;</span><span class="o">:</span> <span class="s2">&quot;dj&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;disk_format_version&quot;</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span> 
+    <span class="s2">&quot;disk_size&quot;</span><span class="o">:</span> <span class="mi">12377</span><span class="p">,</span> 
+    <span class="s2">&quot;doc_count&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> 
+    <span class="s2">&quot;doc_del_count&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> 
+    <span class="s2">&quot;instance_start_time&quot;</span><span class="o">:</span> <span class="s2">&quot;1267612389906234&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;purge_seq&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> 
+    <span class="s2">&quot;update_seq&quot;</span><span class="o">:</span> <span class="mi">4</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <h4 id="meaning-of-result-hash">Meaning of Result Hash</h4>
 <p><table>
@@ -213,19 +223,27 @@
 
 
 <h3 id="changes">Changes</h3>
-<p>A list of changes made to documents in the database, in the order they were made, can be obtained from the database's <em>_changes</em> resource.</p>
+<p>A list of changes made to documents in the database, in the order they were made, can be obtained from the database's <em>_changes</em> resource. You can query the <em>_changes</em> resource by issuing a GET-Request with the following (optional) parameters:
+<table>
+<tr><td><strong>Parameter</strong></td><td><strong>Value</strong></td><td><strong>Default value</strong></td><td><strong>Description</strong></td></tr>
+<tr><td><em>since</em></td><td>seqnum</td><td><em>0</em></td><td>Start the results from the change immediately after the given sequence number.</td></tr>
+<tr><td><em>feed</em></td><td>normal | longpoll | continuous</td><td><em>normal</em></td><td>Select the type of feed.</td></tr>
+<tr><td><em>heartbeat</em></td><td>milliseconds</td><td><em>60000</em></td><td>Period in milliseconds after which a empty line is sent in the results. Only applicable for <em>longpoll</em> or <em>continuous</em> feeds. Overrides any <em>timeout</em>.</td></tr>
+<tr><td><em>timeout</em></td><td>milliseconds</td><td><em>60000</em></td><td>Maximum period in milliseconds to wait for a change before the response is sent, even if there are no results. Only applicable for <em>longpoll</em> or <em>continuous</em> feeds. <strong>Note</strong> that 60000 is also the default maximum timeout to prevent undetected dead connections.<em></td></tr>
+<tr><td></em>filter<em></td><td>designdoc/filtername</td><td></em>none<em></td><td>Reference a filter function from a design document to selectively get updates. See the <a href="http://books.couchdb.org/relax/reference/change-notifications">section in the book</a> for more information.</td></tr>
+<tr><td></em>include_docs<em></td><td>boolean</td><td></em>false*</td><td>Include the associated document with each result. (New in version 0.11)</td></tr>
+</table></p>
 <ul>
-<li>GET<ul>
-<li>since=seqnum (default=0). Start the results from the change immediately after the given sequence number.</li>
-<li>feed=normal|longpoll|continuous (default=normal). Select the type of feed.</li>
-<li>heartbeat=time (milliseconds, default=60000). Period in milliseconds after which a empty line is sent in the results. Only applicable for <em>longpoll</em> or <em>continuous</em> feeds. Overrides any <em>timeout</em>.</li>
-<li>timeout=time (milliseconds, default=60000). Maximum period in milliseconds to wait for a change before the response is sent, even if there are no results. Only applicable for <em>longpoll</em> or <em>continuous</em> feeds.</li>
-</ul>
+<li>
+<p>You can change the default maximum timeout in your ini-configuration:</p>
+<p>[httpd]
+changes_timeout=#millisecs</p>
 </li>
 </ul>
 <p>By default all changes are immediately returned as a JSON object:</p>
 <div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/somedatabase/</span><span class="n">_changes</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
 
+<span class="c1">#!javascript</span>
 <span class="p">{</span><span class="s">&quot;results&quot;</span><span class="p">:[</span>
 <span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;fresh&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-967a00dff5e02add41819138abb3284d&quot;</span><span class="p">}]},</span>
 <span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;updated&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-7051cbe5c8faecd085a3fa619e6e6337&quot;</span><span class="p">}]},</span>
@@ -240,6 +258,7 @@
 <p>Sending a <em>since</em> param in the query string skips all changes up to and including the given sequence number:</p>
 <div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/somedatabase/</span><span class="n">_changes</span><span class="p">?</span><span class="n">since</span><span class="o">=</span><span class="mi">3</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
 
+<span class="c1">#!javascript</span>
 <span class="p">{</span><span class="s">&quot;results&quot;</span><span class="p">:[</span>
 <span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;deleted&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-eec205a9d413992850a6e32678485900&quot;</span><span class="p">}],</span><span class="s">&quot;deleted&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
 <span class="p">],</span>
@@ -257,6 +276,7 @@
 <p>The <em>continuous</em> feed's response is a little different than the other feed types to simplify the job of the client - each line of the response is either empty or a JSON object representing a single change, as found in the normal feed's <em>results</em>.</p>
 <div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/somedatabase/</span><span class="n">_changes</span><span class="p">?</span><span class="n">feed</span><span class="o">=</span><span class="n">continuous</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
 
+<span class="c1">#!javascript</span>
 <span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;fresh&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-967a00dff5e02add41819138abb3284d&quot;</span><span class="p">}]}</span>
 <span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;updated&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-7051cbe5c8faecd085a3fa619e6e6337&quot;</span><span class="p">}]}</span>
 <span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;deleted&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-eec205a9d413992850a6e32678485900&quot;</span><span class="p">}],</span><span class="s">&quot;deleted&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>

@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -60,11 +60,28 @@
         
 </div>
       <div id="content">
-  <p>A list of CouchDB related projects, clients and libraries.</p>
+  <h1 id="related-projeccts">Related Projeccts</h1>
+<div class="toc">
+<ul>
+<li><a href="#related-projeccts">Related Projeccts</a><ul>
+<li><a href="#clients">Clients</a></li>
+<li><a href="#libraries">Libraries</a></li>
+<li><a href="#alternative-data-stores">Alternative Data Stores</a></li>
+<li><a href="#applications">Applications</a></li>
+<li><a href="#miscellaneous">Miscellaneous</a></li>
+<li><a href="#full-text-searching">Full Text Searching</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>A list of CouchDB related projects, clients and libraries.</p>
 <h2 id="clients">Clients</h2>
 <ul>
 <li><a href="http://github.com/couchapp/couchapp/">Couchapp</a> Command line tool to manage standalone CouchDB applications and send/clone documents from/to CouchDB.</li>
-<li><a href="http://janl.github.com/couchdbx/">CouchDBX — The one-click CouchDB package for the Mac</a></li>
+<li><a href="http://janl.github.com/couchdbx/">CouchDBX — The one-click CouchDB package for the Mac</a><ul>
+<li>nightly builds are available here: <a href="http">http</a></li>
+</ul>
+</li>
 <li><a href="http://objectiveous.github.com/davenport/">Davenport: Davenport is a plugin container for building native Mac OS X applications</a></li>
 <li><a href="http://code.google.com/p/couchdb-fuse/">CouchDB-FUSE: mount document attachments on a virtual filesystem</a></li>
 <li>
@@ -159,11 +176,15 @@
 <li><a href="http://www.squeaksource.com/CouchDB.html">Squeak CouchDB Library</a></li>
 <li><a class="internal" href="Storing_GeoData.html">Storing_GeoData</a> (PHP, Google Geocoding Service)</li>
 </ul>
-<h2 id="alternatives">Alternatives</h2>
+<h2 id="alternative-data-stores">Alternative Data Stores</h2>
 <ul>
-<li><a href="http://fourspaces.com/blog/2008/4/11/FeatherDB_Java_JSON_Document_database">Feather DB (CouchDB clone in Java)</a></li>
-<li><a href="http://strokedb.com/">StrokeDB (A CouchDB-like database written in Ruby to make embedding into Ruby apps easier)</a></li>
-<li><a href="http://www.mongodb.org">(MongoDB is a high-performance, open source, schema-free document-oriented  database.)</a></li>
+<li><a href="http://www.mongodb.org">MongoDB (Is a high-performance, open source, schema-free document-oriented  database.)</a></li>
+<li><a href="http://riak.basho.com/">Riak (Is a Dynamo-inspired key/value store that scales predictably and easily.)</a></li>
+<li><a href="http://cassandra.apache.org/">Cassandra (Is a highly scalable, eventually consistent, distributed, structured key-value store.)</a></li>
+<li><a href="http://project-voldemort.com/">Voldemort (Is a distributed key-value storage system.)</a></li>
+<li><a href="http://http://code.google.com/p/redis/">Redis (Is a persistent key-value database with built-in net interface written in ANSI-C for Posix systems)</a></li>
+<li><a href="http://github.com/mbreese/featherdb">Feather DB (CouchDB clone in Java.  Note:This project is not active.)</a></li>
+<li><a href="http://github.com/yrashk/strokedb">StrokeDB (A CouchDB-like database written in Ruby to make embedding into Ruby apps easier.  Note:This project is not active.)</a></li>
 </ul>
 <h2 id="applications">Applications</h2>
 <ul>
@@ -171,16 +192,21 @@
 </ul>
 <h2 id="miscellaneous">Miscellaneous</h2>
 <ul>
-<li><a href="http://github.com/janl/couchdbx-core/tree/master">CouchDBX</a> Packaging CouchDB for Mac OS X.</li>
+<li><a href="http://github.com/janl/couchdbx-core">couchdbx-core</a> Packaging CouchDB for Mac OS X.</li>
 <li><a href="http://labs.mudynamics.com/wp-content/uploads/2009/04/icouch.html">Interactive CouchDB</a> A CouchDB emulator/visualizer written in 100% Javascript.</li>
 <li><a href="http://tilgovi.github.com/couchdb-lounge/">Lounge</a> A proxy-based partitioning/clustering framework for CouchDB.</li>
 <li><a href="http://github.com/jchris/hovercraft/tree/master">Hovercraft</a> An easy direct Erlang CouchDB library.</li>
+<li><a href="http://vmx.cx/cgi-bin/blog/index.cgi/geocouch-the-future-is-now%3A2010-05-03%3Aen%2CCouchDB%2CPython%2CErlang%2Cgeo">GeoCouch</a> Can be used for "Geodata" related applications.</li>
 </ul>
 <h2 id="full-text-searching">Full Text Searching</h2>
 <ul>
-<li><a href="http://github.com/rnewson/couchdb-lucene/tree/master">CouchDB Lucene</a> Enables full-text searching of CouchDB documents using Lucene.</li>
-<li><a href="http://github.com/davisp/hypercouch/tree/master">HyperCouch</a> Full text indexing of CouchDB via Hyper Estraier.</li>
-<li><a href="http://github.com/deguzman/couchdb-solr2/tree/master">CouchDB Solr2</a> Integrates full-text indexing and searching with CouchDB.<ul>
+<li><a href="http://github.com/rnewson/couchdb-lucene">CouchDB Lucene</a> Enables full-text searching of CouchDB documents using Lucene.</li>
+<li>!HyperCouch : Full text indexing of CouchDB via Hyper Estraier<ul>
+<li>Note: <em>HyperCouch was a project by Paul Davis, but it was abandoned</em></li>
+<li><a href="http://www.davispj.com/2009/01/24/hypercouch.html">http://www.davispj.com/2009/01/24/hypercouch.html</a>     * Code mirror <a href="http://github.com/benoitc/hypercouch">HyperCouch</a></li>
+</ul>
+</li>
+<li><a href="http://github.com/deguzman/couchdb-solr2">CouchDB Solr2</a> Integrates full-text indexing and searching with CouchDB.<ul>
 <li>Per README, the CouchDB Solr2 project is no longer being maintained as of January 2009.</li>
 </ul>
 </li>

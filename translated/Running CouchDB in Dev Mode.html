@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -100,11 +100,11 @@
 
 
 <p>Checkout source code and build it:</p>
-<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">svn</span> <span class="n">co</span> <span class="n">http:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/couchdb/</span><span class="n">trunk</span> <span class="n">couchdb</span>
-<span class="nv">$</span> <span class="nv">cd</span> <span class="n">couchdb</span>
-<span class="nv">$</span> <span class="err">./</span><span class="nv">bootstrap</span>
-<span class="nv">$</span> <span class="nv">LD_RUN_PATH</span><span class="o">=</span><span class="sr">/usr/</span><span class="n">lib</span><span class="sr">/xulrunner-1.9.1.7 ./co</span><span class="n">nfigure</span> <span class="o">--</span><span class="n">with</span><span class="o">-</span><span class="n">js</span><span class="o">-</span><span class="n">lib</span><span class="o">=</span><span class="sr">/usr/</span><span class="n">lib</span><span class="sr">/xulrunner-devel-1.9.1.7/</span><span class="n">lib</span><span class="sr">/ --with-js-include=/</span><span class="n">usr</span><span class="sr">/lib/x</span><span class="n">ulrunner</span><span class="o">-</span><span class="n">devel</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">9</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">include</span>
-<span class="nv">$</span> <span class="nv">LD_RUN_PATH</span><span class="o">=</span><span class="sr">/usr/</span><span class="n">lib</span><span class="o">/</span><span class="n">xulrunner</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">9</span><span class="o">.</span><span class="mi">1</span><span class="o">.</span><span class="mi">7</span> <span class="n">make</span> <span class="n">dev</span>
+<div class="codehilite"><pre>$ svn co <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://svn.apache.org/repos/asf/couchdb/trunk&quot;</span><span class="nt">&gt;</span>http://svn.apache.org/repos/asf/couchdb/trunk<span class="nt">&lt;/a&gt;</span> couchdb
+$ cd couchdb
+$ ./bootstrap
+$ LD_RUN_PATH=/usr/lib/xulrunner-1.9.1.7 ./configure --with-js-lib=/usr/lib/xulrunner-devel-1.9.1.7/lib/ --with-js-include=/usr/lib/xulrunner-devel-1.9.1.7/include
+$ LD_RUN_PATH=/usr/lib/xulrunner-1.9.1.7 make dev
 </pre></div>
 
 

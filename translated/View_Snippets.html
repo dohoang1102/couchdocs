@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -60,68 +60,96 @@
         
 </div>
       <div id="content">
-  <p>This page collects code snippets to be used in your <a class="internal" href="Views.html">Views</a>. They are mainly meant to help get your head around the map/reduce approach to accessing database content. Keep in mind that the the Futon web client silently adds group=true to your views.</p>
+  <h1 id="view-snippets">View Snippets</h1>
+<div class="toc">
 <ul>
-<li><a href="#common_mistakes">Common mistakes</a></li>
-<li><a href="#get_doc_id">Get docs with a particular user id </a></li>
-<li><a href="#get_doc_with_attachment">Get all documents which have an attachment </a></li>
-<li><a href="#count_doc_with_attachment">Count documents with and without an attachment</a></li>
-<li><a href="#list_unique_values">Generating a list of unique values</a></li>
-<li><a href="#top_n_tags">Retrieve the top N tags</a></li>
-<li><a href="#aggregate_sum">Joining an aggregate sum along with related data </a></li>
-<li><a href="#standard_deviation">Computing the standard deviation</a></li>
-<li><a href="#summary_stats">Computing simple summary statistics (min,max,mean,standard deviation) </a></li>
-<li><a href="#interactive_couchdb">Interactive CouchDB Tutorial</a></li>
-<li><a href="#documents_without_a_field">Retrieving documents without a certain field</a></li>
-<li><a href="#geospatial_indexes">Using views to search for sort documents geographically</a></li>
+<li><a href="#view-snippets">View Snippets</a><ul>
+<li><a href="#common-mistakes">Common mistakes</a></li>
+<li><a href="#get-docs-with-a-particular-user-id">Get docs with a particular user id</a></li>
+<li><a href="#get-all-documents-which-have-an-attachment">Get all documents which have an attachment</a></li>
+<li><a href="#count-documents-with-and-without-an-attachment">Count documents with and without an attachment</a></li>
+<li><a href="#generating-a-list-of-unique-values">Generating a list of unique values</a></li>
+<li><a href="#retrieve-the-top-n-tags">Retrieve the top N tags.</a></li>
+<li><a href="#joining-an-aggregate-sum-along-with-related-data">Joining an aggregate sum along with related data</a></li>
+<li><a href="#computing-the-standard-deviation">Computing the standard deviation</a></li>
+<li><a href="#computing-simple-summary-statistics-minmaxmeanstandard-deviation">Computing simple summary statistics (min,max,mean,standard deviation)</a></li>
+<li><a href="#interactive-couchdb-tutorial">Interactive CouchDB Tutorial</a></li>
+<li><a href="#retrieving-documents-without-a-certain-field">Retrieving documents without a certain field</a></li>
+<li><a href="#using-views-to-search-for-sort-documents-geographically">Using views to search for sort documents geographically</a></li>
 </ul>
-<!-- <<Anchor(common_mistakes)>> -->
-
+</li>
+</ul>
+</div>
+<p>This page collects code snippets to be used in your <a class="internal" href="Views.html">Views</a>. They are mainly meant to help get your head around the map/reduce approach to accessing database content. Keep in mind that the the Futon web client silently adds <em>group=true</em> to your views.</p>
 <h2 id="common-mistakes">Common mistakes</h2>
 <p>When creating a reduce function, a re-reduce should behave in the same way as the regular reduce. The reason is that CouchDB doesn't necessarily call re-reduce on your map results.</p>
-<p>Think about it this way: If you have a bunch of values V1 V2 V3 for key K, then you can get the combined result either by calling reduce([K,K,K],[V1,V2,V3],0) or by re-reducing the individual results: reduce(null,[R1,R2,R3],1). This depends on what your view results look like internally.</p>
-<!-- <<Anchor(get_doc_id)>> -->
-
+<p>Think about it this way: If you have a bunch of values <em>V1 V2 V3</em> for key <em>K</em>, then you can get the combined result either by calling <em>reduce([K,K,K],[V1,V2,V3],0)</em> or by re-reducing the individual results: <em>reduce(null,[R1,R2,R3],1)</em>. This depends on what your view results look like internally.</p>
 <h2 id="get-docs-with-a-particular-user-id">Get docs with a particular user id</h2>
-<div class="codehilite"><pre><span class="err">map:</span> <span class="err">function(doc)</span> <span class="err">{</span>
-  <span class="err">if</span> <span class="err">(doc.user_id)</span> <span class="err">{</span>
-    <span class="err">emit(doc.user_id,</span> <span class="err">null);</span>
-  <span class="err">}</span>
-<span class="err">}</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1">// map</span>
+<span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">user_id</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">emit</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">user_id</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
+</td></tr></table>
 
-
-<p>Then query with key=USER_ID to get all the rows that match that user.</p>
-<!-- <<Anchor(get_doc_with_attachment)>> -->
-
+<p>Then query with <em>key=USER_ID</em> to get all the rows that match that user.</p>
 <h2 id="get-all-documents-which-have-an-attachment">Get all documents which have an attachment</h2>
 <p>This lists only the documents which have an attachment.</p>
-<div class="codehilite"><pre><span class="err">map:</span> <span class="err">function(doc)</span> <span class="err">{</span>
-  <span class="err">if</span> <span class="err">(doc._attachments)</span> <span class="err">{</span>
-    <span class="err">emit(doc._id,</span> <span class="err">null);</span>
-  <span class="err">}</span>
-<span class="err">}</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1">// map</span>
+<span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">_attachments</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">emit</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">_id</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>In SQL this would be something like <code>SELECT id FROM table WHERE attachment IS NOT NULL</code>.</p>
-<!-- <<Anchor(count_doc_with_attachment)>> -->
-
 <h2 id="count-documents-with-and-without-an-attachment">Count documents with and without an attachment</h2>
 <p>Call this with <em>group=true</em> or you only get the combined number of documents with and without attachments.</p>
-<div class="codehilite"><pre><span class="err">map:</span> <span class="err">function(doc)</span> <span class="err">{</span>
-  <span class="err">if</span> <span class="err">(doc._attachments)</span> <span class="err">{</span>
-    <span class="err">emit(&quot;with</span> <span class="err">attachment&quot;,</span> <span class="err">1);</span>
-  <span class="err">}</span>
-  <span class="err">else</span> <span class="err">{</span>
-    <span class="err">emit(&quot;without</span> <span class="err">attachment&quot;,</span> <span class="err">1);</span> 
-  <span class="err">}</span>
-<span class="err">}</span>
-<span class="err">reduce:</span> <span class="err">function(keys,</span> <span class="err">values)</span> <span class="err">{</span>
-   <span class="err">return</span> <span class="err">sum(values);</span>
-<span class="err">}</span>
-</pre></div>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1">// map</span>
+<span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">_attachments</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;with attachment&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">emit</span><span class="p">(</span><span class="s2">&quot;without attachment&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> 
+  <span class="p">}</span>
+<span class="p">}</span>
 
+<span class="err">#</span><span class="o">!</span><span class="nx">javascript</span>
+<span class="c1">// reduce</span>
+<span class="kd">function</span><span class="p">(</span><span class="nx">keys</span><span class="p">,</span> <span class="nx">values</span><span class="p">)</span> <span class="p">{</span>
+   <span class="k">return</span> <span class="nx">sum</span><span class="p">(</span><span class="nx">values</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
 
 <p>Using curl you can call it like this:</p>
 <div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">s</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="o">-</span><span class="n">H</span> <span class="s">&#39;Content-Type: application/json&#39;</span> 
@@ -132,565 +160,1053 @@
 
 
 <p>In SQL this would be something along the lines of <code>SELECT num_attachments FROM table GROUP BY num_attachments</code> (but this would give extra output for rows containing more than one attachment).</p>
-<!-- <<Anchor(list_unique_values)>> -->
-
 <h2 id="generating-a-list-of-unique-values">Generating a list of unique values</h2>
-<p>Here we use the fact that the key for a view result can be an array. Suppose you have a map that generates (key, value) pairs with many duplicates and you want to remove the duplicates. To do so, use ([key, value], null) as the map output.</p>
+<p>Here we use the fact that the key for a view result can be an array. Suppose you have a map that generates (key, value) pairs with many duplicates and you want to remove the duplicates. To do so, use <code>emit([key, value], null)</code> as the map output.</p>
 <p>Call this with <em>group=true</em> or you only get <em>null</em>.</p>
-<div class="codehilite"><pre><span class="err">map:</span> <span class="err">function(doc)</span> <span class="err">{</span>
-  <span class="err">for</span> <span class="err">(var</span> <span class="err">i</span> <span class="err">in</span> <span class="err">doc.links)</span>
-    <span class="err">emit([doc.parent,</span> <span class="err">i],</span> <span class="err">null);</span>
-  <span class="err">}</span>
-<span class="err">}</span>
-<span class="err">reduce:</span> <span class="err">function(keys,</span> <span class="err">values)</span> <span class="err">{</span>
-   <span class="err">return</span> <span class="err">null;</span>
-<span class="err">}</span>
-</pre></div>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1">// map</span>
+<span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">links</span><span class="p">)</span>
+    <span class="nx">emit</span><span class="p">([</span><span class="nx">doc</span><span class="p">.</span><span class="nx">parent</span><span class="p">,</span> <span class="nx">i</span><span class="p">],</span> <span class="kc">null</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 
+<span class="err">#</span><span class="o">!</span><span class="nx">javascript</span>
+<span class="c1">// reduce</span>
+<span class="kd">function</span><span class="p">(</span><span class="nx">keys</span><span class="p">,</span> <span class="nx">values</span><span class="p">)</span> <span class="p">{</span>
+   <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
 
 <p>This will give you results like</p>
-<div class="codehilite"><pre><span class="p">{</span><span class="s">&quot;rows&quot;</span><span class="p">:[</span>
-<span class="p">{</span><span class="s">&quot;key&quot;</span><span class="p">:[</span><span class="s">&quot;thisparent&quot;</span><span class="p">,</span><span class="s">&quot;thatlink&quot;</span><span class="p">],</span><span class="s">&quot;value&quot;</span><span class="p">:</span><span class="n">null</span><span class="p">},</span>
-<span class="p">{</span><span class="s">&quot;key&quot;</span><span class="p">:[</span><span class="s">&quot;thisparent&quot;</span><span class="p">,</span><span class="s">&quot;thatotherlink&quot;</span><span class="p">],</span><span class="s">&quot;value&quot;</span><span class="p">:</span><span class="n">null</span><span class="p">}</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span><span class="s2">&quot;rows&quot;</span><span class="o">:</span><span class="p">[</span>
+<span class="p">{</span><span class="s2">&quot;key&quot;</span><span class="o">:</span><span class="p">[</span><span class="s2">&quot;thisparent&quot;</span><span class="p">,</span><span class="s2">&quot;thatlink&quot;</span><span class="p">],</span><span class="s2">&quot;value&quot;</span><span class="o">:</span><span class="kc">null</span><span class="p">},</span>
+<span class="p">{</span><span class="s2">&quot;key&quot;</span><span class="o">:</span><span class="p">[</span><span class="s2">&quot;thisparent&quot;</span><span class="p">,</span><span class="s2">&quot;thatotherlink&quot;</span><span class="p">],</span><span class="s2">&quot;value&quot;</span><span class="o">:</span><span class="kc">null</span><span class="p">}</span>
 <span class="p">]}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>You can then get all the rows for the key <em>"thisparent"</em> with the view parameters <em>startkey=[</em>''<em>"thisparent"]&amp;endkey=["thisparent",{}]&amp;inclusive_end=false</em></p>
 <p>Note that the trick here is using the key for what you want to make unique. You can combine this with the counting above to get a count of duplicate values:</p>
-<div class="codehilite"><pre><span class="err">map:</span> <span class="err">function(doc)</span> <span class="err">{</span>
-  <span class="err">for</span> <span class="err">(var</span> <span class="err">i</span> <span class="err">in</span> <span class="err">doc.links)</span>
-    <span class="err">emit([doc.parent,</span> <span class="err">i],</span> <span class="err">1);</span>
-  <span class="err">}</span>
-<span class="err">}</span>
-<span class="err">reduce:</span> <span class="err">function(keys,</span> <span class="err">values)</span> <span class="err">{</span>
-   <span class="err">return</span> <span class="err">sum(values);</span>
-<span class="err">}</span>
-</pre></div>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1">// map</span>
+<span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">links</span><span class="p">)</span>
+    <span class="nx">emit</span><span class="p">([</span><span class="nx">doc</span><span class="p">.</span><span class="nx">parent</span><span class="p">,</span> <span class="nx">i</span><span class="p">],</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 
+<span class="err">#</span><span class="o">!</span><span class="nx">javascript</span>
+<span class="c1">// reduce</span>
+<span class="kd">function</span><span class="p">(</span><span class="nx">keys</span><span class="p">,</span> <span class="nx">values</span><span class="p">)</span> <span class="p">{</span>
+   <span class="k">return</span> <span class="nx">sum</span><span class="p">(</span><span class="nx">values</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
 
 <p>If you then want to know the total count for each parent, you can use the <em>group_level</em> view parameter:</p>
 <p><em>startkey=[</em>''<em>"thisparent"]&amp;endkey=["thisparent",{}]&amp;inclusive_end=false&amp;group_level=1</em></p>
-<!-- <<Anchor(top_n_tags)>> -->
-
 <h2 id="retrieve-the-top-n-tags">Retrieve the top N tags.</h2>
 <p>This snippet assumes your docs have a top level tags element that is an array of strings, theoretically it'd work with an array of anything, but it hasn't been tested as such.</p>
 <p>Use a standard counting emit function:</p>
-<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">idx</span> <span class="n">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">emit</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="mi">1</span><span class="p">);</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">idx</span> <span class="k">in</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">tags</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">emit</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">tags</span><span class="p">[</span><span class="nx">idx</span><span class="p">],</span> <span class="mi">1</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>Notice that <code>MAX</code> is the number of tags to return. Technically this snippet relies on an implementation artifact that CouchDB will send keys in sorted order to the reduce functions, thus it'd break subtly if this stopped being true. Buyer beware!</p>
-<div class="codehilite"><pre><span class="n">function</span><span class="p">(</span><span class="nb">keys</span><span class="p">,</span> <span class="nb">values</span><span class="p">,</span> <span class="n">rereduce</span><span class="p">)</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kd">function</span><span class="p">(</span><span class="nx">keys</span><span class="p">,</span> <span class="nx">values</span><span class="p">,</span> <span class="nx">rereduce</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">var</span> <span class="n">MAX</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">MAX</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
 
-    <span class="o">/*</span>
-        <span class="n">Basically</span> <span class="n">we</span><span class="s">&#39;re just kind of faking a priority queue. We</span>
-<span class="s">        do have one caveat in that we may process a single key</span>
-<span class="s">        across reduce calls. I&#39;</span><span class="n">m</span> <span class="n">reasonably</span> <span class="n">certain</span> <span class="n">that</span> <span class="n">even</span> <span class="n">so</span>
-        <span class="n">we</span><span class="s">&#39;ll still be processing keys in collation order in</span>
-<span class="s">        which case we can just keep the last key from the previous</span>
-<span class="s">        non-rereduce in our return value. Should work itself out</span>
-<span class="s">        in the rereduces though when we don&#39;</span><span class="n">t</span> <span class="n">keep</span> <span class="n">the</span> <span class="n">extras</span>
-        <span class="n">around</span><span class="o">.</span>
+    <span class="cm">/*</span>
+<span class="cm">        Basically we&#39;re just kind of faking a priority queue. We</span>
+<span class="cm">        do have one caveat in that we may process a single key</span>
+<span class="cm">        across reduce calls. I&#39;m reasonably certain that even so</span>
+<span class="cm">        we&#39;ll still be processing keys in collation order in</span>
+<span class="cm">        which case we can just keep the last key from the previous</span>
+<span class="cm">        non-rereduce in our return value. Should work itself out</span>
+<span class="cm">        in the rereduces though when we don&#39;t keep the extras</span>
+<span class="cm">        around.</span>
 
-    <span class="o">*/</span>
+<span class="cm">    */</span>
 
-    <span class="n">var</span> <span class="n">tags</span> <span class="o">=</span> <span class="p">{};</span>
-    <span class="n">var</span> <span class="n">lastkey</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
-    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">rereduce</span><span class="p">)</span>
+    <span class="kd">var</span> <span class="nx">tags</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="kd">var</span> <span class="nx">lastkey</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">rereduce</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="o">/*</span>
-            <span class="n">I</span> <span class="n">could</span> <span class="n">probably</span> <span class="n">alter</span> <span class="n">the</span> <span class="n">view</span> <span class="n">output</span> <span class="n">to</span> <span class="n">produce</span>
-            <span class="n">a</span> <span class="n">slightly</span> <span class="n">different</span> <span class="n">output</span> <span class="n">so</span> <span class="n">that</span> <span class="n">this</span> <span class="n">code</span>
-            <span class="n">could</span> <span class="n">get</span> <span class="n">pushed</span> <span class="n">into</span> <span class="n">the</span> <span class="n">same</span> <span class="n">code</span> <span class="n">as</span> <span class="n">below</span><span class="p">,</span> <span class="n">but</span>
-            <span class="n">I</span> <span class="n">figure</span> <span class="n">that</span> <span class="n">the</span> <span class="n">view</span> <span class="n">output</span> <span class="n">might</span> <span class="n">be</span> <span class="n">used</span> <span class="k">for</span>
-            <span class="n">other</span> <span class="n">reduce</span> <span class="n">functions</span><span class="o">.</span>
+        <span class="cm">/*</span>
+<span class="cm">            I could probably alter the view output to produce</span>
+<span class="cm">            a slightly different output so that this code</span>
+<span class="cm">            could get pushed into the same code as below, but</span>
+<span class="cm">            I figure that the view output might be used for</span>
+<span class="cm">            other reduce functions.</span>
 
-            <span class="n">This</span> <span class="n">just</span> <span class="n">creates</span> <span class="n">an</span> <span class="n">object</span> <span class="p">{</span><span class="n">tag1:</span> <span class="n">N</span><span class="p">,</span> <span class="n">tag2:</span> <span class="n">M</span><span class="p">,</span> <span class="o">...</span><span class="p">}</span>
-        <span class="o">*/</span>
+<span class="cm">            This just creates an object {tag1: N, tag2: M, ...}</span>
+<span class="cm">        */</span>
 
-        <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">k</span> <span class="n">in</span> <span class="nb">keys</span><span class="p">)</span>
+        <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">k</span> <span class="k">in</span> <span class="nx">keys</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="k">if</span><span class="p">(</span><span class="n">tags</span><span class="p">[</span><span class="nb">keys</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]])</span> <span class="n">tags</span><span class="p">[</span><span class="nb">keys</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> <span class="nb">values</span><span class="p">[</span><span class="n">k</span><span class="p">];</span>
-            <span class="k">else</span> <span class="n">tags</span><span class="p">[</span><span class="nb">keys</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">values</span><span class="p">[</span><span class="n">k</span><span class="p">];</span>
+            <span class="k">if</span><span class="p">(</span><span class="nx">tags</span><span class="p">[</span><span class="nx">keys</span><span class="p">[</span><span class="nx">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]])</span> <span class="nx">tags</span><span class="p">[</span><span class="nx">keys</span><span class="p">[</span><span class="nx">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> <span class="nx">values</span><span class="p">[</span><span class="nx">k</span><span class="p">];</span>
+            <span class="k">else</span> <span class="nx">tags</span><span class="p">[</span><span class="nx">keys</span><span class="p">[</span><span class="nx">k</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nx">values</span><span class="p">[</span><span class="nx">k</span><span class="p">];</span>
         <span class="p">}</span>
-        <span class="n">lastkey</span> <span class="o">=</span> <span class="nb">keys</span><span class="p">[</span><span class="nb">keys</span><span class="o">.</span><span class="nb">length</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
+        <span class="nx">lastkey</span> <span class="o">=</span> <span class="nx">keys</span><span class="p">[</span><span class="nx">keys</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
     <span class="p">}</span>
     <span class="k">else</span>
     <span class="p">{</span>
-        <span class="o">/*</span>
-            <span class="n">This</span> <span class="n">just</span> <span class="n">takes</span> <span class="n">a</span> <span class="n">collection</span> <span class="n">of</span> <span class="n">objects</span> <span class="n">that</span> <span class="n">have</span>
-            <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span> <span class="n">key</span><span class="o">/</span><span class="n">value</span> <span class="n">pairs</span> <span class="ow">and</span> <span class="n">merges</span> <span class="n">into</span> <span class="n">a</span>
-            <span class="n">single</span> <span class="n">object</span><span class="o">.</span>
-        <span class="o">*/</span>
-        <span class="n">tags</span> <span class="o">=</span> <span class="nb">values</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
-        <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">v</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="nb">values</span><span class="o">.</span><span class="nb">length</span><span class="p">;</span> <span class="n">v</span><span class="o">++</span><span class="p">)</span>
+        <span class="cm">/*</span>
+<span class="cm">            This just takes a collection of objects that have</span>
+<span class="cm">            (tag, count) key/value pairs and merges into a</span>
+<span class="cm">            single object.</span>
+<span class="cm">        */</span>
+        <span class="nx">tags</span> <span class="o">=</span> <span class="nx">values</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+        <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">v</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">v</span> <span class="o">&lt;</span> <span class="nx">values</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">v</span><span class="o">++</span><span class="p">)</span>
         <span class="p">{</span>
-            <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">t</span> <span class="n">in</span> <span class="nb">values</span><span class="p">[</span><span class="n">v</span><span class="p">])</span>
+            <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">t</span> <span class="k">in</span> <span class="nx">values</span><span class="p">[</span><span class="nx">v</span><span class="p">])</span>
             <span class="p">{</span>
-                <span class="k">if</span><span class="p">(</span><span class="n">tags</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="n">tags</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">values</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">t</span><span class="p">];</span>
-                <span class="k">else</span> <span class="n">tags</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="nb">values</span><span class="p">[</span><span class="n">v</span><span class="p">][</span><span class="n">t</span><span class="p">];</span>
+                <span class="k">if</span><span class="p">(</span><span class="nx">tags</span><span class="p">[</span><span class="nx">t</span><span class="p">])</span> <span class="nx">tags</span><span class="p">[</span><span class="nx">t</span><span class="p">]</span> <span class="o">+=</span> <span class="nx">values</span><span class="p">[</span><span class="nx">v</span><span class="p">][</span><span class="nx">t</span><span class="p">];</span>
+                <span class="k">else</span> <span class="nx">tags</span><span class="p">[</span><span class="nx">t</span><span class="p">]</span> <span class="o">=</span> <span class="nx">values</span><span class="p">[</span><span class="nx">v</span><span class="p">][</span><span class="nx">t</span><span class="p">];</span>
             <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
-    <span class="o">/*</span>
-        <span class="n">This</span> <span class="n">code</span> <span class="n">just</span> <span class="n">removes</span> <span class="n">the</span> <span class="n">tags</span> <span class="n">that</span> <span class="n">are</span> <span class="n">out</span> <span class="n">of</span>
-        <span class="n">the</span> <span class="n">top</span> <span class="n">N</span> <span class="n">tags</span><span class="o">.</span> <span class="n">When</span> <span class="n">re</span><span class="o">-</span><span class="n">reduce</span> <span class="n">is</span> <span class="n">false</span> <span class="n">we</span> <span class="n">may</span>
-        <span class="n">keep</span> <span class="n">the</span> <span class="k">last</span> <span class="n">key</span> <span class="n">passed</span> <span class="n">to</span> <span class="k">use</span> <span class="n">because</span> <span class="n">its</span>
-        <span class="n">possible</span> <span class="n">that</span> <span class="n">we</span> <span class="n">only</span> <span class="n">processed</span> <span class="n">part</span> <span class="n">of</span> <span class="n">it</span><span class="err">&#39;</span><span class="n">s</span>
-        <span class="n">data</span><span class="o">.</span>
-    <span class="o">*/</span>
-    <span class="n">var</span> <span class="n">top</span> <span class="o">=</span> <span class="o">[]</span><span class="p">;</span>
-    <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">t</span> <span class="n">in</span> <span class="n">tags</span><span class="p">){</span><span class="n">top</span><span class="p">[</span><span class="n">top</span><span class="o">.</span><span class="nb">length</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="n">tags</span><span class="p">[</span><span class="n">t</span><span class="p">]];}</span>
-    <span class="n">function</span> <span class="n">sort_tags</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span><span class="k">return</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">];}</span>
-    <span class="n">top</span><span class="o">.</span><span class="nb">sort</span><span class="p">(</span><span class="n">sort_tags</span><span class="p">);</span>
-    <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">n</span> <span class="o">=</span> <span class="n">MAX</span><span class="p">;</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">top</span><span class="o">.</span><span class="nb">length</span><span class="p">;</span> <span class="n">n</span><span class="o">++</span><span class="p">)</span>
+    <span class="cm">/*</span>
+<span class="cm">        This code just removes the tags that are out of</span>
+<span class="cm">        the top N tags. When re-reduce is false we may</span>
+<span class="cm">        keep the last key passed to use because its</span>
+<span class="cm">        possible that we only processed part of it&#39;s</span>
+<span class="cm">        data.</span>
+<span class="cm">    */</span>
+    <span class="kd">var</span> <span class="nx">top</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">t</span> <span class="k">in</span> <span class="nx">tags</span><span class="p">){</span><span class="nx">top</span><span class="p">[</span><span class="nx">top</span><span class="p">.</span><span class="nx">length</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nx">t</span><span class="p">,</span> <span class="nx">tags</span><span class="p">[</span><span class="nx">t</span><span class="p">]];}</span>
+    <span class="kd">function</span> <span class="nx">sort_tags</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span><span class="k">return</span> <span class="nx">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="nx">a</span><span class="p">[</span><span class="mi">1</span><span class="p">];}</span>
+    <span class="nx">top</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span><span class="nx">sort_tags</span><span class="p">);</span>
+    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">n</span> <span class="o">=</span> <span class="nx">MAX</span><span class="p">;</span> <span class="nx">n</span> <span class="o">&lt;</span> <span class="nx">top</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">n</span><span class="o">++</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="k">if</span><span class="p">(</span><span class="n">top</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">lastkey</span><span class="p">)</span> <span class="n">tags</span><span class="p">[</span><span class="n">top</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">undefined</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="nx">top</span><span class="p">[</span><span class="nx">n</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="nx">lastkey</span><span class="p">)</span> <span class="nx">tags</span><span class="p">[</span><span class="nx">top</span><span class="p">[</span><span class="nx">n</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="sr">//</span> <span class="n">And</span> <span class="n">done</span><span class="o">.</span>
-    <span class="k">return</span> <span class="n">tags</span><span class="p">;</span>
+    <span class="c1">// And done.</span>
+    <span class="k">return</span> <span class="nx">tags</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>There's probably a more efficient method to get the priority queue stuff, but I was going for simplicity over speed.</p>
 <p>When querying this reduce you should not use the <code>group</code> or <code>group_level</code> query string parameters. The returned reduce value will be an object with the top <code>MAX</code> tag: count pairs.</p>
-<!-- <<Anchor(aggregate_sum)>> -->
-
 <h2 id="joining-an-aggregate-sum-along-with-related-data">Joining an aggregate sum along with related data</h2>
-<p>Here is a modified example from the <a href="View_collation">View collation</a> page.  Note that <code>group_level</code> needs to be set to <code>1</code> for it to return a meaningful <code>customer_details</code>.</p>
-<div class="codehilite"><pre><span class="sr">//</span> <span class="n">Map</span> <span class="n">function</span>
-<span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s">&quot;customer&quot;</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">emit</span><span class="p">([</span><span class="n">doc</span><span class="o">.</span><span class="n">_id</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">doc</span><span class="p">);</span>
-  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s">&quot;order&quot;</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">emit</span><span class="p">([</span><span class="n">doc</span><span class="o">.</span><span class="n">customer_id</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">doc</span><span class="p">);</span>
+<p>Here is a modified example from the <a class="internal" href="View_collation.html">View_collation</a> page.  Note that <code>group_level</code> needs to be set to <code>1</code> for it to return a meaningful <code>customer_details</code>.</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1">// Map function</span>
+<span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">Type</span> <span class="o">==</span> <span class="s2">&quot;customer&quot;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">emit</span><span class="p">([</span><span class="nx">doc</span><span class="p">.</span><span class="nx">_id</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="nx">doc</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">Type</span> <span class="o">==</span> <span class="s2">&quot;order&quot;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">emit</span><span class="p">([</span><span class="nx">doc</span><span class="p">.</span><span class="nx">customer_id</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="nx">doc</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="sr">//</span> <span class="n">Reduce</span> <span class="n">function</span>
-<span class="sr">//</span> <span class="n">Only</span> <span class="n">produces</span> <span class="n">meaningful</span> <span class="n">output</span><span class="o">.</span><span class="n">customer_details</span> <span class="k">if</span> <span class="n">group_level</span> <span class="o">&gt;=</span> <span class="mi">1</span>
-<span class="n">function</span><span class="p">(</span><span class="nb">keys</span><span class="p">,</span> <span class="nb">values</span><span class="p">,</span> <span class="n">rereduce</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">var</span> <span class="n">output</span> <span class="o">=</span> <span class="p">{};</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">rereduce</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">idx</span> <span class="n">in</span> <span class="nb">values</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nb">values</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">total</span> <span class="o">!==</span> <span class="n">undefined</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">output</span><span class="o">.</span><span class="n">total</span> <span class="o">+=</span> <span class="nb">values</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">total</span><span class="p">;</span>
-      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nb">values</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">customer_details</span> <span class="o">!==</span> <span class="n">undefined</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">output</span><span class="o">.</span><span class="n">customer_details</span> <span class="o">=</span> <span class="nb">values</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">customer_details</span><span class="p">;</span>
+<span class="c1">// Reduce function</span>
+<span class="c1">// Only produces meaningful output.customer_details if group_level &gt;= 1</span>
+<span class="kd">function</span><span class="p">(</span><span class="nx">keys</span><span class="p">,</span> <span class="nx">values</span><span class="p">,</span> <span class="nx">rereduce</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">output</span> <span class="o">=</span> <span class="p">{};</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">rereduce</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="nx">idx</span> <span class="k">in</span> <span class="nx">values</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="nx">idx</span><span class="p">].</span><span class="nx">total</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">output</span><span class="p">.</span><span class="nx">total</span> <span class="o">+=</span> <span class="nx">values</span><span class="p">[</span><span class="nx">idx</span><span class="p">].</span><span class="nx">total</span><span class="p">;</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="nx">idx</span><span class="p">].</span><span class="nx">customer_details</span> <span class="o">!==</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">output</span><span class="p">.</span><span class="nx">customer_details</span> <span class="o">=</span> <span class="nx">values</span><span class="p">[</span><span class="nx">idx</span><span class="p">].</span><span class="nx">customer_details</span><span class="p">;</span>
       <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">idx</span> <span class="n">in</span> <span class="nb">values</span><span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span><span class="nb">values</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s">&quot;customer&quot;</span><span class="p">)</span> <span class="n">output</span><span class="o">.</span><span class="n">customer_details</span> <span class="o">=</span> <span class="n">doc</span><span class="p">;</span>
-      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nb">values</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">Type</span> <span class="o">==</span> <span class="s">&quot;order&quot;</span><span class="p">)</span> <span class="n">output</span><span class="o">.</span><span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="nx">idx</span> <span class="k">in</span> <span class="nx">values</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="nx">idx</span><span class="p">].</span><span class="nx">Type</span> <span class="o">==</span> <span class="s2">&quot;customer&quot;</span><span class="p">)</span> <span class="nx">output</span><span class="p">.</span><span class="nx">customer_details</span> <span class="o">=</span> <span class="nx">doc</span><span class="p">;</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="nx">idx</span><span class="p">].</span><span class="nx">Type</span> <span class="o">==</span> <span class="s2">&quot;order&quot;</span><span class="p">)</span> <span class="nx">output</span><span class="p">.</span><span class="nx">total</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
     <span class="p">}</span>
   <span class="p">}</span>
-  <span class="k">return</span> <span class="n">output</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">output</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-
-
-<!-- <<Anchor(standard_deviation)>> -->
+</td></tr></table>
 
 <h2 id="computing-the-standard-deviation">Computing the standard deviation</h2>
-<p>This example is from the couchdb test-suite. It is <strong>much</strong> easier and less complex then following example (<a href="#summary_stats">Computing simple summary statistics (min,max,mean,standard deviation)</a>) although it does not calculate min,max and mean (but this should be an easy exercise).</p>
-<div class="codehilite"><pre><span class="sr">//</span> <span class="n">Map</span>
-<span class="n">function</span> <span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
-  <span class="n">emit</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">val</span><span class="p">,</span> <span class="n">doc</span><span class="o">.</span><span class="n">val</span><span class="p">)</span>
-<span class="p">};</span>
+<p>This example is from the couchdb test-suite. It is <strong>much</strong> easier and less complex then following example although it does not calculate min,max and mean (but this should be an easy exercise).</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1">// Map</span>
+<span class="kd">function</span> <span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">emit</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">val</span><span class="p">,</span> <span class="nx">doc</span><span class="p">.</span><span class="nx">val</span><span class="p">)</span>
+<span class="p">}</span>
 
-<span class="sr">//</span> <span class="n">Reduce</span>
-<span class="n">function</span> <span class="p">(</span><span class="nb">keys</span><span class="p">,</span> <span class="nb">values</span><span class="p">,</span> <span class="n">rereduce</span><span class="p">)</span> <span class="p">{</span>
-    <span class="sr">//</span> <span class="n">This</span> <span class="n">computes</span> <span class="n">the</span> <span class="n">standard</span> <span class="n">deviation</span> <span class="n">of</span> <span class="n">the</span> <span class="n">mapped</span> <span class="n">results</span>
-    <span class="n">var</span> <span class="n">stdDeviation</span><span class="o">=</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="p">;</span>
-    <span class="n">var</span> <span class="n">count</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
-    <span class="n">var</span> <span class="n">total</span><span class="o">=</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="p">;</span>
-    <span class="n">var</span> <span class="n">sqrTotal</span><span class="o">=</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="p">;</span>
+<span class="err">#</span><span class="o">!</span><span class="nx">javascript</span>
+<span class="c1">// Reduce</span>
+<span class="kd">function</span> <span class="p">(</span><span class="nx">keys</span><span class="p">,</span> <span class="nx">values</span><span class="p">,</span> <span class="nx">rereduce</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// This computes the standard deviation of the mapped results</span>
+    <span class="kd">var</span> <span class="nx">stdDeviation</span><span class="o">=</span><span class="mf">0.0</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">count</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">total</span><span class="o">=</span><span class="mf">0.0</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">sqrTotal</span><span class="o">=</span><span class="mf">0.0</span><span class="p">;</span>
 
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">rereduce</span><span class="p">)</span> <span class="p">{</span>
-      <span class="sr">//</span> <span class="n">This</span> <span class="n">is</span> <span class="n">the</span> <span class="n">reduce</span> <span class="n">phase</span><span class="p">,</span> <span class="n">we</span> <span class="n">are</span> <span class="n">reducing</span> <span class="n">over</span> <span class="n">emitted</span> <span class="nb">values</span> <span class="n">from</span>
-      <span class="sr">//</span> <span class="n">the</span> <span class="nb">map</span> <span class="n">functions</span><span class="o">.</span>
-      <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">i</span> <span class="n">in</span> <span class="nb">values</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="nb">values</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-        <span class="n">sqrTotal</span> <span class="o">=</span> <span class="n">sqrTotal</span> <span class="o">+</span> <span class="p">(</span><span class="nb">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="nb">values</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">rereduce</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// This is the reduce phase, we are reducing over emitted values from</span>
+      <span class="c1">// the map functions.</span>
+      <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">values</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">total</span> <span class="o">=</span> <span class="nx">total</span> <span class="o">+</span> <span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+        <span class="nx">sqrTotal</span> <span class="o">=</span> <span class="nx">sqrTotal</span> <span class="o">+</span> <span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">*</span> <span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
       <span class="p">}</span>
-      <span class="n">count</span> <span class="o">=</span> <span class="nb">values</span><span class="o">.</span><span class="nb">length</span><span class="p">;</span>
+      <span class="nx">count</span> <span class="o">=</span> <span class="nx">values</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
-      <span class="sr">//</span> <span class="n">This</span> <span class="n">is</span> <span class="n">the</span> <span class="n">rereduce</span> <span class="n">phase</span><span class="p">,</span> <span class="n">we</span> <span class="n">are</span> <span class="n">re</span><span class="o">-</span><span class="n">reducing</span> <span class="n">previosuly</span>
-      <span class="sr">//</span> <span class="n">reduced</span> <span class="nb">values</span><span class="o">.</span>
-      <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">i</span> <span class="n">in</span> <span class="nb">values</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="nb">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">;</span>
-        <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="nb">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">total</span><span class="p">;</span>
-        <span class="n">sqrTotal</span> <span class="o">=</span> <span class="n">sqrTotal</span> <span class="o">+</span> <span class="nb">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sqrTotal</span><span class="p">;</span>
+      <span class="c1">// This is the rereduce phase, we are re-reducing previosuly</span>
+      <span class="c1">// reduced values.</span>
+      <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">values</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">count</span> <span class="o">=</span> <span class="nx">count</span> <span class="o">+</span> <span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">count</span><span class="p">;</span>
+        <span class="nx">total</span> <span class="o">=</span> <span class="nx">total</span> <span class="o">+</span> <span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">total</span><span class="p">;</span>
+        <span class="nx">sqrTotal</span> <span class="o">=</span> <span class="nx">sqrTotal</span> <span class="o">+</span> <span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">sqrTotal</span><span class="p">;</span>
       <span class="p">}</span>
     <span class="p">}</span>
 
-    <span class="n">var</span> <span class="n">variance</span> <span class="o">=</span>  <span class="p">(</span><span class="n">sqrTotal</span> <span class="o">-</span> <span class="p">((</span><span class="n">total</span> <span class="o">*</span> <span class="n">total</span><span class="p">)</span><span class="sr">/count)) /</span> <span class="n">count</span><span class="p">;</span>
-    <span class="n">stdDeviation</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="nb">sqrt</span><span class="p">(</span><span class="n">variance</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">variance</span> <span class="o">=</span>  <span class="p">(</span><span class="nx">sqrTotal</span> <span class="o">-</span> <span class="p">((</span><span class="nx">total</span> <span class="o">*</span> <span class="nx">total</span><span class="p">)</span><span class="o">/</span><span class="nx">count</span><span class="p">))</span> <span class="o">/</span> <span class="nx">count</span><span class="p">;</span>
+    <span class="nx">stdDeviation</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">variance</span><span class="p">);</span>
 
-    <span class="sr">//</span> <span class="n">the</span> <span class="n">reduce</span> <span class="n">result</span><span class="o">.</span> <span class="n">It</span> <span class="n">contains</span> <span class="n">enough</span> <span class="n">information</span> <span class="n">to</span> <span class="n">be</span> <span class="n">rereduced</span>
-    <span class="sr">//</span> <span class="n">with</span> <span class="n">other</span> <span class="n">reduce</span> <span class="n">results</span><span class="o">.</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s">&quot;stdDeviation&quot;</span><span class="p">:</span><span class="n">stdDeviation</span><span class="p">,</span><span class="s">&quot;count&quot;</span><span class="p">:</span><span class="n">count</span><span class="p">,</span>
-        <span class="s">&quot;total&quot;</span><span class="p">:</span><span class="n">total</span><span class="p">,</span><span class="s">&quot;sqrTotal&quot;</span><span class="p">:</span><span class="n">sqrTotal</span><span class="p">};</span>
+    <span class="c1">// the reduce result. It contains enough information to be rereduced</span>
+    <span class="c1">// with other reduce results.</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;stdDeviation&quot;</span><span class="o">:</span><span class="nx">stdDeviation</span><span class="p">,</span><span class="s2">&quot;count&quot;</span><span class="o">:</span><span class="nx">count</span><span class="p">,</span>
+        <span class="s2">&quot;total&quot;</span><span class="o">:</span><span class="nx">total</span><span class="p">,</span><span class="s2">&quot;sqrTotal&quot;</span><span class="o">:</span><span class="nx">sqrTotal</span><span class="p">};</span>
 <span class="p">};</span>
 </pre></div>
-
-
-<!-- <<Anchor(summary_stats)>> -->
+</td></tr></table>
 
 <h2 id="computing-simple-summary-statistics-minmaxmeanstandard-deviation">Computing simple summary statistics (min,max,mean,standard deviation)</h2>
-<p>This implementation of standard deviation is more complex than the above algorithm, called the "textbook one-pass algorithm" by Chan, Golub, and Le``Veque.  While it is mathematically equivalent to the standard two-pass computation of standard deviation, it can be numerically unstable under certain conditions.  Specifically, if the square of the sums and  the sum of the squares terms are large, then they will be computed with some rounding error.  If the variance of the data set is small, then subtracting those two large numbers (which have been rounded off slightly) might wipe out the computation of the variance.  See http://www.jstor.org/stable/2683386, http://people.xiph.org/~tterribe/notes/homs.html, and the wikipedia description of Knuth's algorithm http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance.</p>
-<p>The below implementation in <code>JavaScript</code> by MarcaJames.  Any mistakes in the js coding are my fault.  The algorithms are from others (all smarter than I), as noted in the comments in the code.  To the best of my knowledge the algorithms are public domain, and my implementation freely available to all.<br />
+<p>This implementation of standard deviation is more complex than the above algorithm, called the "textbook one-pass algorithm" by Chan, Golub, and Le<code>`Veque.  While it is mathematically equivalent to the standard two-pass computation of standard deviation, it can be numerically unstable under certain conditions.  Specifically, if the square of the sums and  the sum of the squares terms are large, then they will be computed with some rounding error.  If the variance of the data set is small, then subtracting those two large numbers (which have been rounded off slightly) might wipe out the computation of the variance.  See &lt;a href="http://www.jstor.org/stable/2683386,"&gt;http://www.jstor.org/stable/2683386,&lt;/a&gt; http://people.xiph.org/~tterribe/notes/homs.html, and the wikipedia description of Knuth's algorithm &lt;a href="http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance."&gt;http://en.wikipedia.org/wiki/Algorithms_for_calculating_variance.&lt;/a&gt; 
+The below implementation in</code>JavaScript` by MarcaJames.  Any mistakes in the js coding are my fault.  The algorithms are from others (all smarter than I), as noted in the comments in the code.  To the best of my knowledge the algorithms are public domain, and my implementation freely available to all.<br />
 </p>
 <p>Note that the view is specialized to my dataset, but the reduce function is written to be fairly generic.  I kept the view as is because I'm too lazy to write up a generic view, and also because when I wrote it I wasn't sure one could use Date, Math, and Reg<code>Exp in Couch</code>DB Java``Script.<br />
 </p>
-<div class="codehilite"><pre><span class="sr">//</span> <span class="n">Map</span> <span class="n">function</span>
-<span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">var</span> <span class="n">risk_exponent</span> 
-    <span class="o">-</span><span class="mi">3</span><span class="o">.</span><span class="mi">194</span> <span class="o">+</span>
-    <span class="n">doc</span><span class="o">.</span><span class="n">CV_VOLOCC_1</span>                 <span class="o">*</span><span class="mi">1</span><span class="o">.</span><span class="mi">080</span> <span class="o">+</span>
-    <span class="n">doc</span><span class="o">.</span><span class="n">CV_VOLOCC_M</span>                 <span class="o">*</span><span class="mi">0</span><span class="o">.</span><span class="mi">627</span> <span class="o">+</span>
-    <span class="n">doc</span><span class="o">.</span><span class="n">CV_VOLOCC_R</span>                 <span class="o">*</span><span class="mi">0</span><span class="o">.</span><span class="mi">553</span> <span class="o">+</span>
-    <span class="n">doc</span><span class="o">.</span><span class="n">CORR_VOLOCC_1M</span>              <span class="o">*</span><span class="mi">1</span><span class="o">.</span><span class="mi">439</span> <span class="o">+</span>
-    <span class="n">doc</span><span class="o">.</span><span class="n">CORR_VOLOCC_MR</span>              <span class="o">*</span><span class="mi">0</span><span class="o">.</span><span class="mi">658</span> <span class="o">+</span>
-    <span class="n">doc</span><span class="o">.</span><span class="n">LAG1_OCC_M</span>                  <span class="o">*</span><span class="mi">0</span><span class="o">.</span><span class="mi">412</span> <span class="o">+</span>
-    <span class="n">doc</span><span class="o">.</span><span class="n">LAG1_OCC_R</span>                  <span class="o">*</span><span class="mi">1</span><span class="o">.</span><span class="mi">424</span> <span class="o">+</span>
-    <span class="n">doc</span><span class="o">.</span><span class="n">MU_VOL_1</span>                    <span class="o">*</span><span class="mi">0</span><span class="o">.</span><span class="mo">03</span><span class="mi">8</span> <span class="o">+</span>
-    <span class="n">doc</span><span class="o">.</span><span class="n">MU_VOL_M</span>                    <span class="o">*</span><span class="mi">0</span><span class="o">.</span><span class="mi">100</span> <span class="o">+</span>
-    <span class="n">doc</span><span class="p">[</span><span class="s">&quot;CORR_OCC_1M X MU_VOL_M&quot;</span><span class="p">]</span>      <span class="o">*-</span><span class="mi">0</span><span class="o">.</span><span class="mi">168</span> <span class="o">+</span>
-    <span class="n">doc</span><span class="p">[</span><span class="s">&quot;CORR_OCC_1M X SD_VOL_R&quot;</span> <span class="p">]</span>     <span class="o">*</span><span class="mi">0</span><span class="o">.</span><span class="mi">479</span> <span class="o">+</span>
-    <span class="n">doc</span><span class="p">[</span><span class="s">&quot;CORR_OCC_1M X LAG1_OCC_R&quot;</span><span class="p">]</span>    <span class="o">*-</span><span class="mi">1</span><span class="o">.</span><span class="mi">462</span> <span class="p">;</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1">// Map function</span>
+<span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">risk_exponent</span> 
+    <span class="o">-</span><span class="mf">3.194</span> <span class="o">+</span>
+    <span class="nx">doc</span><span class="p">.</span><span class="nx">CV_VOLOCC_1</span>                 <span class="o">*</span><span class="mf">1.080</span> <span class="o">+</span>
+    <span class="nx">doc</span><span class="p">.</span><span class="nx">CV_VOLOCC_M</span>                 <span class="o">*</span><span class="mf">0.627</span> <span class="o">+</span>
+    <span class="nx">doc</span><span class="p">.</span><span class="nx">CV_VOLOCC_R</span>                 <span class="o">*</span><span class="mf">0.553</span> <span class="o">+</span>
+    <span class="nx">doc</span><span class="p">.</span><span class="nx">CORR_VOLOCC_1M</span>              <span class="o">*</span><span class="mf">1.439</span> <span class="o">+</span>
+    <span class="nx">doc</span><span class="p">.</span><span class="nx">CORR_VOLOCC_MR</span>              <span class="o">*</span><span class="mf">0.658</span> <span class="o">+</span>
+    <span class="nx">doc</span><span class="p">.</span><span class="nx">LAG1_OCC_M</span>                  <span class="o">*</span><span class="mf">0.412</span> <span class="o">+</span>
+    <span class="nx">doc</span><span class="p">.</span><span class="nx">LAG1_OCC_R</span>                  <span class="o">*</span><span class="mf">1.424</span> <span class="o">+</span>
+    <span class="nx">doc</span><span class="p">.</span><span class="nx">MU_VOL_1</span>                    <span class="o">*</span><span class="mf">0.038</span> <span class="o">+</span>
+    <span class="nx">doc</span><span class="p">.</span><span class="nx">MU_VOL_M</span>                    <span class="o">*</span><span class="mf">0.100</span> <span class="o">+</span>
+    <span class="nx">doc</span><span class="p">[</span><span class="s2">&quot;CORR_OCC_1M X MU_VOL_M&quot;</span><span class="p">]</span>      <span class="o">*-</span><span class="mf">0.168</span> <span class="o">+</span>
+    <span class="nx">doc</span><span class="p">[</span><span class="s2">&quot;CORR_OCC_1M X SD_VOL_R&quot;</span> <span class="p">]</span>     <span class="o">*</span><span class="mf">0.479</span> <span class="o">+</span>
+    <span class="nx">doc</span><span class="p">[</span><span class="s2">&quot;CORR_OCC_1M X LAG1_OCC_R&quot;</span><span class="p">]</span>    <span class="o">*-</span><span class="mf">1.462</span> <span class="p">;</span>
 
-    <span class="n">var</span> <span class="n">risk</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="nb">exp</span><span class="p">(</span><span class="n">risk_exponent</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">risk</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">exp</span><span class="p">(</span><span class="nx">risk_exponent</span><span class="p">);</span>
 
-    <span class="sr">//</span> <span class="n">parse</span> <span class="n">the</span> <span class="n">date</span> <span class="ow">and</span> <span class="s">&quot;chunk&quot;</span> <span class="n">it</span> <span class="n">up</span>
-    <span class="n">var</span> <span class="n">pattern</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RegExp</span><span class="p">(</span><span class="s">&quot;(.*)-0?(.*)-0?(.*)T0?(.*):0?(.*):0?(.*)(-0800)&quot;</span><span class="p">);</span>
-    <span class="n">var</span> <span class="n">result</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="nb">exec</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">EstimateTime</span><span class="p">);</span>
-    <span class="n">var</span> <span class="n">day</span><span class="p">;</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">result</span><span class="p">){</span>
-        <span class="sr">//</span><span class="k">new</span> <span class="n">Date</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="p">,</span> <span class="n">day</span><span class="p">,</span> <span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="p">,</span> <span class="n">seconds</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span>
-        <span class="sr">//</span> <span class="n">force</span> <span class="n">rounding</span> <span class="n">to</span> <span class="mi">5</span> <span class="n">minutes</span><span class="p">,</span> <span class="mi">0</span> <span class="n">seconds</span><span class="p">,</span> <span class="k">for</span> <span class="n">aggregation</span> <span class="n">of</span> <span class="mi">5</span> <span class="n">minute</span> <span class="n">chunks</span>
-        <span class="n">var</span> <span class="n">fivemin</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">Math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">/</span><span class="mi">5</span><span class="p">)</span>
-        <span class="n">day</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">result</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="n">result</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">fivemin</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="c1">// parse the date and &quot;chunk&quot; it up</span>
+    <span class="kd">var</span> <span class="nx">pattern</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s2">&quot;(.*)-0?(.*)-0?(.*)T0?(.*):0?(.*):0?(.*)(-0800)&quot;</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">pattern</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">EstimateTime</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">day</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">result</span><span class="p">){</span>
+        <span class="c1">//new Date(year, month, day, hours, minutes, seconds, ms)</span>
+        <span class="c1">// force rounding to 5 minutes, 0 seconds, for aggregation of 5 minute chunks</span>
+        <span class="kd">var</span> <span class="nx">fivemin</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">result</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">/</span><span class="mi">5</span><span class="p">)</span>
+        <span class="nx">day</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="nx">result</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="nx">result</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="nx">result</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span><span class="nx">result</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="nx">fivemin</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
     <span class="p">}</span>
-    <span class="n">var</span> <span class="n">weekdays</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Sun&quot;</span><span class="p">,</span><span class="s">&quot;Mon&quot;</span><span class="p">,</span><span class="s">&quot;Tue&quot;</span><span class="p">,</span><span class="s">&quot;Wed&quot;</span><span class="p">,</span><span class="s">&quot;Thu&quot;</span><span class="p">,</span><span class="s">&quot;Fri&quot;</span><span class="p">,</span><span class="s">&quot;Sat&quot;</span><span class="p">];</span>
-    <span class="n">emit</span><span class="p">([</span><span class="n">weekdays</span><span class="p">[</span><span class="n">day</span><span class="o">.</span><span class="n">getDay</span><span class="p">()],</span><span class="n">day</span><span class="o">.</span><span class="n">toLocaleTimeString</span><span class="p">(</span> <span class="p">)],{</span><span class="s">&#39;risk&#39;</span><span class="p">:</span><span class="n">risk</span><span class="p">});</span>
+    <span class="kd">var</span> <span class="nx">weekdays</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Sun&quot;</span><span class="p">,</span><span class="s2">&quot;Mon&quot;</span><span class="p">,</span><span class="s2">&quot;Tue&quot;</span><span class="p">,</span><span class="s2">&quot;Wed&quot;</span><span class="p">,</span><span class="s2">&quot;Thu&quot;</span><span class="p">,</span><span class="s2">&quot;Fri&quot;</span><span class="p">,</span><span class="s2">&quot;Sat&quot;</span><span class="p">];</span>
+    <span class="nx">emit</span><span class="p">([</span><span class="nx">weekdays</span><span class="p">[</span><span class="nx">day</span><span class="p">.</span><span class="nx">getDay</span><span class="p">()],</span><span class="nx">day</span><span class="p">.</span><span class="nx">toLocaleTimeString</span><span class="p">(</span> <span class="p">)],{</span><span class="s1">&#39;risk&#39;</span><span class="o">:</span><span class="nx">risk</span><span class="p">});</span>
 <span class="p">}</span>
 
-<span class="sr">//</span> <span class="n">Reduce</span> <span class="n">function</span>
-<span class="n">function</span> <span class="p">(</span><span class="nb">keys</span><span class="p">,</span> <span class="nb">values</span><span class="p">,</span> <span class="n">rereduce</span><span class="p">)</span> <span class="p">{</span>
+<span class="c1">// Reduce function</span>
+<span class="kd">function</span> <span class="p">(</span><span class="nx">keys</span><span class="p">,</span> <span class="nx">values</span><span class="p">,</span> <span class="nx">rereduce</span><span class="p">)</span> <span class="p">{</span>
 
-    <span class="sr">//</span> <span class="n">algorithm</span> <span class="k">for</span> <span class="n">on</span><span class="o">-</span><span class="n">line</span> <span class="n">computation</span> <span class="n">of</span> <span class="n">moments</span> <span class="n">from</span> 
-    <span class="sr">//</span> 
-    <span class="sr">//</span>    <span class="n">Tony</span> <span class="n">F</span><span class="o">.</span> <span class="n">Chan</span><span class="p">,</span> <span class="n">Gene</span> <span class="n">H</span><span class="o">.</span> <span class="n">Golub</span><span class="p">,</span> <span class="ow">and</span> <span class="n">Randall</span> <span class="n">J</span><span class="o">.</span> <span class="n">LeVeque:</span> <span class="s">&quot;Updating</span>
-<span class="s">    //    Formulae and a Pairwise Algorithm for Computing Sample</span>
-<span class="s">    //    Variances.&quot;</span> <span class="n">Technical</span> <span class="n">Report</span> <span class="n">STAN</span><span class="o">-</span><span class="n">CS</span><span class="o">-</span><span class="mi">79</span><span class="o">-</span><span class="mi">773</span><span class="p">,</span> <span class="n">Department</span> <span class="n">of</span>
-    <span class="sr">//</span>    <span class="n">Computer</span> <span class="n">Science</span><span class="p">,</span> <span class="n">Stanford</span> <span class="n">University</span><span class="p">,</span> <span class="n">November</span> <span class="mi">1979</span><span class="o">.</span>  <span class="n">url:</span>
-    <span class="sr">//</span>    <span class="n">ftp:</span><span class="sr">//</span><span class="n">reports</span><span class="o">.</span><span class="n">stanford</span><span class="o">.</span><span class="n">edu</span><span class="sr">/pub/cs</span><span class="nb">tr</span><span class="sr">/reports/cs/tr/</span><span class="mi">79</span><span class="sr">/773/</span><span class="n">CS</span><span class="o">-</span><span class="n">TR</span><span class="o">-</span><span class="mi">79</span><span class="o">-</span><span class="mi">773</span><span class="o">.</span><span class="n">pdf</span>
+    <span class="c1">// algorithm for on-line computation of moments from </span>
+    <span class="c1">// </span>
+    <span class="c1">//    Tony F. Chan, Gene H. Golub, and Randall J. LeVeque: &quot;Updating</span>
+    <span class="c1">//    Formulae and a Pairwise Algorithm for Computing Sample</span>
+    <span class="c1">//    Variances.&quot; Technical Report STAN-CS-79-773, Department of</span>
+    <span class="c1">//    Computer Science, Stanford University, November 1979.  url:</span>
+    <span class="c1">//    ftp://reports.stanford.edu/pub/cstr/reports/cs/tr/79/773/CS-TR-79-773.pdf</span>
 
-    <span class="sr">//</span> <span class="n">so</span> <span class="n">there</span> <span class="n">is</span> <span class="n">some</span> <span class="n">weirdness</span> <span class="n">in</span> <span class="n">that</span> <span class="n">the</span> <span class="n">original</span> <span class="n">was</span> <span class="n">Fortran</span><span class="p">,</span> <span class="nb">index</span> <span class="n">from</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="sr">//</span> <span class="ow">and</span> <span class="n">lots</span> <span class="n">of</span> <span class="n">arrays</span> <span class="p">(</span><span class="nb">no</span> <span class="n">lists</span><span class="p">,</span> <span class="nb">no</span> <span class="n">hash</span> <span class="n">tables</span><span class="p">)</span>
+    <span class="c1">// so there is some weirdness in that the original was Fortran, index from 1,</span>
+    <span class="c1">// and lots of arrays (no lists, no hash tables)</span>
 
-    <span class="sr">//</span> <span class="n">also</span> <span class="n">consulted</span> <span class="n">http:</span><span class="sr">//</span><span class="n">people</span><span class="o">.</span><span class="n">xiph</span><span class="o">.</span><span class="n">org</span><span class="sr">/~tterribe/</span><span class="n">notes</span><span class="o">/</span><span class="n">homs</span><span class="o">.</span><span class="n">html</span>
-    <span class="sr">//</span> <span class="ow">and</span> <span class="n">http:</span><span class="sr">//</span><span class="n">www</span><span class="o">.</span><span class="n">jstor</span><span class="o">.</span><span class="n">org</span><span class="sr">/stable/</span><span class="mi">2683386</span>
-    <span class="sr">//</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ick</span><span class="o">!</span><span class="p">)</span> <span class="n">the</span> <span class="n">wikipedia</span> <span class="n">description</span> <span class="n">of</span> <span class="n">Knuth</span><span class="s">&#39;s algorithm</span>
-<span class="s">    // to clarify what was going on with http://www.slamb.org/svn/repos/trunk/projects/common/src/java/org/slamb/common/stats/Sample.java</span>
+    <span class="c1">// also consulted &lt;a href=&quot;http://people.xiph.org/~tterribe/notes/homs.html&quot;&gt;http://people.xiph.org/~tterribe/notes/homs.html&lt;/a&gt;         // and &lt;a href=&quot;http://www.jstor.org/stable/2683386&quot;&gt;http://www.jstor.org/stable/2683386&lt;/a&gt;         // and (ick!) the wikipedia description of Knuth&#39;s algorithm</span>
+    <span class="c1">// to clarify what was going on with &lt;a href=&quot;http://www.slamb.org/svn/repos/trunk/projects/common/src/java/org/slamb/common/stats/Sample.java&quot;&gt;http://www.slamb.org/svn/repos/trunk/projects/common/src/java/org/slamb/common/stats/Sample.java&lt;/a&gt;     </span>
+    <span class="cm">/* </span>
+<span class="cm">       combine the variance esitmates for two partitions, A and B.</span>
+<span class="cm">       partitionA and partitionB both should contain</span>
+<span class="cm">        { S :  the current estimate of the second moment</span>
+<span class="cm">          Sum : the sum of observed values</span>
+<span class="cm">          M : the number of observations used in the partition to calculate S and Sum</span>
+<span class="cm">        }</span>
 
-<span class="s">    /* </span>
-<span class="s">       combine the variance esitmates for two partitions, A and B.</span>
-<span class="s">       partitionA and partitionB both should contain</span>
-<span class="s">        { S :  the current estimate of the second moment</span>
-<span class="s">          Sum : the sum of observed values</span>
-<span class="s">          M : the number of observations used in the partition to calculate S and Sum</span>
-<span class="s">        }</span>
+<span class="cm">    The output will be an identical object, containing the S, Sum and</span>
+<span class="cm">    M for the combination of partitions A and B</span>
 
-<span class="s">    The output will be an identical object, containing the S, Sum and</span>
-<span class="s">    M for the combination of partitions A and B</span>
+<span class="cm">    This routine is derived from original fortran code in Chan et al,</span>
+<span class="cm">    (1979)</span>
 
-<span class="s">    This routine is derived from original fortran code in Chan et al,</span>
-<span class="s">    (1979)</span>
+<span class="cm">    But it is easily derived by recognizing that all you&#39;re doing is</span>
+<span class="cm">    multiplying each partition&#39;s S and Sum by its respective count M,</span>
+<span class="cm">    and then dividing by the new count Ma + Mb.  The arrangement of</span>
+<span class="cm">    the diff etc is just rearranging terms to make it look nice.</span>
 
-<span class="s">    But it is easily derived by recognizing that all you&#39;</span><span class="n">re</span> <span class="n">doing</span> <span class="n">is</span>
-    <span class="n">multiplying</span> <span class="nb">each</span> <span class="n">partition</span><span class="s">&#39;s S and Sum by its respective count M,</span>
-<span class="s">    and then dividing by the new count Ma + Mb.  The arrangement of</span>
-<span class="s">    the diff etc is just rearranging terms to make it look nice.</span>
+<span class="cm">    And then summing up the sums, and summing up the counts</span>
 
-<span class="s">    And then summing up the sums, and summing up the counts</span>
+<span class="cm">    */</span>
+    <span class="kd">function</span> <span class="nx">combine_S</span><span class="p">(</span><span class="nx">partitionA</span><span class="p">,</span><span class="nx">partitionB</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">NewS</span><span class="o">=</span><span class="nx">partitionA</span><span class="p">.</span><span class="nx">S</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">NewSum</span><span class="o">=</span><span class="nx">partitionA</span><span class="p">.</span><span class="nx">Sum</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">min</span> <span class="o">=</span> <span class="nx">partitionA</span><span class="p">.</span><span class="nx">min</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">max</span> <span class="o">=</span> <span class="nx">partitionA</span><span class="p">.</span><span class="nx">max</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">M</span> <span class="o">=</span> <span class="nx">partitionB</span><span class="p">.</span><span class="nx">M</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">M</span><span class="p">){</span><span class="nx">M</span><span class="o">=</span><span class="mi">0</span><span class="p">;}</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">M</span><span class="p">){</span>
+      <span class="kd">var</span> <span class="nx">diff</span> <span class="o">=</span> <span class="p">((</span><span class="nx">partitionA</span><span class="p">.</span><span class="nx">M</span> <span class="o">*</span> <span class="nx">partitionB</span><span class="p">.</span><span class="nx">Sum</span> <span class="o">/</span> <span class="nx">partitionB</span><span class="p">.</span><span class="nx">M</span><span class="p">)</span> <span class="o">-</span> <span class="nx">partitionA</span><span class="p">.</span><span class="nx">Sum</span> <span class="p">);</span>
 
-<span class="s">    */</span>
-<span class="s">    function combine_S(partitionA,partitionB){</span>
-<span class="s">    var NewS=partitionA.S;</span>
-<span class="s">    var NewSum=partitionA.Sum;</span>
-<span class="s">    var min = partitionA.min;</span>
-<span class="s">    var max = partitionA.max;</span>
-<span class="s">    var M = partitionB.M;</span>
-<span class="s">    if(!M){M=0;}</span>
-<span class="s">    if(M){</span>
-<span class="s">        var diff </span>
-<span class="s">        ((partitionA.M * partitionB.Sum / partitionB.M) - partitionA.Sum );</span>
+    <span class="nx">NewS</span> <span class="o">+=</span> <span class="nx">partitionB</span><span class="p">.</span><span class="nx">S</span> <span class="o">+</span> <span class="nx">partitionB</span><span class="p">.</span><span class="nx">M</span><span class="o">*</span><span class="nx">diff</span><span class="o">*</span><span class="nx">diff</span><span class="o">/</span><span class="p">(</span><span class="nx">partitionA</span><span class="p">.</span><span class="nx">M</span> <span class="o">*</span> <span class="p">(</span><span class="nx">partitionA</span><span class="p">.</span><span class="nx">M</span><span class="o">+</span><span class="nx">partitionB</span><span class="p">.</span><span class="nx">M</span><span class="p">)</span> <span class="p">);</span>
+    <span class="nx">NewSum</span> <span class="o">+=</span> <span class="nx">partitionB</span><span class="p">.</span><span class="nx">Sum</span> <span class="p">;</span>
 
-<span class="s">        NewS += partitionB.S + partitionB.M*diff*diff/(partitionA.M * (partitionA.M+partitionB.M) );</span>
-<span class="s">        NewSum += partitionB.Sum ;</span>
-
-<span class="s">        min = Math.min(partitionB.min, min);</span>
-<span class="s">        max = Math.max(partitionB.max, max);</span>
-<span class="s">    }</span>
-<span class="s">    return {&#39;</span><span class="n">S</span><span class="s">&#39;:NewS,&#39;</span><span class="n">Sum</span><span class="s">&#39;:NewSum, &#39;</span><span class="n">M</span><span class="s">&#39;: partitionA.M+M, &#39;</span><span class="n">min</span><span class="s">&#39;:min, &#39;</span><span class="n">max</span><span class="s">&#39;:max };</span>
-<span class="s">    }</span>
-
-<span class="s">    /*</span>
-
-<span class="s">    This routine is derived from original fortran code in Chan et al,</span>
-<span class="s">    (1979), with the combination step split out above to allow that to</span>
-<span class="s">    be called independently in the rereduce step.</span>
-
-<span class="s">    Arguments:</span>
-
-<span class="s">    The first argument (values) is an array of objects.  The</span>
-<span class="s">    assumption is that the key to the variable of interest is &#39;</span><span class="n">risk</span><span class="s">&#39;.</span>
-<span class="s">    If this is not the case, the seventh argument should be the correct</span>
-<span class="s">    key to use.  More complicated data structures are not supported.</span>
-
-<span class="s">    The second, third, and fourth arguments are in case this is a</span>
-<span class="s">    running tally.  You can pass in exiting values for M (the number</span>
-<span class="s">    of observations already processed), Sum (the running sum of those</span>
-<span class="s">    M observations) and S (the current estimate of variance for those</span>
-<span class="s">    M observations).  Totally optional, defaulting to zero.</span>
-
-<span class="s">    The fifth parameter is for the running min, and the sixth for the</span>
-<span class="s">    max.</span>
-
-<span class="s">    Pass &quot;null&quot;  for parameters 2 through 6 if you need to pass a key in the</span>
-<span class="s">    seventh slot.</span>
-
-<span class="s">    Some notes on the algorithm.  There is a precious bit of trickery</span>
-<span class="s">    with stack pointers, etc that make for a minimal amount of</span>
-<span class="s">    temporary storage.  All this was included in the original</span>
-<span class="s">    algorithm.  I can&#39;</span><span class="n">t</span> <span class="n">see</span> <span class="n">that</span> <span class="n">it</span> <span class="n">makes</span> <span class="n">much</span> <span class="n">sense</span> <span class="n">to</span> <span class="n">include</span> <span class="n">all</span>
-    <span class="n">that</span> <span class="n">effort</span> <span class="n">given</span> <span class="n">that</span> <span class="n">I</span><span class="s">&#39;ve got gobs of RAM and am instead most</span>
-<span class="s">    likely processor bound, but it reminded me of programming in</span>
-<span class="s">    assembly so I kept it in.</span>
-
-<span class="s">    If you watch the progress of this algorithm in a debugger or</span>
-<span class="s">    firebug, you&#39;</span><span class="n">ll</span> <span class="n">see</span> <span class="n">that</span> <span class="n">the</span> <span class="n">size</span> <span class="n">of</span> <span class="n">the</span> <span class="n">stack</span> <span class="n">stays</span> <span class="n">pretty</span> <span class="n">small</span><span class="p">,</span>
-    <span class="n">with</span> <span class="n">the</span> <span class="n">bottom</span> <span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="n">entry</span> <span class="n">staying</span> <span class="n">at</span> <span class="n">zero</span><span class="p">,</span> <span class="k">then</span> <span class="n">the</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">entry</span>
-    <span class="n">containing</span> <span class="n">a</span> <span class="n">power</span> <span class="n">of</span> <span class="n">two</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span> <span class="n">etc</span><span class="p">),</span> <span class="ow">and</span> <span class="n">the</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="n">entry</span>
-    <span class="n">containing</span> <span class="n">the</span> <span class="k">next</span> <span class="n">power</span> <span class="n">of</span> <span class="n">two</span> <span class="n">down</span> <span class="n">from</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">so</span> <span class="n">on</span><span class="o">.</span>  <span class="n">As</span> <span class="n">the</span>
-    <span class="n">slots</span> <span class="n">of</span> <span class="n">the</span> <span class="n">stack</span> <span class="n">get</span> <span class="n">filled</span> <span class="n">up</span><span class="p">,</span> <span class="n">they</span> <span class="n">get</span> <span class="n">cascaded</span> <span class="n">together</span> <span class="n">by</span>
-    <span class="n">the</span> <span class="n">inner</span> <span class="n">loop</span><span class="o">.</span>
-
-    <span class="n">You</span> <span class="n">could</span> <span class="n">skip</span> <span class="n">all</span> <span class="n">that</span><span class="p">,</span> <span class="ow">and</span> <span class="n">just</span> <span class="n">pairwise</span> <span class="n">process</span> <span class="n">repeatedly</span>
-    <span class="k">until</span> <span class="n">the</span> <span class="n">list</span> <span class="n">of</span> <span class="n">intermediate</span> <span class="nb">values</span> <span class="n">is</span> <span class="n">empty</span><span class="p">,</span> <span class="n">but</span> <span class="n">whatever</span><span class="o">.</span>  <span class="n">And</span>
-    <span class="n">there</span> <span class="n">seems</span> <span class="n">to</span> <span class="n">be</span> <span class="n">some</span> <span class="n">super</span> <span class="n">small</span> <span class="n">gain</span> <span class="n">in</span> <span class="n">efficiency</span> <span class="n">in</span> <span class="n">using</span>
-    <span class="n">identical</span> <span class="n">support</span> <span class="k">for</span> <span class="n">two</span> <span class="n">groups</span> <span class="n">being</span> <span class="n">combined</span><span class="p">,</span> <span class="n">in</span> <span class="n">that</span> <span class="n">you</span> <span class="n">don</span><span class="s">&#39;t</span>
-<span class="s">    have to consider different Ma and Mb in the computation.  One less</span>
-<span class="s">    divide I guess)</span>
-
-<span class="s">    */</span>
-<span class="s">    function pairwise_update (values, M, Sum, S, min, max, key){</span>
-<span class="s">    if(!key){key=&#39;</span><span class="n">risk</span><span class="s">&#39;;}</span>
-<span class="s">    if(!Sum){Sum = 0; S = 0; M=0;}</span>
-<span class="s">    if(!S){Sum = 0; S = 0; M=0;}</span>
-<span class="s">    if(!M){Sum = 0; S = 0; M=0;}</span>
-<span class="s">    if(!min){ min = Infinity; }</span>
-<span class="s">    if(!max){ max = -Infinity; }</span>
-<span class="s">    var T;</span>
-<span class="s">    var stack_ptr=1;</span>
-<span class="s">    var N = values.length;</span>
-<span class="s">    var half = Math.floor(N/2);</span>
-<span class="s">    var NewSum;</span>
-<span class="s">    var NewS ;</span>
-<span class="s">    var SumA=[];</span>
-<span class="s">    var SA=[];</span>
-<span class="s">    var Terms=[];</span>
-<span class="s">    Terms[0]=0;</span>
-<span class="s">    if(N == 1){</span>
-<span class="s">        Nsum=values[0][key];</span>
-<span class="s">        Ns=0;</span>
-<span class="s">    }else if(N &gt; 1){</span>
-<span class="s">        // loop over the data pairwise</span>
-<span class="s">        for(var i = 0; i &lt; half; i++){</span>
-<span class="s">        // check min max</span>
-<span class="s">        if(values[2*i+1][key] &lt; values[2*i][key] ){</span>
-<span class="s">            min = Math.min(values[2*i+1][key], min);</span>
-<span class="s">            max = Math.max(values[2*i][key], max);</span>
-<span class="s">        }else{</span>
-<span class="s">            min = Math.min(values[2*i][key], min);</span>
-<span class="s">            max = Math.max(values[2*i+1][key], max);</span>
-<span class="s">        }</span>
-<span class="s">        SumA[stack_ptr]=values[2*i+1][key] + values[2*i][key];</span>
-<span class="s">        var diff = values[2*i + 1][key] - values[2*i][key] ;</span>
-<span class="s">        SA[stack_ptr]=( diff * diff ) / 2;</span>
-<span class="s">        Terms[stack_ptr]=2;</span>
-<span class="s">        while( Terms[stack_ptr] == Terms[stack_ptr-1]){</span>
-<span class="s">            // combine the top two elements in storage, as</span>
-<span class="s">            // they have equal numbers of support terms.  this</span>
-<span class="s">            // should happen for powers of two (2, 4, 8, etc).</span>
-<span class="s">            // Everything else gets cleaned up below</span>
-<span class="s">            stack_ptr--;</span>
-<span class="s">            Terms[stack_ptr]*=2;</span>
-<span class="s">            // compare this diff with the below diff.  Here</span>
-<span class="s">            // there is no multiplication and division of the</span>
-<span class="s">            // first sum (SumA[stack_ptr]) because it is the</span>
-<span class="s">            // same size as the other.</span>
-<span class="s">            var diff = SumA[stack_ptr] - SumA[stack_ptr+1];</span>
-<span class="s">            SA[stack_ptr]=  SA[stack_ptr] + SA[stack_ptr+1] +</span>
-<span class="s">            (diff * diff)/Terms[stack_ptr];</span>
-<span class="s">            SumA[stack_ptr] += SumA[stack_ptr+1];</span>
-<span class="s">        } // repeat as needed</span>
-<span class="s">        stack_ptr++;</span>
-<span class="s">        }</span>
-<span class="s">        stack_ptr--;</span>
-<span class="s">        // check if N is odd</span>
-<span class="s">        if(N % 2 !=  0){</span>
-<span class="s">        // handle that dangling entry</span>
-<span class="s">        stack_ptr++;</span>
-<span class="s">        Terms[stack_ptr]=1;</span>
-<span class="s">        SumA[stack_ptr]=values[N-1][key];</span>
-<span class="s">        SA[stack_ptr]=0;  // the variance of a single observation is zero!</span>
-<span class="s">        min = Math.min(values[N-1][key], min);</span>
-<span class="s">        max = Math.max(values[N-1][key], max);</span>
-<span class="s">        }</span>
-<span class="s">        T=Terms[stack_ptr];</span>
-<span class="s">        NewSum=SumA[stack_ptr];</span>
-<span class="s">        NewS= SA[stack_ptr];</span>
-<span class="s">        if(stack_ptr &gt; 1){</span>
-<span class="s">        // values.length is not power of two, so not</span>
-<span class="s">        // everything has been scooped up in the inner loop</span>
-<span class="s">        // above.  Here handle the remainders</span>
-<span class="s">        for(var i = stack_ptr-1; i&gt;=1 ; i--){</span>
-<span class="s">            // compare this diff with the above diff---one</span>
-<span class="s">            // more multiply and divide on the current sum,</span>
-<span class="s">            // because the size of the sets (SumA[i] and NewSum)</span>
-<span class="s">            // are different.</span>
-<span class="s">            var diff = Terms[i]*NewSum/T-SumA[i]; </span>
-<span class="s">            NewS = NewS + SA[i] + </span>
-<span class="s">            ( T * diff * diff )/</span>
-<span class="s">            (Terms[i] * (Terms[i] + T));</span>
-<span class="s">            NewSum += SumA[i];</span>
-<span class="s">            T += Terms[i];</span>
-<span class="s">        }</span>
-<span class="s">        }</span>
-<span class="s">    }</span>
-<span class="s">    // finally, combine NewS and NewSum with S and Sum</span>
-<span class="s">    return  combine_S(</span>
-<span class="s">        {&#39;</span><span class="n">S</span><span class="s">&#39;:NewS,&#39;</span><span class="n">Sum</span><span class="s">&#39;:NewSum, &#39;</span><span class="n">M</span><span class="s">&#39;: T ,  &#39;</span><span class="n">min</span><span class="s">&#39;:min, &#39;</span><span class="n">max</span><span class="s">&#39;:max},</span>
-<span class="s">        {&#39;</span><span class="n">S</span><span class="s">&#39;:S,&#39;</span><span class="n">Sum</span><span class="s">&#39;:Sum, &#39;</span><span class="n">M</span><span class="s">&#39;: M ,  &#39;</span><span class="n">min</span><span class="s">&#39;:min, &#39;</span><span class="n">max</span><span class="s">&#39;:max});</span>
-<span class="s">    }</span>
-
-<span class="s">    /*</span>
-
-<span class="s">    This function is attributed to Knuth, the Art of Computer</span>
-<span class="s">    Programming.  Donald Knuth is a math god, so I am sure that it is</span>
-<span class="s">    numerically stable, but I haven&#39;</span><span class="n">t</span> <span class="nb">read</span> <span class="n">the</span> <span class="n">source</span> <span class="n">so</span> <span class="n">who</span> <span class="n">knows</span><span class="o">.</span>
-
-    <span class="n">The</span> <span class="n">first</span> <span class="n">parameter</span> <span class="n">is</span> <span class="n">again</span> <span class="nb">values</span><span class="p">,</span> <span class="n">a</span> <span class="n">list</span> <span class="n">of</span> <span class="n">objects</span> <span class="n">with</span> <span class="n">the</span> <span class="n">expectation</span> <span class="n">that</span> <span class="n">the</span> <span class="n">variable</span> <span class="n">of</span> <span class="n">interest</span> <span class="n">is</span> <span class="n">contained</span> <span class="n">under</span> <span class="n">the</span> <span class="n">key</span> <span class="s">&#39;risk&#39;</span><span class="o">.</span>  <span class="n">If</span> <span class="n">this</span> <span class="n">is</span> <span class="ow">not</span> <span class="n">the</span> <span class="k">case</span><span class="p">,</span> <span class="n">pass</span> <span class="n">the</span> <span class="n">correct</span> <span class="n">variable</span> <span class="n">in</span> <span class="n">the</span> <span class="mi">7</span><span class="n">th</span> <span class="n">field</span><span class="o">.</span>
-
-    <span class="n">Parameters</span> <span class="mi">2</span> <span class="n">through</span> <span class="mi">6</span> <span class="n">are</span> <span class="n">all</span> <span class="n">optional</span><span class="o">.</span>  <span class="n">Pass</span> <span class="n">nulls</span> <span class="k">if</span> <span class="n">you</span> <span class="n">need</span> <span class="n">to</span> <span class="n">pass</span> <span class="n">a</span> <span class="n">key</span> <span class="n">in</span> <span class="n">slot</span> <span class="mi">7</span><span class="o">.</span>
-
-    <span class="n">In</span> <span class="n">order</span> <span class="n">they</span> <span class="n">are</span>
-
-    <span class="n">mean:</span>  <span class="n">the</span> <span class="n">current</span> <span class="n">mean</span> <span class="n">value</span> <span class="n">estimate</span> 
-    <span class="n">M2:</span> <span class="n">the</span> <span class="n">current</span> <span class="n">estimate</span> <span class="n">of</span> <span class="n">the</span> <span class="n">second</span> <span class="n">moment</span> <span class="p">(</span><span class="n">variance</span><span class="p">)</span>
-    <span class="n">n:</span>  <span class="n">the</span> <span class="n">count</span> <span class="n">of</span> <span class="n">observations</span> <span class="n">used</span> <span class="n">in</span> <span class="n">the</span> <span class="n">current</span> <span class="n">estimate</span>
-    <span class="n">min:</span>   <span class="n">the</span> <span class="n">current</span> <span class="n">min</span> <span class="n">value</span> <span class="n">observed</span>
-    <span class="n">max:</span>   <span class="n">the</span> <span class="n">current</span> <span class="n">max</span> <span class="n">value</span> <span class="n">observed</span>
-
-    <span class="o">*/</span>
-    <span class="n">function</span> <span class="n">KnuthianOnLineVariance</span><span class="p">(</span><span class="nb">values</span><span class="p">,</span> <span class="n">M2</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">min</span><span class="p">,</span> <span class="n">max</span><span class="p">,</span>  <span class="n">key</span><span class="p">){</span>
-    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">M2</span><span class="p">){</span> <span class="n">M2</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
-    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">n</span><span class="p">){</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
-    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">mean</span><span class="p">){</span> <span class="n">mean</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
-    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">min</span><span class="p">){</span> <span class="n">min</span> <span class="o">=</span> <span class="n">Infinity</span><span class="p">;</span> <span class="p">}</span>
-    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">max</span><span class="p">){</span> <span class="n">max</span> <span class="o">=</span> <span class="o">-</span><span class="n">Infinity</span><span class="p">;</span> <span class="p">}</span>
-    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">key</span><span class="p">){</span> <span class="n">key</span> <span class="o">=</span> <span class="s">&#39;risk&#39;</span><span class="p">;</span> <span class="p">}</span>
-
-    <span class="sr">//</span> <span class="n">this</span> <span class="n">algorithm</span> <span class="n">is</span> <span class="n">apparently</span> <span class="n">a</span> <span class="n">special</span> <span class="k">case</span> <span class="n">of</span> <span class="n">the</span> <span class="n">above</span>
-    <span class="sr">//</span> <span class="n">pairwise</span> <span class="n">algorithm</span><span class="p">,</span> <span class="n">in</span> <span class="n">which</span> <span class="n">you</span> <span class="n">just</span> <span class="n">apply</span> <span class="n">one</span> <span class="n">more</span> <span class="n">value</span>
-    <span class="sr">//</span> <span class="n">to</span> <span class="n">the</span> <span class="n">running</span> <span class="n">total</span><span class="o">.</span>  <span class="n">I</span> <span class="n">don</span><span class="s">&#39;t know why bun Chan et al</span>
-<span class="s">    // (1979) and again in their later paper claim that using M</span>
-<span class="s">    // greater than 1 is always better than not.</span>
-
-<span class="s">    // but this code is certainly cleaner!  code based on Scott</span>
-<span class="s">    // Lamb&#39;</span><span class="n">s</span> <span class="n">Java</span> <span class="n">found</span> <span class="n">at</span>
-    <span class="sr">//</span> <span class="n">http:</span><span class="sr">//</span><span class="n">www</span><span class="o">.</span><span class="n">slamb</span><span class="o">.</span><span class="n">org</span><span class="sr">/svn/</span><span class="n">repos</span><span class="sr">/trunk/</span><span class="n">projects</span><span class="sr">/common/s</span><span class="n">rc</span><span class="sr">/java/o</span><span class="n">rg</span><span class="sr">/slamb/commo</span><span class="n">n</span><span class="sr">/stats/</span><span class="n">Sample</span><span class="o">.</span><span class="n">java</span>
-    <span class="sr">//</span> <span class="n">but</span> <span class="n">modified</span> <span class="n">a</span> <span class="n">bit</span>
-
-    <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="nb">values</span><span class="o">.</span><span class="nb">length</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">){</span>
-        <span class="n">var</span> <span class="n">diff</span> <span class="o">=</span> <span class="p">(</span><span class="nb">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">-</span> <span class="n">mean</span><span class="p">);</span>
-            <span class="n">var</span> <span class="n">newmean</span> <span class="o">=</span> <span class="n">mean</span> <span class="o">+</span>  <span class="n">diff</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
-            <span class="n">M2</span> <span class="o">+=</span> <span class="n">diff</span> <span class="o">*</span> <span class="p">(</span><span class="nb">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">-</span> <span class="n">newmean</span><span class="p">);</span>
-            <span class="n">mean</span> <span class="o">=</span> <span class="n">newmean</span><span class="p">;</span>
-            <span class="n">min</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="nb">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">key</span><span class="p">],</span> <span class="n">min</span><span class="p">);</span>
-            <span class="n">max</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="nb">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">key</span><span class="p">],</span> <span class="n">max</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s">&#39;M2&#39;</span><span class="p">:</span> <span class="n">M2</span><span class="p">,</span> <span class="s">&#39;n&#39;</span><span class="p">:</span> <span class="n">n</span> <span class="o">+</span> <span class="nb">values</span><span class="o">.</span><span class="nb">length</span><span class="p">,</span> <span class="s">&#39;mean&#39;</span><span class="p">:</span> <span class="n">mean</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span><span class="n">min</span><span class="p">,</span> <span class="s">&#39;max&#39;</span><span class="p">:</span><span class="n">max</span> <span class="p">};</span>
+    <span class="nx">min</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">partitionB</span><span class="p">.</span><span class="nx">min</span><span class="p">,</span> <span class="nx">min</span><span class="p">);</span>
+    <span class="nx">max</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">partitionB</span><span class="p">.</span><span class="nx">max</span><span class="p">,</span> <span class="nx">max</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">return</span> <span class="p">{</span><span class="s1">&#39;S&#39;</span><span class="o">:</span><span class="nx">NewS</span><span class="p">,</span><span class="s1">&#39;Sum&#39;</span><span class="o">:</span><span class="nx">NewSum</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="o">:</span> <span class="nx">partitionA</span><span class="p">.</span><span class="nx">M</span><span class="o">+</span><span class="nx">M</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="o">:</span><span class="nx">min</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="o">:</span><span class="nx">max</span> <span class="p">};</span>
     <span class="p">}</span>
 
-    <span class="n">function</span> <span class="n">KnuthCombine</span><span class="p">(</span><span class="n">partitionA</span><span class="p">,</span><span class="n">partitionB</span><span class="p">){</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">partitionB</span><span class="o">.</span><span class="n">n</span><span class="p">){</span>
-        <span class="n">var</span> <span class="n">newn</span> <span class="o">=</span> <span class="n">partitionA</span><span class="o">.</span><span class="n">n</span> <span class="o">+</span> <span class="n">partitionB</span><span class="o">.</span><span class="n">n</span><span class="p">;</span>
-            <span class="n">var</span> <span class="n">diff</span> <span class="o">=</span> <span class="n">partitionB</span><span class="o">.</span><span class="n">mean</span> <span class="o">-</span> <span class="n">partitionA</span><span class="o">.</span><span class="n">mean</span><span class="p">;</span>
-            <span class="n">var</span> <span class="n">newmean</span> <span class="o">=</span> <span class="n">partitionA</span><span class="o">.</span><span class="n">mean</span> <span class="o">+</span> <span class="n">diff</span><span class="o">*</span><span class="p">(</span><span class="n">partitionB</span><span class="o">.</span><span class="n">n</span><span class="o">/</span><span class="n">newn</span><span class="p">)</span>
-            <span class="n">var</span> <span class="n">M2</span> <span class="o">=</span> <span class="n">partitionA</span><span class="o">.</span><span class="n">M2</span> <span class="o">+</span> <span class="n">partitionB</span><span class="o">.</span><span class="n">M2</span> <span class="o">+</span> <span class="p">(</span><span class="n">diff</span> <span class="o">*</span> <span class="n">diff</span> <span class="o">*</span> <span class="n">partitionA</span><span class="o">.</span><span class="n">n</span> <span class="o">*</span> <span class="n">partitionB</span><span class="o">.</span><span class="n">n</span> <span class="o">/</span> <span class="n">newn</span> <span class="p">);</span>
-            <span class="n">min</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">partitionB</span><span class="o">.</span><span class="n">min</span><span class="p">,</span> <span class="n">partitionA</span><span class="o">.</span><span class="n">min</span><span class="p">);</span>
-            <span class="n">max</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">partitionB</span><span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="n">partitionA</span><span class="o">.</span><span class="n">max</span><span class="p">);</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;M2&#39;</span><span class="p">:</span> <span class="n">M2</span><span class="p">,</span> <span class="s">&#39;n&#39;</span><span class="p">:</span> <span class="n">newn</span><span class="p">,</span> <span class="s">&#39;mean&#39;</span><span class="p">:</span> <span class="n">newmean</span><span class="p">,</span> <span class="s">&#39;min&#39;</span><span class="p">:</span><span class="n">min</span><span class="p">,</span> <span class="s">&#39;max&#39;</span><span class="p">:</span><span class="n">max</span> <span class="p">};</span>
+    <span class="cm">/*</span>
+
+<span class="cm">    This routine is derived from original fortran code in Chan et al,</span>
+<span class="cm">    (1979), with the combination step split out above to allow that to</span>
+<span class="cm">    be called independently in the rereduce step.</span>
+
+<span class="cm">    Arguments:</span>
+
+<span class="cm">    The first argument (values) is an array of objects.  The</span>
+<span class="cm">    assumption is that the key to the variable of interest is &#39;risk&#39;.</span>
+<span class="cm">    If this is not the case, the seventh argument should be the correct</span>
+<span class="cm">    key to use.  More complicated data structures are not supported.</span>
+
+<span class="cm">    The second, third, and fourth arguments are in case this is a</span>
+<span class="cm">    running tally.  You can pass in exiting values for M (the number</span>
+<span class="cm">    of observations already processed), Sum (the running sum of those</span>
+<span class="cm">    M observations) and S (the current estimate of variance for those</span>
+<span class="cm">    M observations).  Totally optional, defaulting to zero.</span>
+
+<span class="cm">    The fifth parameter is for the running min, and the sixth for the</span>
+<span class="cm">    max.</span>
+
+<span class="cm">    Pass &quot;null&quot;  for parameters 2 through 6 if you need to pass a key in the</span>
+<span class="cm">    seventh slot.</span>
+
+<span class="cm">    Some notes on the algorithm.  There is a precious bit of trickery</span>
+<span class="cm">    with stack pointers, etc that make for a minimal amount of</span>
+<span class="cm">    temporary storage.  All this was included in the original</span>
+<span class="cm">    algorithm.  I can&#39;t see that it makes much sense to include all</span>
+<span class="cm">    that effort given that I&#39;ve got gobs of RAM and am instead most</span>
+<span class="cm">    likely processor bound, but it reminded me of programming in</span>
+<span class="cm">    assembly so I kept it in.</span>
+
+<span class="cm">    If you watch the progress of this algorithm in a debugger or</span>
+<span class="cm">    firebug, you&#39;ll see that the size of the stack stays pretty small,</span>
+<span class="cm">    with the bottom (0) entry staying at zero, then the [1] entry</span>
+<span class="cm">    containing a power of two (2,4,8,16, etc), and the [2] entry</span>
+<span class="cm">    containing the next power of two down from [1] and so on.  As the</span>
+<span class="cm">    slots of the stack get filled up, they get cascaded together by</span>
+<span class="cm">    the inner loop.</span>
+
+<span class="cm">    You could skip all that, and just pairwise process repeatedly</span>
+<span class="cm">    until the list of intermediate values is empty, but whatever.  And</span>
+<span class="cm">    there seems to be some super small gain in efficiency in using</span>
+<span class="cm">    identical support for two groups being combined, in that you don&#39;t</span>
+<span class="cm">    have to consider different Ma and Mb in the computation.  One less</span>
+<span class="cm">    divide I guess)</span>
+
+<span class="cm">    */</span>
+    <span class="kd">function</span> <span class="nx">pairwise_update</span> <span class="p">(</span><span class="nx">values</span><span class="p">,</span> <span class="nx">M</span><span class="p">,</span> <span class="nx">Sum</span><span class="p">,</span> <span class="nx">S</span><span class="p">,</span> <span class="nx">min</span><span class="p">,</span> <span class="nx">max</span><span class="p">,</span> <span class="nx">key</span><span class="p">){</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">key</span><span class="p">){</span><span class="nx">key</span><span class="o">=</span><span class="s1">&#39;risk&#39;</span><span class="p">;}</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">Sum</span><span class="p">){</span><span class="nx">Sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">S</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">M</span><span class="o">=</span><span class="mi">0</span><span class="p">;}</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">S</span><span class="p">){</span><span class="nx">Sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">S</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">M</span><span class="o">=</span><span class="mi">0</span><span class="p">;}</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">M</span><span class="p">){</span><span class="nx">Sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">S</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">M</span><span class="o">=</span><span class="mi">0</span><span class="p">;}</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">min</span><span class="p">){</span> <span class="nx">min</span> <span class="o">=</span> <span class="kc">Infinity</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">max</span><span class="p">){</span> <span class="nx">max</span> <span class="o">=</span> <span class="o">-</span><span class="kc">Infinity</span><span class="p">;</span> <span class="p">}</span>
+  <span class="kd">var</span> <span class="nx">T</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">stack_ptr</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">N</span> <span class="o">=</span> <span class="nx">values</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">half</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">N</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">NewSum</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">NewS</span> <span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">SumA</span><span class="o">=</span><span class="p">[];</span>
+  <span class="kd">var</span> <span class="nx">SA</span><span class="o">=</span><span class="p">[];</span>
+  <span class="kd">var</span> <span class="nx">Terms</span><span class="o">=</span><span class="p">[];</span>
+  <span class="nx">Terms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">N</span> <span class="o">==</span> <span class="mi">1</span><span class="p">){</span>
+      <span class="nx">Nsum</span><span class="o">=</span><span class="nx">values</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="nx">key</span><span class="p">];</span>
+      <span class="nx">Ns</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span><span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="nx">N</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">){</span>
+      <span class="c1">// loop over the data pairwise</span>
+      <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">half</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+    <span class="c1">// check min max</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="nx">key</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nx">values</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="nx">i</span><span class="p">][</span><span class="nx">key</span><span class="p">]</span> <span class="p">){</span>
+        <span class="nx">min</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="nx">key</span><span class="p">],</span> <span class="nx">min</span><span class="p">);</span>
+        <span class="nx">max</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="nx">i</span><span class="p">][</span><span class="nx">key</span><span class="p">],</span> <span class="nx">max</span><span class="p">);</span>
+    <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+        <span class="nx">min</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="nx">i</span><span class="p">][</span><span class="nx">key</span><span class="p">],</span> <span class="nx">min</span><span class="p">);</span>
+        <span class="nx">max</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="nx">key</span><span class="p">],</span> <span class="nx">max</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nx">SumA</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="p">]</span><span class="o">=</span><span class="nx">values</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="nx">key</span><span class="p">]</span> <span class="o">+</span> <span class="nx">values</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="nx">i</span><span class="p">][</span><span class="nx">key</span><span class="p">];</span>
+    <span class="kd">var</span> <span class="nx">diff</span> <span class="o">=</span> <span class="nx">values</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="nx">key</span><span class="p">]</span> <span class="o">-</span> <span class="nx">values</span><span class="p">[</span><span class="mi">2</span><span class="o">*</span><span class="nx">i</span><span class="p">][</span><span class="nx">key</span><span class="p">]</span> <span class="p">;</span>
+    <span class="nx">SA</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="p">]</span><span class="o">=</span><span class="p">(</span> <span class="nx">diff</span> <span class="o">*</span> <span class="nx">diff</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="nx">Terms</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="p">]</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span> <span class="nx">Terms</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="p">]</span> <span class="o">==</span> <span class="nx">Terms</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="o">-</span><span class="mi">1</span><span class="p">]){</span>
+        <span class="c1">// combine the top two elements in storage, as</span>
+        <span class="c1">// they have equal numbers of support terms.  this</span>
+        <span class="c1">// should happen for powers of two (2, 4, 8, etc).</span>
+        <span class="c1">// Everything else gets cleaned up below</span>
+        <span class="nx">stack_ptr</span><span class="o">--</span><span class="p">;</span>
+        <span class="nx">Terms</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="p">]</span><span class="o">*=</span><span class="mi">2</span><span class="p">;</span>
+        <span class="c1">// compare this diff with the below diff.  Here</span>
+        <span class="c1">// there is no multiplication and division of the</span>
+        <span class="c1">// first sum (SumA[stack_ptr]) because it is the</span>
+        <span class="c1">// same size as the other.</span>
+        <span class="kd">var</span> <span class="nx">diff</span> <span class="o">=</span> <span class="nx">SumA</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="p">]</span> <span class="o">-</span> <span class="nx">SumA</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
+        <span class="nx">SA</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="p">]</span><span class="o">=</span>  <span class="nx">SA</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="p">]</span> <span class="o">+</span> <span class="nx">SA</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span>
+      <span class="p">(</span><span class="nx">diff</span> <span class="o">*</span> <span class="nx">diff</span><span class="p">)</span><span class="o">/</span><span class="nx">Terms</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="p">];</span>
+        <span class="nx">SumA</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="p">]</span> <span class="o">+=</span> <span class="nx">SumA</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
+    <span class="p">}</span> <span class="c1">// repeat as needed</span>
+    <span class="nx">stack_ptr</span><span class="o">++</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="nx">stack_ptr</span><span class="o">--</span><span class="p">;</span>
+      <span class="c1">// check if N is odd</span>
+      <span class="k">if</span><span class="p">(</span><span class="nx">N</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span>  <span class="mi">0</span><span class="p">){</span>
+    <span class="c1">// handle that dangling entry</span>
+    <span class="nx">stack_ptr</span><span class="o">++</span><span class="p">;</span>
+    <span class="nx">Terms</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+    <span class="nx">SumA</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="p">]</span><span class="o">=</span><span class="nx">values</span><span class="p">[</span><span class="nx">N</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="nx">key</span><span class="p">];</span>
+    <span class="nx">SA</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>  <span class="c1">// the variance of a single observation is zero!</span>
+    <span class="nx">min</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="nx">N</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="nx">key</span><span class="p">],</span> <span class="nx">min</span><span class="p">);</span>
+    <span class="nx">max</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="nx">N</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="nx">key</span><span class="p">],</span> <span class="nx">max</span><span class="p">);</span>
+      <span class="p">}</span>
+      <span class="nx">T</span><span class="o">=</span><span class="nx">Terms</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="p">];</span>
+      <span class="nx">NewSum</span><span class="o">=</span><span class="nx">SumA</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="p">];</span>
+      <span class="nx">NewS</span><span class="o">=</span> <span class="nx">SA</span><span class="p">[</span><span class="nx">stack_ptr</span><span class="p">];</span>
+      <span class="k">if</span><span class="p">(</span><span class="nx">stack_ptr</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">){</span>
+    <span class="c1">// values.length is not power of two, so not</span>
+    <span class="c1">// everything has been scooped up in the inner loop</span>
+    <span class="c1">// above.  Here handle the remainders</span>
+    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">stack_ptr</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="nx">i</span><span class="o">&gt;=</span><span class="mi">1</span> <span class="p">;</span> <span class="nx">i</span><span class="o">--</span><span class="p">){</span>
+        <span class="c1">// compare this diff with the above diff---one</span>
+        <span class="c1">// more multiply and divide on the current sum,</span>
+        <span class="c1">// because the size of the sets (SumA[i] and NewSum)</span>
+        <span class="c1">// are different.</span>
+        <span class="kd">var</span> <span class="nx">diff</span> <span class="o">=</span> <span class="nx">Terms</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="o">*</span><span class="nx">NewSum</span><span class="o">/</span><span class="nx">T</span><span class="o">-</span><span class="nx">SumA</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span> 
+        <span class="nx">NewS</span> <span class="o">=</span> <span class="nx">NewS</span> <span class="o">+</span> <span class="nx">SA</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+</span> 
+      <span class="p">(</span> <span class="nx">T</span> <span class="o">*</span> <span class="nx">diff</span> <span class="o">*</span> <span class="nx">diff</span> <span class="p">)</span><span class="o">/</span>
+      <span class="p">(</span><span class="nx">Terms</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="nx">Terms</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+</span> <span class="nx">T</span><span class="p">));</span>
+        <span class="nx">NewSum</span> <span class="o">+=</span> <span class="nx">SumA</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+        <span class="nx">T</span> <span class="o">+=</span> <span class="nx">Terms</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+    <span class="p">}</span>
+      <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="c1">// finally, combine NewS and NewSum with S and Sum</span>
+  <span class="k">return</span>  <span class="nx">combine_S</span><span class="p">(</span>
+      <span class="p">{</span><span class="s1">&#39;S&#39;</span><span class="o">:</span><span class="nx">NewS</span><span class="p">,</span><span class="s1">&#39;Sum&#39;</span><span class="o">:</span><span class="nx">NewSum</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="o">:</span> <span class="nx">T</span> <span class="p">,</span>  <span class="s1">&#39;min&#39;</span><span class="o">:</span><span class="nx">min</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="o">:</span><span class="nx">max</span><span class="p">},</span>
+      <span class="p">{</span><span class="s1">&#39;S&#39;</span><span class="o">:</span><span class="nx">S</span><span class="p">,</span><span class="s1">&#39;Sum&#39;</span><span class="o">:</span><span class="nx">Sum</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="o">:</span> <span class="nx">M</span> <span class="p">,</span>  <span class="s1">&#39;min&#39;</span><span class="o">:</span><span class="nx">min</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="o">:</span><span class="nx">max</span><span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="cm">/*</span>
+
+<span class="cm">    This function is attributed to Knuth, the Art of Computer</span>
+<span class="cm">    Programming.  Donald Knuth is a math god, so I am sure that it is</span>
+<span class="cm">    numerically stable, but I haven&#39;t read the source so who knows.</span>
+
+<span class="cm">    The first parameter is again values, a list of objects with the expectation that the variable of interest is contained under the key &#39;risk&#39;.  If this is not the case, pass the correct variable in the 7th field.</span>
+
+<span class="cm">    Parameters 2 through 6 are all optional.  Pass nulls if you need to pass a key in slot 7.</span>
+
+<span class="cm">    In order they are</span>
+
+<span class="cm">    mean:  the current mean value estimate </span>
+<span class="cm">    M2: the current estimate of the second moment (variance)</span>
+<span class="cm">    n:  the count of observations used in the current estimate</span>
+<span class="cm">    min:   the current min value observed</span>
+<span class="cm">    max:   the current max value observed</span>
+
+<span class="cm">    */</span>
+    <span class="kd">function</span> <span class="nx">KnuthianOnLineVariance</span><span class="p">(</span><span class="nx">values</span><span class="p">,</span> <span class="nx">M2</span><span class="p">,</span> <span class="nx">n</span><span class="p">,</span> <span class="nx">mean</span><span class="p">,</span> <span class="nx">min</span><span class="p">,</span> <span class="nx">max</span><span class="p">,</span>  <span class="nx">key</span><span class="p">){</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">M2</span><span class="p">){</span> <span class="nx">M2</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">n</span><span class="p">){</span> <span class="nx">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">mean</span><span class="p">){</span> <span class="nx">mean</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">min</span><span class="p">){</span> <span class="nx">min</span> <span class="o">=</span> <span class="kc">Infinity</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">max</span><span class="p">){</span> <span class="nx">max</span> <span class="o">=</span> <span class="o">-</span><span class="kc">Infinity</span><span class="p">;</span> <span class="p">}</span>
+  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">key</span><span class="p">){</span> <span class="nx">key</span> <span class="o">=</span> <span class="s1">&#39;risk&#39;</span><span class="p">;</span> <span class="p">}</span>
+
+  <span class="c1">// this algorithm is apparently a special case of the above</span>
+  <span class="c1">// pairwise algorithm, in which you just apply one more value</span>
+  <span class="c1">// to the running total.  I don&#39;t know why bun Chan et al</span>
+  <span class="c1">// (1979) and again in their later paper claim that using M</span>
+  <span class="c1">// greater than 1 is always better than not.</span>
+
+  <span class="c1">// but this code is certainly cleaner!  code based on Scott</span>
+  <span class="c1">// Lamb&#39;s Java found at</span>
+  <span class="c1">// &lt;a href=&quot;http://www.slamb.org/svn/repos/trunk/projects/common/src/java/org/slamb/common/stats/Sample.java&quot;&gt;http://www.slamb.org/svn/repos/trunk/projects/common/src/java/org/slamb/common/stats/Sample.java&lt;/a&gt;       // but modified a bit</span>
+
+  <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">values</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">){</span>
+      <span class="kd">var</span> <span class="nx">diff</span> <span class="o">=</span> <span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">key</span><span class="p">]</span> <span class="o">-</span> <span class="nx">mean</span><span class="p">);</span>
+            <span class="kd">var</span> <span class="nx">newmean</span> <span class="o">=</span> <span class="nx">mean</span> <span class="o">+</span>  <span class="nx">diff</span> <span class="o">/</span> <span class="p">(</span><span class="nx">n</span><span class="o">+</span><span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+            <span class="nx">M2</span> <span class="o">+=</span> <span class="nx">diff</span> <span class="o">*</span> <span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">key</span><span class="p">]</span> <span class="o">-</span> <span class="nx">newmean</span><span class="p">);</span>
+            <span class="nx">mean</span> <span class="o">=</span> <span class="nx">newmean</span><span class="p">;</span>
+            <span class="nx">min</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">key</span><span class="p">],</span> <span class="nx">min</span><span class="p">);</span>
+            <span class="nx">max</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">][</span><span class="nx">key</span><span class="p">],</span> <span class="nx">max</span><span class="p">);</span>
+        <span class="p">}</span>
+  <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;M2&#39;</span><span class="o">:</span> <span class="nx">M2</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="o">:</span> <span class="nx">n</span> <span class="o">+</span> <span class="nx">values</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="o">:</span> <span class="nx">mean</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="o">:</span><span class="nx">min</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="o">:</span><span class="nx">max</span> <span class="p">};</span>
+    <span class="p">}</span>
+
+    <span class="kd">function</span> <span class="nx">KnuthCombine</span><span class="p">(</span><span class="nx">partitionA</span><span class="p">,</span><span class="nx">partitionB</span><span class="p">){</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">partitionB</span><span class="p">.</span><span class="nx">n</span><span class="p">){</span>
+      <span class="kd">var</span> <span class="nx">newn</span> <span class="o">=</span> <span class="nx">partitionA</span><span class="p">.</span><span class="nx">n</span> <span class="o">+</span> <span class="nx">partitionB</span><span class="p">.</span><span class="nx">n</span><span class="p">;</span>
+            <span class="kd">var</span> <span class="nx">diff</span> <span class="o">=</span> <span class="nx">partitionB</span><span class="p">.</span><span class="nx">mean</span> <span class="o">-</span> <span class="nx">partitionA</span><span class="p">.</span><span class="nx">mean</span><span class="p">;</span>
+            <span class="kd">var</span> <span class="nx">newmean</span> <span class="o">=</span> <span class="nx">partitionA</span><span class="p">.</span><span class="nx">mean</span> <span class="o">+</span> <span class="nx">diff</span><span class="o">*</span><span class="p">(</span><span class="nx">partitionB</span><span class="p">.</span><span class="nx">n</span><span class="o">/</span><span class="nx">newn</span><span class="p">)</span>
+            <span class="kd">var</span> <span class="nx">M2</span> <span class="o">=</span> <span class="nx">partitionA</span><span class="p">.</span><span class="nx">M2</span> <span class="o">+</span> <span class="nx">partitionB</span><span class="p">.</span><span class="nx">M2</span> <span class="o">+</span> <span class="p">(</span><span class="nx">diff</span> <span class="o">*</span> <span class="nx">diff</span> <span class="o">*</span> <span class="nx">partitionA</span><span class="p">.</span><span class="nx">n</span> <span class="o">*</span> <span class="nx">partitionB</span><span class="p">.</span><span class="nx">n</span> <span class="o">/</span> <span class="nx">newn</span> <span class="p">);</span>
+            <span class="nx">min</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span><span class="nx">partitionB</span><span class="p">.</span><span class="nx">min</span><span class="p">,</span> <span class="nx">partitionA</span><span class="p">.</span><span class="nx">min</span><span class="p">);</span>
+            <span class="nx">max</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span><span class="nx">partitionB</span><span class="p">.</span><span class="nx">max</span><span class="p">,</span> <span class="nx">partitionA</span><span class="p">.</span><span class="nx">max</span><span class="p">);</span>
+      <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;M2&#39;</span><span class="o">:</span> <span class="nx">M2</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="o">:</span> <span class="nx">newn</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="o">:</span> <span class="nx">newmean</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="o">:</span><span class="nx">min</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="o">:</span><span class="nx">max</span> <span class="p">};</span>
         <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-            <span class="k">return</span> <span class="n">partitionA</span><span class="p">;</span>
+            <span class="k">return</span> <span class="nx">partitionA</span><span class="p">;</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
-    <span class="n">var</span> <span class="n">output</span><span class="o">=</span><span class="p">{};</span>
-    <span class="n">var</span> <span class="n">knuthOutput</span><span class="o">=</span><span class="p">{};</span>
+    <span class="kd">var</span> <span class="nx">output</span><span class="o">=</span><span class="p">{};</span>
+    <span class="kd">var</span> <span class="nx">knuthOutput</span><span class="o">=</span><span class="p">{};</span>
 
-    <span class="sr">//</span> <span class="n">two</span> <span class="n">cases</span> <span class="n">in</span> <span class="n">the</span> <span class="n">application</span> <span class="n">of</span> <span class="n">reduce</span><span class="o">.</span>  <span class="n">In</span> <span class="n">the</span> <span class="n">first</span> <span class="n">reduce</span>
-    <span class="sr">//</span> <span class="k">case</span> <span class="n">the</span> <span class="n">rereduce</span> <span class="n">flag</span> <span class="n">is</span> <span class="n">false</span><span class="p">,</span> <span class="ow">and</span> <span class="n">we</span> <span class="n">have</span> <span class="n">raw</span> <span class="nb">values</span><span class="o">.</span>  <span class="n">We</span>
-    <span class="sr">//</span> <span class="n">also</span> <span class="n">have</span> <span class="nb">keys</span><span class="p">,</span> <span class="n">but</span> <span class="n">that</span> <span class="n">isn</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">applicable</span> <span class="n">here</span><span class="o">.</span>
-    <span class="sr">//</span> 
-    <span class="sr">//</span> <span class="n">In</span> <span class="n">the</span> <span class="n">rereduce</span> <span class="k">case</span><span class="p">,</span> <span class="n">rereduce</span> <span class="n">is</span> <span class="n">true</span><span class="p">,</span> <span class="ow">and</span> <span class="n">we</span> <span class="n">are</span> <span class="n">being</span> <span class="n">passed</span>
-    <span class="sr">//</span> <span class="n">output</span> <span class="k">for</span> <span class="n">identical</span> <span class="nb">keys</span> <span class="n">that</span> <span class="n">needs</span> <span class="n">to</span> <span class="n">be</span> <span class="n">combined</span> <span class="n">further</span><span class="o">.</span>
+    <span class="c1">// two cases in the application of reduce.  In the first reduce</span>
+    <span class="c1">// case the rereduce flag is false, and we have raw values.  We</span>
+    <span class="c1">// also have keys, but that isn&#39;t applicable here.</span>
+    <span class="c1">// </span>
+    <span class="c1">// In the rereduce case, rereduce is true, and we are being passed</span>
+    <span class="c1">// output for identical keys that needs to be combined further.</span>
 
-    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">rereduce</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">rereduce</span><span class="p">)</span>
     <span class="p">{</span>
-    <span class="n">output</span> <span class="o">=</span> <span class="n">pairwise_update</span><span class="p">(</span><span class="nb">values</span><span class="p">);</span>
-    <span class="n">output</span><span class="o">.</span><span class="n">variance_n</span><span class="o">=</span><span class="n">output</span><span class="o">.</span><span class="n">S</span><span class="o">/</span><span class="n">output</span><span class="o">.</span><span class="n">M</span><span class="p">;</span>
-    <span class="n">output</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">Sum</span><span class="o">/</span><span class="n">output</span><span class="o">.</span><span class="n">M</span><span class="p">;</span>
-    <span class="n">knuthOutput</span> <span class="o">=</span> <span class="n">KnuthianOnLineVariance</span><span class="p">(</span><span class="nb">values</span><span class="p">);</span>
-    <span class="n">knuthOutput</span><span class="o">.</span><span class="n">variance_n</span><span class="o">=</span><span class="n">knuthOutput</span><span class="o">.</span><span class="n">M2</span><span class="o">/</span><span class="n">knuthOutput</span><span class="o">.</span><span class="n">n</span><span class="p">;</span>
-    <span class="n">output</span><span class="o">.</span><span class="n">knuthOutput</span><span class="o">=</span><span class="n">knuthOutput</span><span class="p">;</span>
+  <span class="nx">output</span> <span class="o">=</span> <span class="nx">pairwise_update</span><span class="p">(</span><span class="nx">values</span><span class="p">);</span>
+  <span class="nx">output</span><span class="p">.</span><span class="nx">variance_n</span><span class="o">=</span><span class="nx">output</span><span class="p">.</span><span class="nx">S</span><span class="o">/</span><span class="nx">output</span><span class="p">.</span><span class="nx">M</span><span class="p">;</span>
+  <span class="nx">output</span><span class="p">.</span><span class="nx">mean</span> <span class="o">=</span> <span class="nx">output</span><span class="p">.</span><span class="nx">Sum</span><span class="o">/</span><span class="nx">output</span><span class="p">.</span><span class="nx">M</span><span class="p">;</span>
+  <span class="nx">knuthOutput</span> <span class="o">=</span> <span class="nx">KnuthianOnLineVariance</span><span class="p">(</span><span class="nx">values</span><span class="p">);</span>
+  <span class="nx">knuthOutput</span><span class="p">.</span><span class="nx">variance_n</span><span class="o">=</span><span class="nx">knuthOutput</span><span class="p">.</span><span class="nx">M2</span><span class="o">/</span><span class="nx">knuthOutput</span><span class="p">.</span><span class="nx">n</span><span class="p">;</span>
+  <span class="nx">output</span><span class="p">.</span><span class="nx">knuthOutput</span><span class="o">=</span><span class="nx">knuthOutput</span><span class="p">;</span>
 
     <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="o">/*</span>
-           <span class="n">we</span> <span class="n">have</span> <span class="n">an</span> <span class="n">existing</span> <span class="n">pass</span><span class="p">,</span> <span class="n">so</span> <span class="n">should</span> <span class="n">have</span> <span class="n">multiple</span> <span class="n">outputs</span> <span class="n">to</span> <span class="n">combine</span>  
-        <span class="o">*/</span>
-    <span class="k">for</span><span class="p">(</span><span class="n">var</span> <span class="n">v</span> <span class="n">in</span> <span class="nb">values</span><span class="p">){</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">combine_S</span><span class="p">(</span><span class="nb">values</span><span class="p">[</span><span class="n">v</span><span class="p">],</span><span class="n">output</span><span class="p">);</span>
-        <span class="n">knuthOutput</span> <span class="o">=</span> <span class="n">KnuthCombine</span><span class="p">(</span><span class="nb">values</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">knuthOutput</span><span class="p">,</span> <span class="n">knuthOutput</span><span class="p">);</span>
+  <span class="cm">/*</span>
+<span class="cm">           we have an existing pass, so should have multiple outputs to combine  </span>
+<span class="cm">        */</span>
+  <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">v</span> <span class="k">in</span> <span class="nx">values</span><span class="p">){</span>
+      <span class="nx">output</span> <span class="o">=</span> <span class="nx">combine_S</span><span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="nx">v</span><span class="p">],</span><span class="nx">output</span><span class="p">);</span>
+      <span class="nx">knuthOutput</span> <span class="o">=</span> <span class="nx">KnuthCombine</span><span class="p">(</span><span class="nx">values</span><span class="p">[</span><span class="nx">v</span><span class="p">].</span><span class="nx">knuthOutput</span><span class="p">,</span> <span class="nx">knuthOutput</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="nx">output</span><span class="p">.</span><span class="nx">variance_n</span><span class="o">=</span><span class="nx">output</span><span class="p">.</span><span class="nx">S</span><span class="o">/</span><span class="nx">output</span><span class="p">.</span><span class="nx">M</span><span class="p">;</span>
+  <span class="nx">output</span><span class="p">.</span><span class="nx">mean</span> <span class="o">=</span> <span class="nx">output</span><span class="p">.</span><span class="nx">Sum</span><span class="o">/</span><span class="nx">output</span><span class="p">.</span><span class="nx">M</span><span class="p">;</span>
+  <span class="nx">knuthOutput</span><span class="p">.</span><span class="nx">variance_n</span><span class="o">=</span><span class="nx">knuthOutput</span><span class="p">.</span><span class="nx">M2</span><span class="o">/</span><span class="nx">knuthOutput</span><span class="p">.</span><span class="nx">n</span><span class="p">;</span>
+  <span class="nx">output</span><span class="p">.</span><span class="nx">knuthOutput</span><span class="o">=</span><span class="nx">knuthOutput</span><span class="p">;</span>
     <span class="p">}</span>
-    <span class="n">output</span><span class="o">.</span><span class="n">variance_n</span><span class="o">=</span><span class="n">output</span><span class="o">.</span><span class="n">S</span><span class="o">/</span><span class="n">output</span><span class="o">.</span><span class="n">M</span><span class="p">;</span>
-    <span class="n">output</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">Sum</span><span class="o">/</span><span class="n">output</span><span class="o">.</span><span class="n">M</span><span class="p">;</span>
-    <span class="n">knuthOutput</span><span class="o">.</span><span class="n">variance_n</span><span class="o">=</span><span class="n">knuthOutput</span><span class="o">.</span><span class="n">M2</span><span class="o">/</span><span class="n">knuthOutput</span><span class="o">.</span><span class="n">n</span><span class="p">;</span>
-    <span class="n">output</span><span class="o">.</span><span class="n">knuthOutput</span><span class="o">=</span><span class="n">knuthOutput</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="sr">//</span> <span class="ow">and</span> <span class="n">done</span>
-    <span class="k">return</span> <span class="n">output</span><span class="p">;</span>
+    <span class="c1">// and done</span>
+    <span class="k">return</span> <span class="nx">output</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>Sample output.  Note the difference in the very last few decimal places between the two methods.<br />
 <table>
@@ -705,40 +1221,52 @@
 
 <h2 id="retrieving-documents-without-a-certain-field">Retrieving documents without a certain field</h2>
 <p>Sometimes you might need to get a list of documents that '''don't''' have a certain field. You can do this quite easy by emitting keys that fit the "undefined" condition:</p>
-<div class="codehilite"><pre><span class="nb">map</span>
-<span class="n">function</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">field</span> <span class="o">===</span> <span class="n">void</span> <span class="mi">0</span><span class="p">)</span>
-  <span class="p">{</span>
-    <span class="n">emit</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">null</span><span class="p">);</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kd">function</span><span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">field</span> <span class="o">===</span> <span class="k">void</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">emit</span><span class="p">(</span><span class="nx">doc</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>However, if you have more than just a few fields that need to be tested for abcense you can use another approach instead of creating a view for each negation:</p>
-<div class="codehilite"><pre><span class="n">function</span> <span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="sr">//</span> <span class="n">List</span> <span class="n">of</span> <span class="n">fields</span> <span class="n">to</span> <span class="n">test</span> <span class="k">for</span> <span class="n">abcense</span> <span class="n">in</span> <span class="n">documents</span><span class="p">,</span> <span class="n">fields</span> <span class="n">specified</span> <span class="n">here</span> <span class="n">will</span> <span class="n">be</span> <span class="n">emitted</span> <span class="n">as</span> <span class="n">key</span>
-  <span class="n">var</span> <span class="n">fields</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Array</span><span class="p">(</span><span class="s">&quot;type&quot;</span><span class="p">,</span> <span class="s">&quot;role&quot;</span><span class="p">,</span> <span class="s">&quot;etc&quot;</span><span class="p">);</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="codehilite"><pre><span class="kd">function</span> <span class="p">(</span><span class="nx">doc</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// List of fields to test for abcense in documents, fields specified here will be emitted as key</span>
+  <span class="kd">var</span> <span class="nx">fields</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;role&quot;</span><span class="p">,</span> <span class="s2">&quot;etc&quot;</span><span class="p">);</span>
 
-  <span class="sr">//</span> <span class="n">Loop</span> <span class="n">through</span> <span class="k">our</span> <span class="n">fields</span>
-  <span class="k">for</span> <span class="p">(</span><span class="n">idx</span> <span class="n">in</span> <span class="n">fields</span><span class="p">)</span>
+  <span class="c1">// Loop through our fields</span>
+  <span class="k">for</span> <span class="p">(</span><span class="nx">idx</span> <span class="k">in</span> <span class="nx">fields</span><span class="p">)</span>
   <span class="p">{</span>
-    <span class="sr">//</span> <span class="n">Does</span> <span class="n">the</span> <span class="n">current</span> <span class="n">field</span> <span class="nb">exists</span><span class="p">?</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">typeof</span> <span class="nb">eval</span><span class="p">(</span><span class="s">&quot;doc.&quot;</span> <span class="o">+</span> <span class="n">fields</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span> <span class="o">===</span> <span class="n">void</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="c1">// Does the current field exists?</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;doc.&quot;</span> <span class="o">+</span> <span class="nx">fields</span><span class="p">[</span><span class="nx">idx</span><span class="p">])</span> <span class="o">===</span> <span class="k">void</span> <span class="mi">0</span><span class="p">)</span>
     <span class="p">{</span>
-      <span class="sr">//</span> <span class="n">It</span> <span class="n">doesn</span><span class="err">&#39;</span><span class="n">t</span><span class="p">,</span> <span class="n">emit</span> <span class="n">the</span> <span class="n">field</span> <span class="n">name</span> <span class="n">as</span> <span class="n">key</span>
-      <span class="n">emit</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">null</span><span class="p">);</span>
+      <span class="c1">// It doesn&#39;t, emit the field name as key</span>
+      <span class="nx">emit</span><span class="p">(</span><span class="nx">fields</span><span class="p">[</span><span class="nx">idx</span><span class="p">],</span> <span class="kc">null</span><span class="p">);</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>For example: you can now query your view and retrieve all documents that do not contain the field <code>role</code> (view/NAME/?key="role").</p>
-<!-- <<Anchor(geospatial_indexes)>> -->
-
 <h2 id="using-views-to-search-for-sort-documents-geographically">Using views to search for sort documents geographically</h2>
 <p>If you use latitude/longitude information in your documents, it's not very easy to sort on proximity from a given point using the normal approach (of using a key of [<latitude>, <longitude>]). This happens because they're on different axes, which doesn't map well onto CouchDB's treatment of the index sorting -- which is a linear sort. However, using a <a href="http://en.wikipedia.org/wiki/Geohash">geohash</a> may solve this, by letting you convert the coordinates of a location into a string that sorts well (e.g., locations that are close share a common prefix).</p>
 <p>(Note that I haven't actually used this approach, but this came up in IRC and geohashes are conceptually a good match. Please reword/refactor this entry if I've stated the problem or solution poorly.)</p>

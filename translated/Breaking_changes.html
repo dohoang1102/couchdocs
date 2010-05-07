@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -67,7 +67,7 @@
 <li><a href="#changes-between-010x-and-0110">Changes Between 0.10.x and 0.11.0</a><ul>
 <li><a href="#show-list-update-and-validation-functions">show, list, update and validation functions</a></li>
 <li><a href="#_admins-_security">_admins -&gt; _security</a></li>
-<li><a href="#json2js">json2.js</a></li>
+<li><a href="#a-hrefjson2jsjson2jsa"><a href="json2.js">json2.js</a></a></li>
 <li><a href="#www-authenticate-popup">WWW-Authenticate (popup)</a></li>
 <li><a href="#query-server-line-protocol">Query server line protocol</a></li>
 <li><a href="#utf8-json">UTF8 JSON</a></li>
@@ -116,7 +116,7 @@
 <h3 id="_admins-_security">_admins -&gt; _security</h3>
 <p>The /db/_admins handler has been removed and replaced with a /db/_security object. Any existing <code>_admins</code> will be dropped and need to be added to the security object again. The reason for this is that the old system made no distinction between names and roles, while the new one does, so there is no way to automatically upgrade the old admins list.</p>
 <p>The security object has 2 special fields, <code>admins</code> and <code>readers</code>, which contain lists of names and roles which are admins or readers on that database. Anything else may be stored in other fields on the security object. The entire object is made available to validation functions.</p>
-<h3 id="json2js">json2.js</h3>
+<h3 id="a-hrefjson2jsjson2jsa"><a href="json2.js">json2.js</a></h3>
 <p>JSON handling in the query server has been upgraded to use json2.js. This allows us to use faster native JSON serialization when it is available.</p>
 <p>In previous versions, attempts to serialize <code>undefined</code> would throw an exception, causing the doc that emitted undefined to be dropped from the view index. The new behavior is to serialize undefined as <code>null</code>. Applications depending on the old behavior will need to explicitly check for undefined.</p>
 <p>Another change is that E4X's XML objects will not automatically be stringified. XML users will need to call my_xml_object.toXMLString() to return a string value.</p>

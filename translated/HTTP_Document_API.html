@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -66,10 +66,7 @@
 <li><a href="#http-document-api">HTTP Document API</a><ul>
 <li><a href="#namingaddressing">Naming/Addressing</a></li>
 <li><a href="#documents">Documents</a><ul>
-<li><a href="#special-fields">Special Fields</a><ul>
-<li><a href="#document-ids">Document IDs</a></li>
-</ul>
-</li>
+<li><a href="#special-fields">Special Fields</a></li>
 </ul>
 </li>
 <li><a href="#working-with-documents-over-http">Working With Documents Over HTTP</a><ul>
@@ -136,21 +133,11 @@
 
 
 <h3 id="special-fields">Special Fields</h3>
-<p>Note that any top-level fields with a name that starts with a <em>_</em> prefix are reserved for use by CouchDB itself. Also see <a class="internal" href="Reserved_words.html">Reserved_words</a>. Currently (0.10+) reserved fields are:</p>
-<p>||<strong>Field Name</strong>||<strong>Description</strong>||
-  ||<em>_id</em>|| The unique identifier of the document (<strong>mandatory</strong> and <strong>immutable</strong>)||
-  ||<em>_rev</em>|| The current MVCC-token/revision of this document (<strong>mandatory</strong> and <strong>immutable</strong>)||
-  ||<em>_attachments</em>|| If the document has attachments, _attachments holds a (meta-)data structure (see section on <a href="HTTP_Document_API#Attachments">|attachments</a>)||
-  ||<em>_deleted</em>|| Indicates that this document has been deleted and will be removed on next compaction run||
-  ||<em>_revisions</em>|| If the document was requested with <em>?revs=true</em> this field will hold a simple list of the documents history||
-  ||<em>_rev_infos</em>|| Similar to <em>_revisions</em>, but more details about the history and the availability of ancient versions of the document||
-  ||<em>_conflicts</em>|| Information about conflicts||
-  ||<em>_deleted_conflicts</em>|| Information about conflicts||</p>
-<h4 id="document-ids">Document IDs</h4>
-<p>Document IDs don't have restrictions on what characters can be used. Although it should work, it is recommended to use non-special characters for document IDs. Using special characters you have to be aware of proper URL en-/decoding. Documents prefixed with <em>_</em> are special documents:</p>
-<p>||<strong>Document ID prefix</strong>||<strong>Description</strong>||
-  ||<em>_design/</em>|| are <a href="DesignDocuments]] ">|
-  ||<em>_local/</em>|| are not being replicated (local documents) and used for [[Replication||replication</a> checkpointing. ||</p>
+<p>Note that any top-level fields with a name that starts with a <em>_</em> prefix are reserved for use by CouchDB itself. Also see <a class="internal" href="Reserved_words.html">Reserved_words</a>. Currently (0.10+) reserved fields are:
+||<strong>Field Name</strong> ||<strong>Description</strong> ||
+||<em>_id</em> ||The unique identifier of the document (<strong>mandatory</strong> and <strong>immutable</strong>) ||
+||<em>_rev</em> ||The current MVCC-token/revision of this document (<strong>mandatory</strong> and <strong>immutable</strong>) ||
+||<em>_attachments</em> ||If the document has attachments, _attachments holds a (meta-)data structure (see section on [[HTTP_Document_API#Attachments]]) ]] checkpointing. ||</p>
 <p>You can have <strong>/</strong> as part of the document ID but if you refer to a document in a URL you must always encode it as <strong>%2F</strong>. One special case is <strong>_design/</strong> documents, those accept either <strong>/</strong> or <strong>%2F</strong> for the <strong>/</strong> after <em>_design</em>, although <strong>/</strong> is preferred and <strong>%2F</strong> is still needed for the rest of the DocID.</p>
 <h2 id="working-with-documents-over-http">Working With Documents Over HTTP</h2>
 <h3 id="get">GET</h3>
@@ -448,6 +435,7 @@
 
 <p>If you add <em>include_docs=true</em> to a request to <em>_all_docs</em> not only metadata but also the documents themselves are returned.</p>
 <h2 id="all_docs_by_seq">all_docs_by_seq</h2>
+<p>NOTE: See [[HTTP_database_API#Changes]] as of 0.11</p>
 <p>This allows you to see all the documents that were updated and deleted, in the order these actions are done:</p>
 <div class="codehilite"><pre><span class="n">GET</span> <span class="n">somedatabase</span><span class="sr">/_all_docs_by_seq HTTP/</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span>
 </pre></div>
@@ -529,7 +517,7 @@
 
 <p>Automatically decoded!</p>
 <h3 id="multiple-attachments">Multiple Attachments</h3>
-<p>Creating a document with an attachment:</p>
+<p>Creating a document with two attachments:</p>
 <div class="codehilite"><pre><span class="p">{</span>
   <span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;attachment_doc&quot;</span><span class="p">,</span>
   <span class="s">&quot;_attachments&quot;</span><span class="p">:</span>

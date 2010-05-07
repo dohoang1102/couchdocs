@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -60,100 +60,174 @@
         
 </div>
       <div id="content">
-  <p>Note, this applies to CouchDB 0.9 and newer.</p>
+  <h1 id="runtime-statistics">Runtime Statistics</h1>
+<div class="toc">
+<ul>
+<li><a href="#runtime-statistics">Runtime Statistics</a><ul>
+<li><a href="#questions-about-statistics-from-the-mailing-list">Questions about Statistics from the mailing list</a><ul>
+<li><a href="#what-exactly-is-current-count-what-are-each-of-them-recording-and-why-is-count-less-than-current-in-my-system-seems-counter-intuitive-to-me">What exactly is 'current' &amp; 'count'. What are each of them recording   and why is 'count' less than 'current' in my system (seems counter intuitive    to me).</a></li>
+<li><a href="#can-the-mean-here-be-interpreted-as-average-reads-per-second">Can the 'mean' here be interpreted as average reads per second?</a></li>
+<li><a href="#is-there-any-indication-of-exactly-where-within-the-5-minute-interval-we-are">Is there any indication of exactly where within the 5 minute interval    we are?</a></li>
+<li><a href="#again-same-question-about-exactly-what-the-count-and-current-values-mean-for-this-metric">Again, same question about exactly what the 'count' and 'current'    values mean for this metric.</a></li>
+<li><a href="#does-the-mean-represent-the-average-time-for-a-request-in-couchdb-in-seconds">Does the 'mean' represent the average time for a request in CouchDB in seconds?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Note, this applies to CouchDB 0.9 and newer.</p>
 <p>CouchDB comes with a runtime statistics module that lets you inspect how CouchDB performs. The statistics module collects metrics like requests per second, request sizes and a multitude of other useful stuff.</p>
 <p>You can get a list of all currently counted metrics by issuing a GET request to</p>
-<div class="codehilite"><pre><span class="o">/</span><span class="n">_stats</span>
+<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">GET</span> <span class="n">http:</span><span class="sr">//</span><span class="n">localhost:5984</span><span class="o">/</span><span class="n">_stats</span>
 </pre></div>
 
 
 <p>and CouchDB will return</p>
-<div class="codehilite"><pre><span class="p">{</span>
-  <span class="s">&quot;couchdb&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s">&quot;request_time&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s">&quot;current&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="s">&quot;max&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="s">&quot;mean&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="p">,</span>
-      <span class="s">&quot;description&quot;</span><span class="p">:</span> <span class="s">&quot;length of a request inside CouchDB without Mochiweb&quot;</span><span class="p">,</span>
-      <span class="s">&quot;stddev&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="p">,</span>
-      <span class="s">&quot;min&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="s">&quot;count&quot;</span><span class="p">:</span> <span class="mi">2</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span>
+  <span class="s2">&quot;couchdb&quot;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&quot;request_time&quot;</span><span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;current&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="s2">&quot;max&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="s2">&quot;mean&quot;</span><span class="o">:</span> <span class="mf">0.0</span><span class="p">,</span>
+      <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;length of a request inside CouchDB without Mochiweb&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;stddev&quot;</span><span class="o">:</span> <span class="mf">0.0</span><span class="p">,</span>
+      <span class="s2">&quot;min&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="s2">&quot;count&quot;</span><span class="o">:</span> <span class="mi">2</span>
     <span class="p">}</span>
   <span class="p">},</span>
-  <span class="s">&quot;httpd_request_methods&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s">&quot;GET&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s">&quot;current&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-      <span class="s">&quot;max&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="s">&quot;mean&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="o">.</span><span class="mo">000</span><span class="mi">96946194861852</span><span class="p">,</span>
-      <span class="s">&quot;description&quot;</span><span class="p">:</span> <span class="s">&quot;number of HTTP GET requests&quot;</span><span class="p">,</span>
-      <span class="s">&quot;stddev&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="o">.</span><span class="mo">0311210</span><span class="mi">875797858</span><span class="p">,</span>
-      <span class="s">&quot;min&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="s">&quot;count&quot;</span><span class="p">:</span> <span class="mi">2063</span>
+  <span class="s2">&quot;httpd_request_methods&quot;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&quot;GET&quot;</span><span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;current&quot;</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+      <span class="s2">&quot;max&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s2">&quot;mean&quot;</span><span class="o">:</span> <span class="mf">0.00096946194861852</span><span class="p">,</span>
+      <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;number of HTTP GET requests&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;stddev&quot;</span><span class="o">:</span> <span class="mf">0.0311210875797858</span><span class="p">,</span>
+      <span class="s2">&quot;min&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="s2">&quot;count&quot;</span><span class="o">:</span> <span class="mi">2063</span>
     <span class="p">}</span>
   <span class="p">},</span>
-  <span class="s">&quot;httpd&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s">&quot;requests&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s">&quot;current&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-      <span class="s">&quot;max&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="s">&quot;mean&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="o">.</span><span class="mo">000</span><span class="mi">96946194861852</span><span class="p">,</span>
-      <span class="s">&quot;description&quot;</span><span class="p">:</span> <span class="s">&quot;number of HTTP requests&quot;</span><span class="p">,</span>
-      <span class="s">&quot;stddev&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="o">.</span><span class="mo">0311210</span><span class="mi">875797858</span><span class="p">,</span>
-      <span class="s">&quot;min&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="s">&quot;count&quot;</span><span class="p">:</span> <span class="mi">2063</span>
+  <span class="s2">&quot;httpd&quot;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&quot;requests&quot;</span><span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;current&quot;</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+      <span class="s2">&quot;max&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s2">&quot;mean&quot;</span><span class="o">:</span> <span class="mf">0.00096946194861852</span><span class="p">,</span>
+      <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;number of HTTP requests&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;stddev&quot;</span><span class="o">:</span> <span class="mf">0.0311210875797858</span><span class="p">,</span>
+      <span class="s2">&quot;min&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="s2">&quot;count&quot;</span><span class="o">:</span> <span class="mi">2063</span>
     <span class="p">}</span>
   <span class="p">},</span>
-  <span class="s">&quot;httpd_status_codes&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s">&quot;200&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s">&quot;current&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-      <span class="s">&quot;max&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="s">&quot;mean&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="o">.</span><span class="mo">000</span><span class="mi">96946194861852</span><span class="p">,</span>
-      <span class="s">&quot;description&quot;</span><span class="p">:</span> <span class="s">&quot;number of HTTP 200 OK responses&quot;</span><span class="p">,</span>
-      <span class="s">&quot;stddev&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="o">.</span><span class="mo">0311210</span><span class="mi">875797858</span><span class="p">,</span>
-      <span class="s">&quot;min&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="s">&quot;count&quot;</span><span class="p">:</span> <span class="mi">2063</span>
+  <span class="s2">&quot;httpd_status_codes&quot;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&quot;200&quot;</span><span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;current&quot;</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+      <span class="s2">&quot;max&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s2">&quot;mean&quot;</span><span class="o">:</span> <span class="mf">0.00096946194861852</span><span class="p">,</span>
+      <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;number of HTTP 200 OK responses&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;stddev&quot;</span><span class="o">:</span> <span class="mf">0.0311210875797858</span><span class="p">,</span>
+      <span class="s2">&quot;min&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="s2">&quot;count&quot;</span><span class="o">:</span> <span class="mi">2063</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>Your output may vary. Depending on the number and type of requests CouchDB has processed so far, the output will include more or less metrics. Let's break the above down for a bit.</p>
 <p>Statistics are reported by 'group'. Often the group is just the couchdb module that counted the metric (<code>httpd</code> for the HTTP API for example), or it is a subgroup within a module, like <code>httpd_status_codes</code>. Each group or subgroup contains one or more 'keys'. Keys are unique identifies for a single metric in a module. The combination of group and key (<code>{httpd, requests}</code>) uniquely identifies a single metric.</p>
 <p>Each metric is aggregated over four periods time. In the default output of <code>/_stats</code> the period of time is since CouchDB was started. The aggregate values are calculated on a per-second basis. So values <code>{httpd, requests}</code> will include the number of requests made against the HTTP API per second since CouchDB was started. <code>current</code> is the current value, the number of requests. <code>max</code> and <code>min</code> are the respective extreme values and <code>mean</code> is arithmetic mean value for the period of time with a standard deviation of <code>steddev</code>. <code>description</code> is a human-readable description of the metric and <code>count</code> is the number of times this metric was counted.</p>
 <p>The three other periods of time are 60 seconds, 300, and 900 seconds (1, 5, 15 minutes). The aggregate values for these periods are reset at the end of each period and begin to count anew.</p>
 <p>You can grab single statistics by querying</p>
-<div class="codehilite"><pre><span class="sr">/_stats/g</span><span class="n">roup</span><span class="o">/</span><span class="n">key</span>
+<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">GET</span> <span class="n">http:</span><span class="sr">//</span><span class="n">localhost:5984</span><span class="sr">/_stats/g</span><span class="n">roup</span><span class="o">/</span><span class="n">key</span>
 </pre></div>
 
 
 <p>for example</p>
-<div class="codehilite"><pre><span class="sr">/_stats/</span><span class="n">httpd</span><span class="o">/</span><span class="n">requests</span>
+<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">GET</span> <span class="n">http:</span><span class="sr">//</span><span class="n">localhost:5984</span><span class="sr">/_stats/</span><span class="n">httpd</span><span class="o">/</span><span class="n">requests</span>
 </pre></div>
 
 
 <p>and the response will include only the aggregate values for this single metric.</p>
-<div class="codehilite"><pre><span class="p">{</span>
-  <span class="s">&quot;httpd&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s">&quot;requests&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s">&quot;current&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-      <span class="s">&quot;max&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="s">&quot;mean&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="o">.</span><span class="mo">000</span><span class="mi">978154548418653</span><span class="p">,</span>
-      <span class="s">&quot;description&quot;</span><span class="p">:</span> <span class="s">&quot;number of HTTP requests&quot;</span><span class="p">,</span>
-      <span class="s">&quot;stddev&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="o">.</span><span class="mo">031260162541133</span><span class="p">,</span>
-      <span class="s">&quot;min&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="s">&quot;count&quot;</span><span class="p">:</span> <span class="mi">3067</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span>
+  <span class="s2">&quot;httpd&quot;</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s2">&quot;requests&quot;</span><span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;current&quot;</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span>
+      <span class="s2">&quot;max&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s2">&quot;mean&quot;</span><span class="o">:</span> <span class="mf">0.000978154548418653</span><span class="p">,</span>
+      <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;number of HTTP requests&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;stddev&quot;</span><span class="o">:</span> <span class="mf">0.031260162541133</span><span class="p">,</span>
+      <span class="s2">&quot;min&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="s2">&quot;count&quot;</span><span class="o">:</span> <span class="mi">3067</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>If you want to query a different time period, use the <code>?range=60</code> (or <code>300</code> or <code>900</code>). You won't get useful results if you query any other time range and you can't yet configure the different time ranges.</p>
-<p>If you are parsing the responses into native objects in your programming language, you can simply access all the aggregate values using the object-attribute accessor method of your language. Here is an example for JavaScript.</p>
-<div class="codehilite"><pre>  <span class="sr">//</span> <span class="sb">`var stats`</span> <span class="n">is</span> <span class="n">filled</span> <span class="n">with</span> <span class="n">an</span> <span class="n">XMLHttpRequest</span><span class="o">.</span>
-  <span class="n">alert</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">httpd</span><span class="o">.</span><span class="n">requests</span><span class="o">.</span><span class="n">max</span><span class="p">);</span>
+<p>If you are parsing the responses into native objects in your programming language, you can simply access all the aggregate values using the object-attribute accessor method of your language. Here is an example for !JavaScript.</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1">// `var stats` is filled with an XMLHttpRequest.</span>
+<span class="nx">alert</span><span class="p">(</span><span class="nx">stats</span><span class="p">.</span><span class="nx">httpd</span><span class="p">.</span><span class="nx">requests</span><span class="p">.</span><span class="nx">max</span><span class="p">);</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>At the moment the following list of metrics is collected; it might expand in the future:</p>
 <div class="codehilite"><pre><span class="p">{</span><span class="n">couchdb</span><span class="p">,</span> <span class="n">database_writes</span><span class="p">},</span> <span class="n">number</span> <span class="n">of</span> <span class="nb">times</span> <span class="n">a</span> <span class="n">database</span> <span class="n">was</span> <span class="n">changed</span><span class="p">}</span>
@@ -202,12 +276,10 @@
 <p>For requests, the mean is roughly the requests per second. Its not as theoretically correct as something like RRDtool because we don't interpolate, we just average the reads we take roughly once a second.</p>
 <h3 id="is-there-any-indication-of-exactly-where-within-the-5-minute-interval-we-are">Is there any indication of exactly where within the 5 minute interval    we are?</h3>
 <p>No, but the current implementation (committed after 0.10.x was branched) does not reset statistic aggregators as the old code did. The new method is the more standard "these stats reflect all values seen in the last 5 minutes" regardless of when you query it.</p>
-<h2 id="another-metric-that-im-having-trouble-with-is-the-request_time-querying-it-returns-data-similar-to">Another metric that I'm having trouble with is the 'request_time'. Querying it returns data similar to:</h2>
-<p>[snip]</p>
 <h3 id="again-same-question-about-exactly-what-the-count-and-current-values-mean-for-this-metric">Again, same question about exactly what the 'count' and 'current'    values mean for this metric.</h3>
 <p>Oh weird. So, Count has the same meaning as before, but here Current is the length of the last recorded request. The weirdness comes from the fact that this is averaging a set of distinct points, where as things like requests are averaging the relative change so current makes a bit more sense there.</p>
-<h3 id="does-the-mean-represent-the-average-time-for-a-request-in-couchdb-in-seconds">Does the 'mean' represent the average time for a request in CouchDB in   seconds?</h3>
-<p>milliseconds.</p>
+<h3 id="does-the-mean-represent-the-average-time-for-a-request-in-couchdb-in-seconds">Does the 'mean' represent the average time for a request in CouchDB in seconds?</h3>
+<p>No, milliseconds.</p>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

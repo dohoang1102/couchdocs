@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -60,7 +60,38 @@
         
 </div>
       <div id="content">
-  <p>This overview is intended to give a high-level introduction of key models and components of CouchDB, how they work individually and how they fit together.</p>
+  <h1 id="technical-overview">Technical Overview</h1>
+<div class="toc">
+<ul>
+<li><a href="#technical-overview">Technical Overview</a><ul>
+<li><a href="#document-storage">Document Storage</a><ul>
+<li><a href="#acid-properties">ACID Properties</a></li>
+<li><a href="#compaction">Compaction</a></li>
+</ul>
+</li>
+<li><a href="#views">Views</a><ul>
+<li><a href="#view-model">View Model</a></li>
+<li><a href="#javascript-view-functions">Javascript View Functions</a></li>
+<li><a href="#view-indexes">View Indexes</a></li>
+</ul>
+</li>
+<li><a href="#security-and-validation">Security and Validation</a><ul>
+<li><a href="#administrator-access">Administrator Access</a></li>
+<li><a href="#reader-access">Reader Access</a></li>
+<li><a href="#update-validation">Update Validation</a></li>
+</ul>
+</li>
+<li><a href="#distributed-updates-and-replication">Distributed Updates and Replication</a><ul>
+<li><a href="#conflicts">Conflicts</a></li>
+<li><a href="#applications">Applications</a></li>
+</ul>
+</li>
+<li><a href="#implementation">Implementation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>This overview is intended to give a high-level introduction of key models and components of CouchDB, how they work individually and how they fit together.</p>
 <h2 id="document-storage">Document Storage</h2>
 <p>A CouchDB server hosts named databases, which store <strong>documents</strong>. Each document is uniquely named in the database, and CouchDB provides a <a href="http://en.wikipedia.org/wiki/REST">RESTful</a> HTTP API for reading and updating (add, edit, delete) database documents.</p>
 <p>Documents are the primary unit of data in CouchDB and consist of any number of fields and attachments. Documents also include metadata that’s maintained by the database system. Document fields are uniquely named and contain values of varying types (text, number, boolean, lists, etc), and there is no set limit to text size or element count.</p>
@@ -69,7 +100,7 @@
 <h3 id="acid-properties">ACID Properties</h3>
 <p>The CouchDB file layout and commitment system features all Atomic Consistent Isolated Durable (<a href="http://en.wikipedia.org/wiki/ACID">ACID</a>) properties. On-disk, CouchDB never overwrites committed data or associated structures, ensuring the database file is always in a consistent state. This is a “crash-only" design where the CouchDB server does not go through a shut down process, it's simply terminated.</p>
 <p>Document updates (add, edit, delete) are serialized, except for binary blobs which are written concurrently. Database readers are never locked out and never have to wait on writers or other readers. Any number of clients can be reading documents without being locked out or interrupted by concurrent updates, even on the same document. CouchDB read operations use a Multi-Version Concurrency Control (<a href="http://en.wikipedia.org/wiki/Multiversion_concurrency_control">MVCC</a>) model where each client sees a consistent snapshot of the database from the beginning to the end of the read operation.</p>
-<p>Documents are indexed in b-trees by their name (DocID) and a Sequence ID. Each update to a database instance generates a new sequential number. Sequence IDs are used later for incrementally finding changes in a database. Theses b-tree indexes are updated simultaneously when documents are saved or deleted. The index updates always occur at the end of the file (append-only updates).</p>
+<p>Documents are indexed in b-trees by their name (DocID) and a Sequence ID. Each update to a database instance generates a new sequential number. Sequence IDs are used later for incrementally finding changes in a database. These b-tree indexes are updated simultaneously when documents are saved or deleted. The index updates always occur at the end of the file (append-only updates).</p>
 <p>Documents have the advantage of data being already conveniently packaged for storage rather than split out across numerous tables and rows in most databases systems. When documents are committed to disk, the document fields and metadata are packed into buffers, sequentially one document after another (helpful later for efficient building of views).</p>
 <p>When CouchDB documents are updated, all data and associated indexes are flushed to disk and the transactional commit always leaves the database in a completely consistent state. Commits occur in two steps:</p>
 <ol>
@@ -104,7 +135,7 @@ without blocking the first client. This is true for any number of simultaneous c
 <p>CouchDB database instances have administrator accounts. Administrator accounts can create other administrator accounts and update design documents. Design documents are special documents containing view definitions and other special formulas, as well as regular fields and blobs.</p>
 <h3 id="reader-access">Reader Access</h3>
 <p>To protect document contents, CouchDB documents can have a reader list. This is an optional list of reader-names allowed to read the document. When a reader list is used, protected documents are only viewable by listed users.</p>
-<p>When a user accesses a database, the his/her credentials (name and password) are used to dynamically determine his reader names. The user credentials are input to a javascript function and the function returns a list of names for the user, or an error if the user credentials are wrong.</p>
+<p>When a user accesses a database, then his/her credentials (name and password) are used to dynamically determine his reader names. The user credentials are input to a javascript function and the function returns a list of names for the user, or an error if the user credentials are wrong.</p>
 <p>When a document is protected by reader access lists, any user attempting to read the document must be listed. Reader lists are enforced in views too. Documents that are not allowed to be read by the user are dynamically filtered out of views, keeping the document row and extracted information invisible to non-readers.</p>
 <h3 id="update-validation">Update Validation</h3>
 <p>As documents written to disk, they can be validated dynamically by javascript functions for both security and data validation. When the document passes all the formula validation criteria, the update is allowed to continue. If the validation fails, the update is aborted and the user client gets an error response.</p>

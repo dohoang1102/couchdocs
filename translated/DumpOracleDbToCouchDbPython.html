@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -63,7 +63,7 @@
   <h1 id="unique-values-in-sql-table-converted-to-individual-documents">Unique Values in SQL Table Converted to Individual Documents</h1>
 <p>Cro-Magnon simple python script which will take the contents of an SQL table and place it into CouchDB.</p>
 <p>This particular example depends on the SQL table having one unique field. The values in the unique field become individual documents in the CouchDB database.</p>
-<p>You'll need the python couchdb module from http://code.google.com/p/couchdb-python/ , plus whatever DBAPI2.0 compliant module you use to connect to your favorite SQL database.This example uses Oracle, but it should be trivial to convert.</p>
+<p>You'll need the python couchdb module from <a href="http://code.google.com/p/couchdb-python/">http://code.google.com/p/couchdb-python/</a> , plus whatever DBAPI2.0 compliant module you use to connect to your favorite SQL database.This example uses Oracle, but it should be trivial to convert.</p>
 <p>This is probably not what you want. :-)</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -190,9 +190,9 @@
         <span class="c"># couchdb location</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">couch</span> <span class="o">=</span> <span class="n">couchdb</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span> <span class="s">&quot;http://localhost:5984/&quot;</span> <span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">couch</span><span class="o">.</span><span class="n">create</span><span class="p">(</span> <span class="n">db_name</span> <span class="p">)</span>
+            <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;self.db&quot;</span><span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">couch</span><span class="o">.</span><span class="n">create</span><span class="p">(</span> <span class="n">db_name</span> <span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">couch</span><span class="p">[</span> <span class="n">db_name</span> <span class="p">]</span>
+            <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;self.db&quot;</span><span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">couch</span><span class="p">[</span> <span class="n">db_name</span> <span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">description</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
         <span class="c"># get a description of a given table</span>

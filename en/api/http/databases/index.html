@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -66,15 +66,17 @@
 <p>A database must be named with all lowercase characters (a-z), digits (0-9), or
 any of the ''_$()+-/'' characters and must end with a slash in the URL. The
 name has to start with characters.</p>
-<div class="codehilite"><pre>http://couchserver/databasename/
-http://couchserver/another/databasename/
-http://couchserver/another/database_name(1)/</pre></div>
+<div class="codehilite"><pre><span class="n">http:</span><span class="sr">//co</span><span class="n">uchserver</span><span class="sr">/databasename/</span>
+<span class="n">http:</span><span class="sr">//co</span><span class="n">uchserver</span><span class="sr">/another/</span><span class="n">databasename</span><span class="o">/</span>
+<span class="n">http:</span><span class="sr">//co</span><span class="n">uchserver</span><span class="sr">/another/</span><span class="n">database_name</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span>
+</pre></div>
 
 
 <p><strong>Uppercase characters are NOT ALLOWED in database names.</strong></p>
-<div class="codehilite"><pre>http://couchserver/DBNAME/ (invalid)
-http://couchserver/DatabaseName/ (invalid)
-http://couchserver/databaseName/ (invalid)</pre></div>
+<div class="codehilite"><pre><span class="n">http:</span><span class="sr">//co</span><span class="n">uchserver</span><span class="sr">/DBNAME/</span> <span class="p">(</span><span class="n">invalid</span><span class="p">)</span>
+<span class="n">http:</span><span class="sr">//co</span><span class="n">uchserver</span><span class="sr">/DatabaseName/</span> <span class="p">(</span><span class="n">invalid</span><span class="p">)</span>
+<span class="n">http:</span><span class="sr">//co</span><span class="n">uchserver</span><span class="sr">/databaseName/</span> <span class="p">(</span><span class="n">invalid</span><span class="p">)</span>
+</pre></div>
 
 
 <p>Note also that a <code>/</code> character in a DB name must be escaped when used in a URL;
@@ -93,17 +95,19 @@ large number of databases and your file system does not like that.</p>
 <h2 id="working-with-databases">Working with Databases</h2>
 <h3 id="list-databases">List Databases</h3>
 <p>To get a list of databases on a CouchDB server, use the ''/_all_dbs'' URI:</p>
-<div class="codehilite"><pre>GET /_all_dbs HTTP/1.1</pre></div>
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/_all_dbs HTTP/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
+</pre></div>
 
 
 <p>And the response:</p>
-<div class="codehilite"><pre>HTTP/1.1 200 OK
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-Content-Length: 37
-Content-Type: application/json
-Connection: close
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">37</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
 
-[&quot;somedatabase&quot;, &quot;anotherdatabase&quot;]</pre></div>
+<span class="p">[</span><span class="s">&quot;somedatabase&quot;</span><span class="p">,</span> <span class="s">&quot;anotherdatabase&quot;</span><span class="p">]</span>
+</pre></div>
 
 
 <h3 id="put-create-new-database">PUT (Create New Database)</h3>
@@ -111,56 +115,62 @@ Connection: close
 Currently the content of the actual PUT is ignored by the webserver.</p>
 <p>On success, HTTP status ''201'' is returned. If a database already exists a
 ''412'' error is returned.</p>
-<div class="codehilite"><pre>PUT /somedatabase/ HTTP/1.1
-Content-Length: 0</pre></div>
+<div class="codehilite"><pre><span class="n">PUT</span> <span class="sr">/somedatabase/</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">0</span>
+</pre></div>
 
 
 <p>Here is the server's response:</p>
-<div class="codehilite"><pre>HTTP/1.1 201 Created
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-Content-Length: 13
-Content-Type: application/json
-Connection: close
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">201</span> <span class="n">Created</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">13</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
 
-{&quot;ok&quot;: true}</pre></div>
+<span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">}</span>
+</pre></div>
 
 
 <h3 id="delete">DELETE</h3>
 <p>To delete a database, perform a DELETE operation at the database location.</p>
 <p>On success, HTTP status ''200'' is returned. If the database doesn't exist, a
 ''404'' error is returned.</p>
-<div class="codehilite"><pre>DELETE /somedatabase/ HTTP/1.1
-Content-Length: 0</pre></div>
+<div class="codehilite"><pre><span class="n">DELETE</span> <span class="sr">/somedatabase/</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">0</span>
+</pre></div>
 
 
 <p>Here is the server's response:</p>
-<div class="codehilite"><pre>HTTP/1.1 200 OK
-Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
-Content-Length: 67
-Content-Type: application/json
-Connection: close
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Date:</span> <span class="n">Thu</span><span class="p">,</span> <span class="mi">17</span> <span class="n">Aug</span> <span class="mi">2006</span> <span class="mo">05</span><span class="p">:</span><span class="mi">39</span><span class="p">:</span><span class="mi">28</span> <span class="o">+</span><span class="mo">0000</span><span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">67</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="n">Connection:</span> <span class="nb">close</span>
 
-{&quot;ok&quot;: true}</pre></div>
+<span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span> <span class="n">true</span><span class="p">}</span>
+</pre></div>
 
 
 <h3 id="database-information">Database Information</h3>
 <p>To get information about a particular database, perform a GET operation on the
 database, e.g.:</p>
-<div class="codehilite"><pre>GET /somedatabase/ HTTP/1.1</pre></div>
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/somedatabase/</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
+</pre></div>
 
 
 <p>The server's response is a JSON object similar to the following:</p>
-<div class="codehilite"><pre>{
-    &quot;compact_running&quot;: false, 
-    &quot;db_name&quot;: &quot;dj&quot;, 
-    &quot;disk_format_version&quot;: 5, 
-    &quot;disk_size&quot;: 12377, 
-    &quot;doc_count&quot;: 1, 
-    &quot;doc_del_count&quot;: 1, 
-    &quot;instance_start_time&quot;: &quot;1267612389906234&quot;, 
-    &quot;purge_seq&quot;: 0, 
-    &quot;update_seq&quot;: 4
-}</pre></div>
+<div class="codehilite"><pre><span class="p">{</span>
+    <span class="s">&quot;compact_running&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span> 
+    <span class="s">&quot;db_name&quot;</span><span class="p">:</span> <span class="s">&quot;dj&quot;</span><span class="p">,</span> 
+    <span class="s">&quot;disk_format_version&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> 
+    <span class="s">&quot;disk_size&quot;</span><span class="p">:</span> <span class="mi">12377</span><span class="p">,</span> 
+    <span class="s">&quot;doc_count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
+    <span class="s">&quot;doc_del_count&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> 
+    <span class="s">&quot;instance_start_time&quot;</span><span class="p">:</span> <span class="s">&quot;1267612389906234&quot;</span><span class="p">,</span> 
+    <span class="s">&quot;purge_seq&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
+    <span class="s">&quot;update_seq&quot;</span><span class="p">:</span> <span class="mi">4</span>
+<span class="p">}</span>
+</pre></div>
 
 
 <h4 id="meaning-of-result-hash">Meaning of Result Hash</h4>
@@ -179,13 +189,15 @@ request. <code>_revs_limit</code> defines a upper bound of document revisions wh
 CouchDB keeps track of, even after <a class="internal" href="Compaction.html">Compaction</a>. The default is set to 1000
 on CouchDB 0.11.</p>
 <p>Set <code>_revs_limit</code> of a particular database:</p>
-<div class="codehilite"><pre>$ curl -X PUT -d &quot;1500&quot; http://localhost:5984/test/_revs_limit
-{&quot;ok&quot;:true}</pre></div>
+<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">PUT</span> <span class="o">-</span><span class="n">d</span> <span class="s">&quot;1500&quot;</span> <span class="n">http:</span><span class="sr">//</span><span class="n">localhost:5984</span><span class="sr">/test/</span><span class="n">_revs_limit</span>
+<span class="p">{</span><span class="s">&quot;ok&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
+</pre></div>
 
 
 <p>Read <code>_revs_limit</code> of a particular database:</p>
-<div class="codehilite"><pre>curl -X GET http://localhost:5984/test/_revs_limit
-1500</pre></div>
+<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">GET</span> <span class="n">http:</span><span class="sr">//</span><span class="n">localhost:5984</span><span class="sr">/test/</span><span class="n">_revs_limit</span>
+<span class="mi">1500</span>
+</pre></div>
 
 
 <h3 id="changes">Changes</h3>
@@ -207,14 +219,15 @@ made, can be obtained from the database's <code>_changes</code> resource.</p>
 </li>
 </ul>
 <p>By default all changes are immediately returned as a JSON object:</p>
-<div class="codehilite"><pre>GET /somedatabase/_changes HTTP/1.1
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/somedatabase/</span><span class="n">_changes</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
 
-{&quot;results&quot;:[
-{&quot;seq&quot;:1,&quot;id&quot;:&quot;fresh&quot;,&quot;changes&quot;:[{&quot;rev&quot;:&quot;1-967a00dff5e02add41819138abb3284d&quot;}]},
-{&quot;seq&quot;:3,&quot;id&quot;:&quot;updated&quot;,&quot;changes&quot;:[{&quot;rev&quot;:&quot;2-7051cbe5c8faecd085a3fa619e6e6337&quot;}]},
-{&quot;seq&quot;:5,&quot;id&quot;:&quot;deleted&quot;,&quot;changes&quot;:[{&quot;rev&quot;:&quot;2-eec205a9d413992850a6e32678485900&quot;}],&quot;deleted&quot;:true}
-],
-&quot;last_seq&quot;:5}</pre></div>
+<span class="p">{</span><span class="s">&quot;results&quot;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;fresh&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-967a00dff5e02add41819138abb3284d&quot;</span><span class="p">}]},</span>
+<span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;updated&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-7051cbe5c8faecd085a3fa619e6e6337&quot;</span><span class="p">}]},</span>
+<span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;deleted&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-eec205a9d413992850a6e32678485900&quot;</span><span class="p">}],</span><span class="s">&quot;deleted&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
+<span class="p">],</span>
+<span class="s">&quot;last_seq&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span>
+</pre></div>
 
 
 <p>''results'' is the list of changes in sequential order. New and changed
@@ -224,12 +237,13 @@ documents only differ in the value of the rev; deleted documents include the
 will always be the same as the ''seq'' of the last item in ''results''.)</p>
 <p>Sending a ''since'' param in the query string skips all changes up to and
 including the given sequence number:</p>
-<div class="codehilite"><pre>GET /somedatabase/_changes?since=3 HTTP/1.1
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/somedatabase/</span><span class="n">_changes</span><span class="p">?</span><span class="n">since</span><span class="o">=</span><span class="mi">3</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
 
-{&quot;results&quot;:[
-{&quot;seq&quot;:5,&quot;id&quot;:&quot;deleted&quot;,&quot;changes&quot;:[{&quot;rev&quot;:&quot;2-eec205a9d413992850a6e32678485900&quot;}],&quot;deleted&quot;:true}
-],
-&quot;last_seq&quot;:5}</pre></div>
+<span class="p">{</span><span class="s">&quot;results&quot;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;deleted&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-eec205a9d413992850a6e32678485900&quot;</span><span class="p">}],</span><span class="s">&quot;deleted&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
+<span class="p">],</span>
+<span class="s">&quot;last_seq&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span>
+</pre></div>
 
 
 <h4 id="long-polling-efficient-polling-feed">Long-Polling (Efficient Polling) Feed</h4>
@@ -252,13 +266,14 @@ real-time.</p>
 types to simplify the job of the client - each line of the response is either
 empty or a JSON object representing a single change, as found in the normal
 feed's ''results''.</p>
-<div class="codehilite"><pre>GET /somedatabase/_changes?feed=continuous HTTP/1.1
+<div class="codehilite"><pre><span class="n">GET</span> <span class="sr">/somedatabase/</span><span class="n">_changes</span><span class="p">?</span><span class="n">feed</span><span class="o">=</span><span class="n">continuous</span> <span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span>
 
-{&quot;seq&quot;:1,&quot;id&quot;:&quot;fresh&quot;,&quot;changes&quot;:[{&quot;rev&quot;:&quot;1-967a00dff5e02add41819138abb3284d&quot;}]}
-{&quot;seq&quot;:3,&quot;id&quot;:&quot;updated&quot;,&quot;changes&quot;:[{&quot;rev&quot;:&quot;2-7051cbe5c8faecd085a3fa619e6e6337&quot;}]}
-{&quot;seq&quot;:5,&quot;id&quot;:&quot;deleted&quot;,&quot;changes&quot;:[{&quot;rev&quot;:&quot;2-eec205a9d413992850a6e32678485900&quot;}],&quot;deleted&quot;:true}
-... tum tee tum ...
-{&quot;seq&quot;:6,&quot;id&quot;:&quot;updated&quot;,&quot;changes&quot;:[{&quot;rev&quot;:&quot;3-825cb35de44c433bfb2df415563a19de&quot;}]}</pre></div>
+<span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;fresh&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;1-967a00dff5e02add41819138abb3284d&quot;</span><span class="p">}]}</span>
+<span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;updated&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-7051cbe5c8faecd085a3fa619e6e6337&quot;</span><span class="p">}]}</span>
+<span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;deleted&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;2-eec205a9d413992850a6e32678485900&quot;</span><span class="p">}],</span><span class="s">&quot;deleted&quot;</span><span class="p">:</span><span class="n">true</span><span class="p">}</span>
+<span class="o">...</span> <span class="n">tum</span> <span class="n">tee</span> <span class="n">tum</span> <span class="o">...</span>
+<span class="p">{</span><span class="s">&quot;seq&quot;</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span><span class="s">&quot;id&quot;</span><span class="p">:</span><span class="s">&quot;updated&quot;</span><span class="p">,</span><span class="s">&quot;changes&quot;</span><span class="p">:[{</span><span class="s">&quot;rev&quot;</span><span class="p">:</span><span class="s">&quot;3-825cb35de44c433bfb2df415563a19de&quot;</span><span class="p">}]}</span>
+</pre></div>
 
 
 <p>Obviously, "... tum tee tum ..." does not appear in the actual response but

@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -81,7 +81,7 @@
 <h2 id="quelle-volume-de-donnees-je-peux-stocker-dans-couchdb">Quelle volume de données je peux stocker dans CouchDB ?</h2>
 <p>Avec un système réparti, virtuellement illimité. Pour une seule instance de base de donnée, la limite n'est pas encore connue.</p>
 <h2 id="comment-je-fais-des-suites">Comment je fais des suites ?</h2>
-<p>Ou autrement dit, où est AUTO_INCREMENT ?! Avec la réplication les suites sont difficiles à réaliser. Les suites sont souvent utilisées pour créer des identifiants uniques pour chaque ligne de la base de données. CouchDB peut générer des ids uniques ou vous pouvez créer les votres, vous n'avez donc pas forcemment besoin de suites. Si vous utilisez une suite pour autre chose, vous devez trouver un moyen de l'intégrer dans CouchDB.</p>
+<p>Ou autrement dit, où est AUTO_INCREMENT ?! Avec la réplication les suites sont difficiles à réaliser. Les suites sont souvent utilisées pour créer des identifiants uniques pour chaque ligne de la base de données. CouchDB peut générer des ids uniques ou vous pouvez créer les votre, vous n'avez donc pas forcemment besoin de suites. Si vous utilisez une suite pour autre chose, vous devez trouver un moyen de l'intégrer dans CouchDB.</p>
 <h2 id="comment-jutilise-la-replication">Comment j'utilise la réplication ?</h2>
 <div class="codehilite"><pre><span class="n">POST</span> <span class="o">/</span><span class="n">_replicate</span><span class="p">?</span><span class="n">source</span><span class="o">=</span><span class="nv">$source_basededonn</span><span class="err">é</span><span class="n">e</span><span class="o">&amp;</span><span class="n">target</span><span class="o">=</span><span class="nv">$destination_basededonn</span><span class="err">é</span><span class="n">e</span>
 </pre></div>

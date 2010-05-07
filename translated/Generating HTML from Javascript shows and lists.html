@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -83,9 +83,9 @@
 </ul>
 <h2 id="solutions">Solutions</h2>
 <p>The solutions listed below are known to work with CouchDB show and list functions, generating HTML and working with CouchDB deployment conventions (ie !json string templates and !code inclusion into the show/list functions).</p>
-<p>. <strong>Recommendation: </strong>Use mustache.js</p>
+<p>. <strong>Recommendation: </strong>Use <a href="mustache.js">mustache.js</a> </p>
 <h3 id="john-resigs-micro-templating">John Resig's micro-templating</h3>
-<p>This engine is a screenful of code described at http://ejohn.org/blog/javascript-micro-templating (download a CouchDB version <a href="http://github.com/jchris/sofa/raw/master/vendor/couchapp/template.js">here</a>).  You can read about using it in the <a href="http://books.couchdb.org/relax/design-documents/shows#Using%20Templates">CouchDB book</a>.  Example usage can be found in the <a href="http://github.com/jchris/sofa">Sofa blog application</a>.  It does not do HTML escaping so you will need to be very careful.  The templating is not HTML specific so you can generate other formats.  (The tags are HTML syntax though.)</p>
+<p>This engine is a screenful of code described at <a href="http://ejohn.org/blog/javascript-micro-templating">http://ejohn.org/blog/javascript-micro-templating</a> (download a CouchDB version <a href="http://github.com/jchris/sofa/raw/master/vendor/couchapp/template.js">here</a>).  You can read about using it in the <a href="http://books.couchdb.org/relax/design-documents/shows#Using%20Templates">CouchDB book</a>.  Example usage can be found in the <a href="http://github.com/jchris/sofa">Sofa blog application</a>.  It does not do HTML escaping so you will need to be very careful.  The templating is not HTML specific so you can generate other formats.  (The tags are HTML syntax though.)</p>
 <p>This is an example of how to do conditionals:</p>
 <div class="codehilite"><pre><span class="cp">&lt;%</span> <span class="k">if</span> <span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">foo</span><span class="p">)</span> <span class="p">{</span> <span class="cp">%&gt;</span><span class="x"></span>
 <span class="x">    Foo is true-ish</span>
@@ -96,13 +96,13 @@
 
 
 <p>Note that this library has no support, bug tracker or development/test/release process.</p>
-<h3 id="mustachejs">mustache.js</h3>
-<p><a href="http://github.com/janl/mustache.js">mustache.js</a> is a Javascript version of a Ruby templating library.  The name refers to the { and } characters looking like a mustache.  Download http://github.com/janl/mustache.js/raw/master/mustache.js to get the latest version which drops right in using !json/!code as is.</p>
+<h3 id="a-hrefmustachejsmustachejsa"><a href="mustache.js">mustache.js</a></h3>
+<p><a href="http://github.com/janl/mustache.js">mustache.js</a> is a Javascript version of a Ruby templating library.  The name refers to the { and } characters looking like a mustache.  Download <a href="http://github.com/janl/mustache.js/raw/master/mustache.js">http://github.com/janl/mustache.js/raw/master/mustache.js</a> to get the latest version which drops right in using !json/!code as is.</p>
 <p>The library is complete and does not put Javascript code into your template, but does have all the expected features (looping, conditionals etc).  Although the intention is to generate HTML the templates are not HTML specific.  The only exception is that substitutions by default are HTML escaped (use triple braces for no escaping).  This is a very good thing.</p>
 <h3 id="underscore">underscore</h3>
 <p><a href="http://documentcloud.github.com/underscore/">Underscore</a> is a small library of miscellaneous functions that also includes simple <a href="http://documentcloud.github.com/underscore/#template">templating</a> substantially similar to John Resig's micro templating above.  The templating is not HTML specific and there is no automatic HTML escaping.</p>
 <h3 id="closure">closure</h3>
-<p><a href="http://code.google.com/closure/templates/">closure templates</a> are a Google project used behind the scenes in places like gmail and Google docs.  It is different from the other libraries in that the templates are compiled to Javascript code and you just include that Javascript code.  This has the advantage that errors in your templates are detected at build time not run time.  Values are automatically HTML escaped.  In order for soyutils.js to work, you should include this line before including it:</p>
+<p><a href="http://code.google.com/closure/templates/">closure templates</a> are a Google project used behind the scenes in places like gmail and Google docs.  It is different from the other libraries in that the templates are compiled to Javascript code and you just include that Javascript code.  This has the advantage that errors in your templates are detected at build time not run time.  Values are automatically HTML escaped.  In order for <a href="soyutils.js">soyutils.js</a> to work, you should include this line before including it:</p>
 <div class="codehilite"><pre><span class="n">var</span> <span class="n">navigator</span><span class="o">=</span><span class="p">{</span><span class="n">userAgent:</span> <span class="s">&quot;&quot;</span><span class="p">};</span>
 </pre></div>
 </div>

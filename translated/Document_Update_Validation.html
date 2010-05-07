@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CouchDocs - Document_Update_Validation</title>
+    <link rel="stylesheet" href="../css/style.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="../css/code_highlight.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div id="wrapper"> 
+      <div id="header">
+          <h1><a href="/">CouchDocs</a></h1>
+      </div>
+      <div id="menu">
+  <strong>Navigation</strong>
+<ul>
+  <li><a href="FrontPage.html">Overview</a></li>
+  <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
+  <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
+  <li><a href="FrontPage.html#community">Community</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#books">Books</a></li>
+</ul>
+
+<strong>Short Cuts</strong>
+<ul>
+  <li><a href="Reference.html">Reference</a></li>
+  <li><a href="Frequently_asked_questions.html">FAQ</a></li>
+</ul>
+
+
+      <!-- <ul>
+        <li>Overview</li>
+        <li>Installation</li>
+        <li>Introduction</li>
+        <li>Conventions</li>
+        <li>
+          Sections
+          <ul>
+            <li>Databases</li>
+            <li>
+              Documents
+              <ul>
+                <li>Design</li>
+                <li>Local</li>
+              </ul>
+            </li>
+            <li>Views</li>
+            <li>Rendering</li>
+            <li>Configuration</li>
+            <li>Statistics</li>
+            <li>Security</li>
+          </ul>
+        </li>
+        <li>API Reference</li>
+        <li>Client Libraries</li>
+        <li>How do I?</li>
+        <li>FAQ</li>
+      </ul> -->
+        
+</div>
+      <div id="content">
+  <h1 id="document-update-validation">Document Update Validation</h1>
+<div class="toc">
+<ul>
+<li><a href="#document-update-validation">Document Update Validation</a></li>
+</ul>
+</div>
+<p>A design document may define a member function called "validate_doc_update". Requests to create or update a document are validated against every "validate_doc_update" function defined in the database. The validation functions are executed in an unspecified order. A design document can contain only one validation function. Errors are thrown as javascript objects. </p>
+<p>Example of a design document that validates the presence of an "address" field and returns :</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span>
+   <span class="nx">_id</span><span class="o">:</span> <span class="s2">&quot;_design/myview&quot;</span><span class="p">,</span>
+   <span class="nx">validate_doc_update</span><span class="o">:</span> <span class="s2">&quot;function(newDoc, oldDoc, userCtx) {</span>
+<span class="s2">      if(newDoc.address === undefined) {</span>
+<span class="s2">         throw {forbidden: &#39;Document must have an address.&#39;};</span>
+<span class="s2">      }&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>The result of a document update without the address field will look like this:</p>
+<div class="codehilite"><pre><span class="n">HTTP</span><span class="o">/</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span> <span class="mi">403</span> <span class="n">Forbidden</span>
+<span class="n">WWW</span><span class="o">-</span><span class="n">Authenticate:</span> <span class="n">Basic</span> <span class="n">realm</span><span class="o">=</span><span class="s">&quot;administrator&quot;</span>
+<span class="n">Server:</span> <span class="n">CouchDB</span><span class="sr">/0.9.0 (Erlang OTP/</span><span class="n">R12B</span><span class="p">)</span>
+<span class="n">Date:</span> <span class="n">Tue</span><span class="p">,</span> <span class="mi">21</span> <span class="n">Apr</span> <span class="mi">2009</span> <span class="mo">00</span><span class="p">:</span><span class="mo">02</span><span class="p">:</span><span class="mi">32</span> <span class="n">GMT</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Type:</span> <span class="n">text</span><span class="o">/</span><span class="n">plain</span><span class="p">;</span><span class="n">charset</span><span class="o">=</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span>
+<span class="n">Content</span><span class="o">-</span><span class="n">Length:</span> <span class="mi">57</span>
+<span class="n">Cache</span><span class="o">-</span><span class="n">Control:</span> <span class="n">must</span><span class="o">-</span><span class="n">revalidate</span>
+
+<span class="p">{</span><span class="s">&quot;error&quot;</span><span class="p">:</span><span class="s">&quot;forbbiden&quot;</span><span class="p">,</span><span class="s">&quot;reason&quot;</span><span class="p">:</span><span class="s">&quot;Document must have an address.&quot;</span><span class="p">}</span>
+</pre></div>
+
+
+<p>The "validate_doc_update" function accepts three arguments:
+ 1. newDoc - The document to be created or used for update.
+ 1. oldDoc - The current document if document id was specified in the HTTP request
+ 1. userCtx - User context object, which contains three properties:
+   a. db - String name of database
+   a. name - String user name
+   a. roles - Array of roles to which user belongs. Currently only admin role is supported.</p>
+</div>
+      <div id="footer">
+        <p>Hosted on <a href="http://github.com/">Github</a></p>
+      </div>
+    </div>
+  </body>
+</html>

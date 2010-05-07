@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -63,8 +63,8 @@
   <p>How to page through results.</p>
 <p>It is best to follow links when paginating. The next link is the key that showed up last, in the current query. Use it as startkey, and supply a limit and a skip value of 1.</p>
 <p>So if you requested 10 results using <em>http://couchdb/db/_design/mydesign/_view/myview?limit=10</em>, then you would get the next 10 results by requesting <em>http://couchdb/db/_design/mydesign/_view/myview?limit=10&amp;startkey=lastkey&amp;skip=1</em> , where lastkey is the value of the last key you received.</p>
-<p>There are some implementations of paginating. This is a special purpose one in Ruby which give you all results with the same key, grouped together.</p>
-<p>http://github.com/jchris/couchrest/tree/master/lib/couchrest/helper/pager.rb</p>
+<p>There are some implementations of paginating. This is a special purpose one in Ruby which give you all results with the same key, grouped together.
+ <a href="http://github.com/jchris/couchrest/tree/master/lib/couchrest/helper/pager.rb">http://github.com/jchris/couchrest/tree/master/lib/couchrest/helper/pager.rb</a> </p>
 </div>
       <div id="footer">
         <p>Hosted on <a href="http://github.com/">Github</a></p>

@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -60,56 +60,89 @@
         
 </div>
       <div id="content">
-  <p>Installing on RHEL5 x86_64</p>
-<p>(Note: <a href="https://issues.apache.org/jira/browse/COUCHDB-315">COUCHDB-315</a> has an attached patch for the CouchDB README which adds instructions for RHEL 5.)</p>
+  <h1 id="installing-on-rhel-5">Installing on RHEL 5</h1>
+<p>These instructions also work on Red Hat Enterprise Linux compatible distributions like CentOS.</p>
+<p>Note: <a href="https://issues.apache.org/jira/browse/COUCHDB-315">COUCHDB-315</a> has an attached patch for the CouchDB README which adds instructions for RHEL 5.</p>
+<h2 id="installing-a-prepackaged-couchdb">Installing a prepackaged CouchDB</h2>
 <ol>
 <li>
-<p>Install prerequisites. You will need <a href="http://fedoraproject.org/wiki/EPEL">EPEL</a> for js and erlang (or build those from source).</p>
-<p>yum install ncurses-devel openssl-devel icu libicu-devel js js-devel curl-devel erlang</p>
+<p>Enable the  <a href="http://fedoraproject.org/wiki/EPEL">EPEL</a> repository.</p>
+</li>
+<li>
+<p>Install the couchdb package from EPEL:</p>
+<!-- # yum install couchdb -->
+
+</li>
+<li>
+<p>Edit config file to suit:</p>
+<!-- # vi /etc/couchdb/local.ini -->
+
+</li>
+<li>
+<p>Start CouchDB:</p>
+<!-- # service couchdb start -->
+
+</li>
+<li>
+<p>Set it to start automatically on reboots:</p>
+<!-- # chkconfig --level 345 couchdb on -->
+
+</li>
+</ol>
+<h2 id="building-couchdb-from-source">Building CouchDB from source</h2>
+<ol>
+<li>
+<p>Install prerequisites. You will need to enable the <a href="http://fedoraproject.org/wiki/EPEL">EPEL</a> repository for the js-devel and erlang packages (or build js and erlang from source).</p>
+<p>yum install libicu-devel openssl-devel curl-devel make gcc erlang js-devel</p>
 </li>
 <li>
 <p>Install CouchDB</p>
 </li>
 </ol>
 <p>The configure line below is for 64-bit, adjust for your arch (or leave out --with-erlang if configure can find out for itself). You can use a release tarball instead of a checkout, in that case skip right to the ./confgure line.</p>
-<div class="codehilite"><pre><span class="n">svn</span> <span class="n">checkout</span> <span class="n">http:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/couchdb/</span><span class="n">trunk</span> <span class="n">couchdb</span>
-<span class="n">cd</span> <span class="n">couchdb</span>
-<span class="o">./</span><span class="n">bootstrap</span>
-<span class="o">.</span><span class="sr">/configure --with-erlang=/</span><span class="n">usr</span><span class="sr">/lib64/</span><span class="n">erlang</span><span class="sr">/usr/i</span><span class="n">nclude</span> <span class="o">&amp;&amp;</span> <span class="n">make</span> <span class="o">&amp;&amp;</span> <span class="n">make</span> <span class="n">install</span>
+<div class="codehilite"><pre>$ svn checkout <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://svn.apache.org/repos/asf/couchdb/trunk&quot;</span><span class="nt">&gt;</span>http://svn.apache.org/repos/asf/couchdb/trunk<span class="nt">&lt;/a&gt;</span> couchdb
+$ cd couchdb
+$ ./bootstrap
+$ ./configure --with-erlang=/usr/lib64/erlang/usr/include
+$ make
+<span class="c">&lt;!-- # make install --&gt;</span>
 </pre></div>
 
 
 <ol>
 <li>
 <p>Edit config file to suit</p>
-<p>vi /usr/local/etc/couchdb/local.ini</p>
+<!-- # vi /usr/local/etc/couchdb/local.ini -->
+
 </li>
 <li>
 <p>Create user, modify ownership and permissions</p>
 </li>
 </ol>
 <p>Create the couchdb user:</p>
-<div class="codehilite"><pre><span class="n">adduser</span> <span class="o">-</span><span class="n">r</span> <span class="o">--</span><span class="n">home</span> <span class="sr">/usr/</span><span class="nb">local</span><span class="sr">/var/</span><span class="n">lib</span><span class="sr">/couchdb -M --shell /</span><span class="n">bin</span><span class="o">/</span><span class="n">bash</span> <span class="o">--</span><span class="n">comment</span> <span class="s">&quot;CouchDB Administrator&quot;</span> <span class="n">couchdb</span>
+<div class="codehilite"><pre><span class="o">&lt;!--</span> <span class="c1"># adduser -r --home /usr/local/var/lib/couchdb -M --shell /bin/bash --comment &quot;CouchDB Administrator&quot; couchdb --&gt;</span>
 </pre></div>
 
 
 <p>See the README for additional chown and chmod commands to run.</p>
 <ol>
 <li>
-<p>Launch! In console:</p>
-<p>sudo -u couchdb couchdb</p>
+<p>Launch!</p>
+<!-- # sudo -u couchdb couchdb -->
+
 </li>
 </ol>
-<p>or as daemon:</p>
-<div class="codehilite"><pre><span class="n">sudo</span> <span class="sr">/usr/</span><span class="nb">local</span><span class="sr">/etc/</span><span class="n">rc</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">couchdb</span> <span class="n">start</span>
+<p>Or as daemon:</p>
+<div class="codehilite"><pre><span class="o">&lt;!--</span> <span class="c1"># /usr/local/etc/rc.d/couchdb start --&gt;</span>
 </pre></div>
 
 
 <ol>
 <li>
 <p>Run as daemon on start-up:</p>
-<p>sudo ln -s /usr/local/etc/rc.d/couchdb /etc/init.d/couchdb
-sudo chkconfig --add couchdb</p>
+<p><!-- # ln -s /usr/local/etc/rc.d/couchdb /etc/init.d/couchdb -->
+<!-- # chkconfig --add couchdb -->
+<!-- # chkconfig --level 345 couchdb on --></p>
 </li>
 </ol>
 </div>

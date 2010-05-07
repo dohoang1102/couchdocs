@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -60,7 +60,7 @@
         
 </div>
       <div id="content">
-  <h2 id="making-a-release">Making a Release</h2>
+  <h2 id="making-a-source-release">Making a Source Release</h2>
 <h3 id="checklist">Checklist</h3>
 <ol>
 <li>Update the <code>README</code> file with important information.</li>
@@ -75,7 +75,7 @@
 
 <span class="n">svn</span> <span class="n">cp</span> <span class="nv">$repos</span><span class="sr">/trunk $repos/</span><span class="n">branches</span><span class="o">/</span><span class="n">Y</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span><span class="n">m</span> <span class="s">&#39;branching Y.Y.x&#39;</span>
 <span class="n">svn</span> <span class="n">cp</span> <span class="nv">$repos</span><span class="sr">/branches/</span><span class="n">Y</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">x</span> <span class="nv">$repos</span><span class="sr">/tags/</span><span class="n">Y</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Y</span> <span class="o">-</span><span class="n">m</span> <span class="s">&#39;tagging Y.Y.Y&#39;</span>
-<span class="n">svn</span> <span class="n">export</span> <span class="nv">$repos</span><span class="sr">/tags/</span><span class="n">Y</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Y</span> <span class="n">Y</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Y</span>
+<span class="n">svn</span> <span class="n">export</span> <span class="nv">$repos</span><span class="sr">/tags/</span><span class="n">Y</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Y</span>
 </pre></div>
 
 
@@ -88,8 +88,7 @@
 <p>If everything was successful you should see the following files
 sitting in the <code>export</code> directory ready for distribution:</p>
 <ul>
-<li>apache-couchdb-Y.Y.Y.tar.gz</li>
-<li>apache-couchdb-Y.Y.Y.tar.gz.asc</li>
+<li><a href="apache-couchdb-Y.Y.Y.tar.gz">apache-couchdb-Y.Y.Y.tar.gz</a>  * apache-couchdb-Y.Y.Y.tar.gz.asc</li>
 <li>apache-couchdb-Y.Y.Y.tar.gz.md5</li>
 <li>apache-couchdb-Y.Y.Y.tar.gz.sha</li>
 </ul>
@@ -114,7 +113,7 @@ sitting in the <code>export</code> directory ready for distribution:</p>
 
 
 <p>Then compare the tarball with the boostrapped source:</p>
-<div class="codehilite"><pre><span class="gh">diff -f apache-couchdb-Y.Y.Y Y.Y.x</span>
+<div class="codehilite"><pre><span class="gh">diff -f apache-couchdb-Y.Y.Y Y.Y.Y</span>
 </pre></div>
 
 
@@ -126,24 +125,23 @@ sitting in the <code>export</code> directory ready for distribution:</p>
 <li><a href="http://mail-archives.apache.org/mod_mbox/couchdb-dev/200907.mbox/%3C20090716211304.GA17172@tumbolia.org%3E">example couchdb-dev vote</a></li>
 <li><a href="http://mail-archives.apache.org/mod_mbox/couchdb-dev/200907.mbox/%3C20090722214200.GA11737@tumbolia.org%3E">example couchdb-dev vote results</a></li>
 </ul>
+<p>The Release Manager has the power to abort a vote at any point and for any reason.</p>
 <h3 id="making-the-release">Making the Release</h3>
 <ul>
 <li>Copy the release directory to <code>/www/www.apache.org/dist/couchdb</code> on <code>people.apache.org</code>.</li>
 <li>Wait for all changes to be synced to public mirrors.</li>
-<li>Update http://couchdb.apache.org/downloads.html</li>
-<li>Wait for all changes to be synced to the public site.</li>
+<li>Update <a href="http://couchdb.apache.org/downloads.html">http://couchdb.apache.org/downloads.html</a>  * Wait for all changes to be synced to the public site.</li>
 <li>Make a release announcement to the <a href="http://mail-archives.apache.org/mod_mbox/www-announce/">announce@apache.org</a>, <a href="http://mail-archives.apache.org/mod_mbox/couchdb-user/">user@couchdb.apache.org</a>, and <a href="http://mail-archives.apache.org/mod_mbox/couchdb-dev/">dev@couchdb.apache.org</a> mailing lists:</li>
 <li><a href="http://mail-archives.apache.org/mod_mbox/www-announce/200806.mbox/%3C20080625173452.GA14650@bytesexual.org%3E">example release announcement</a></li>
 <li><a href="https://issues.apache.org/jira/secure/project/ManageVersions.jspa?pid=12310780">Update versions</a> in JIRA.</li>
 <li>If the currently released version is 0.1.0, JIRA should have options for 0.1.1, 0.2.0, and 0.3.0.</li>
 <li>The released version should be marked as released in JIRA.</li>
 <li>Update the links on this page to most recent email archives.</li>
-<li>Call a discussion on the <a href="http://mail-archives.apache.org/mod_mbox/couchdb-dev/">couchdb-dev</a> mailing list about updating the <a href="http://couchdb.apache.org/roadmap.html">roadmap</a> and archiving old releases.</li>
+<li>Call a discussion on the <a href="http://mail-archives.apache.org/mod_mbox/couchdb-dev/">couchdb-dev</a> mailing list about archiving old releases.</li>
 </ul>
 <h2 id="useful-resources">Useful Resources</h2>
 <ul>
-<li>http://www.apache.org/dev/release.html</li>
-<li>http://incubator.apache.org/guides/releasemanagement.html#best-practice</li>
+<li><a href="http://www.apache.org/dev/release.html">http://www.apache.org/dev/release.html</a>  * <a href="http://incubator.apache.org/guides/releasemanagement.html#best-practice">http://incubator.apache.org/guides/releasemanagement.html#best-practice</a> </li>
 </ul>
 </div>
       <div id="footer">

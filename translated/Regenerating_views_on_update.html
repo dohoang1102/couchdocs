@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -61,16 +61,35 @@
 </div>
       <div id="content">
   <h1 id="update-views-on-document-save">Update views on document save</h1>
+<div class="toc">
+<ul>
+<li><a href="#update-views-on-document-save">Update views on document save</a><ul>
+<li><a href="#example-using-ruby">Example using ruby</a><ul>
+<li><a href="#couchini">couch.ini</a></li>
+<li><a href="#a-hrefview_updaterrbview_updaterrba"><a href="view_updater.rb">view_updater.rb</a></a></li>
+</ul>
+</li>
+<li><a href="#example-using-python">Example using Python</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <p>CouchDB defaults to regenerating views the first time they are accessed. This behavior is preferable in most cases as it optimizes the resource utilization on the database server. 
 On the other hand, in some situations the benefit of always having fast and updated views far outweigh the cost of regenerating them every time the database server receives updates. This can be achieved by supplying an updater script that calls the views when needed.</p>
 <h2 id="example-using-ruby">Example using ruby</h2>
 <h3 id="couchini">couch.ini</h3>
-<p>(0.8) Add the following line to the couch.ini file 
-        DbUpdateNotificationProcess=/PATH/TO/view_updater.rb</p>
-<p>(0.9) Add the following section to the local.ini file: 
-    [update_notification]
-    view_updater=/PATH/TO/view_updater.rb</p>
-<h3 id="view_updaterrb">view_updater.rb</h3>
+<p>(0.8) Add the following line to the couch.ini file</p>
+<div class="codehilite"><pre><span class="n">DbUpdateNotificationProcess</span><span class="o">=</span><span class="sr">/PATH/</span><span class="n">TO</span><span class="o">/</span><span class="n">view_updater</span><span class="o">.</span><span class="n">rb</span>
+</pre></div>
+
+
+<p>(0.9+) Add the following section to the local.ini file:</p>
+<div class="codehilite"><pre><span class="k">[update_notification]</span>
+<span class="na">view_updater</span><span class="o">=</span><span class="s">/PATH/TO/view_updater.rb</span>
+</pre></div>
+
+
+<h3 id="a-hrefview_updaterrbview_updaterrba"><a href="view_updater.rb">view_updater.rb</a></h3>
 <p>The following script updates the views for each tenth update made to the database or at most once every second when a lot of saves are performed </p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -177,100 +196,100 @@ On the other hand, in some situations the benefit of always having fast and upda
 
 <span class="o">&lt;!--</span> <span class="c1"># The smallest amount of changed documents before the views are updated --&gt;</span>
 
-<span class="n">MIN_NUM_OF_CHANGED_DOCS</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="no">MIN_NUM_OF_CHANGED_DOCS</span> <span class="o">=</span> <span class="mi">10</span>
 
 <span class="o">&lt;!--</span> <span class="c1"># URL to the DB on the CouchDB server --&gt;</span>
 
-<span class="n">URL</span> <span class="o">=</span> <span class="s">&quot;http://localhost:5984&quot;</span>
+<span class="no">URL</span> <span class="o">=</span> <span class="s2">&quot;http://localhost:5984&quot;</span>
 
 <span class="o">&lt;!--</span> <span class="c1"># Set the minimum pause between calls to the database --&gt;</span>
 
-<span class="n">PAUSE</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># seconds</span>
+<span class="no">PAUSE</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># seconds</span>
 
 <span class="o">&lt;!--</span> <span class="c1"># One entry for each design document --&gt;</span>
 <span class="o">&lt;!--</span> <span class="c1"># in each database --&gt;</span>
 
-<span class="n">VIEWS</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;my_db&quot;</span>  <span class="o">=&gt;</span> <span class="p">{</span><span class="s">&quot;design_doc&quot;</span> <span class="o">=&gt;</span> <span class="s">&quot;view_name&quot;</span><span class="p">}}</span>
+<span class="no">VIEWS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;my_db&quot;</span>  <span class="o">=&gt;</span> <span class="p">{</span><span class="s2">&quot;design_doc&quot;</span> <span class="o">=&gt;</span> <span class="s2">&quot;view_name&quot;</span><span class="p">}}</span>
 
 <span class="o">&lt;!--</span> <span class="c1">################### --&gt;</span>
 <span class="o">&lt;!--</span> <span class="c1"># RUNTIME         # --&gt;</span>
 <span class="o">&lt;!--</span> <span class="c1">################### --&gt;</span>
 
-<span class="n">run</span> <span class="o">=</span> <span class="n">true</span>
+<span class="n">run</span> <span class="o">=</span> <span class="kp">true</span>
 <span class="n">number_of_changed_docs</span> <span class="o">=</span> <span class="p">{}</span>
 
 <span class="n">threads</span> <span class="o">=</span> <span class="o">[]</span>
 
 <span class="o">&lt;!--</span> <span class="c1"># Updates the views --&gt;</span>
 
-<span class="n">threads</span> <span class="o">&lt;&lt;</span> <span class="n">Thread</span><span class="o">.</span><span class="k">new</span> <span class="k">do</span>
+<span class="n">threads</span> <span class="o">&lt;&lt;</span> <span class="no">Thread</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span>
 
   <span class="k">while</span> <span class="n">run</span> <span class="k">do</span>
 
     <span class="n">number_of_changed_docs</span><span class="o">.</span><span class="n">each_pair</span> <span class="k">do</span> <span class="o">|</span><span class="n">db_name</span><span class="p">,</span> <span class="n">number_of_docs</span><span class="o">|</span>
-      <span class="k">if</span> <span class="n">number_of_docs</span> <span class="o">&gt;=</span> <span class="n">MIN_NUM_OF_CHANGED_DOCS</span>
+      <span class="k">if</span> <span class="n">number_of_docs</span> <span class="o">&gt;=</span> <span class="no">MIN_NUM_OF_CHANGED_DOCS</span>
 
         <span class="c1"># Reset the value</span>
-        <span class="n">number_of_changed_docs</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">number_of_changed_docs</span><span class="o">[</span><span class="n">db_name</span><span class="o">]</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="c1"># If there are views in the database, get them</span>
-        <span class="k">if</span> <span class="n">VIEWS</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span>
-          <span class="n">VIEWS</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span><span class="o">.</span><span class="nb">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">design</span><span class="p">,</span> <span class="n">view</span><span class="o">|</span>
-            <span class="sb">`curl #{URL}/#{db_name}/_design/#{design}/_view/#{view}?limit=0`</span>
-          <span class="n">end</span>  
-        <span class="n">end</span>
+        <span class="k">if</span> <span class="no">VIEWS</span><span class="o">[</span><span class="n">db_name</span><span class="o">]</span>
+          <span class="no">VIEWS</span><span class="o">[</span><span class="n">db_name</span><span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">design</span><span class="p">,</span> <span class="n">view</span><span class="o">|</span>
+            <span class="sb">`curl </span><span class="si">#{</span><span class="no">URL</span><span class="si">}</span><span class="sb">/</span><span class="si">#{</span><span class="n">db_name</span><span class="si">}</span><span class="sb">/_design/</span><span class="si">#{</span><span class="n">design</span><span class="si">}</span><span class="sb">/_view/</span><span class="si">#{</span><span class="n">view</span><span class="si">}</span><span class="sb">?limit=0`</span>
+          <span class="k">end</span>  
+        <span class="k">end</span>
 
-      <span class="n">end</span>
-    <span class="n">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
 
     <span class="c1"># Pause before starting over again</span>
-    <span class="nb">sleep</span> <span class="n">PAUSE</span>
+    <span class="nb">sleep</span> <span class="no">PAUSE</span>
 
-  <span class="n">end</span>
+  <span class="k">end</span>
 
-<span class="n">end</span>
+<span class="k">end</span>
 
 <span class="o">&lt;!--</span> <span class="c1"># Receives the update notification from CouchDB --&gt;</span>
 
-<span class="n">threads</span> <span class="o">&lt;&lt;</span> <span class="n">Thread</span><span class="o">.</span><span class="k">new</span> <span class="k">do</span>
+<span class="n">threads</span> <span class="o">&lt;&lt;</span> <span class="no">Thread</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span>
 
   <span class="k">while</span> <span class="n">run</span> <span class="k">do</span>
 
-    <span class="bp">STDERR</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Waiting for input\n&quot;</span>
-    <span class="n">update_call</span> <span class="o">=</span> <span class="n">gets</span>
+    <span class="no">STDERR</span> <span class="o">&lt;&lt;</span> <span class="s2">&quot;Waiting for input</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="n">update_call</span> <span class="o">=</span> <span class="nb">gets</span>
 
     <span class="c1"># When CouchDB exits the script gets called with</span>
     <span class="c1"># a never ending series of nil</span>
-    <span class="k">if</span> <span class="n">update_call</span> <span class="o">==</span> <span class="n">nil</span>
-      <span class="n">run</span> <span class="o">=</span> <span class="n">false</span>
+    <span class="k">if</span> <span class="n">update_call</span> <span class="o">==</span> <span class="kp">nil</span>
+      <span class="n">run</span> <span class="o">=</span> <span class="kp">false</span>
     <span class="k">else</span>
 
       <span class="c1"># Get the database name out of the call data</span>
       <span class="c1"># The data looks somethind like this:</span>
       <span class="c1"># {&quot;type&quot;:&quot;updated&quot;,&quot;db&quot;:&quot;DB_NAME&quot;}\n</span>
-      <span class="n">update_call</span> <span class="o">=~</span><span class="sr"> /\&quot;db\&quot;:\&quot;(\w+)\&quot;/</span>
-      <span class="n">database_name</span> <span class="o">=</span> <span class="nv">$1</span>
+      <span class="n">update_call</span> <span class="o">=~</span> <span class="sr">/\&quot;db\&quot;:\&quot;(\w+)\&quot;/</span>
+      <span class="n">database_name</span> <span class="o">=</span> <span class="vg">$1</span>
 
       <span class="c1"># Set to 0 if it hasn&#39;t been initialized before</span>
-      <span class="n">number_of_changed_docs</span><span class="p">[</span><span class="nv">$1</span><span class="p">]</span> <span class="o">||=</span> <span class="mi">0</span>
+      <span class="n">number_of_changed_docs</span><span class="o">[</span><span class="vg">$1</span><span class="o">]</span> <span class="o">||=</span> <span class="mi">0</span>
 
       <span class="c1"># Add one pending changed document to the list of documents</span>
       <span class="c1"># in the DB</span>
-      <span class="n">number_of_changed_docs</span><span class="p">[</span><span class="nv">$1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+      <span class="n">number_of_changed_docs</span><span class="o">[</span><span class="vg">$1</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">1</span>
 
-    <span class="n">end</span>
+    <span class="k">end</span>
 
-  <span class="n">end</span>
+  <span class="k">end</span>
 
-<span class="n">end</span>
+<span class="k">end</span>
 
 <span class="o">&lt;!--</span> <span class="c1"># Good bye --&gt;</span>
 
-<span class="n">threads</span><span class="o">.</span><span class="nb">each</span> <span class="p">{</span><span class="o">|</span><span class="n">thr</span><span class="o">|</span> <span class="n">thr</span><span class="o">.</span><span class="nb">join</span><span class="p">}</span>
+<span class="n">threads</span><span class="o">.</span><span class="n">each</span> <span class="p">{</span><span class="o">|</span><span class="n">thr</span><span class="o">|</span> <span class="n">thr</span><span class="o">.</span><span class="n">join</span><span class="p">}</span>
 </pre></div>
 </td></tr></table>
 
-<p>The view_updater.rb itself has to be made executable by CouchDB (chmod 0700?).</p>
+<p>The <a href="view_updater.rb">view_updater.rb</a> itself has to be made executable by CouchDB (chmod 0700?).</p>
 <h2 id="example-using-python">Example using Python</h2>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
   2
@@ -494,7 +513,7 @@ On the other hand, in some situations the benefit of always having fast and upda
                     <span class="k">break</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">DB_NAME_EXPRESSION</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
-                    <span class="n">db_name</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">db_name</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                     <span class="c"># Set to 0 if it hasn&#39;t been initialized before</span>
                     <span class="k">if</span> <span class="n">db_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">changed_docs</span><span class="p">:</span>
                         <span class="n">changed_docs</span><span class="p">[</span><span class="n">db_name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>

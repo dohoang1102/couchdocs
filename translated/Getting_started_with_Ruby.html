@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -63,57 +63,105 @@
   <p>Getting started with Ruby and the CouchDB API.</p>
 <p>The following shows the basics of working with the raw CouchDB REST api from Ruby. If you want a richer interface that more tightly maps Couch documents into Ruby and also lets you save ruby objects directly to the database, you should check out the RubyLibrary.</p>
 <h2 id="example-wrapper-class">Example Wrapper Class</h2>
-<div class="codehilite"><pre><span class="nb">require</span> <span class="s">&#39;net/http&#39;</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49</pre></div></td><td class="code"><div class="codehilite"><pre><span class="nb">require</span> <span class="s1">&#39;net/http&#39;</span>
 
-<span class="n">module</span> <span class="n">Couch</span>
+<span class="k">module</span> <span class="nn">Couch</span>
 
-  <span class="n">class</span> <span class="n">Server</span>
-    <span class="n">def</span> <span class="n">initialize</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="n">nil</span><span class="p">)</span>
-      <span class="nv">@host</span> <span class="o">=</span> <span class="n">host</span>
-      <span class="nv">@port</span> <span class="o">=</span> <span class="n">port</span>
-      <span class="nv">@options</span> <span class="o">=</span> <span class="n">options</span>
-    <span class="n">end</span>
+  <span class="k">class</span> <span class="nc">Server</span>
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">options</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">)</span>
+      <span class="vi">@host</span> <span class="o">=</span> <span class="n">host</span>
+      <span class="vi">@port</span> <span class="o">=</span> <span class="n">port</span>
+      <span class="vi">@options</span> <span class="o">=</span> <span class="n">options</span>
+    <span class="k">end</span>
 
-    <span class="n">def</span> <span class="nb">delete</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-      <span class="n">request</span><span class="p">(</span><span class="nn">Net::HTTP::</span><span class="n">Delete</span><span class="o">.</span><span class="k">new</span><span class="p">(</span><span class="n">uri</span><span class="p">))</span>
-    <span class="n">end</span>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+      <span class="n">request</span><span class="p">(</span><span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">::</span><span class="no">Delete</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="p">))</span>
+    <span class="k">end</span>
 
-    <span class="n">def</span> <span class="n">get</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-      <span class="n">request</span><span class="p">(</span><span class="nn">Net::HTTP::</span><span class="n">Get</span><span class="o">.</span><span class="k">new</span><span class="p">(</span><span class="n">uri</span><span class="p">))</span>
-    <span class="n">end</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+      <span class="n">request</span><span class="p">(</span><span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">::</span><span class="no">Get</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="p">))</span>
+    <span class="k">end</span>
 
-    <span class="n">def</span> <span class="n">put</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">json</span><span class="p">)</span>
-      <span class="n">req</span> <span class="o">=</span> <span class="nn">Net::HTTP::</span><span class="n">Put</span><span class="o">.</span><span class="k">new</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-      <span class="n">req</span><span class="p">[</span><span class="s">&quot;content-type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;application/json&quot;</span>
+    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">json</span><span class="p">)</span>
+      <span class="n">req</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">::</span><span class="no">Put</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+      <span class="n">req</span><span class="o">[</span><span class="s2">&quot;content-type&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;application/json&quot;</span>
       <span class="n">req</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span>
       <span class="n">request</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
-    <span class="n">end</span>
+    <span class="k">end</span>
 
-    <span class="n">def</span> <span class="n">post</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">json</span><span class="p">)</span>
-      <span class="n">req</span> <span class="o">=</span> <span class="nn">Net::HTTP::</span><span class="n">Post</span><span class="o">.</span><span class="k">new</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
-      <span class="n">req</span><span class="p">[</span><span class="s">&quot;content-type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;application/json&quot;</span>
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">json</span><span class="p">)</span>
+      <span class="n">req</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">::</span><span class="no">Post</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+      <span class="n">req</span><span class="o">[</span><span class="s2">&quot;content-type&quot;</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;application/json&quot;</span>
       <span class="n">req</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span>
       <span class="n">request</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
-    <span class="n">end</span>
+    <span class="k">end</span>
 
-    <span class="n">def</span> <span class="n">request</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
-      <span class="n">res</span> <span class="o">=</span> <span class="nn">Net::</span><span class="n">HTTP</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="nv">@host</span><span class="p">,</span> <span class="nv">@port</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">http</span><span class="o">|</span><span class="n">http</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">req</span><span class="p">)</span> <span class="p">}</span>
-      <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">res</span><span class="o">.</span><span class="n">kind_of</span><span class="p">?(</span><span class="nn">Net::</span><span class="n">HTTPSuccess</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+      <span class="n">res</span> <span class="o">=</span> <span class="no">Net</span><span class="o">::</span><span class="no">HTTP</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="vi">@host</span><span class="p">,</span> <span class="vi">@port</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">http</span><span class="o">|</span><span class="n">http</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">req</span><span class="p">)</span> <span class="p">}</span>
+      <span class="k">unless</span> <span class="n">res</span><span class="o">.</span><span class="n">kind_of?</span><span class="p">(</span><span class="no">Net</span><span class="o">::</span><span class="no">HTTPSuccess</span><span class="p">)</span>
         <span class="n">handle_error</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
-      <span class="n">end</span>
+      <span class="k">end</span>
       <span class="n">res</span>
-    <span class="n">end</span>
+    <span class="k">end</span>
 
-    <span class="n">private</span>
+    <span class="kp">private</span>
 
-    <span class="n">def</span> <span class="n">handle_error</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
-      <span class="n">e</span> <span class="o">=</span> <span class="n">RuntimeError</span><span class="o">.</span><span class="k">new</span><span class="p">(</span><span class="s">&quot;#{res.code}:#{res.message}\nMETHOD:#{req.method}\nURI:#{req.path}\n#{res.body}&quot;</span><span class="p">)</span>
-      <span class="n">raise</span> <span class="n">e</span>
-    <span class="n">end</span>
-  <span class="n">end</span>
-<span class="n">end</span>
+    <span class="k">def</span> <span class="nf">handle_error</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+      <span class="n">e</span> <span class="o">=</span> <span class="no">RuntimeError</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">res</span><span class="o">.</span><span class="n">code</span><span class="si">}</span><span class="s2">:</span><span class="si">#{</span><span class="n">res</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="se">\n</span><span class="s2">METHOD:</span><span class="si">#{</span><span class="n">req</span><span class="o">.</span><span class="n">method</span><span class="si">}</span><span class="se">\n</span><span class="s2">URI:</span><span class="si">#{</span><span class="n">req</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="se">\n</span><span class="si">#{</span><span class="n">res</span><span class="o">.</span><span class="n">body</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="k">raise</span> <span class="n">e</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </pre></div>
-
+</td></tr></table>
 
 <h2 id="creating-a-database">Creating a Database</h2>
 <p>To create a database called <em>foo</em>:</p>

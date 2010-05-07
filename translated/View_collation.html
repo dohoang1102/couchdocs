@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -87,11 +87,11 @@
 <p>This trick was <a href="http://www.cmlenz.net/blog/2007/10/couchdb-joins.html">originally documented</a> by Christopher Lenz.</p>
 <h3 id="sorting-by-dates">Sorting by Dates</h3>
 <p>It maybe be convenient to store date attributes in a human readable format (i.e. as a String), but still sort by date. This can be done by converting the date to a number in the emit function. For example, given a document with a created_at attribute of 'Wed Jul 23 16:29:21 +0100 2008', the following emit function would sort by date</p>
-<div class="codehilite"><pre><span class="n">emit</span><span class="p">(</span><span class="n">Date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">created_at</span><span class="p">),</span> <span class="n">doc</span><span class="p">);</span>
+<div class="codehilite"><pre><span class="n">emit</span><span class="p">(</span><span class="n">Date</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">created_at</span><span class="p">)</span><span class="o">.</span><span class="n">getTime</span><span class="p">(),</span> <span class="n">doc</span><span class="p">);</span>
 </pre></div>
 
 
-<p>Alternatively, if you use a date format which sorts lexicographically, such as "2008/06/09 13:52:11 +0000" you can just </p>
+<p>Alternatively, if you use a date format which sorts lexicographically, such as "2008/06/09 13:52:11 +0000" you can just</p>
 <div class="codehilite"><pre><span class="n">emit</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">created_at</span><span class="p">,</span> <span class="n">doc</span><span class="p">);</span>
 </pre></div>
 
@@ -105,7 +105,7 @@
 
 
 <p>You should use:</p>
-<div class="codehilite"><pre><span class="n">startkey</span><span class="o">=</span><span class="s">&quot;abc&quot;</span><span class="o">&amp;</span><span class="n">endkey</span><span class="o">=</span><span class="s">&quot;abc\u9999&quot;</span>
+<div class="codehilite"><pre><span class="n">startkey</span><span class="o">=</span><span class="s">&quot;abc&quot;</span><span class="o">&amp;</span><span class="n">endkey</span><span class="o">=</span><span class="s">&quot;abc\ufff0&quot;</span>
 </pre></div>
 
 

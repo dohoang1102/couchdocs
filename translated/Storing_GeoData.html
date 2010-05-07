@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -61,8 +61,8 @@
 </div>
       <div id="content">
   <h1 id="using-couchdb-for-storing-google-geocoded-json-data">Using CouchDB For Storing Google Geocoded JSON Data</h1>
-<p>Google provides a free service that takes any string as an input and returns a bunch of JSON encoded data if that string matches a physical location.  Check it out here: http://code.google.com/apis/maps/documentation/services.html#Geocoding</p>
-<p>Unfortunately, Google's geocoding service is limited to 15k requests per day per IP.  Sounds like a lot, but for certain applications this limit can be reached very quickly.</p>
+<p>Google provides a free service that takes any string as an input and returns a bunch of JSON encoded data if that string matches a physical location.  Check it out here: <a href="http://code.google.com/apis/maps/documentation/services.html#Geocoding">http://code.google.com/apis/maps/documentation/services.html#Geocoding</a> 
+Unfortunately, Google's geocoding service is limited to 15k requests per day per IP.  Sounds like a lot, but for certain applications this limit can be reached very quickly.</p>
 <p>The following small library can help you get around these limitations by storing a local repository of data in CouchDB.  This is a nice fit because CouchDB is JSON-native and the data returned from google is JSON-native.</p>
 <p>The following is a rough and tumble library I put together called GeoCouch that you can use to easily handle geocoded data in CouchDB.  This lib has a narrow scope right now - the requirements are:</p>
 <ul>
@@ -70,7 +70,7 @@
 <li>CouchDB</li>
 <li>A Google API Key (http://code.google.com/apis/maps/signup.html)</li>
 </ul>
-<p>Download the file here: http://geocouch.googlecode.com/files/geocouch.php.  You can also find the full source at the bottom of the page.</p>
+<p>Download the file here: <a href="http://geocouch.googlecode.com/files/geocouch.php.">http://geocouch.googlecode.com/files/geocouch.php.</a>  You can also find the full source at the bottom of the page.</p>
 <h2 id="usage">Usage</h2>
 <div class="codehilite"><pre><span class="cp">&lt;?php</span>
     <span class="k">require</span> <span class="p">(</span><span class="s1">&#39;geocouch.php&#39;</span><span class="p">);</span>

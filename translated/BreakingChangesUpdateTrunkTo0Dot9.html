@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -73,7 +73,7 @@
 
 
 <p>Now that you have the latest CouchRest, you can download the script (see the bottom of this page) save it into a file <code>couchdb_trunk_update_script.rb</code>, adjust the <code>OLD_HOST</code> and <code>NEW_HOST</code> to reflect your environment, and start it up. It does give some output every 100 docs, so you won't be totally at a loss to what's happening.</p>
-<div class="codehilite"><pre><span class="n">ruby</span> <span class="n">couchdb_trunk_update_script</span><span class="o">.</span><span class="n">rb</span>
+<div class="codehilite"><pre>ruby <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;couchdb_trunk_update_script.rb&quot;</span><span class="nt">&gt;</span>couchdb_trunk_update_script.rb<span class="nt">&lt;/a&gt;</span>
 </pre></div>
 
 
@@ -82,12 +82,12 @@
 <p>If you have giant attachments, I'd do the docs one at a time, and stream each attachment individually. It'd probably be easier to shell out to curl from Ruby than to try to code it as a Ruby <code>Net::HTTP</code> operation.</p>
 <p>Dueling Couches
 To run CouchDB in two ports at once, you should run them in separate directories. The easiest way to do this from the source package is with the make dev target. You'll want to checkout CouchDB trunk in one directory, like so:</p>
-<div class="codehilite"><pre><span class="n">svn</span> <span class="n">co</span> <span class="n">https:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/couchdb/</span><span class="n">trunk</span>
+<div class="codehilite"><pre>svn co <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;https://svn.apache.org/repos/asf/couchdb/trunk&quot;</span><span class="nt">&gt;</span>https://svn.apache.org/repos/asf/couchdb/trunk<span class="nt">&lt;/a&gt;</span>
 </pre></div>
 
 
 <p>And then there's a handy tag of the last time the old file format was available, so check it out in another directory:</p>
-<div class="codehilite"><pre><span class="n">svn</span> <span class="n">co</span> <span class="n">https:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/couchdb/</span><span class="n">tags</span><span class="o">/</span><span class="n">bulk_transactions</span>
+<div class="codehilite"><pre>svn co <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;https://svn.apache.org/repos/asf/couchdb/tags/bulk_transactions&quot;</span><span class="nt">&gt;</span>https://svn.apache.org/repos/asf/couchdb/tags/bulk_transactions<span class="nt">&lt;/a&gt;</span>
 </pre></div>
 
 
@@ -127,27 +127,16 @@ To run CouchDB in two ports at once, you should run them in separate directories
 
 
 <p>Output should look something like:</p>
-<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">ruby</span> <span class="n">upgrade</span><span class="o">.</span><span class="n">rb</span> 
-<span class="n">canon</span> <span class="o">-</span> <span class="mi">1</span> <span class="n">docs</span>
-<span class="n">posting</span> <span class="mi">1</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/canon/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
-<span class="n">commit</span><span class="o">-</span><span class="n">hooks</span> <span class="o">-</span> <span class="mi">2</span> <span class="n">docs</span>
-<span class="n">posting</span> <span class="mi">2</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/commit-hooks/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
-<span class="n">drl</span> <span class="o">-</span> <span class="mi">297</span> <span class="n">docs</span>
-<span class="n">posting</span> <span class="mi">100</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/drl/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
-<span class="n">posting</span> <span class="mi">100</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/drl/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
-<span class="n">posting</span> <span class="mi">98</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/drl/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
-<span class="n">sofa</span><span class="o">-</span><span class="n">ajax</span> <span class="o">-</span> <span class="mi">2</span> <span class="n">docs</span>
-<span class="n">posting</span> <span class="mi">2</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/sofa-ajax/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
-<span class="n">sofa</span><span class="o">-</span><span class="n">blog</span> <span class="o">-</span> <span class="mi">23</span> <span class="n">docs</span>
-<span class="n">posting</span> <span class="mi">23</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/sofa-blog/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
-<span class="n">sofa</span><span class="o">-</span><span class="n">dev</span> <span class="o">-</span> <span class="mi">4</span> <span class="n">docs</span>
-<span class="n">posting</span> <span class="mi">4</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/sofa-dev/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
-<span class="n">twitter</span><span class="o">-</span><span class="n">client</span><span class="o">-</span><span class="n">design</span> <span class="o">-</span> <span class="mi">1</span> <span class="n">docs</span>
-<span class="n">posting</span> <span class="mi">1</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/twitter-client-design/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
-<span class="n">twitter</span><span class="o">-</span><span class="n">client</span> <span class="o">-</span> <span class="mi">14027</span> <span class="n">docs</span>
-<span class="n">posting</span> <span class="mi">100</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/twitter-client/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
-<span class="n">posting</span> <span class="mi">100</span> <span class="n">bulk</span> <span class="n">docs</span> <span class="n">to</span> <span class="n">http:</span><span class="sr">//</span><span class="n">jchrisa</span><span class="o">.</span><span class="n">net:5985</span><span class="sr">/twitter-client/</span><span class="n">_bulk_docs</span><span class="p">?</span><span class="n">all_or_nothing</span><span class="o">=</span><span class="n">true</span>
-<span class="o">...</span>
+<div class="codehilite"><pre>$ ruby <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;upgrade.rb&quot;</span><span class="nt">&gt;</span>upgrade.rb<span class="nt">&lt;/a&gt;</span> 
+canon - 1 docs
+posting 1 bulk docs to <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://jchrisa.net:5985/canon/_bulk_docs?all_or_nothing=true&quot;</span><span class="nt">&gt;</span>http://jchrisa.net:5985/canon/_bulk_docs?all_or_nothing=true<span class="nt">&lt;/a&gt;</span>     commit-hooks - 2 docs
+posting 2 bulk docs to <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://jchrisa.net:5985/commit-hooks/_bulk_docs?all_or_nothing=true&quot;</span><span class="nt">&gt;</span>http://jchrisa.net:5985/commit-hooks/_bulk_docs?all_or_nothing=true<span class="nt">&lt;/a&gt;</span>     drl - 297 docs
+posting 100 bulk docs to <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://jchrisa.net:5985/drl/_bulk_docs?all_or_nothing=true&quot;</span><span class="nt">&gt;</span>http://jchrisa.net:5985/drl/_bulk_docs?all_or_nothing=true<span class="nt">&lt;/a&gt;</span>     posting 100 bulk docs to <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://jchrisa.net:5985/drl/_bulk_docs?all_or_nothing=true&quot;</span><span class="nt">&gt;</span>http://jchrisa.net:5985/drl/_bulk_docs?all_or_nothing=true<span class="nt">&lt;/a&gt;</span>     posting 98 bulk docs to <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://jchrisa.net:5985/drl/_bulk_docs?all_or_nothing=true&quot;</span><span class="nt">&gt;</span>http://jchrisa.net:5985/drl/_bulk_docs?all_or_nothing=true<span class="nt">&lt;/a&gt;</span>     sofa-ajax - 2 docs
+posting 2 bulk docs to <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://jchrisa.net:5985/sofa-ajax/_bulk_docs?all_or_nothing=true&quot;</span><span class="nt">&gt;</span>http://jchrisa.net:5985/sofa-ajax/_bulk_docs?all_or_nothing=true<span class="nt">&lt;/a&gt;</span>     sofa-blog - 23 docs
+posting 23 bulk docs to <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://jchrisa.net:5985/sofa-blog/_bulk_docs?all_or_nothing=true&quot;</span><span class="nt">&gt;</span>http://jchrisa.net:5985/sofa-blog/_bulk_docs?all_or_nothing=true<span class="nt">&lt;/a&gt;</span>     sofa-dev - 4 docs
+posting 4 bulk docs to <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://jchrisa.net:5985/sofa-dev/_bulk_docs?all_or_nothing=true&quot;</span><span class="nt">&gt;</span>http://jchrisa.net:5985/sofa-dev/_bulk_docs?all_or_nothing=true<span class="nt">&lt;/a&gt;</span>     twitter-client-design - 1 docs
+posting 1 bulk docs to <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://jchrisa.net:5985/twitter-client-design/_bulk_docs?all_or_nothing=true&quot;</span><span class="nt">&gt;</span>http://jchrisa.net:5985/twitter-client-design/_bulk_docs?all_or_nothing=true<span class="nt">&lt;/a&gt;</span>     twitter-client - 14027 docs
+posting 100 bulk docs to <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://jchrisa.net:5985/twitter-client/_bulk_docs?all_or_nothing=true&quot;</span><span class="nt">&gt;</span>http://jchrisa.net:5985/twitter-client/_bulk_docs?all_or_nothing=true<span class="nt">&lt;/a&gt;</span>     posting 100 bulk docs to <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://jchrisa.net:5985/twitter-client/_bulk_docs?all_or_nothing=true&quot;</span><span class="nt">&gt;</span>http://jchrisa.net:5985/twitter-client/_bulk_docs?all_or_nothing=true<span class="nt">&lt;/a&gt;</span>     ...
 </pre></div>
 </div>
       <div id="footer">

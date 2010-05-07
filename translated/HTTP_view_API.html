@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -90,30 +90,47 @@
 <h2 id="creating-views">Creating Views</h2>
 <p>To create a permanent view, the functions must first be saved into special <em>design documents</em> (well, they are not really special, we just call them special but in reality, they are regular documents, just with a special ID). The IDs of design documents must begin with <em>_design/</em> and have a special views attribute that have a <em>map</em> member and an optional <em>reduce</em> member to hold the view functions. All the views in one design document are indexed whenever any of them gets queried.</p>
 <p>A design document that defines <em>all</em>, <em>by_lastname</em>, and <em>total_purchases</em> views might look like this:</p>
-<div class="codehilite"><pre><span class="p">{</span>
-  <span class="s">&quot;_id&quot;</span><span class="p">:</span><span class="s">&quot;_design/company&quot;</span><span class="p">,</span>
-  <span class="s">&quot;_rev&quot;</span><span class="p">:</span><span class="s">&quot;12345&quot;</span><span class="p">,</span>
-  <span class="s">&quot;language&quot;</span><span class="p">:</span> <span class="s">&quot;javascript&quot;</span><span class="p">,</span>
-  <span class="s">&quot;views&quot;</span><span class="p">:</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span>
+  <span class="s2">&quot;_id&quot;</span><span class="o">:</span><span class="s2">&quot;_design/company&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;_rev&quot;</span><span class="o">:</span><span class="s2">&quot;12345&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;language&quot;</span><span class="o">:</span> <span class="s2">&quot;javascript&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;views&quot;</span><span class="o">:</span>
   <span class="p">{</span>
-    <span class="s">&quot;all&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s">&quot;map&quot;</span><span class="p">:</span> <span class="s">&quot;function(doc) { if (doc.Type == &#39;customer&#39;)  emit(null, doc) }&quot;</span>
+    <span class="s2">&quot;all&quot;</span><span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;map&quot;</span><span class="o">:</span> <span class="s2">&quot;function(doc) { if (doc.Type == &#39;customer&#39;)  emit(null, doc) }&quot;</span>
     <span class="p">},</span>
-    <span class="s">&quot;by_lastname&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s">&quot;map&quot;</span><span class="p">:</span> <span class="s">&quot;function(doc) { if (doc.Type == &#39;customer&#39;)  emit(doc.LastName, doc) }&quot;</span>
+    <span class="s2">&quot;by_lastname&quot;</span><span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;map&quot;</span><span class="o">:</span> <span class="s2">&quot;function(doc) { if (doc.Type == &#39;customer&#39;)  emit(doc.LastName, doc) }&quot;</span>
     <span class="p">},</span>
-    <span class="s">&quot;total_purchases&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s">&quot;map&quot;</span><span class="p">:</span> <span class="s">&quot;function(doc) { if (doc.Type == &#39;purchase&#39;)  emit(doc.Customer, doc.Amount) }&quot;</span><span class="p">,</span>
-      <span class="s">&quot;reduce&quot;</span><span class="p">:</span> <span class="s">&quot;function(keys, values) { return sum(values) }&quot;</span>
+    <span class="s2">&quot;total_purchases&quot;</span><span class="o">:</span> <span class="p">{</span>
+      <span class="s2">&quot;map&quot;</span><span class="o">:</span> <span class="s2">&quot;function(doc) { if (doc.Type == &#39;purchase&#39;)  emit(doc.Customer, doc.Amount) }&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;reduce&quot;</span><span class="o">:</span> <span class="s2">&quot;function(keys, values) { return sum(values) }&quot;</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>The <em>language</em> property tells CouchDB the language of the view functions, which it uses to select the appropriate ViewServer (as specified in your couch.ini file). The default is to assume Javascript, so this property can be omitted for Javascript views.</p>
 <h2 id="alteringchanging-views">Altering/Changing Views</h2>
-<p>To change a view or multiple view just alter the design document (see HttpDocumentApi) they are stored in and save it as a new revision.</p>
+<p>To change a view or multiple view just alter the design document (see HttpDocumentApi) they are stored in and save it as a new revision. This causes all the views in that design document to be rebuilt on the next access in case the view code has been changed.</p>
 <h2 id="accessquery">Access/Query</h2>
 <p>Once this document is saved into a database, then the <em>all</em> view can be retrieved at the URL:</p>
 <p>http://localhost:5984/database/_design/company/_view/all</p>
@@ -168,30 +185,29 @@
 
 <h2 id="querying-options">Querying Options</h2>
 <p>Columns can be a list of values, there is no set limit to the number of values or amount of data that columns can hold.</p>
-<p>The following URL query arguments are allowed:</p>
-<ul>
-<li>GET<ul>
-<li>key=keyvalue</li>
-<li>startkey=keyvalue</li>
-<li>startkey_docid=docid</li>
-<li>endkey=keyvalue</li>
-<li>endkey_docid=docid</li>
-<li>limit=max rows to return <em>This used to be called "count" previous to Trunk SVN r731159</em></li>
-<li>stale=ok</li>
-<li>descending=true</li>
-<li>skip=number of rows to skip</li>
-<li>group=true <em>Version 0.8.0 and forward</em></li>
-<li>group_level=int</li>
-<li>reduce=false <em>(since 0.9)</em></li>
-<li>include_docs=true <em>(since 0.9)</em></li>
-<li>inclusive_end=true</li>
-</ul>
-</li>
-<li>POST<ul>
-<li>{"keys": ["key1", "key2", ...]} <em>(since 0.9)</em></li>
-</ul>
-</li>
-</ul>
+<p>The following URL query arguments for <strong>GET/HEAD</strong> requests are allowed:
+<table>
+<tr><td><strong>Parameter</strong></td><td><strong>Value</strong></td><td><strong>Default value</strong></td><td><strong>Description</strong></td></tr>
+<tr><td><strong>key</strong></td><td><em>key-value</em></td><td><em>-</em></td><td><strong>Must</strong> be a proper URL encoded JSON value</td></tr>
+<tr><td><strong>startkey</strong></td><td><em>key-value</em></td><td><em>-</em></td><td><strong>Must</strong> be a proper URL encoded JSON value</td></tr>
+<tr><td><strong>startkey_docid</strong></td><td><em>document id</em></td><td><em>-</em></td><td>document id to start with</td></tr>
+<tr><td><strong>endkey</strong></td><td><em>key-value</em></td><td><em>-</em></td><td><strong>Must</strong> be a proper URL encoded JSON value</td></tr>
+<tr><td><strong>endkey_docid</strong></td><td><em>endkey_docid</em></td><td><em>-</em></td><td>last document id to include in the output</td></tr>
+<tr><td><strong>limit</strong></td><td><em>number of docs</em></td><td><em>-</em></td><td>Limit the number of documents in the output</td></tr>
+<tr><td><strong>stale</strong></td><td><em>ok</em></td><td><em>-</em></td><td>If <strong>stale=ok</strong> is set CouchDB will not refresh the view even if it is stalled.</td></tr>
+<tr><td><strong>descending</strong></td><td><em>true / false</em></td><td><em>false</em></td><td>reverse the output</td></tr>
+<tr><td><strong>skip</strong></td><td><em>number of docs</em></td><td><em>0</em></td><td>skip <em>n</em> number of documents</td></tr>
+<tr><td><strong>group</strong></td><td><em>true</em></td><td><em>false</em></td><td>The group option controls whether the reduce function reduces to a set of distinct keys or to a single result row.</td></tr>
+<tr><td><strong>group_level</strong></td><td><em>number</em></td><td><em>-</em></td><td><em>see below</em></td></tr>
+<tr><td><strong>reduce</strong></td><td><em>true / false</em></td><td><em>true</em></td><td>use the reduce function of the view. It defaults to true, if a reduce function is defined and to false otherwise.</td></tr>
+<tr><td><strong>include_docs</strong></td><td><em>true / false</em></td><td><em>false</em></td><td>automatically fetch and include the document which emitted each view entry</td></tr>
+<tr><td><strong>inclusive_end</strong></td><td><em>true / false</em></td><td><em>false</em></td><td></td></tr>
+</table></p>
+<p>Since 0.9 you can also issue <strong>POST</strong> requests to views where you can send the following JSON structure in the body:</p>
+<div class="codehilite"><pre><span class="p">{</span><span class="s">&quot;keys&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;key1&quot;</span><span class="p">,</span> <span class="s">&quot;key2&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">]}</span>
+</pre></div>
+
+
 <p><em>key</em>, <em>startkey</em>, and <em>endkey</em> need to be properly JSON encoded values. For example, startkey="string" for a string value or startkey=["foo", 1, {}]. Be aware that you have to do proper URL encoding on complex values. </p>
 <p>A JSON structure of <em>{"keys": ["key1", "key2", ...]}</em> can be posted to any user defined view or <em>_all_docs</em> to retrieve just the view rows matching that set of keys. Rows are returned in the order of the keys specified. Combining this feature with <em>include_docs=true</em> results in the so-called <em>multi-document-fetch</em> feature. </p>
 <p>If you specify <em>?limit=0</em> you don't get any data, but all meta-data for this View. The number of documents in this View for example.</p>
@@ -209,22 +225,35 @@
 
 
 <p>will produce something like this:</p>
-<div class="codehilite"><pre><span class="p">{</span>
-    <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;test&quot;</span><span class="p">,</span> 
-    <span class="s">&quot;view_index&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s">&quot;compact_running&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span> 
-        <span class="s">&quot;disk_size&quot;</span><span class="p">:</span> <span class="mi">4188</span><span class="p">,</span> 
-        <span class="s">&quot;language&quot;</span><span class="p">:</span> <span class="s">&quot;javascript&quot;</span><span class="p">,</span> 
-        <span class="s">&quot;purge_seq&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
-        <span class="s">&quot;signature&quot;</span><span class="p">:</span> <span class="s">&quot;07ca32cf9b0de9c915c5d9ce653cdca3&quot;</span><span class="p">,</span> 
-        <span class="s">&quot;update_seq&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> 
-        <span class="s">&quot;updater_running&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span> 
-        <span class="s">&quot;waiting_clients&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
-        <span class="s">&quot;waiting_commit&quot;</span><span class="p">:</span> <span class="n">false</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;test&quot;</span><span class="p">,</span> 
+    <span class="s2">&quot;view_index&quot;</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;compact_running&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span> 
+        <span class="s2">&quot;disk_size&quot;</span><span class="o">:</span> <span class="mi">4188</span><span class="p">,</span> 
+        <span class="s2">&quot;language&quot;</span><span class="o">:</span> <span class="s2">&quot;javascript&quot;</span><span class="p">,</span> 
+        <span class="s2">&quot;purge_seq&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> 
+        <span class="s2">&quot;signature&quot;</span><span class="o">:</span> <span class="s2">&quot;07ca32cf9b0de9c915c5d9ce653cdca3&quot;</span><span class="p">,</span> 
+        <span class="s2">&quot;update_seq&quot;</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span> 
+        <span class="s2">&quot;updater_running&quot;</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span> 
+        <span class="s2">&quot;waiting_clients&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> 
+        <span class="s2">&quot;waiting_commit&quot;</span><span class="o">:</span> <span class="kc">false</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <h3 id="meaning-of-the-status-hash">Meaning of the status hash</h3>
 <p>||<strong>Key</strong>||&lt;-2&gt;<strong>Description</strong>||
@@ -243,11 +272,13 @@
 <h2 id="debugging-views">Debugging Views</h2>
 <p>When creating views, CouchDB will check the syntax of the submitted JSON, but the view functions themselves will not be syntax checked by the Javascript interpreter. And if any one of the view functions has a syntax error, none of the view functions in that design document will execute. Perhaps test your functions in a temporary view before saving them in the database.</p>
 <p>As of r660140 there is a log function available in the views, which logs to the couch.log. It can be helpful for debugging but hinders performance, so it should be used sparingly in production systems.</p>
-<div class="codehilite"><pre><span class="p">{</span>
-  <span class="s">&quot;map&quot;</span><span class="p">:</span> <span class="s">&quot;function(doc) { log(doc); }&quot;</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span>
+  <span class="s2">&quot;map&quot;</span><span class="o">:</span> <span class="s2">&quot;function(doc) { log(doc); }&quot;</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>Playing with (malformed) views is currently the best way to bring the couchdb server in an unstable state. Also the Futon Web-Client does not interact very well with errors in views. Some suggestions for view development:</p>
 <ul>
@@ -260,6 +291,7 @@
 </ul>
 <h2 id="sharing-code-between-views">Sharing Code Between Views</h2>
 <p>There are no development plans to share code/functions between views.  Each view function is stored according to a hash of their byte representation, so it is important that a function does not load any additional code, changing its behavior without changing its byte-string.  Hence the use-case for <a href="http://github.com/couchapp/couchapp">CouchApp</a>.</p>
+<p>Since CouchDB 0.11 it is possible to share code in <code>show</code>, <code>list</code>, <code>update</code>, and <code>validation</code> functions. See <a class="internal" href="CommonJS_Modules.html">CommonJS_Modules</a> for details.</p>
 <h2 id="view-cleanup">View Cleanup</h2>
 <p>Old view output remains on disk until you explicitly run cleanup. To run cleanup for a particular database;</p>
 <div class="codehilite"><pre><span class="n">POST</span> <span class="sr">/some_database/</span><span class="n">_view_cleanup</span>
@@ -288,18 +320,27 @@
 
 
 <p>Could result in the following response:</p>
-<div class="codehilite"><pre><span class="p">{</span>
-  <span class="s">&quot;total_rows&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-  <span class="s">&quot;offset&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="s">&quot;rows&quot;</span><span class="p">:</span> <span class="p">[{</span>
-      <span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;AE1AD84316B903AD46EF396CAFE8E50F&quot;</span><span class="p">,</span>
-      <span class="s">&quot;key&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
-      <span class="s">&quot;foo&quot;</span><span class="p">:</span> <span class="s">&quot;bar&quot;</span>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="codehilite"><pre><span class="p">{</span>
+  <span class="s2">&quot;total_rows&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="s2">&quot;offset&quot;</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="s2">&quot;rows&quot;</span><span class="o">:</span> <span class="p">[{</span>
+      <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="s2">&quot;AE1AD84316B903AD46EF396CAFE8E50F&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;key&quot;</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+      <span class="s2">&quot;foo&quot;</span><span class="o">:</span> <span class="s2">&quot;bar&quot;</span>
     <span class="p">}</span>
   <span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
-
+</td></tr></table>
 
 <p>NOTE: couchdb 0.9.0 requires <code>Content-Type: application/json</code> on POSTs to _temp_view</p>
 </div>

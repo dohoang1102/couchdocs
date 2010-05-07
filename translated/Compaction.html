@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -75,18 +75,18 @@
 </ul>
 </div>
 <h2 id="database-compaction">Database Compaction</h2>
-<p>Compaction compresses the database file by removing unused sections created during updates. Old revisions of documents are also removed from the database though a small amount of meta data is kept for use in conflict <a href="Replication">replication</a> during replication. The number of revisions (default of 1000) can be configured using the <code>_revs_limit</code> URL endpoint (see [[HTTP_database_API#Accessing_Database-specific_options]]). It is available since version 0.8-incubating.</p>
+<p>Compaction compresses the database file by removing unused sections created during updates. Old revisions of documents are also removed from the database though a small amount of meta data is kept for use in conflict <a class="internal" href="Replication.html">Replication</a> during replication. The number of revisions (default of 1000) can be configured using the <code>_revs_limit</code> URL endpoint (see [[HTTP_database_API#Accessing_Database-specific_options]]). It is available since version 0.8-incubating.</p>
 <p>Compaction is manually triggered per database. Support for queued compaction of multiple databases is planned. Please note, that compaction will be run as a background task.</p>
 <h3 id="example">Example</h3>
 <p>Compaction is triggered by an HTTP post request to the _compact sub-resource of your database. On success, HTTP status 202 is returned immediately.</p>
-<div class="codehilite"><pre>    <span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="n">http:</span><span class="sr">//</span><span class="n">localhost:5984</span><span class="sr">/my_db/</span><span class="n">_compact</span>
-    <span class="c1">#=&gt; {&quot;ok&quot;:true}</span>
+<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="n">http:</span><span class="sr">//</span><span class="n">localhost:5984</span><span class="sr">/my_db/</span><span class="n">_compact</span>
+<span class="o">&lt;!--</span> <span class="c1">#=&gt; {&quot;ok&quot;:true} --&gt;</span>
 </pre></div>
 
 
 <p>GET requesting your database base URL ( see [[HTTP_database_API#Database_Information]] ) gives a hash of statuses that look like this:</p>
-<div class="codehilite"><pre>    <span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">GET</span> <span class="n">http:</span><span class="sr">//</span><span class="n">localhost</span><span class="o">/</span><span class="n">my_db</span>
-    <span class="c1">#=&gt; {&quot;db_name&quot;:&quot;my_db&quot;, &quot;doc_count&quot;:1, &quot;doc_del_count&quot;:1, &quot;update_seq&quot;:4, &quot;purge_seq&quot;:0, &quot;compact_running&quot;:false, &quot;disk_size&quot;:12377, &quot;instance_start_time&quot;:&quot;1267612389906234&quot;, &quot;disk_format_version&quot;:5}</span>
+<div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">GET</span> <span class="n">http:</span><span class="sr">//</span><span class="n">localhost</span><span class="o">/</span><span class="n">my_db</span>
+<span class="o">&lt;!--</span> <span class="c1">#=&gt; {&quot;db_name&quot;:&quot;my_db&quot;, &quot;doc_count&quot;:1, &quot;doc_del_count&quot;:1, &quot;update_seq&quot;:4, &quot;purge_seq&quot;:0, &quot;compact_running&quot;:false, &quot;disk_size&quot;:12377, &quot;instance_start_time&quot;:&quot;1267612389906234&quot;, &quot;disk_format_version&quot;:5} --&gt;</span>
 </pre></div>
 
 
@@ -99,13 +99,13 @@ writers. It is a design limitation that database compaction can't complete when 
 <p>In a clustered environment the write load can be switched off for any node before compaction and brought back up to date with replication once complete. </p>
 <p>In the future, a single CouchDB node can be changed to stop or fail other updates if the write load is too heavy for it to complete in a reasonable time.</p>
 <h2 id="view-compaction">View compaction</h2>
-<p><a href="Introduction_to_CouchDB_views">Views</a> need compaction like databases. There is a compact views feature introduced with CouchDB 0.11:</p>
+<p><a class="internal" href="Introduction_to_CouchDB_views.html">Introduction_to_CouchDB_views</a> need compaction like databases. There is a compact views feature introduced with CouchDB 0.11:</p>
 <div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="n">http:</span><span class="sr">//</span><span class="n">localhost:5984</span><span class="sr">/dbname/</span><span class="n">_compact</span><span class="o">/</span><span class="n">designname</span>
 <span class="o">&lt;!--</span> <span class="c1">#=&gt; {&quot;ok&quot;:true} --&gt;</span>
 </pre></div>
 
 
-<p>This compacts the view index from the current version of the design document. The HTTP response code is 202 Accepted (like compaction for databases) and a compaction background task will be created. Information on running compations can be fetched with <a href="HTTP_view_API#Getting_Information_about_Design_Documents_.28and_their_Views.29">HTTP_view_API#Getting_Information_about_Design_Documents_(and_their_Views)</a>.</p>
+<p>This compacts the view index from the current version of the design document. The HTTP response code is 202 Accepted (like compaction for databases) and a compaction background task will be created. Information on running compations can be fetched with [[HTTP_view_API#Getting_Information_about_Design_Documents_.28and_their_Views.29]].</p>
 <p>View indexes on disk are named after their MD5 hash of the view definition. When you change a view, old indexes remain on disk. To clean up all outdated view indexes (files named after the MD5 representation of views, that does not exist anymore) you can trigger a view cleanup:</p>
 <div class="codehilite"><pre><span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">POST</span> <span class="n">http:</span><span class="sr">//</span><span class="n">localhost:5984</span><span class="sr">/dbname/</span><span class="n">_view_cleanup</span>
 <span class="o">&lt;!--</span> <span class="c1">#=&gt; {&quot;ok&quot;:true} --&gt;</span>

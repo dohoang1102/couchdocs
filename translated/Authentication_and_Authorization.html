@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -218,7 +218,7 @@ authentication handler.</p>
 <li>
 <p>in default.d create a file oauth.ini, with contents:</p>
 <p>[oauth_consumer_secrets]
-example.com = sekr1t
+<a href="example.com">example.com</a> = sekr1t
 [oauth_token_secrets]
 user1 = tokensekr1t
 [oauth_token_users]
@@ -232,10 +232,7 @@ user1 = admin_user</p>
 <p>authentication_handlers = {couch_httpd_oauth, oauth_authentication_handler}</p>
 </li>
 <li>
-<p>Install Leah Culver's version of the python oauth library: http://github.com/leah/python-oauth/tree/master</p>
-</li>
-<li>
-<p>Run the following command from the command line (should be one long line):</p>
+<p>Install Leah Culver's version of the python oauth library: <a href="http://github.com/leah/python-oauth/tree/master">http://github.com/leah/python-oauth/tree/master</a>  1. Run the following command from the command line (should be one long line):</p>
 <p>python -c "URL='http://127.0.0.1:5984/_session';KEY='example.com';TOKEN='user1';SECRET='tokensekr1t';import oauth,httplib;consumer=oauth.OAuthConsumer(KEY,'sekr1t');token=oauth.OAuthToken(TOKEN,SECRET);rq=oauth.OAuthRequest.from_consumer_and_token(consumer,token=token,http_method='GET',http_url=URL,parameters={});rq.sign_request(oauth.OAuthSignatureMethod_HMAC_SHA1(),consumer,token); con=httplib.HTTPConnection('localhost:5984'); con.request('GET',URL,headers=rq.to_header()); print con.getresponse().read()"</p>
 </li>
 </ol>

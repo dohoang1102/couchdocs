@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -62,8 +62,7 @@
       <div id="content">
   <h2 id="unofficial-binary-packages">Unofficial Binary Packages</h2>
 <ul>
-<li>If you just want to give CouchDB a shot and don't like the command line based installation, you can get this unofficial binary release for Mac OS X 10.5 Leopard and Intel Macs only: http://janl.github.com/couchdbx/</li>
-<li>Nightly build of CouchDB for OS X: http://couch.lstoll.net/nightly/</li>
+<li>If you just want to give CouchDB a shot and don't like the command line based installation, you can get this unofficial binary release for Mac OS X 10.5 Leopard and Intel Macs only: <a href="http://janl.github.com/couchdbx/">http://janl.github.com/couchdbx/</a>  * Nightly build of CouchDB for OS X: <a href="http://couch.lstoll.net/nightly/">http://couch.lstoll.net/nightly/</a> </li>
 </ul>
 <h2 id="macports">MacPorts</h2>
 <p>To install CouchDB using MacPorts</p>
@@ -99,13 +98,13 @@
 </pre></div>
 
 
-<p>You will need to upgrade flex: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=465039</p>
+<p>You will need to upgrade flex: <a href="http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=465039">http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=465039</a> </p>
 <h2 id="typical-build-process-of-a-couchdb-developer-build">Typical build process of a CouchDB developer build</h2>
-<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">svn</span> <span class="n">co</span> <span class="n">http:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/couchdb/</span><span class="n">trunk</span> <span class="n">couchdb</span>
-<span class="nv">$</span> <span class="nv">cd</span> <span class="n">couchdb</span>
-<span class="nv">$</span> <span class="err">./</span><span class="nv">bootstrap</span> <span class="o">&amp;&amp;</span> <span class="o">./</span><span class="n">configure</span>
-<span class="nv">$</span> <span class="nv">make</span>
-<span class="nv">$</span> <span class="nv">sudo</span> <span class="n">make</span> <span class="n">install</span>
+<div class="codehilite"><pre>$ svn co <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://svn.apache.org/repos/asf/couchdb/trunk&quot;</span><span class="nt">&gt;</span>http://svn.apache.org/repos/asf/couchdb/trunk<span class="nt">&lt;/a&gt;</span> couchdb
+$ cd couchdb
+$ ./bootstrap <span class="err">&amp;&amp;</span> ./configure
+$ make
+$ sudo make install
 </pre></div>
 
 
@@ -114,28 +113,32 @@
 <ol>
 <li>
 <p>Install ICU</p>
-<p>$ curl -O http://download.icu-project.org/files/icu4c/4.2.1/icu4c-4_2_1-src.tgz
-$ tar xvzf icu4c-4_2_1-src.tgz
+<p>$ curl -O <a href="http://download.icu-project.org/files/icu4c/4.2.1/icu4c-4_2_1-src.tgz">http://download.icu-project.org/files/icu4c/4.2.1/icu4c-4_2_1-src.tgz</a>     $ tar xvzf icu4c-4_2_1-src.tgz
 $ cd icu/source
 $ ./runConfigureICU MacOSX --with-library-bits=64 --disable-samples --enable-static # if this fails for you try: ./configure --enable-64bit-libs
 $ make
 $ sudo make install</p>
 </li>
-<li>
-<p>Install SpiderMonkey</p>
-</li>
+</ol>
+<p>I couldn't get the above to work on 64bit Snow Leopard 10.6.3, but I did find a fix for the configure file that will make it compile in 64bit correctly.</p>
+<div class="codehilite"><pre><span class="o">-</span> <span class="o">*-</span><span class="n">arch</span><span class="o">*</span><span class="n">ppc</span><span class="o">*|*-</span><span class="n">arch</span><span class="o">*</span><span class="n">i386</span><span class="o">*|*-</span><span class="n">arch</span><span class="o">*</span><span class="n">x86_64</span><span class="o">*</span><span class="p">)</span> <span class="n">ac_cv_c_bigendian</span><span class="o">=</span><span class="n">universal</span><span class="p">;;</span>
+<span class="o">+</span> <span class="o">*-</span><span class="n">arch</span><span class="o">*</span><span class="n">ppc</span><span class="o">*</span><span class="p">)</span> <span class="n">ac_cv_c_bigendian</span><span class="o">=</span><span class="n">yes</span><span class="p">;;</span>
+</pre></div>
+
+
+<p>find the first line with the - in configure and replace it with the second line with the +
+in the ICU 4.4.1 release this line is at 8002, if Erlang is compiled with 64bit and you patch the ICU configure to compile in 64bit then CouchDB will build and run correctly on 64bit OSX 10.6.x</p>
+<ol>
+<li>Install SpiderMonkey</li>
 </ol>
 <p>We need <a href="http://svn.macports.org/repository/macports/trunk/dports/lang/spidermonkey/files/patch-jsprf.c">jsprf patch</a> from the MacPorts project to install SpiderMonkey.</p>
-<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">O</span> <span class="n">http:</span><span class="sr">//</span><span class="n">ftp</span><span class="o">.</span><span class="n">mozilla</span><span class="o">.</span><span class="n">org</span><span class="sr">/pub/mo</span><span class="n">zilla</span><span class="o">.</span><span class="n">org</span><span class="sr">/js/</span><span class="n">js</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">7</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
-<span class="nv">$</span> <span class="nv">curl</span> <span class="o">-</span><span class="n">O</span> <span class="n">http:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">macports</span><span class="o">.</span><span class="n">org</span><span class="sr">/repository/m</span><span class="n">acports</span><span class="sr">/trunk/</span><span class="n">dports</span><span class="sr">/lang/s</span><span class="n">pidermonkey</span><span class="sr">/files/</span><span class="n">patch</span><span class="o">-</span><span class="n">jsprf</span><span class="o">.</span><span class="n">c</span>
-<span class="nv">$</span> <span class="nv">tar</span> <span class="n">xvzf</span> <span class="n">js</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">7</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
-<span class="nv">$</span> <span class="nv">cd</span> <span class="n">js</span><span class="o">/</span><span class="n">src</span>
-<span class="nv">$</span> <span class="nv">patch</span> <span class="o">-</span><span class="n">p0</span> <span class="o">-</span><span class="n">i</span> <span class="o">..</span><span class="sr">/../</span><span class="n">patch</span><span class="o">-</span><span class="n">jsprf</span><span class="o">.</span><span class="n">c</span>
-<span class="nv">$</span> <span class="nv">make</span> <span class="o">-</span><span class="n">f</span> <span class="n">Makefile</span><span class="o">.</span><span class="nb">ref</span>
-<span class="nv">$</span> <span class="nv">sudo</span> <span class="n">su</span>
-<span class="nv">$</span> <span class="nv">JS_DIST</span><span class="o">=</span><span class="sr">/usr/</span><span class="nb">local</span><span class="o">/</span><span class="n">spidermonkey</span> <span class="n">make</span> <span class="o">-</span><span class="n">f</span> <span class="n">Makefile</span><span class="o">.</span><span class="nb">ref</span> <span class="n">export</span>
-<span class="nv">$</span> <span class="nv">exit</span>
-<span class="nv">$</span> <span class="nv">sudo</span> <span class="n">ranlib</span> <span class="sr">/usr/</span><span class="nb">local</span><span class="sr">/spidermonkey/</span><span class="n">lib</span><span class="o">/</span><span class="n">libjs</span><span class="o">.</span><span class="n">a</span>
+<div class="codehilite"><pre>$ curl -O <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://ftp.mozilla.org/pub/mozilla.org/js/js-1.7.0.tar.gz&quot;</span><span class="nt">&gt;</span>http://ftp.mozilla.org/pub/mozilla.org/js/js-1.7.0.tar.gz<span class="nt">&lt;/a&gt;</span>     $ curl -O <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://svn.macports.org/repository/macports/trunk/dports/lang/spidermonkey/files/patch-jsprf.c&quot;</span><span class="nt">&gt;</span>http://svn.macports.org/repository/macports/trunk/dports/lang/spidermonkey/files/patch-jsprf.c<span class="nt">&lt;/a&gt;</span>     $ tar xvzf <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;js-1.7.0.tar.gz&quot;</span><span class="nt">&gt;</span>js-1.7.0.tar.gz<span class="nt">&lt;/a&gt;</span>     $ cd js/src
+$ patch -p0 -i ../../patch-jsprf.c
+$ make -f Makefile.ref
+$ sudo su
+$ JS_DIST=/usr/local/spidermonkey make -f Makefile.ref export
+$ exit
+$ sudo ranlib /usr/local/spidermonkey/lib/libjs.a
 </pre></div>
 
 
@@ -168,9 +171,7 @@ $ sudo make install</p>
 <ol>
 <li>
 <p>Install Erlang R13B01</p>
-<p>$ curl -O http://erlang.org/download/otp_src_R13B01.tar.gz
-$ tar xvzf otp_src_R13B01.tar.gz
-$ cd otp_src_R13B01/
+<p>$ curl -O <a href="http://erlang.org/download/otp_src_R13B01.tar.gz">http://erlang.org/download/otp_src_R13B01.tar.gz</a>     $ tar xvzf <a href="otp_src_R13B01.tar.gz">otp_src_R13B01.tar.gz</a>     $ cd otp_src_R13B01/
 $ ./configure --enable-smp-support --enable-dynamic-ssl-lib --enable-kernel-poll --enable-darwin-64bit
 $ make
 $ sudo make install</p>
@@ -180,10 +181,10 @@ $ sudo make install</p>
 </li>
 </ol>
 <p>We will install it from the trunk, but installation from released source should work</p>
-<div class="codehilite"><pre><span class="nv">$</span> <span class="nv">svn</span> <span class="n">co</span> <span class="n">http:</span><span class="sr">//s</span><span class="n">vn</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">org</span><span class="sr">/repos/</span><span class="n">asf</span><span class="sr">/couchdb/</span><span class="n">trunk</span> <span class="n">couchdb</span>
-<span class="nv">$</span> <span class="nv">cd</span> <span class="n">couchdb</span>
-<span class="nv">$</span> <span class="err">./</span><span class="nv">bootstrap</span> <span class="o">&amp;&amp;</span> <span class="o">.</span><span class="sr">/configure --with-js-include=/</span><span class="n">usr</span><span class="sr">/local/s</span><span class="n">pidermonkey</span><span class="sr">/include --with-js-lib=/</span><span class="n">usr</span><span class="sr">/local/s</span><span class="n">pidermonkey</span><span class="o">/</span><span class="n">lib</span>
-<span class="nv">$</span> <span class="nv">make</span>
+<div class="codehilite"><pre>$ svn co <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;http://svn.apache.org/repos/asf/couchdb/trunk&quot;</span><span class="nt">&gt;</span>http://svn.apache.org/repos/asf/couchdb/trunk<span class="nt">&lt;/a&gt;</span> couchdb
+$ cd couchdb
+$ ./bootstrap <span class="err">&amp;&amp;</span> ./configure --with-js-include=/usr/local/spidermonkey/include --with-js-lib=/usr/local/spidermonkey/lib
+$ make
 </pre></div>
 
 

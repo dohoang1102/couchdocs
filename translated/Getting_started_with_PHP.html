@@ -18,7 +18,7 @@
   <li><a href="FrontPage.html#using-couchdb">Using CouchDB</a></li>
   <li><a href="FrontPage.html#when-things-go-wrong">When Things Go Wrong</a></li>
   <li><a href="FrontPage.html#community">Community</a></li>
-  <li><a href="FrontPage.html#get-involved">Get Involved</a></li>
+  <li><a href="FrontPage.html#getting-involved">Get Involved</a></li>
   <li><a href="FrontPage.html#books">Books</a></li>
 </ul>
 
@@ -63,10 +63,7 @@
   <p>Getting started with PHP and the CouchDB API.</p>
 <h2 id="couchdb-libraries">CouchDB Libraries</h2>
 <ul>
-<li>PHPillow: http://arbitracker.org/phpillow.html</li>
-<li>PHP Object_Freezer: https://github.com/sebastianbergmann/php-object-freezer/tree</li>
-<li>PHP On Couch: http://github.com/dready92/PHP-on-Couch/tree/master</li>
-<li>PHP CouchDB Extension: http://www.topdog.za.net/php_couchdb_extension</li>
+<li>PHPillow: <a href="http://arbitracker.org/phpillow.html">http://arbitracker.org/phpillow.html</a>  * PHP Object_Freezer: <a href="https://github.com/sebastianbergmann/php-object-freezer/tree">https://github.com/sebastianbergmann/php-object-freezer/tree</a>  * PHP On Couch: <a href="http://github.com/dready92/PHP-on-Couch/tree/master">http://github.com/dready92/PHP-on-Couch/tree/master</a>  * PHP CouchDB Extension: <a href="http://www.topdog.za.net/php_couchdb_extension">http://www.topdog.za.net/php_couchdb_extension</a> </li>
 </ul>
 <h2 id="setup">Setup</h2>
 <p>To get this example code running you need to install CouchDB on your system and have it running on port 5984. If you use a different machine or port, change the first two lines of code to your specific values.</p>
@@ -185,7 +182,7 @@
 
 
 <h2 id="a-couchdb-request-class">A CouchDB Request Class</h2>
-<p>Now that we have a response class, we need something to organize our requests.  This class will 1) build request headers and assemble the request, 2) send the request and 3) give us the interesting part of the result.  Following <a href="GettingStartedWithPhp">Noah Slater's lead</a>, we make our requests using <em>fsockopen</em>, which allows us to treat our connection to the CouchDB server as a file pointer.  When we execute the request, we pass the response on to a new <em>CouchDBRequest</em> object.</p>
+<p>Now that we have a response class, we need something to organize our requests.  This class will 1) build request headers and assemble the request, 2) send the request and 3) give us the interesting part of the result.  Following <a class="internal" href="GettingStartedWithPhp.html">GettingStartedWithPhp</a>, we make our requests using <em>fsockopen</em>, which allows us to treat our connection to the CouchDB server as a file pointer.  When we execute the request, we pass the response on to a new <em>CouchDBRequest</em> object.</p>
 <div class="codehilite"><pre><span class="n">class</span> <span class="n">CouchDBRequest</span> <span class="p">{</span>
 
     <span class="n">static</span> <span class="nv">$VALID_HTTP_METHODS</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="s">&#39;DELETE&#39;</span><span class="p">,</span> <span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;PUT&#39;</span><span class="p">);</span>
