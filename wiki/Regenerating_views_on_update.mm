@@ -1,4 +1,5 @@
 = Update views on document save =
+<<TableOfContents(3)>>
 
 CouchDB defaults to regenerating views the first time they are accessed. This behavior is preferable in most cases as it optimizes the resource utilization on the database server. 
 On the other hand, in some situations the benefit of always having fast and updated views far outweigh the cost of regenerating them every time the database server receives updates. This can be achieved by supplying an updater script that calls the views when needed.
@@ -6,11 +7,13 @@ On the other hand, in some situations the benefit of always having fast and upda
 == Example using ruby ==
 
 === couch.ini ===
-(0.8) Add the following line to the couch.ini file {{{
-	DbUpdateNotificationProcess=/PATH/TO/view_updater.rb
+(0.8) Add the following line to the couch.ini file
+{{{
+DbUpdateNotificationProcess=/PATH/TO/view_updater.rb
 }}}
 
-(0.9) Add the following section to the local.ini file: {{{
+(0.9+) Add the following section to the local.ini file:
+{{{
 [update_notification]
 view_updater=/PATH/TO/view_updater.rb
 }}}  
@@ -18,8 +21,7 @@ view_updater=/PATH/TO/view_updater.rb
 === view_updater.rb ===
 The following script updates the views for each tenth update made to the database or at most once every second when a lot of saves are performed 
 
-{{{
-
+{{{#!highlight ruby
 #!/usr/bin/ruby
 
 ###################
@@ -118,7 +120,7 @@ The view_updater.rb itself has to be made executable by CouchDB (chmod 0700?).
 
 == Example using Python ==
 
-{{{
+{{{#!highlight python
 
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -225,7 +227,7 @@ class NotificationConsumer(object):
                     break
                 result = self.DB_NAME_EXPRESSION.search(data)
                 if result:
-                    db_name = result.groups()[0]
+                    db_name = result.group(1)
                     # Set to 0 if it hasn't been initialized before
                     if db_name not in changed_docs:
                         changed_docs[db_name] = 0

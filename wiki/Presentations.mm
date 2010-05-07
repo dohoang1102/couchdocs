@@ -1,8 +1,18 @@
 == 2010 ==
+==== May 3rd: Portugal, Lisbon, Caixa Mágica Software ====
+Filipe David Manana talks about Apache CouchDB
+
+ * [[https://docs.google.com/fileview?id=0B1sVWPqrm6NZZGM2NzA0NjMtZjA5ZS00MTA0LThkMzUtMDdiN2YzOTBmYmQw&hl=en|Slides]]
+
 ==== February 27th: University Limerick, Limerick, Ireland ====
 David Coallier gives an introduction to CouchDB
 
  * [[http://slidesha.re/bUS7rh|Slides]]
+
+==== CouchDB VS. MongoDB ====
+This presentation compares the two data stores Map/Reduce functionality.
+
+  *[[http://www.slideshare.net/gabriele.lana/couchdb-vs-mongodb-2982288|Slides with Notes.]]
 
 == 2009 ==
 ==== October 21st: FOSS4G, Sydney, Australia ====

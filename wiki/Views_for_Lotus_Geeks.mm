@@ -1,3 +1,4 @@
+= Views for Lotus Geeks =
 CouchDB and Lotus Notes are both document databases with many similarities in terms of the data model and the way views work. Many of the best practices and limitations are the same for each, but there is new terminology to learn and some pretty powerful extra things you can do in CouchDB.
 
 == A simple view ==

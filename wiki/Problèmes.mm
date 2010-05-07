@@ -18,11 +18,11 @@ Avez-vous des problèmes au lancement de CouchDB la première fois ?
 
 Suivez cette simple procédure et reportez le résultat de chaque étape sur la liste de diffusion (ou IRC).
 
- 1. Indiquez le nom de votre système d'exploitation et de votre architecture procésseur.
+ 1. Indiquez le nom de votre système d'exploitation et de votre architecture processeur.
 
  2. Indiquez les versions des dépendances de CouchDB installées.
 
- 3. Suivez [[http://incubator.apache.org/couchdb/community/code.html|les instructions de checkout]] pour obtenir une copîe récente du trunk.
+ 3. Suivez [[http://incubator.apache.org/couchdb/community/code.html|les instructions de checkout]] pour obtenir une copie récente du trunk.
 
  4. Bootstrap à partir du dossier `couchdb` :
 

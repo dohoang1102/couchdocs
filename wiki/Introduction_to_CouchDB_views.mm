@@ -198,7 +198,7 @@ algorithm = utc_random
 The second parameter of the ''emit()'' function can be ''null''. CouchDB then only stores the [key,docid] in the view. You can use the view as a compact lookup mechanism and fetch the document's details, if needed, in subsequent requests or by adding parameter ''include_docs=true''
 
 === Linked documents ===
-''This is a new feature in couchdb trunk / 0.11''
+''This is a new feature in couchdb 0.11''
 
 If you emit an object value which has '''{'_id': XXX}''' then include_docs will fetch the document with id XXX rather than the document which was processed to emit the key/value pair.
 

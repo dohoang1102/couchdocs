@@ -1,3 +1,6 @@
+= View Server =
+<<TableOfContents()>>
+
 A simple introduction to the CouchDB view server.
 
 == The View Server ==

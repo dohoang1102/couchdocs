@@ -2,7 +2,7 @@
 
 == Current Version ==
 
-couchdb-0.10.0 - get the installer [[http://people.apache.org/~mhammond/dist/0.10.0|here]]
+couchdb-0.11.0 - get the installer [[http://people.apache.org/~mhammond/dist/0.11.0|here]]
 
 === Supported / Tested Platforms ===
 

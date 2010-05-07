@@ -1,4 +1,4 @@
-== Making a Release ==
+== Making a Source Release ==
 
 === Checklist ===
 
@@ -18,7 +18,7 @@ repos="https://svn.apache.org/repos/asf/couchdb"
 
 svn cp $repos/trunk $repos/branches/Y.Y.x -m 'branching Y.Y.x'
 svn cp $repos/branches/Y.Y.x $repos/tags/Y.Y.Y -m 'tagging Y.Y.Y'
-svn export $repos/tags/Y.Y.Y Y.Y.Y
+svn export $repos/tags/Y.Y.Y
 }}}
 
 You must then use the `Y.Y.Y` directory to prepare the release.
@@ -64,7 +64,7 @@ tar -xvzf apache-couchdb*.tar.gz
 Then compare the tarball with the boostrapped source:
 
 {{{
-diff -f apache-couchdb-Y.Y.Y Y.Y.x
+diff -f apache-couchdb-Y.Y.Y Y.Y.Y
 }}}
 
 Use your judgment here to figure out if anything is missing, or has been included by mistake.
@@ -78,6 +78,8 @@ Call a vote on the [[http://mail-archives.apache.org/mod_mbox/couchdb-dev/|couch
   * [[http://mail-archives.apache.org/mod_mbox/couchdb-dev/200907.mbox/%3C20090716211304.GA17172@tumbolia.org%3E|example couchdb-dev vote]]
   * [[http://mail-archives.apache.org/mod_mbox/couchdb-dev/200907.mbox/%3C20090722214200.GA11737@tumbolia.org%3E|example couchdb-dev vote results]]
 
+The Release Manager has the power to abort a vote at any point and for any reason.
+
 === Making the Release ===
 
  * Copy the release directory to `/www/www.apache.org/dist/couchdb` on `people.apache.org`.
@@ -90,7 +92,7 @@ Call a vote on the [[http://mail-archives.apache.org/mod_mbox/couchdb-dev/|couch
    * If the currently released version is 0.1.0, JIRA should have options for 0.1.1, 0.2.0, and 0.3.0.
    * The released version should be marked as released in JIRA.
  * Update the links on this page to most recent email archives.
- * Call a discussion on the [[http://mail-archives.apache.org/mod_mbox/couchdb-dev/|couchdb-dev]] mailing list about updating the [[http://couchdb.apache.org/roadmap.html|roadmap]] and archiving old releases.
+ * Call a discussion on the [[http://mail-archives.apache.org/mod_mbox/couchdb-dev/|couchdb-dev]] mailing list about archiving old releases.
 
 == Useful Resources ==
 

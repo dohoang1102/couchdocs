@@ -1,11 +1,43 @@
-Installing on RHEL5 x86_64
+= Installing on RHEL 5 =
 
-(Note: [[https://issues.apache.org/jira/browse/COUCHDB-315|COUCHDB-315]] has an attached patch for the CouchDB README which adds instructions for RHEL 5.)
+These instructions also work on Red Hat Enterprise Linux compatible distributions like CentOS.
 
-1. Install prerequisites. You will need [[http://fedoraproject.org/wiki/EPEL|EPEL]] for js and erlang (or build those from source).
+Note: [[https://issues.apache.org/jira/browse/COUCHDB-315|COUCHDB-315]] has an attached patch for the CouchDB README which adds instructions for RHEL 5.
+
+== Installing a prepackaged CouchDB ==
+
+1. Enable the  [[http://fedoraproject.org/wiki/EPEL|EPEL]] repository.
+
+2. Install the couchdb package from EPEL:
 
 {{{
-yum install ncurses-devel openssl-devel icu libicu-devel js js-devel curl-devel erlang
+# yum install couchdb
+}}}
+
+3. Edit config file to suit:
+
+{{{
+# vi /etc/couchdb/local.ini
+}}}
+
+4. Start CouchDB:
+
+{{{
+# service couchdb start
+}}}
+
+5. Set it to start automatically on reboots:
+
+{{{
+# chkconfig --level 345 couchdb on
+}}}
+
+== Building CouchDB from source ==
+
+1. Install prerequisites. You will need to enable the [[http://fedoraproject.org/wiki/EPEL|EPEL]] repository for the js-devel and erlang packages (or build js and erlang from source).
+
+{{{
+yum install libicu-devel openssl-devel curl-devel make gcc erlang js-devel
 }}}
 
 2. Install CouchDB
@@ -13,39 +45,45 @@ yum install ncurses-devel openssl-devel icu libicu-devel js js-devel curl-devel 
 The configure line below is for 64-bit, adjust for your arch (or leave out --with-erlang if configure can find out for itself). You can use a release tarball instead of a checkout, in that case skip right to the ./confgure line.
 
 {{{
-svn checkout http://svn.apache.org/repos/asf/couchdb/trunk couchdb
-cd couchdb
-./bootstrap
-./configure --with-erlang=/usr/lib64/erlang/usr/include && make && make install
+$ svn checkout http://svn.apache.org/repos/asf/couchdb/trunk couchdb
+$ cd couchdb
+$ ./bootstrap
+$ ./configure --with-erlang=/usr/lib64/erlang/usr/include
+$ make
+# make install
 }}}
 
 3. Edit config file to suit
 
 {{{
-vi /usr/local/etc/couchdb/local.ini
+# vi /usr/local/etc/couchdb/local.ini
 }}}
-
 4. Create user, modify ownership and permissions
 
 Create the couchdb user:
 
 {{{
-adduser -r --home /usr/local/var/lib/couchdb -M --shell /bin/bash --comment "CouchDB Administrator" couchdb
+# adduser -r --home /usr/local/var/lib/couchdb -M --shell /bin/bash --comment "CouchDB Administrator" couchdb
 }}}
 
 See the README for additional chown and chmod commands to run.
 
-5. Launch! In console:
+5. Launch!
+
 {{{
-sudo -u couchdb couchdb
+# sudo -u couchdb couchdb
 }}}
-or as daemon:
+
+Or as daemon:
+
 {{{
-sudo /usr/local/etc/rc.d/couchdb start
+# /usr/local/etc/rc.d/couchdb start
 }}}
 
 6. Run as daemon on start-up:
+
 {{{
-sudo ln -s /usr/local/etc/rc.d/couchdb /etc/init.d/couchdb
-sudo chkconfig --add couchdb
+# ln -s /usr/local/etc/rc.d/couchdb /etc/init.d/couchdb
+# chkconfig --add couchdb
+# chkconfig --level 345 couchdb on
 }}}

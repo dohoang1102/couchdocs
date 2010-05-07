@@ -1,3 +1,6 @@
+= Technical Overview =
+<<TableOfContents()>>
+
 This overview is intended to give a high-level introduction of key models and components of CouchDB, how they work individually and how they fit together.
 
 == Document Storage ==
@@ -17,7 +20,7 @@ The CouchDB file layout and commitment system features all Atomic Consistent Iso
 
 Document updates (add, edit, delete) are serialized, except for binary blobs which are written concurrently. Database readers are never locked out and never have to wait on writers or other readers. Any number of clients can be reading documents without being locked out or interrupted by concurrent updates, even on the same document. CouchDB read operations use a Multi-Version Concurrency Control ([[http://en.wikipedia.org/wiki/Multiversion_concurrency_control|MVCC]]) model where each client sees a consistent snapshot of the database from the beginning to the end of the read operation.
 
-Documents are indexed in b-trees by their name (DocID) and a Sequence ID. Each update to a database instance generates a new sequential number. Sequence IDs are used later for incrementally finding changes in a database. Theses b-tree indexes are updated simultaneously when documents are saved or deleted. The index updates always occur at the end of the file (append-only updates).
+Documents are indexed in b-trees by their name (DocID) and a Sequence ID. Each update to a database instance generates a new sequential number. Sequence IDs are used later for incrementally finding changes in a database. These b-tree indexes are updated simultaneously when documents are saved or deleted. The index updates always occur at the end of the file (append-only updates).
 
 Documents have the advantage of data being already conveniently packaged for storage rather than split out across numerous tables and rows in most databases systems. When documents are committed to disk, the document fields and metadata are packed into buffers, sequentially one document after another (helpful later for efficient building of views).
 
@@ -79,7 +82,7 @@ CouchDB database instances have administrator accounts. Administrator accounts c
 
 To protect document contents, CouchDB documents can have a reader list. This is an optional list of reader-names allowed to read the document. When a reader list is used, protected documents are only viewable by listed users.
 
-When a user accesses a database, the his/her credentials (name and password) are used to dynamically determine his reader names. The user credentials are input to a javascript function and the function returns a list of names for the user, or an error if the user credentials are wrong.
+When a user accesses a database, then his/her credentials (name and password) are used to dynamically determine his reader names. The user credentials are input to a javascript function and the function returns a list of names for the user, or an error if the user credentials are wrong.
 
 When a document is protected by reader access lists, any user attempting to read the document must be listed. Reader lists are enforced in views too. Documents that are not allowed to be read by the user are dynamically filtered out of views, keeping the document row and extracted information invisible to non-readers.
 

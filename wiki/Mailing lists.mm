@@ -1,7 +1,9 @@
+= Mailing Lists =
+<<TableOfContents(3)>>
+
 The following mailing lists relate to the Apache CouchDB project. Users should consider subscribing to the Users mailing lists. The other lists are for people interested in helping with the development of CouchDB itself.
 
 Formatted archives are available via the [[http://mail-archives.apache.org/mod_mbox/|Apache Mail Archives]] and also via [[http://couchdb.markmail.org/|MarkMail]].
-
 
 == User Support and Discussion (user) ==
 

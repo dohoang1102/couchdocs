@@ -1,27 +1,15 @@
+= Error Messages =
+<<TableOfContents()>>
+
 Explanation and solution of error messages you may experience while building or running CouchDB.
 
 
- * [[#InstallationErrors|Installation Errors]]
-  * [[#Missingicu-config|Missing icu-config]]
-  * [[#Erlang-version-less-5.6.0|Erlang version is less than 5.6.5]]
-  * [[#IncorrectLD_LIBRARY_PATH|Incorrect LD_LIBRARY_PATH]]
-  * [[#BinaryArchitectureMismatchOSX|Binary Architecture Mismatch OSX]]
-  * [[#BinaryArchitectureMismatchSolarisSPARC|Binary Architecture Mismatch Solaris/SPARC]]
-  * [[#UnavailablePort|Unavailable Port]]
-  * [[#MissingOpenSSL|Missing OpenSSL]]
-  * [[#IncorrectPermissions|Incorrect Permissions or Missing Directories]]
-  * [[#CrashOnStartup|Crash On Startup]]
- * [[#RuntimeErrors|Runtime Errors]]
-  * [[#functionraisedexceptionCannotencodeundefinedvalueasJSON|function raised exception (Cannot encode 'undefined' value as JSON)]]
-  * [[#replicationreceivedexceptionerrorbadmatchreasonerroralreadypresent|replication received exception ({"error":"badmatch","reason":"{error,already_present}"})]]
+== Installation errors ==
 
-<<Anchor(InstallationErrors)>>
-= Installation errors =
 
-<<Anchor(Missingicu-config)>>
-== Missing icu-config ==
+=== Missing icu-config ===
 
-=== Problem ===
+'''Problem'''
 
 {{{
 *** The icu-config script could not be found. Make sure it is
@@ -29,7 +17,7 @@ Explanation and solution of error messages you may experience while building or 
 *** Or see http://ibm.com/software/globalization/icu/
 }}}
 
-=== Solution ===
+'''Solution'''
 
 Install ICU and use `locate` to find the `icu-config` command:
 
@@ -48,17 +36,17 @@ Take the directory from the output of this command and add it to your `PATH`:
 export PATH="$PATH:/usr/local/bin"
 }}}
 
-<<Anchor(Erlang-version-less-5.6.5)>>
-== Erlang version is less than 5.6.5 (R12B) ==
 
-=== Problem ===
+=== Erlang version is less than 5.6.5 (R12B) ===
+
+'''Problem'''
 
 Even after doing sudo apt-get install erlang you are getting the following error on ubuntu 8.04:
 {{{
 configure: error: The installed Erlang version is less than 5.6.5 (R12B).
 }}}
 
-=== Solution ===
+'''Solution'''
 
 To get a later version without bothering with installing from source edit /etc/apt/sources.list and locate the following line:
 {{{
@@ -85,10 +73,10 @@ Test you version and confirm you see something greater than 5.6.0
 erl
 }}}
 
-<<Anchor(IncorrectLD_LIBRARY_PATH)>>
-== Incorrect LD_LIBRARY_PATH ==
 
-=== Problem ===
+=== Incorrect LD_LIBRARY_PATH ===
+
+'''Problem'''
 
 {{{
 $ couchdb      
@@ -114,7 +102,7 @@ Crash dump was written to: erl_crash.dump
 init terminating in do_boot (libjs.so: cannot open shared object file: No such file or directory)
 }}}
 
-=== Solution ===
+'''Solution'''
 
 You must correctly set your `LD_LIBRARY_PATH` environment variable so that it picks up your installed libraries. On Mac OS X, the equivalent variable is `DYLD_LIBRARY_PATH`.
 
@@ -132,12 +120,12 @@ echo LD_LIBRARY_PATH=/usr/local/lib:/usr/local/spidermonkey/lib couchdb | sudo -
 
 Similar instructions are on the InstallingSpiderMonkey page.
 
-<<Anchor(BinaryArchitectureMismatchOSX)>>
-== Binary Architecture Mismatch OSX ==
+
+=== Binary Architecture Mismatch OSX ===
 
 On Mac OS X, libraries and executables can be ''fat binaries'' that support multiple processor architectures (PPC and x86, 32 and 64 bit). But that also means you will run into problems when trying to load a library into an application if that library doesn't support the architecture used by the application process.
 
-=== Problem ===
+'''Problem'''
 
 {{{
 $ couchdb      
@@ -150,16 +138,16 @@ Crash dump was written to: erl_crash.dump
 init terminating in do_boot ()
 }}}
 
-=== Solution ===
+'''Solution'''
 
 You've probably built Erlang with the 64 bit option enabled. The problem is that ICU, which CouchDB attempts to load at startup time, has not been compiled with 64 bit support, so it can't be loaded into the 64bit Erlang process.
 
 For now you'll have to recompile Erlang, and resist the temptation to build a 64 bit binary (just omit the `--enable-darwin-64bit` option). The `--enable-darwin-universal` option works okay, but note that currently there's no universal build of ICU available.
 
-<<Anchor(BinaryArchitectureMismatchSolarisSPARC)>>
-== Binary Architecture Mismatch Solaris/SPARC ==
 
-=== Problem ===
+=== Binary Architecture Mismatch Solaris/SPARC ===
+
+'''Problem'''
 {{{
 Apache CouchDB 0.8.1-incubating (LogLevel=info)
 Apache CouchDB is starting.
@@ -174,7 +162,7 @@ file
 symbol ucol_close_4_0: r
 }}}
 
-=== Solution ===
+'''Solution'''
 
 Solaris provides an old version of the ICU library.  On SPARC hardware, when building the current version of ICU, it defaults to 64bits, while erlang and spidermonkey defaulted to 32bit, so when linking, the linker picks the outdated version.
 
@@ -182,10 +170,10 @@ The solution is to rebuild ICU for 32bits.  At the ./configure step, add this fl
 
 Also, use LD_LIBRARY_PATH or crle to make /usr/local/lib earlier in the search path than /usr/lib.
 
-<<Anchor(UnavailablePort)>>
-== Unavailable Port ==
 
-=== Problem ===
+=== Unavailable Port ===
+
+'''Problem'''
 
 {{{
 $ couchdb      
@@ -194,14 +182,14 @@ Failure to start Mochiweb: eaddrinuse
 {"init terminating in do_boot",{{badmatch,{error,shutdown}},[{couch_server_sup,start_server,1},{erl_eval,do_apply,5},{erl_eval,exprs,5},{init,start_it,1},{init,start_em,1}]}}
 }}}
 
-=== Solution ===
+'''Solution'''
 
 Edit your `/etc/couchdb/couch.ini` file and change the `Port` setting to an available port.
 
-<<Anchor(MissingOpenSSL)>>
-== Missing OpenSSL ==
 
-=== Problem ===
+=== Missing OpenSSL ===
+
+'''Problem'''
 
 {{{
 $ bin/couchdb
@@ -214,7 +202,7 @@ Crash dump was written to: erl_crash.dump
 init terminating in do_boot ()
 }}}
 
-=== Solution ===
+'''Solution'''
 
 You are missing erlang SSL support.
 
@@ -222,10 +210,10 @@ You may not have installed the package that provides it (for example, erlang-ssl
 
 If you compiled by hand, you need to install the OpenSSL libraries and recompile Erlang with SSL enabled.
 
-<<Anchor(IncorrectPermissions)>>
-== Incorrect Permissions or Missing Directories ==
 
-=== Problem ===
+=== Incorrect Permissions or Missing Directories ===
+
+'''Problem'''
 
 {{{
 $ bin/couchdb
@@ -236,16 +224,16 @@ Crash dump was written to: erl_crash.dump
 init terminating in do_boot ()
 }}}
 
-=== Solution ===
+'''Solution'''
 
 You need to make sure that the user running couchdb has permissions to write to /usr/local/var/lib/couchdb and /usr/local/var/log/couchdb. This error message may also appear if CouchDB is trying to bind to a port that is already in use.
 
 Also check that the directories specified in your local.ini are there, like the database_dir and the directory where the log file is created. If they are not there, create them.
 
-<<Anchor(CrashOnStartup)>>
-== Crash On Startup ==
 
-=== Problem ===
+=== Crash On Startup ===
+
+'''Problem'''
 
 {{{
 $ sudo couchdb
@@ -256,17 +244,17 @@ Crash dump was written to: erl_crash.dump
 init terminating in do_boot (Driver is an inappropriate Mach-O file)
 }}}
 
-=== Solution ===
+'''Solution'''
 
 This is related to an update made in erlang (http://www.nabble.com/OS-X-fixes-(HiPE,-ddll-unload)-td19411880.html) Upgrading to version R12B-5 or higher should fix things.
 
-<<Anchor(RuntimeErrors)>>
-= Runtime Errors =
 
-<<Anchor(functionraisedexceptionCannotencodeundefinedvalueasJSON)>>
-== function raised exception (Cannot encode 'undefined' value as JSON) ==
+== Runtime Errors ==
 
-=== Problem ===
+
+=== function raised exception (Cannot encode 'undefined' value as JSON) ===
+
+'''Problem'''
 
 A view index fails to build, CouchDB Logs this error message:
 
@@ -274,7 +262,7 @@ A view index fails to build, CouchDB Logs this error message:
 function raised exception (Cannot encode 'undefined' value as JSON)
 }}}
 
-=== Solution ===
+'''Solution'''
 
 The JavaScript code you are using for the map or reduce function is using an object member that is not defined. Consider this document
 
@@ -306,10 +294,26 @@ function(doc) {
 
 While the above guard will work in most cases, it's worth bearing !JavaScript's falsy set of values in mind. Testing against a property with a value of `0` (zero), `''` (empty String), `false` or `null` will return false. If this is undesired a guard of the form `if (doc.foo !== undefined)` should do the trick.
 
-<<Anchor(replicationreceivedexceptionerrorbadmatchreasonerroralreadypresent)>>
-== replication received exception ({"error":"badmatch","reason":"{error,already_present}"}) ==
+This error can also be caused if a reduce function does not return a value.  For example, this reduce function will cause an error:
 
-=== Problem ===
+{{{
+function(key, values) {
+  sum(values);
+}
+}}}
+
+The function needs to return a value:
+
+{{{
+function(key, values) {
+  return sum(values);
+}
+}}}
+
+
+=== replication received exception ({"error":"badmatch","reason":"{error,already_present}"}) ===
+
+'''Problem'''
 
 A replication request receives the following HTTP response
 
@@ -317,6 +321,6 @@ A replication request receives the following HTTP response
 HTTP/1.1 500 Internal Server Error - {"error":"badmatch","reason":"{error,already_present}"}
 }}}
 
-=== Solution ===
+'''Solution'''
 
 Alas, there is no information about this at present - it is being looked into. Observed on a 0.9 release running on x86_64 Linux

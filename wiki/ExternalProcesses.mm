@@ -1,4 +1,6 @@
 = External Processes =
+<<TableOfContents()>>
+
 CouchDB now allows for the ability to develop custom behaviors via processes that communicate over ''stdin'' and ''stdout''. Requests to CouchDB that are captured by the external process handler are passed via JSON object to the external process over ''stdin'' and reads a JSON object from ''stdout''. Without further ado...
 
 == JSON Requests ==
@@ -6,7 +8,7 @@ Requests capture information about the incoming HTTP request and transform it in
 
 An example object:
 
-{{{
+{{{#!highlight javascript
 {
     'body': 'undefined',
     'cookie': {
@@ -55,6 +57,9 @@ While nothing breaks if you specify both a ''json'' and ''body'' member, it is u
  * All interaction is in the form of single lines. Each response should include *exactly* one new line that terminates the JSON object.
  * When using base64 encoders, be sure to strip any CRLF from the result - most encoders will add CRLF after 76 characters and at the end.
  * CouchDB 0.10 looks for a case-sensitive match of the Content-Type header -- a user-defined header must specify "Content-Type", not "content-type" or "CoNtEnT-type".  This is fixed in future releases.
+ * When developing handlers you need to restart CouchDB after each change  as it doesn't see the changes until you restart the server.
+ * '''Notes for OSX users:'''
+ If  you are using launchctl to load and unload your CouchDB instance, it by  default starts the couchdb instance with user couchdb. External  handlers won't run if they are not executable by this user. Calls to  them will fail with a 'OS Process timeout' error stack trace from  Erlang. If you start couchdb with sudo couchdb things will work fine.  Here is an article in more detail http://www.vertigrated.com/blog/2010/04/couchdb-launchctl-external-httpd-handlers-madness/
 
 == Configuration ==
 Adding external processes is as easy as pie. Simply place key=command pairs in the ''[external]'' section of your ''local.ini'' and then map those handlers in the ''[httpd_db_handlers]'' section, like:
@@ -82,7 +87,7 @@ http://127.0.0.1:5984/${dbname}/_test
 == Example External Process ==
 Here is a complete Python external process that does a whole lot of nothing except show the mechanics.
 
-{{{
+{{{#!highlight python
 import sys
 
 try:

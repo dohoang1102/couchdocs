@@ -44,23 +44,27 @@ Here are two simple examples of documents:
 }}}
 === Special Fields ===
 Note that any top-level fields with a name that starts with a ''_'' prefix are reserved for use by CouchDB itself. Also see [[Reserved_words]]. Currently (0.10+) reserved fields are:
+||'''Field Name''' ||'''Description''' ||
+||''_id'' ||The unique identifier of the document ('''mandatory''' and '''immutable''') ||
+||''_rev'' ||The current MVCC-token/revision of this document ('''mandatory''' and '''immutable''') ||
+||''_attachments'' ||If the document has attachments, _attachments holds a (meta-)data structure (see section on [[HTTP_Document_API#Attachments]]) ||
+||''_deleted'' ||Indicates that this document has been deleted and will be removed on next compaction run ||
+||''_revisions'' ||If the document was requested with ''?revs=true'' this field will hold a simple list of the documents history ||
+||''_rev_infos'' ||Similar to ''_revisions'', but more details about the history and the availability of ancient versions of the document ||
+||''_conflicts'' ||Information about conflicts ||
+||''_deleted_conflicts'' ||Information about conflicts ||
 
-  ||'''Field Name'''||'''Description'''||
-  ||''_id''|| The unique identifier of the document ('''mandatory''' and '''immutable''')||
-  ||''_rev''|| The current MVCC-token/revision of this document ('''mandatory''' and '''immutable''')||
-  ||''_attachments''|| If the document has attachments, _attachments holds a (meta-)data structure (see section on [[HTTP_Document_API#Attachments||attachments]])||
-  ||''_deleted''|| Indicates that this document has been deleted and will be removed on next compaction run||
-  ||''_revisions''|| If the document was requested with ''?revs=true'' this field will hold a simple list of the documents history||
-  ||''_rev_infos''|| Similar to ''_revisions'', but more details about the history and the availability of ancient versions of the document||
-  ||''_conflicts''|| Information about conflicts||
-  ||''_deleted_conflicts''|| Information about conflicts||
+
+
 
 ==== Document IDs ====
 Document IDs don't have restrictions on what characters can be used. Although it should work, it is recommended to use non-special characters for document IDs. Using special characters you have to be aware of proper URL en-/decoding. Documents prefixed with ''_'' are special documents:
+||'''Document ID prefix''' ||'''Description''' ||
+||''_design/'' ||are DesignDocuments ||
+||''_local/'' ||are not being replicated (local documents) and used for [[Replication]] checkpointing. ||
 
-  ||'''Document ID prefix'''||'''Description'''||
-  ||''_design/''|| are [[DesignDocuments]] ||
-  ||''_local/''|| are not being replicated (local documents) and used for [[Replication||replication]] checkpointing. ||
+
+
 
 You can have '''/''' as part of the document ID but if you refer to a document in a URL you must always encode it as '''%2F'''. One special case is '''_design/''' documents, those accept either '''/''' or '''%2F''' for the '''/''' after ''_design'', although '''/''' is preferred and '''%2F''' is still needed for the rest of the DocID.
 
@@ -125,7 +129,6 @@ You can fetch the bodies of multiple revisions at once using the parameter `open
 {"ok":{"_id":"test","_rev":"2-5bc3c6319edf62d4c624277fdd0ae191","hello":"foo"}}
 ]
 }}}
-
 <<Anchor(create_or_update_document)>>
 
 === PUT ===
@@ -377,6 +380,8 @@ Connection: close
 If you add ''include_docs=true'' to a request to ''_all_docs'' not only metadata but also the documents themselves are returned.
 
 == all_docs_by_seq ==
+NOTE: See [[HTTP_database_API#Changes|/database/_changes]] as of 0.11
+
 This allows you to see all the documents that were updated and deleted, in the order these actions are done:
 
 {{{
@@ -467,7 +472,7 @@ This is a base64 encoded text
 Automatically decoded!
 
 === Multiple Attachments ===
-Creating a document with an attachment:
+Creating a document with two attachments:
 
 {{{
 {

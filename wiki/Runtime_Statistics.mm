@@ -1,3 +1,6 @@
+= Runtime Statistics =
+<<TableOfContents()>>
+
 Note, this applies to CouchDB 0.9 and newer.
 
 CouchDB comes with a runtime statistics module that lets you inspect how CouchDB performs. The statistics module collects metrics like requests per second, request sizes and a multitude of other useful stuff.
@@ -5,11 +8,11 @@ CouchDB comes with a runtime statistics module that lets you inspect how CouchDB
 You can get a list of all currently counted metrics by issuing a GET request to
 
 {{{
-/_stats
+curl -X GET http://localhost:5984/_stats
 }}}
 and CouchDB will return
 
-{{{
+{{{#!highlight javascript
 {
   "couchdb": {
     "request_time": {
@@ -68,16 +71,16 @@ The three other periods of time are 60 seconds, 300, and 900 seconds (1, 5, 15 m
 You can grab single statistics by querying
 
 {{{
-/_stats/group/key
+curl -X GET http://localhost:5984/_stats/group/key
 }}}
 for example
 
 {{{
-/_stats/httpd/requests
+curl -X GET http://localhost:5984/_stats/httpd/requests
 }}}
 and the response will include only the aggregate values for this single metric.
 
-{{{
+{{{#!highlight javascript
 {
   "httpd": {
     "requests": {
@@ -94,11 +97,11 @@ and the response will include only the aggregate values for this single metric.
 }}}
 If you want to query a different time period, use the `?range=60` (or `300` or `900`). You won't get useful results if you query any other time range and you can't yet configure the different time ranges.
 
-If you are parsing the responses into native objects in your programming language, you can simply access all the aggregate values using the object-attribute accessor method of your language. Here is an example for JavaScript.
+If you are parsing the responses into native objects in your programming language, you can simply access all the aggregate values using the object-attribute accessor method of your language. Here is an example for !JavaScript.
 
-{{{
-  // `var stats` is filled with an XMLHttpRequest.
-  alert(stats.httpd.requests.max);
+{{{#!highlight javascript
+// `var stats` is filled with an XMLHttpRequest.
+alert(stats.httpd.requests.max);
 }}}
 At the moment the following list of metrics is collected; it might expand in the future:
 
@@ -147,20 +150,20 @@ Stats works with two parts, a collector and an aggregator. The collector part re
 
 So, if you had 20K requests between to aggregator sweeps, Current would be incremented by 20K and Count is incremented by 1.
 
+
 === Can the 'mean' here be interpreted as average reads per second? ===
 For requests, the mean is roughly the requests per second. Its not as theoretically correct as something like RRDtool because we don't interpolate, we just average the reads we take roughly once a second.
+
 
 === Is there any indication of exactly where within the 5 minute interval    we are? ===
 No, but the current implementation (committed after 0.10.x was branched) does not reset statistic aggregators as the old code did. The new method is the more standard "these stats reflect all values seen in the last 5 minutes" regardless of when you query it.
 
-== Another metric that I'm having trouble with is the 'request_time'. Querying it returns data similar to: ===
-
-[snip]
 
 === Again, same question about exactly what the 'count' and 'current'    values mean for this metric. ===
 
 Oh weird. So, Count has the same meaning as before, but here Current is the length of the last recorded request. The weirdness comes from the fact that this is averaging a set of distinct points, where as things like requests are averaging the relative change so current makes a bit more sense there.
 
-=== Does the 'mean' represent the average time for a request in CouchDB in   seconds? ===
 
-milliseconds.
+=== Does the 'mean' represent the average time for a request in CouchDB in seconds? ===
+
+No, milliseconds.

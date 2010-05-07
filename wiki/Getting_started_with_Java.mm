@@ -1,4 +1,9 @@
 Getting started with Java and the CouchDB API.
+= Ektorp =
+Ektorp provides a persistence layer on top of CouchDb with JSON processing provided by the excellent [[http://jackson.codehaus.org/|Jackson JSON library]].
+The design goal of the API is simplicity and terse syntax.
+
+See [[http://code.google.com/p/ektorp/|Ektorp project at Google Code]].
 
 = JRelax =
 Relax was born out of necessity of building a scalable and flexible persistence model on top of CouchDB for a startup company.  The API was build from real usage patterns which were extracted from real use cases.  I wanted to ensure that the API is consistent and pleasant to use.

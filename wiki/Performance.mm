@@ -22,6 +22,42 @@ You can let view access be "stale" but it isn't practical to determine when that
 
 View information isn't replicated - it is rebuilt on each database so you can't do the view generation on a separate sever.  The only useful mechanism I have found is to generate the view on a separate machine together with data updates, shut down your target server, copy the couchdb raw database file across and then restart the target server.
 
+== Erlang implementations of common JavaScript functions ==
+
+If you’re using a very simple view function that only performs a sum or count reduction, you can call native Erlang implementations of them by simply writing "_sum" or "_count" in place of your function declaration. This will speed up things dramatically, as it cuts down on IO between CouchDB and serverside JavaScript. For example, as [http://mail-archives.apache.org/mod_mbox/couchdb-user/201003.mbox/%3c5E07E00E-3D69-4A8C-ADA3-1B20CF0BA4C8@julianstahnke.com%3e mentioned on the mailing list], the time for outputting an (already indexed and cached) view with about 78,000 items went down from 60 seconds to 4 seconds.
+
+Example:
+
+Before:
+
+ {{{#!javascript
+{
+    "_id": "_design/foo",
+    "views": {
+        "bar": {
+            "map": "function (doc) { emit(doc.author, 1); }",
+            "reduce": "function (keys, values, rereduce) { return sum(values); }"
+        }
+    }
+}
+}}}
+
+After:
+
+ {{{#!javascript
+{
+    "_id": "_design/foo",
+    "views": {
+        "bar": {
+            "map": "function (doc) { emit(doc.author, 1); }",
+            "reduce": "_sum"
+        }
+    }
+}
+}}}
+
+This does not seem to be very well documented. In the [http://svn.apache.org/viewvc?view=revision&revision=774101 commit message], it is mentioned that users can supply more built-in functions.
+
 = Programming language =
 == Python ==
 Python 2.6 and above ship with a JSON module based on simplejson.  It excludes simplejson's C based speedups and is an order of magnitude slower as a result.  You should install simplejson with the speedups and use that.  JSON encoding and decoding does not release the GIL which means that if you try to use threads to get concurrency - eg multiple network connections - then you won't actually get much concurrency.  Use the multiple processing module to get actual concurrency. Make sure each process/thread has its own database connection (ie underlying socket).

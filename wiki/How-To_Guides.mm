@@ -1,3 +1,4 @@
+ * [[Regenerating_views_on_update]]
  * [[How_to_create_tests]]
  * [[How_to_implement_tagging]]
  * [[How_to_make_filesystem_backups]]

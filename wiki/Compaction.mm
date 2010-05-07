@@ -12,15 +12,15 @@ Compaction is manually triggered per database. Support for queued compaction of 
 Compaction is triggered by an HTTP post request to the _compact sub-resource of your database. On success, HTTP status 202 is returned immediately.
 
 {{{
-    curl -X POST http://localhost:5984/my_db/_compact
-    #=> {"ok":true}
+curl -X POST http://localhost:5984/my_db/_compact
+#=> {"ok":true}
 }}}
 
 GET requesting your database base URL ( see [[HTTP_database_API#Database_Information]] ) gives a hash of statuses that look like this:
 
 {{{
-    curl -X GET http://localhost/my_db
-    #=> {"db_name":"my_db", "doc_count":1, "doc_del_count":1, "update_seq":4, "purge_seq":0, "compact_running":false, "disk_size":12377, "instance_start_time":"1267612389906234", "disk_format_version":5}
+curl -X GET http://localhost/my_db
+#=> {"db_name":"my_db", "doc_count":1, "doc_del_count":1, "update_seq":4, "purge_seq":0, "compact_running":false, "disk_size":12377, "instance_start_time":"1267612389906234", "disk_format_version":5}
 }}}
 
 The compact_running key will be set to true during compaction.

@@ -1,0 +1,1 @@
+OHAI. I use CouchDB on FreeBSD. It's super cool and rocks. I also maintain the CouchDB port on FreeBSD, do PHP and [[http://till.klampaeckel.de/blog|blog]]. My life is good. Woo! My email is till'at'php'dot'net.

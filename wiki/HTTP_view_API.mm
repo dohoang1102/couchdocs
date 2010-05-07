@@ -14,7 +14,7 @@ To create a permanent view, the functions must first be saved into special ''des
 
 A design document that defines ''all'', ''by_lastname'', and ''total_purchases'' views might look like this:
 
-{{{
+{{{#!highlight javascript
 {
   "_id":"_design/company",
   "_rev":"12345",
@@ -40,7 +40,7 @@ The ''language'' property tells CouchDB the language of the view functions, whic
 
 == Altering/Changing Views ==
 
-To change a view or multiple view just alter the design document (see HttpDocumentApi) they are stored in and save it as a new revision.
+To change a view or multiple view just alter the design document (see HttpDocumentApi) they are stored in and save it as a new revision. This causes all the views in that design document to be rebuilt on the next access in case the view code has been changed.
 
 
 == Access/Query ==
@@ -105,25 +105,29 @@ And will result in the following response:
 
 Columns can be a list of values, there is no set limit to the number of values or amount of data that columns can hold.
 
-The following URL query arguments are allowed:
+The following URL query arguments for '''GET/HEAD''' requests are allowed:
 
-  * GET
-    * key=keyvalue
-    * startkey=keyvalue
-    * startkey_docid=docid
-    * endkey=keyvalue
-    * endkey_docid=docid
-    * limit=max rows to return ''This used to be called "count" previous to Trunk SVN r731159''
-    * stale=ok
-    * descending=true
-    * skip=number of rows to skip
-    * group=true ''Version 0.8.0 and forward''
-    * group_level=int
-    * reduce=false ''(since 0.9)''
-    * include_docs=true ''(since 0.9)''
-    * inclusive_end=true
-  * POST
-    * {"keys": ["key1", "key2", ...]} ''(since 0.9)''
+||'''Parameter'''||'''Value'''||'''Default value'''||'''Description'''||
+||'''key'''||''key-value''||''-''||'''Must''' be a proper URL encoded JSON value||
+||'''startkey'''||''key-value''||''-''||'''Must''' be a proper URL encoded JSON value||
+||'''startkey_docid'''||''document id''||''-''||document id to start with||
+||'''endkey'''||''key-value''||''-''||'''Must''' be a proper URL encoded JSON value||
+||'''endkey_docid'''||''endkey_docid''||''-''||last document id to include in the output||
+||'''limit'''||''number of docs''||''-''||Limit the number of documents in the output||
+||'''stale'''||''ok''||''-''||If '''stale=ok''' is set CouchDB will not refresh the view even if it is stalled.||
+||'''descending'''||''true / false''||''false''||reverse the output||
+||'''skip'''||''number of docs''||''0''||skip ''n'' number of documents||
+||'''group'''||''true''||''false''||The group option controls whether the reduce function reduces to a set of distinct keys or to a single result row.||
+||'''group_level'''||''number''||''-''||''see below''||
+||'''reduce'''||''true / false''||''true''||use the reduce function of the view. It defaults to true, if a reduce function is defined and to false otherwise.||
+||'''include_docs'''||''true / false''||''false''||automatically fetch and include the document which emitted each view entry||
+||'''inclusive_end'''||''true / false''||''false''||||
+
+Since 0.9 you can also issue '''POST''' requests to views where you can send the following JSON structure in the body:
+
+{{{
+{"keys": ["key1", "key2", ...]}
+}}}
 
 ''key'', ''startkey'', and ''endkey'' need to be properly JSON encoded values. For example, startkey="string" for a string value or startkey=["foo", 1, {}]. Be aware that you have to do proper URL encoding on complex values. 
 
@@ -151,7 +155,7 @@ You can query the design document (''_design/test'' in this case) by GET for som
 curl -X GET http://localhost:5984/databasename/_design/test/_info
 }}}
 will produce something like this:
-{{{
+{{{#!highlight javascript
 {
     "name": "test", 
     "view_index": {
@@ -190,7 +194,7 @@ When creating views, CouchDB will check the syntax of the submitted JSON, but th
 
 As of r660140 there is a log function available in the views, which logs to the couch.log. It can be helpful for debugging but hinders performance, so it should be used sparingly in production systems.
 
-{{{
+{{{#!highlight javascript
 {
   "map": "function(doc) { log(doc); }"
 }
@@ -211,6 +215,8 @@ Playing with (malformed) views is currently the best way to bring the couchdb se
 == Sharing Code Between Views ==
 
 There are no development plans to share code/functions between views.  Each view function is stored according to a hash of their byte representation, so it is important that a function does not load any additional code, changing its behavior without changing its byte-string.  Hence the use-case for [[http://github.com/couchapp/couchapp|CouchApp]].
+
+Since CouchDB 0.11 it is possible to share code in {{{show}}}, {{{list}}}, {{{update}}}, and {{{validation}}} functions. See [[CommonJS_Modules]] for details.
 
 
 == View Cleanup ==
@@ -250,7 +256,7 @@ Content-Type: application/json
 
 Could result in the following response:
 
-{{{
+{{{#!highlight javascript
 {
   "total_rows": 1,
   "offset": 0,

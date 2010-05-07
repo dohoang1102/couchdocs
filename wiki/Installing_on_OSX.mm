@@ -61,6 +61,17 @@ $ ./runConfigureICU MacOSX --with-library-bits=64 --disable-samples --enable-sta
 $ make
 $ sudo make install
 }}}
+
+
+I couldn't get the above to work on 64bit Snow Leopard 10.6.3, but I did find a fix for the configure file that will make it compile in 64bit correctly.
+{{{
+- *-arch*ppc*|*-arch*i386*|*-arch*x86_64*) ac_cv_c_bigendian=universal;;
++ *-arch*ppc*) ac_cv_c_bigendian=yes;;
+}}}
+
+find the first line with the - in configure and replace it with the second line with the +
+in the ICU 4.4.1 release this line is at 8002, if Erlang is compiled with 64bit and you patch the ICU configure to compile in 64bit then CouchDB will build and run correctly on 64bit OSX 10.6.x
+
 2. Install SpiderMonkey
 
 We need [[http://svn.macports.org/repository/macports/trunk/dports/lang/spidermonkey/files/patch-jsprf.c|jsprf patch]] from the MacPorts project to install SpiderMonkey.

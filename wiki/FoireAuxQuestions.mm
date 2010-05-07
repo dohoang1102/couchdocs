@@ -38,7 +38,7 @@ Avec un système réparti, virtuellement illimité. Pour une seule instance de b
 
 == Comment je fais des suites ? ==
 
-Ou autrement dit, où est AUTO_INCREMENT ?! Avec la réplication les suites sont difficiles à réaliser. Les suites sont souvent utilisées pour créer des identifiants uniques pour chaque ligne de la base de données. CouchDB peut générer des ids uniques ou vous pouvez créer les votres, vous n'avez donc pas forcemment besoin de suites. Si vous utilisez une suite pour autre chose, vous devez trouver un moyen de l'intégrer dans CouchDB.
+Ou autrement dit, où est AUTO_INCREMENT ?! Avec la réplication les suites sont difficiles à réaliser. Les suites sont souvent utilisées pour créer des identifiants uniques pour chaque ligne de la base de données. CouchDB peut générer des ids uniques ou vous pouvez créer les votre, vous n'avez donc pas forcemment besoin de suites. Si vous utilisez une suite pour autre chose, vous devez trouver un moyen de l'intégrer dans CouchDB.
 
 == Comment j'utilise la réplication ? ==
 

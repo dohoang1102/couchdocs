@@ -1,6 +1,9 @@
+= API Cheatsheet =
+<<TableOfContents()>>
+
 See [[HTTP_view_API]] for the view options that apply to many ''GET'' operations.
 
-= CouchDB Server Level =
+== CouchDB Server Level ==
 
 ||/||Info||GET||Get MOTD and version||||
 ||/_all_dbs||Databases||GET||Get a list of databases||||
@@ -10,7 +13,7 @@ See [[HTTP_view_API]] for the view options that apply to many ''GET'' operations
 ||/_stats||Statistics||GET /_stats||Statistics overview||||
 ||/_active_tasks||Active tasks||GET /_active_tasks||Active task list (compaction, replication, etc.)||||
 
-= Database level =
+== Database Level ==
 
 '''Note''': Document names must always have embedded '''/''' translated to '''%2F'''. E.g. "GET /'''db'''/foo%2fbar" for the document named "foo/bar". Attachment names may have embedded slashes.
 
@@ -26,7 +29,7 @@ See [[HTTP_view_API]] for the view options that apply to many ''GET'' operations
 
 See [[HTTP_database_API]] for more information.
 
-= Documents level =
+== Documents Level ==
 
 ||/'''db'''/_all_docs||Documents||GET /'''db'''/_all_docs||List of all documents||||
 ||/'''db'''||Get document||GET /'''db'''/'''doc'''||Retrieve a document||||

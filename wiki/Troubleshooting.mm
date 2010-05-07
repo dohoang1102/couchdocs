@@ -1,3 +1,6 @@
+= Troubleshooting =
+<<TableOfContents()>>
+
 == Upgrade ==
 
 Have you built CouchDB from the Subversion repository?
@@ -58,20 +61,6 @@ strace /tmp/couchdb/bin/couchdb 2> strace.out
   2. Please add documentation for your system...
 
  8. Report back to the mailing list (or IRC) with the output from each step.
-
-== invalid UTF-8 JSON ==
-
-When upgrading from old versions of CouchDB, it is best to really get rid of everything old.  If you get strange errors and all but the simplest actions appear to be broken, and especially if you are seeing {"error":"bad_request","reason":"invalid UTF-8 JSON"} type of errors in Futon, then you should try something like the following:
-
-{{{
-find /usr/local -name \*couch* | xargs rm -rf 
-make && sudo make install
-}}}
-
-This was discussed on 13 Dec 2009 on the users mailing list, and the resolution is discussed 
-[[http://mail-archives.apache.org/mod_mbox/couchdb-user/200912.mbox/%3c200912130717.39605.sh@widetrail.dk%3e|here]] and 
-[[http://mail-archives.apache.org/mod_mbox/couchdb-user/200912.mbox/%3c20091214091547.GA7543@uk.tiscali.com%3e|here]]
-
 
 == Misc Errors ==
 CouchDB using a lot of memory (several hundred MB) on startup?  This one seems to especially affect Dreamhost installs.  It's really an issue with the Erlang VM pre-allocating data structures when ulimit is very large or unlimited.  A detailed dicussion can be found [[http://www.erlang.org/cgi-bin/ezmlm-cgi/4/46168|on the erlang-questions list]], but the short answer is that you should decrease ulimit -n or define ERL_MAX_PORTS to something reasonable like 1024.

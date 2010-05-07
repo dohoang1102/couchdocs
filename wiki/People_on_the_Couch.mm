@@ -8,14 +8,11 @@ Please add yourself to the according timezone using this format:
  * Real name (IRC name)
   * contacts
 }}}
-
 == UTC-10 ==
-
  * Tim Dysinger (dysinger)
   * [[http://dysinger.net|Blog]], [[http://twitter.com/dysinger|Twitter]]
 
 == UTC-8 (-7) ==
-
  * David Reid (dreid)
   * [[http://dreid.org/,|Blog]], [[http://twitter.com/dreid|Twitter]]
  * Geoffrey Grosenbach (topfunky)
@@ -36,23 +33,26 @@ Please add yourself to the according timezone using this format:
   * [[http://twitter.com/marcuswestin|Twitter]]
 
 == UTC-7 ==
-
  * Ben Atkin (benatkin)
   * <<MailTo(ben@benatkin.com)>>, [[http://benatkin.com/,|Blog]]
  * Chris Chandler (squanderingtime)
   * <<MailTo(chris@flatterline.com)>>, [[http://squanderingtime.com/,|Blog]]
 
-== UTC-6 ==
-
+== UTC-6 (-5) ==
  * Ben Damman
   * <<MailTo(ben@twinports.coop)>>, <<MailTo(ben@shotguncollective.com)>>
  * Stéphane Alnet
   * <<MailTo(stephane@shimaore.net)>>, [[http://blog.shimaore.net/|Blog]]
  * Steve Davis
   * <<MailTo(steven.charles.davis@gmail.com)>>
+ * Alex Robson
+  * <<MailTo(asrobson@gmail.com)>>
+ * Sean Carley
+  * <<MailTo(scarley@tradeharbor.com)>>, [[http://TradeHarbor.com/|Website]]
+ * Stephen Veit
+  * <<MailTo(srveit@veitconsulting.com)>>, [[http://github.com/srveit|GitHub]], [[http://twitter.com/srveit|Twitter]]
 
 == UTC-5 (-4) ==
-
  * Brian Mitchell (binary42)
   * [[http://excoventures.com/|Homepage]], [[http://twitter.com/binary42|Twitter]]
  * Damien Katz (damienkatz)
@@ -101,7 +101,6 @@ Please add yourself to the according timezone using this format:
   * <<MailTo(akshay.surve@gmail.com)>>, [[http://twitter.com/akshaysurve|Twitter]], [[http://akshaysurve.com|Homepage/Blog]]
 
 == UTC-3 ==
-
  * Vinícius Teles (viniciusteles)
   * [[http://en.blog.improveit.com.br/|Blog]], [[http://www.improveit.com.br/vinicius|Homepage (pt-BR)]], [[http://twitter.com/viniciusteles|Twitter]]
  * Jose Peleteiro (peleteiro)
@@ -112,7 +111,6 @@ Please add yourself to the according timezone using this format:
   * [[http://medevyoujane.com/|Blog]], [[http://twitter.com/JonGretar|Twitter]]
 
 == UTC+0 (+1) ==
-
  * Noah Slater (nslater)
   * <<MailTo(nslater@apache.org)>>, [[http://tumbolia.org/nslater|Homepage]], [[http://shores.tumbolia.org/|Blog]], [[http://tumbolia.org/nslater|Twitter]]
  * Jonathan Conway (jaikoo)
@@ -131,9 +129,10 @@ Please add yourself to the according timezone using this format:
   * <<MailTo(fdmanana@gmail.com)>>
  * David Coallier (davidc_), [[http://blog.echolibre.com/|Blog]]
   * <<MailTo(david@echolibre.com)>>
+ * J. Nathan Matias (rubberpaw)
+  * [[http://natematias.com/|site]], [[http://twitter.com/natematias|Twitter]]
 
 == UTC+1 (+2) ==
-
  * Benoit Chesneau (benoitc)
   * [[http://benoitc.org/|Blog]], [[http://twitter.com/benoitc|Twitter]]
  * Christian Czura (chrisberlin)
@@ -162,12 +161,16 @@ Please add yourself to the according timezone using this format:
   * [[http://vmx.cx/|Blog]]
  * Wojtek Kaczmarek (kunley)
   * [[http://github.com/kunley|Github]], [[http://twitter.com/wojtek111|Twitter]]
+ * Marc Trinczer
+  * [[http://www.chip.de|Home Page]]
+
  * Per Ejeklint
   * <<MailTo(ejeklint@me.com)>>, [[http://www.ejeklint.se/|Blog]], [[http://twitter.com/ejeklint|Twitter]]
+
  * Roberto Aloi
   * <<MailTo(prof3ta@email.it)>>, [[http://prof3ta.netsons.org|Home Page]], [[http://twitter.com/prof3ta|Twitter]]
  * Sebastian Cohnen (`tisba`)
-  * [[http://couchdb.deltaray.de/|Blog]], [[http://twitter.com/tisba|Twitter]]
+  * [[http://tisba.github.com/|Blog]], [[http://twitter.com/tisba|Twitter]]
  * Sander van de Graaf (svdgraaf)
   * [[http://svdgraaf.nl|blog]], [[http://twitter.com/svdgraaf|twitter]],[[http://github.com/svdgraaf|Github]]
  * Markus Jelsma
@@ -178,41 +181,36 @@ Please add yourself to the according timezone using this format:
   * [[http://sifu.co.at|Homepage]] [[http://twitter.com/0xx0|Twitter]]
 
 == UTC+2 ==
-
  * Joran Greef
   * <<MailTo(joran@sexbyfood.com)>>, [[http://www.sexbyfood.com|Homepage]]
  * Luke Randall
   * [[http://lukerandall.github.com/|Blog]], [[http://www.twitter.com/luke_randall|Twitter]]
 
-
 == UTC+3 (+4) ==
-
  * Alex Koshelev
   * <<MailTo(daevaorn@gmail.com)>>, [[http://webnewage.org/|Blog]]
- 
-== UTC+8 ==
 
+== UTC+8 ==
  * Jeremi Joslin (jeremi)
   * <<MailTo(jeremi23@gmail.com)>>, [[http://twitter.com/jeremi|Twitter]], [[http://github.com/jeremi|Github]], [[http://www.linkedin.com/in/jeremijoslin|LinkedIn]]
  * Kenny Shen (pydroid)
   * <<MailTo(talk@kennyshen.com)>>, [[http://twitter.com/kenny_shen|Twitter]], [[http://www.kennyshen.com|Homepage]]
 
 == UTC+9 ==
-
  * Michael Fellinger (manveru)
   * <<MailTo(m.fellinger@gmail.com)>>, [[http://twitter.com/manveru|Twitter]], [[http://github.com/manveru|Github]]
  * Yohei Sasaki (yssk22)
   * <<MailTo(yssk22@gmail.com)>>, [[http://twitter.com/yssk22|Twitter]], [[http://github.com/yssk22|Github]]
 
 == UTC+10 (+11 summer) ==
-
  * Lincoln Stoll (`lstoll`)
   * <<MailTo(lstoll@lstoll.net)>>, [[http://lstoll.net|Site]], [[http://twitter.com/lstoll|Twitter]], [[http://github.com/lstoll|Github]]
  * Ben Schwarz (`benschwarz`)
-  * [[http://germanforblack.com|Site]], [[http://twitter.com/benschwarz |Twitter]], [[http://github.com/benschwarz|Github]]
+  * [[http://germanforblack.com|Site]], [[http://twitter.com/benschwarz|Twitter]], [[http://github.com/benschwarz|Github]]
+ * Alexander Stanley (swixel)
+  * [[http://twitter.com/exceptionRazed|Twitter]]
 
 == UTC+12 (+13 summer) ==
-
  * Tim Carey-Smith (`halorgium`)
   * [[http://twitter.com/halorgium|Twitter]]
  * Lenz Gschwendtner (`norbu09`)

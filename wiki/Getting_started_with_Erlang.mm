@@ -6,7 +6,7 @@ Getting started with Erlang and the CouchDB API.
 
 couchbeam is a simple erlang CouchDB framework. couchbeam provides you a full featured and easy client to access and manage multiple couchdb Nodes.
 
-  http://bitbucket.org/benoitc/couchbeam
+  http://github.com/benoitc/couchbeam
 
 == Features ==
 

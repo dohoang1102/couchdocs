@@ -4,7 +4,7 @@ The following shows the basics of working with the raw CouchDB REST api from Rub
 
 == Example Wrapper Class ==
 
-{{{
+{{{#!highlight ruby
 require 'net/http'
 
 module Couch
@@ -40,7 +40,7 @@ module Couch
 
     def request(req)
       res = Net::HTTP.start(@host, @port) { |http|http.request(req) }
-      if (not res.kind_of?(Net::HTTPSuccess))
+      unless res.kind_of?(Net::HTTPSuccess)
         handle_error(req, res)
       end
       res

@@ -30,7 +30,7 @@ However if you prefer a more realistic test, you can also set up two test couchd
 ;   mkdir -p /var/tmp/couchdb1/{data,log}
 ;
 ; Start using:
-;   couchdb -c /usr/local/etc/couchdb/default.ini -c local1.ini
+;   couchdb -n -a /usr/local/etc/couchdb/default.ini -a local1.ini
 
 [couchdb]
 database_dir = /var/tmp/couchdb1/data
@@ -49,7 +49,7 @@ Similarly local2.ini:
 ;   mkdir -p /var/tmp/couchdb2/{data,log}
 ;
 ; Start using:
-;   couchdb -c /usr/local/etc/couchdb/default.ini -c local2.ini
+;   couchdb -n -a /usr/local/etc/couchdb/default.ini -a local2.ini
 
 [couchdb]
 database_dir = /var/tmp/couchdb2/data

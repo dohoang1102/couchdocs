@@ -1,4 +1,5 @@
 = Modeling Entity Relationships in CouchDB =
+<<TableOfContents()>>
 
 This page is mostly a translation of Google's [[http://code.google.com/appengine/articles/modeling.html|Modeling Entity Relationships]] article in CouchDB terms. It could use more code examples and more examples of actual output. Since this is a wiki, feel free to update this document to make things clearer, fix inaccuracies etc. This article is also related to [[http://wiki.apache.org/couchdb/Transaction_model_use_cases|Transaction model use cases]] discussion, as it involves multiple document updates.
 
@@ -7,7 +8,8 @@ As a quick summary, this document explains how to do things that you would norma
 == Why would I need entity relationships? ==
 Imagine you are building a snazzy new web application that includes an address book where users can store their contacts. For each contact the user stores, you want to capture the contacts name, birthday (which they mustn't forget!) their address, telephone number and company they work for.
 When the user wants to add an address, they enter the information in to a form and the form saves the information in a model that looks something like this:
-{{{
+
+{{{#!highlight javascript
 {
   "_id":"some unique string that is assigned to the contact",
   "type":"contact",
@@ -41,7 +43,7 @@ In CouchDB, there are 2 ways to achieve this.
 === One to Many: Separate documents ===
 
 When using separate documents, you could have documents like this for the phone numbers:
-{{{
+{{{#!highlight javascript
 {
   "_id":"the phone number",
   "type":"phone",
@@ -54,7 +56,7 @@ When using separate documents, you could have documents like this for the phone 
 The key to making all this work is the contact property. By storing the contact id in it, you can refer to the owning contact in a unique way, since ''_id'' fields are unique in CouchDB databases.
 
 Creating the relationship between a contact and one of its phone numbers is easy to do. Let's say you have a contact named "Scott" who has a home phone and a mobile phone. You populate his contact info like this (using Perl and Net::CouchDB):
-{{{
+{{{#!highlight perl
 $db->insert({type => 'contact', _id => 'Scott', name => 'My Friend Scott'});
 $db->insert({type => 'phone', _id => '(650) 555 - 2200', contact_id => 'Scott', phone_type => 'home'});
 $db->insert({type => 'phone', _id => '(650) 555 - 2201', contact_id => 'Scott', phone_type => 'mobile'});
@@ -62,13 +64,15 @@ $db->insert({type => 'phone', _id => '(650) 555 - 2201', contact_id => 'Scott', 
 
 To get the contacts and their phone numbers from CouchDB in one search, you need to use a little trick: You need to create a view that sorts the contacts and their phone numbers in order. This is the view:
 
-{{{
-"map":function(doc) {
-   if (doc.type == 'contact') {
-      emit([doc._id, 0], doc);
-   } else if (doc.type == 'phone') {
-      emit([doc.contact_id, 1, doc.phone_type], doc);
-   }
+{{{#!highlight javascript
+{
+  "map":function(doc) {
+     if (doc.type == 'contact') {
+        emit([doc._id, 0], doc);
+     } else if (doc.type == 'phone') {
+        emit([doc.contact_id, 1, doc.phone_type], doc);
+     }
+  }
 }
 }}}
 
@@ -81,7 +85,7 @@ NOTE: This needs a code example showing how to use the output of the view. Feel 
 Because CouchDB always sorts on keys, you can use this view to only get Scotts home phone numbers by querying with ''startkey'' set to "[''''''"Scott",1,"home"]" and ''endkey'' set to "[''''''"Scott",1,"home",{}]"
 
 When Scott loses his phone, it's easy enough to delete that record. Just delete the phone document and it can no longer be queried for:
-{{{
+{{{#!highlight perl
 $db->doc('(650) 555 - 2200')->delete;
 }}}
 
@@ -90,7 +94,7 @@ $db->doc('(650) 555 - 2200')->delete;
 The embedded array is only an option as long as you don't have "too many" items to store, since each document is always handled as a whole and bigger documents mean slower handling and slower network transfers whenever you want to change the list. Phone numbers should be ok unless you plan to store the whole company phonebook in there.
 
 This is the easiest way to handle one-to-many as everything you need is in one place. Here's how the document for Scott would look:
-{{{
+{{{#!highlight javascript
 {
   "_id":"Scott",
   "type":"contact",
@@ -101,7 +105,7 @@ This is the easiest way to handle one-to-many as everything you need is in one p
 
 or even more succinctly
 
-{{{
+{{{#!highlight javascript
 {
   "_id":"Scott",
   "type":"contact",
@@ -114,7 +118,7 @@ Note how only the fields that we know are stored. Also note that the phone numbe
 
 == Many to Many ==
 One thing you would like to do is provide the ability for people to organize their contacts in to groups. They might make groups like "Friends", "Co-workers" and "Family". This would allow users to use these groups to perform actions en masse, such as maybe sending an invitation to all their friends for a hack-a-thon. Let's define a simple Group model like this:
-{{{
+{{{#!highlight javascript
 {
   "_id":"unique group id",
   "type":"group",
@@ -129,19 +133,19 @@ You could make a one-to-many relation with Contact. However, this would allow co
 One very simple way is to create a list of keys on one side of the relationship, like we did in the "Embedded One to Many" section.
 
 Our friend and colleague Scott would then get a new field in his contact document which holds group ''_id'' values:
-{{{
+{{{#!highlight javascript
   "groups":["Friends","Colleagues"]
 }}}
 
 Adding and removing a user to and from a group means working with a list of keys. Suppose we don't like Scott any more:
-{{{
+{{{#!highlight perl
    my $scott = $db->doc('Scott');
    $scott->{groups} = grep { $_ ne 'Friends' } $scott->{groups};
    $scott->update;
 }}}
 
 To get all the members of a group, you'd create a view like this:
-{{{
+{{{#!highlight javascript
 "map":function(doc) {
    if (doc.type == 'contact') {
       for (var i in doc.groups) {
@@ -159,7 +163,7 @@ If you then query this view with search parameters
 then you'll get all the names of members of the group Friends and the group information as the first row. (Hashes sort behind strings).
 
 Here's a space optimization hint: If you make the view be
-{{{
+{{{#!highlight javascript
 "map":function(doc) {
    if (doc.type == 'contact') {
       for (var i in doc.groups) {
@@ -192,10 +196,10 @@ Another way of implementing many-to-many is by creating a separate document for 
 You would use this method if you modify the key list frequently (i.e. if you get more conflicts than is acceptable), or if the key list is so large that transferring the document is unacceptably slow. Relationship documents enable frequent changes with less chance of conflict; however, you can access neither the contact nor group information in one request. You must re-request those specific documents by ID, keeping in mind that they may change or be deleted in the interim.
 
 A document explaining that Scott is a Friend would look like
-{{{
+{{{#!highlight javascript
 {
   "_id":"some unique id",
-  "type":"relation",
+  "type":"relationship",
   "contact_id":"Scott",
   "group_id":"Friends"
 }
@@ -203,7 +207,7 @@ A document explaining that Scott is a Friend would look like
 
 
 If you then want to know who is in a group you'll need to use the view (fetch descending to get the group info first)
-{{{
+{{{#!highlight javascript
 "map":function(doc) {
    if (doc.type == 'relationship') {
       emit(doc.group_id,doc.contact_id);
@@ -214,7 +218,7 @@ If you then want to know who is in a group you'll need to use the view (fetch de
 }}}
 
 To know what groups a contact belongs to you can use
-{{{
+{{{#!highlight javascript
 "map":function(doc) {
    if (doc.type == 'relationship') {
       emit([doc.contact_id,1],doc.group_id);

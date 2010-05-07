@@ -26,6 +26,10 @@ This first downloads and installs the ''ez_setup.py'' script which runs python '
 === couchquery ===
  . http://mikeal.github.com/couchquery/
 
+An implementation of the python 'shelve' API using couchquery as a backend
+
+ . http://www.randomwalking.com/snippets/couchshelve.text
+
 == Tutorial on using couchdb-python with Django ==
 A tutorial on using Django (a Python framework) with CouchDb can be found at
 

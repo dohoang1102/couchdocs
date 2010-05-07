@@ -1,3 +1,5 @@
+= How to Enable Erlang Views =
+
 Since version 0.10.0, CouchDB has a native Erlang view server, allowing you to write your map/reduce functions in Erlang. There is no-longer the need to manually install [[http://github.com/mmcdanie/erlview|erlview]], unless you are running an old version of CouchDB.
 
 First, you'll need to edit your `local.ini` to include a native_query_servers section:

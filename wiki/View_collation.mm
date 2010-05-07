@@ -1,7 +1,6 @@
 A simple introduction to CouchDB view collation.
 
 == Basics ==
-
 View functions specify a key and a value to be returned for each row. CouchDB collates the view rows by this key. In the following example, the !LastName property serves as the key, thus the result will be sorted by !LastName:
 
 {{{
@@ -11,11 +10,9 @@ function(doc) {
   }
 }
 }}}
-
 CouchDB allows arbitrary JSON structures to be used as keys. You can use complex keys for fine-grained control over sorting and grouping.
 
 == Examples ==
-
 The following clever trick would return both customer and order documents. The key is composed of a customer ''_id'' and a sorting token. Because the key for order documents begins with the ''_id'' of a customer document, all the orders will be sorted by customer. Because the sorting token for customers is lower than the token for orders, the customer document will come before the associated orders. The values ''0'' and ''1'' for the sorting token are arbitrary.
 
 {{{
@@ -27,38 +24,35 @@ function(doc) {
   }
 }
 }}}
-
 This trick was [[http://www.cmlenz.net/blog/2007/10/couchdb-joins.html|originally documented]] by Christopher Lenz.
 
 === Sorting by Dates ===
-
 It maybe be convenient to store date attributes in a human readable format (i.e. as a String), but still sort by date. This can be done by converting the date to a number in the emit function. For example, given a document with a created_at attribute of 'Wed Jul 23 16:29:21 +0100 2008', the following emit function would sort by date
-{{{
-emit(Date.parse(doc.created_at), doc);
-}}}
 
-Alternatively, if you use a date format which sorts lexicographically, such as "2008/06/09 13:52:11 +0000" you can just 
+{{{
+emit(Date.parse(doc.created_at).getTime(), doc);
+}}}
+Alternatively, if you use a date format which sorts lexicographically, such as "2008/06/09 13:52:11 +0000" you can just
+
 {{{
 emit(doc.created_at, doc);
 }}}
 and avoid the conversion. As a bonus, this date format is compatible with the Javascript date parser, so you can use ''new Date(doc.created_at)'' in your client side Javascript to make date sorting easy in the browser.
 
 === String Ranges ===
-
 If you need start and end keys that encompass every string with a given prefix, it is better to use a high value unicode character, than to use a 'ZZZZ' suffix.
 
 That is, rather than:
-{{{
-startkey="abc"&endkey="abcZZZZZZZZZ" 
-}}}
 
+{{{
+startkey="abc"&endkey="abcZZZZZZZZZ"
+}}}
 You should use:
+
 {{{
-startkey="abc"&endkey="abc\u9999" 
+startkey="abc"&endkey="abc\ufff0"
 }}}
-
 == Collation Specification ==
-
 This section is based on the ''view_collation'' function in ''couch_tests.js'':
 
 {{{
@@ -104,7 +98,6 @@ true
            // that doesn't preserve order
 {b:2, c:2}
 }}}
-
 Comparison of strings is done using [[http://site.icu-project.org/|ICU]] which implements the [[http://www.unicode.org/unicode/reports/tr10/|Unicode Collation Algorithm]], giving a dictionary sorting of keys. This can give surprising results if you were expecting ASCII ordering. Note that:
 
  * All symbols sort before numbers and letters (even the "high" symbols like tilde, 0x7e)
@@ -139,55 +132,45 @@ EOS
 
 puts RestClient.get("#{DB}/_design/test/_view/one")
 }}}
-
 This shows the collation sequence to be:
+
 {{{
   ` ^ _ - , ; : ! ? . ' " ( ) [ ] { } @ * / \ & # % + < = > | ~ $ 0 1 2 3 4 5 6 7 8 9
 a A b B c C d D e E f F g G h H i I j J k K l L m M n N o O p P q Q r R s S t T u U v V w W x X y Y z Z
 }}}
-
 === Key ranges ===
-
 Take special care when querying key ranges. For example: the query
 
 {{{
 startkey="Abc"&endkey="AbcZZZZ"
 }}}
-
 will match "ABC" and "abc1", but not "abc". This is because UCA sorts as
 
 {{{
   abc < Abc < ABC < abc1 < AbcZZZZZ
 }}}
-
 For most applications, to avoid problems you should lowercase the startkey, e.g.
 
 {{{
 startkey="abc"&endkey="abcZZZZZZZZ"
 }}}
-
 will match all keys starting with [aA][bB][cC]
 
 === Complex keys ===
-
 The query {{{startkey=["foo"]&endkey=["foo",{}]}}} will match most array keys with "foo" in the first element, such as {{{["foo","bar"]}}} and {{{["foo",["bar","baz"]]}}}. However it will not match {{{["foo",{"an":"object"}]}}}
 
 == _all_docs ==
-
 The _all_docs view is a special case because it uses ASCII collation for doc ids, not UCA. For example,
 
 {{{
 startkey="_design/"&endkey="_design/ZZZZZZZZ"
 }}}
-
 will ''not'' find {{{_design/abc}}} because 'Z' comes before 'a' in the ASCII sequence. A better solution is:
 
 {{{
 startkey="_design/"&endkey="_design0"
 }}}
-
 == Raw collation ==
-
 To squeeze a little more performance out of views, you can specify {{{ "options":{"collation":"raw"} }}} within the view definition for native Erlang collation, especially if you don't require UCA. This gives a different collation sequence:
 
 {{{
@@ -199,5 +182,4 @@ true
 ["a"]
 "a"
 }}}
-
 Beware that `{}` is no longer a suitable "high" key sentinel value. Use a string like "~~~~~" instead.

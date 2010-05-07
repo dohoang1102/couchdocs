@@ -110,7 +110,7 @@ GET /somedatabase/ HTTP/1.1
 
 The server's response is a JSON object similar to the following:
 
-{{{
+{{{#!highlight javascript
 {
     "compact_running": false, 
     "db_name": "dj", 
@@ -122,7 +122,6 @@ The server's response is a JSON object similar to the following:
     "purge_seq": 0, 
     "update_seq": 4
 }
-
 }}}
 
 ==== Meaning of Result Hash ====
@@ -154,13 +153,21 @@ curl -X GET http://localhost:5984/test/_revs_limit
 
 === Changes ===
 
-A list of changes made to documents in the database, in the order they were made, can be obtained from the database's ''_changes'' resource.
+A list of changes made to documents in the database, in the order they were made, can be obtained from the database's ''_changes'' resource. You can query the ''_changes'' resource by issuing a GET-Request with the following (optional) parameters:
 
-  * GET
-    * since=seqnum (default=0). Start the results from the change immediately after the given sequence number.
-    * feed=normal|longpoll|continuous (default=normal). Select the type of feed.
-    * heartbeat=time (milliseconds, default=60000). Period in milliseconds after which a empty line is sent in the results. Only applicable for ''longpoll'' or ''continuous'' feeds. Overrides any ''timeout''.
-    * timeout=time (milliseconds, default=60000). Maximum period in milliseconds to wait for a change before the response is sent, even if there are no results. Only applicable for ''longpoll'' or ''continuous'' feeds.
+||'''Parameter'''||'''Value'''||'''Default value'''||'''Description'''||
+||''since''||seqnum||''0''||Start the results from the change immediately after the given sequence number.||
+||''feed''||normal | longpoll | continuous||''normal''||Select the type of feed.||
+||''heartbeat''||milliseconds||''60000''||Period in milliseconds after which a empty line is sent in the results. Only applicable for ''longpoll'' or ''continuous'' feeds. Overrides any ''timeout''.||
+||''timeout''||milliseconds||''60000''||Maximum period in milliseconds to wait for a change before the response is sent, even if there are no results. Only applicable for ''longpoll'' or ''continuous'' feeds. '''Note''' that 60000 is also the default maximum timeout to prevent undetected dead connections.*||
+||''filter''||designdoc/filtername||''none''||Reference a filter function from a design document to selectively get updates. See the [[http://books.couchdb.org/relax/reference/change-notifications|section in the book]] for more information.||
+||''include_docs''||boolean||''false''||Include the associated document with each result. (New in version 0.11)||
+
+* You can change the default maximum timeout in your ini-configuration:
+{{{
+[httpd]
+changes_timeout=#millisecs
+}}}
 
 By default all changes are immediately returned as a JSON object:
 
@@ -168,7 +175,7 @@ By default all changes are immediately returned as a JSON object:
 GET /somedatabase/_changes HTTP/1.1
 }}}
 
-{{{
+{{{#!highlight javascript
 {"results":[
 {"seq":1,"id":"fresh","changes":[{"rev":"1-967a00dff5e02add41819138abb3284d"}]},
 {"seq":3,"id":"updated","changes":[{"rev":"2-7051cbe5c8faecd085a3fa619e6e6337"}]},
@@ -187,7 +194,7 @@ Sending a ''since'' param in the query string skips all changes up to and includ
 GET /somedatabase/_changes?since=3 HTTP/1.1
 }}}
 
-{{{
+{{{#!highlight javascript
 {"results":[
 {"seq":5,"id":"deleted","changes":[{"rev":"2-eec205a9d413992850a6e32678485900"}],"deleted":true}
 ],
@@ -214,7 +221,7 @@ The ''continuous'' feed's response is a little different than the other feed typ
 GET /somedatabase/_changes?feed=continuous HTTP/1.1
 }}}
 
-{{{
+{{{#!highlight javascript
 {"seq":1,"id":"fresh","changes":[{"rev":"1-967a00dff5e02add41819138abb3284d"}]}
 {"seq":3,"id":"updated","changes":[{"rev":"2-7051cbe5c8faecd085a3fa619e6e6337"}]}
 {"seq":5,"id":"deleted","changes":[{"rev":"2-eec205a9d413992850a6e32678485900"}],"deleted":true}
