@@ -73,6 +73,11 @@ def mm2md(input)
         :replacement => '[[\1|\2]]',
       },
 
+      # next, detect "simple" aliases for WikiLinks
+      {
+        :regexp => /\[\[(?:(?!(?:http|irc))(.*?)\|([^\]]*))\]\]/,
+        :replacement => '[[\1]]',
+      },
 
       # processing tables
       {
@@ -109,6 +114,14 @@ def mm2md(input)
         :replacement => "\n\\1"
       },
 
+      # detect links in text (without any given markup or ankor)
+      # got the regexp from http://flanders.co.nz/2009/11/08/a-good-url-regular-expression-repost/
+      {
+        :regexp => /(?:\s|^)((?#Protocol)(?:(?:ht|f)tp(?:s?)\:\/\/|~\/|\/)?(?#Username:Password)(?:\w+:\w+@)?(?#Subdomains)(?:(?:[-\w]+\.)+(?#TopLevel Domains)(?:com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|[a-z]{2}))(?#Port)(?::[\d]{1,5})?(?#Directories)(?:(?:(?:\/(?:[-\w~!$+|.,=]|%[a-f\d]{2})+)+|\/)+|\?|#)?(?#Query)(?:(?:\?(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=?(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)(?:&(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=?(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)*)*(?#Anchor)(?:#(?:[-\w~!$+|\/.,*:=]|%[a-f\d]{2})*)?)(?:\s|$)/,
+        :replacement => %Q{ <a href="\\1">\\1</a> },
+      },
+
+
       # basic processing of named links
       {
         :regexp => /\[\[(?:(.*?)\|([^\]]*?))\]\]/,
@@ -116,17 +129,32 @@ def mm2md(input)
       },
       # ... and just links
       {
-        :regexp => /\[\[https?:\/\/(.*?)\]\]/,
+        :regexp => /\[\[(https?|irc|mailto):\/\/(.*?)\]\]/,
         :replacement => %Q{<a href="\\1">\\1</a>},
       },
+
+      # Table of Contents
       {
         :regexp => /(<<TableOfContents\(\d*\)>>)/,
         :replacement => '[TOC]'
       },
 
+      # <<BR>> -> <br />
+      {
+        :regexp => /<<BR>>/,
+        :replacement => '<br />'
+      },
+
+
+
       # drop some stuff
       {
         :regexp => /(<<Anchor\(.*?\)>>)/,
+        :replacement => '<!-- \1 -->' + "\n",
+      },
+
+      {
+        :regexp => /(\{\{attachment:.*?\}\})/,
         :replacement => '<!-- \1 -->' + "\n",
       }
     ].inject(input) do |txt, pattern|
