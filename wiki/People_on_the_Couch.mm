@@ -31,6 +31,8 @@ Please add yourself to the according timezone using this format:
   * <<MailTo(jmspring@gmail.com)>>
  * Marcus Westin (marcuswestin)
   * [[http://twitter.com/marcuswestin|Twitter]]
+ * Jay Nelson (duomark)
+  * [[http://www.duomark.com/|Website]], [[http://blog.duomark.com/|Blog]], [[http://twitter.com/duomark|Twitter]]
 
 == UTC-7 ==
  * Ben Atkin (benatkin)
@@ -51,6 +53,8 @@ Please add yourself to the according timezone using this format:
   * <<MailTo(scarley@tradeharbor.com)>>, [[http://TradeHarbor.com/|Website]]
  * Stephen Veit
   * <<MailTo(srveit@veitconsulting.com)>>, [[http://github.com/srveit|GitHub]], [[http://twitter.com/srveit|Twitter]]
+ * Jim Cowart
+  * <<MailTo(me@ifandelse.com)>>,[[http://github.com/ashbylane|GitHub]], [[http://twitter.com/ifandlese|Twitter]], [[http://ifandelse.com|Website]]
 
 == UTC-5 (-4) ==
  * Brian Mitchell (binary42)
@@ -99,12 +103,27 @@ Please add yourself to the according timezone using this format:
   * <<MailTo(amahon@gmail.com)>>, [[http://twitter.com/andrew_mahon|Twitter]], [[http://voxpop.tc|Blog]]
  * Askhay Surve (ak47surve)
   * <<MailTo(akshay.surve@gmail.com)>>, [[http://twitter.com/akshaysurve|Twitter]], [[http://akshaysurve.com|Homepage/Blog]]
+ * Dave Woodward (futuremint)
+  * <<MailTo(dave@futuremint.com)>>, [[http://twitter.com/futuremint|Twitter]], [[http://futuremint.com|Blog]]
+
+== UTC-4 ==
+
+ * Mario César Señoranis Ayala (mariocesar_bo)
+  * <<MailTo(mariocesar.c50@gmail.com)>>, [[http://twitter.com/mariocesar_bo|Twitter]], [[http://www.noentrar.net|Blog]]
 
 == UTC-3 ==
  * Vinícius Teles (viniciusteles)
   * [[http://en.blog.improveit.com.br/|Blog]], [[http://www.improveit.com.br/vinicius|Homepage (pt-BR)]], [[http://twitter.com/viniciusteles|Twitter]]
+
+ * Marcos Tapajós (marcostapajos)
+  * [[http://tapajos.me/|Blog (pt-BR)]], [[http://en.tapajos.me|Blog (en)]], [[http://twitter.com/tapajos|Twitter]]
+
  * Jose Peleteiro (peleteiro)
   * [[http://peleteiro.net|Blog]], [[http://twitter.com/peleteiro|Twitter]]
+
+ * Luciano Ramalho (ramgarlic)
+  * [[http://blog.ramgarlic.com|Blog]], [[http://twitter.com/luciano|Twitter]]
+
 
 == UTC+0 (0) ==
  * Jon Gretar Borgthorsson (JonGretar)
@@ -137,6 +156,8 @@ Please add yourself to the according timezone using this format:
   * [[http://benoitc.org/|Blog]], [[http://twitter.com/benoitc|Twitter]]
  * Christian Czura (chrisberlin)
   * [[http://www.byteshrine.org/|Blog]]
+ * Daniel Müller (info@3smil.com)
+  * [[http://3smil.com/|Website]]
  * Florian Ebeling (febeling)
   * <<MailTo(florian.ebeling@gmail.com)>>, [[http://twitter.com/febeling|Twitter]]
  * Stefan Edlich
@@ -195,6 +216,8 @@ Please add yourself to the according timezone using this format:
   * <<MailTo(jeremi23@gmail.com)>>, [[http://twitter.com/jeremi|Twitter]], [[http://github.com/jeremi|Github]], [[http://www.linkedin.com/in/jeremijoslin|LinkedIn]]
  * Kenny Shen (pydroid)
   * <<MailTo(talk@kennyshen.com)>>, [[http://twitter.com/kenny_shen|Twitter]], [[http://www.kennyshen.com|Homepage]]
+ * Danny Siu (dsiu)
+  * <<MailTo(danny_dot_siu_at_gmail_dot_com)>>, [[http://twitter.com/dsiu|Twitter]], [[http://dsiu.org|Homepage]]
 
 == UTC+9 ==
  * Michael Fellinger (manveru)

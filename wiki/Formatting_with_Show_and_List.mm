@@ -1,7 +1,7 @@
 = Formatting with Show and List =
 <<TableOfContents()>>
 
-Note that this is only available in CouchDB 0.9 or newer — The API might still change.
+Note that this is only available in CouchDB 0.9 or newer
 
 The basics of formatting documents using `show` and `list` functions. These functions convert documents and views, respectively, into non-JSON formats. The rows of each view are processed individually, which keeps long lists from becoming memory hogs.
 
@@ -60,7 +60,10 @@ function(doc, req) {
 }}}
 The request and response objects are of the same format used by `_external` functions, as documented in ExternalProcesses.
 
-== Listing Views with couchdb 0.9 ==
+Since CouchDB 0.11.0 you can use the `send()` function as explained below in show functions as well.
+
+== Listing Views with CouchDB 0.10 and later ==
+
 List functions are stored under the `lists` key of a design document. Here's an example design doc with list functions, in addition to views:
 
 {{{#!highlight javascript
@@ -72,8 +75,8 @@ List functions are stored under the `lists` key of a design document. Here's an 
         "people-by-name": "function(doc) { /*...*/ }"
     },
     "lists": {
-        "index-posts": "function(head, row, req, row_info) { /*...*/ }",
-        "browse-people": "function(head, row, req, row_info) { /*...*/ }"
+        "index-posts": "function(head, req) { /*...*/ }",
+        "browse-people": "function(head, req) { /*...*/ }"
     }
 }
 }}}
@@ -88,12 +91,33 @@ GET /db/_design/examples/_list/browse-people/people-by-name?startkey=["a"]&limit
 }}}
 As above, we assume the database is named "db" and the design doc "examples".
 
-Couchdb 0.10 supports an alternate form of URL which allows you to use a list function and a view from different design documents.  This is particularly useful when you want to use a different language for the list and for the view.  These URLs are very similar to the above examples, but instead of the tail portion being the name of the view, the tail portion can consist of two parts - a design doc name and the name of the view in that second document.  For example:
+Couchdb 0.10 supports an alternate form of URL which allows you to use a list function and a view from different design documents.  This is particularly useful when you want to use a different language for the list and for the view. These URLs are very similar to the above examples, but instead of the tail portion being the name of the view, the tail portion can consist of two parts - a design doc name and the name of the view in that second document.  For example:
 
 {{{
 GET /db/_design/examples/_list/index-posts/other_ddoc/posts-by-tag?key="howto"
 }}}
 [As above, we assume the database is named "db" and the design doc with the list is named "examples", while the design doc with the view is "other_ddoc".]
+
+
+An Example `list` function
+
+{{{#!highlight javascript
+function(head, req) {
+  var row;
+  start({
+    "headers": {
+      "Content-Type": "text/html"
+     }
+  });
+  while(row = getRow()) {
+    send(row.value);
+  }
+}
+}}}
+
+== Listing Views with CouchDB 0.9 ==
+
+List functions were introduced in CouchDB 0.9 and had different, more complex API:
 
 A list function has a more interesting signature, as it is passed the head of the view on first invocation, then each row in turn, then called one more time for the tail of the view. The function should check the `head` and `row` parameters to identify which state it's being called in; the sequence of calls to `listfn`, for a view with three rows, would look like:
 
@@ -122,20 +146,6 @@ function(head, row, req, row_info) {
     return "<li>"+JSON.stringify(row)+"</li>";
   } else {
     return "</ul><h4>the tail</h4>"
-  }
-}
-}}}
-
-== Listing Views with couchdb 0.10 ==
-The list API has changed significantly from 0.9 to 0.10.
-
-Example `list` function
-
-{{{#!highlight javascript
-function(head, req) {
-  var row;
-  while(row = getRow()) {
-    send(row.value);
   }
 }
 }}}

@@ -1,0 +1,20 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:TitleIndex
+##master-date:2004-07-18 08:52:24
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language zh
+
+这是本维基中所有网页的索引。
+
+也请参阅:
+ * ["词汇索引"] —— 标题中所用词汇的索引
+ * ["站点导航"] —— 其他的索引机制
+----
+
+<<TitleIndex>>
+
+此页的英文版本：TitleIndex

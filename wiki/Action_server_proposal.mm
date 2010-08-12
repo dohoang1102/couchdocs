@@ -10,7 +10,7 @@ Example:
 
 A request formed like this
 {{{
-http://localhost:5984:/my-db/_search?query=search%20string
+http://localhost:5984/my-db/_search?query=search%20string
 }}}
 appears to the query server as a JSON string:
 {{{

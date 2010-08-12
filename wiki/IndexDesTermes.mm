@@ -1,0 +1,17 @@
+## Please edit system and help pages ONLY in the moinmaster wiki!
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+## Merci de n'éditer les pages systèmes et d'aide QUE sur MoinMaster !
+## Pour plus d'information, consultez MoinMaster:MoinPagesEditorGroup.
+##master-page:WordIndex
+##master-date:2004-05-16 22:32:27
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language fr
+Voici l'index de tous les mots composant les titres des pages.
+
+Voir également :
+ * IndexDesTitres -- un index plus concis
+ * ExplorerCeWiki -- la liste des outils d'exploration disponibles
+
+----
+<<WordIndex>>

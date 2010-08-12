@@ -1,0 +1,17 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:WhyWikiWorks
+##master-date:2004-11-22 10:38:35
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language zh
+
+= 维基好坏说 =
+
+见仁见智，萝卜青菜各有所爱。请看正反方各抒己见。如果您有时间，请帮忙翻成汉语。如您时间实在多得用不完，也可参加辩论。
+
+为什么有用，在什么情况下有用，只有用过了才有发言权。在您参加辩论前，最好还是实践一下。实践出真知嘛。
+
+<<Include(WhyWikiWorks)>>

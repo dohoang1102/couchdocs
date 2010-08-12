@@ -1,0 +1,82 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:Unknown-Page
+##master-date:Unknown-Date
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language en
+== Arbitrary Page Names ==
+If you enclose a sequence of characters in square brackets and double quotes {{{["like this"]}}}, that makes it a page name. That can be used for specific uses of MoinMoin (like organizing a list of items, e.g. your CD collection, by their "natural" name).
+
+/!\ This is a configurable feature enabled by `allow_extended_names`, so it might not work!
+
+== URLs and Inline Images ==
+There are several way to insert external references<<FootNote(The opposite of external references are the internal, automatic WikiName links.)>> into the text:
+ * direct URL insertion; if the URL ends in an image extension ("{{{.gif}}}", "{{{.jpg}}}" or "{{{.png}}}"), the URL is converted to an image tag.
+ * bracketed URLs.
+ * InterWiki links.
+ * email addresses.
+
+If you enter URLs into normal text, there is the problem of detecting what belongs to the URL and what not. There are four ways to force the ending of an URL:
+ * put a space after the URL.
+ * use the Wiki:SixSingleQuotes escaping.
+ * put the URL into double quotes.
+ * use the bracketed URL syntax.
+
+The supported URL schemes are: `http`, `https`, `ftp`, `nntp`, `news`, `mailto`, `telnet`, and `file`. The administrator of your wiki can extend the supported schemes by using the {{{url_schemas}}} variable (see HelpOnConfiguration).
+
+In addition to the standard schemes, there are MoinMoin-specific ones: `wiki`, `attachment`, `inline`, and `drawing`. "`wiki`" indicates an InterWiki link, so `MoinMoin:FrontPage` and `wiki:MoinMoin:FrontPage` are equivalent; you will normally prefer the shorter form, the "`wiki`" scheme becomes important when you use bracketed links, since there you always need a scheme. The other three schemes are related to file attachments and are explained on HelpOnActions/AttachFile.
+
+When the configuration option `bang_meta` is set to true, you can surpress WikiName linking by putting an exclamation mark (''bang'') before the WikiName, i.e. `!WikiName`. This is deactivated by default.
+
+For more information on the possible markup, see HelpOnEditing. For details on how to link to subpages, see HelpOnEditing/SubPages. 
+
+To ''insert'' anchors into a page you need the [wiki:HelpOnMacros macro] ''Anchor'': `<<Anchor(anchorname)>>`, where "anchorname" is the actual identifier of the anchor. To reference an anchor on the same wiki page use `[#anchorname]` or `[#anchorname label text]`. To link to an anchor on another wiki page write `[wiki:Self:PageName#anchorname]` or `[wiki:Self:PageName#anchorname label text]`, where "Page``Name" is the name of the other page and "anchorname" is the identifier of the anchor on that page.
+
+It is often desirable to create a link to a Wiki page in the current Wiki, but have the link appear with a different text label. While you can use an InterWiki link with a Wiki name of Self, this results in an InterWiki icon prefix which might be misleading since you're not leaving the current Wiki at all. Use the syntax of `[:WikiPage:Label text]` to achieve a link to a current Wiki page without creating an InterWiki link. 
+
+/!\ On some Wikis, a link to the page RecentChanges might refer to the same page as this link: ["recentchanges"]. This is especially true for Windows and Mac OS X systems because they are not case-sensitive normally.
+
+<<FootNote>>
+
+=== Example ===
+{{{
+ * http://moinmoin.wikiwikiweb.de/
+ * [http://moinmoin.wikiwikiweb.de/]
+ * [http://moinmoin.wikiwikiweb.de/ MoinMoin Homepage]
+ * http://moinmoin.wikiwikiweb.de/wiki/classic/img/moinmoin.png
+ * [http://moinmoin.wikiwikiweb.de/wiki/classic/img/moinmoin.png]
+ * [http://moinmoin.wikiwikiweb.de/wiki/classic/img/moinmoin.png  moinmoin.png]
+ * InterWiki
+  * Self:InterWiki
+  * MeatBall:InterWiki
+  * wiki:MeatBall/InterWiki
+  * [wiki:MeatBall/InterWiki]
+  * [wiki:MeatBall/InterWiki InterWiki page on MeatBall]
+ * jh@web.de
+ * [:InterWiki:InterWiki page in this wiki]
+ * [#anchorname Link to anchor on this page]
+ * [wiki:Self:OtherPage#anchorname Link to anchor on another wiki page]
+ * [:OtherPage#anchorname:Link to page in current wiki with label text]
+}}} 
+
+=== Display ===
+ * http://moinmoin.wikiwikiweb.de/
+ * [http://moinmoin.wikiwikiweb.de/]
+ * [http://moinmoin.wikiwikiweb.de/ MoinMoin Homepage]
+ * http://moinmoin.wikiwikiweb.de/wiki/classic/img/moinmoin.png
+ * [http://moinmoin.wikiwikiweb.de/wiki/classic/img/moinmoin.png]
+ * [http://moinmoin.wikiwikiweb.de/wiki/classic/img/moinmoin.png  moinmoin.png]
+ * InterWiki
+  * Self:InterWiki
+  * MeatBall:InterWiki
+  * wiki:MeatBall/InterWiki
+  * [wiki:MeatBall/InterWiki]
+  * [wiki:MeatBall/InterWiki InterWiki page on MeatBall]
+ * jh@web.de
+ * [:InterWiki:InterWiki page in this wiki]
+ * [#anchorname Link to anchor on this page]
+ * [wiki:Self:OtherPage#anchorname Link to anchor on another wiki page]
+ * [:OtherPage#anchorname:Link to page in current wiki with label text]

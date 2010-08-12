@@ -1,0 +1,11 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:AbandonedPages
+##master-date:Unknown-Date
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language es
+
+Páginas que no han sido editadas desde el principio de la historia (literalmente); es un listado de las entradas más antiguas en esté wiki.
+
+<<AbandonedPages>>

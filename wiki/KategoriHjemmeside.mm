@@ -1,0 +1,20 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:CategoriHomepage
+##master-date:2002-12-16 22:56:34
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language da
+En kategori til WikiHjemmeSide''''''r.
+
+Bemærk at sådanne sider er "ejet" af den respektive person, og bør ikke redigeres af andre, undtagen for at efterlade beskeder til personen. Dette gøres ved at tilføje beskeden under fire bindestreger, sådan her:
+
+{{{
+----
+Ville blot sige Hej! -- JonasSmedegaard
+}}}
+
+----
+KategoriKategori

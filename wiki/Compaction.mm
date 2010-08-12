@@ -9,10 +9,10 @@ Compaction is manually triggered per database. Support for queued compaction of 
 
 === Example ===
 
-Compaction is triggered by an HTTP post request to the _compact sub-resource of your database. On success, HTTP status 202 is returned immediately.
+Compaction is triggered by an HTTP POST request to the _compact sub-resource of your database. On success, HTTP status 202 is returned immediately. Although the request body is not used you must still specify "application/json" as Content-Type for the request.
 
 {{{
-curl -X POST http://localhost:5984/my_db/_compact
+curl -H "Content-Type: application/json" -X POST http://localhost:5984/my_db/_compact
 #=> {"ok":true}
 }}}
 
@@ -39,17 +39,17 @@ In the future, a single CouchDB node can be changed to stop or fail other update
 
 == View compaction ==
 
-[[Introduction_to_CouchDB_views|Views]] need compaction like databases. There is a compact views feature introduced with CouchDB 0.11:
+[[Introduction_to_CouchDB_views|Views]] need compaction like databases. There is a compact views feature introduced with CouchDB 0.10.0:
 {{{
-curl -X POST http://localhost:5984/dbname/_compact/designname
+curl -H "Content-Type: application/json" -X POST http://localhost:5984/dbname/_compact/designname
 #=> {"ok":true}
 }}}
 
-This compacts the view index from the current version of the design document. The HTTP response code is 202 Accepted (like compaction for databases) and a compaction background task will be created. Information on running compations can be fetched with [[HTTP_view_API#Getting_Information_about_Design_Documents_.28and_their_Views.29|HTTP_view_API#Getting_Information_about_Design_Documents_(and_their_Views)]].
+This compacts the view index from the current version of the design document. The HTTP response code is 202 Accepted (like compaction for databases) and a compaction background task will be created. Information on running compactions can be fetched with [[HTTP_view_API#Getting_Information_about_Design_Documents_.28and_their_Views.29|HTTP_view_API#Getting_Information_about_Design_Documents_(and_their_Views)]].
 
 View indexes on disk are named after their MD5 hash of the view definition. When you change a view, old indexes remain on disk. To clean up all outdated view indexes (files named after the MD5 representation of views, that does not exist anymore) you can trigger a view cleanup:
 
 {{{
-curl -X POST http://localhost:5984/dbname/_view_cleanup
+curl -H "Content-Type: application/json" -X POST http://localhost:5984/dbname/_view_cleanup
 #=> {"ok":true}
 }}}

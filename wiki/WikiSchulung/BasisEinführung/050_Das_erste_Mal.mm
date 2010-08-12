@@ -1,0 +1,27 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:Unknown-Page
+##master-date:Unknown-Date
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language de
+#pragma section-numbers off
+<<Navigation(slides)>>
+
+= Das erste Mal =
+
+ * Erste Hilfe bei Problemen oder Fragen: HilfeInhalt (<<Icon(help)>>) und HilfeAllgemein/FragenUndAntworten
+ * BenutzerEinstellungen
+   * Name (erscheint auf AktuelleÄnderungen)
+   * Email für Seitenabonnement und Login zuschicken lassen
+   * Persönliche Präferenzen
+   * Link mit Benutzerkennung ( (!) ''unbedingt ein Bookmark setzen'')
+ * Struktur der Seiten
+   * Navigation: Expressverweise, Icons mit Systemaktionen (HilfeZurNavigation)
+   * "Kürzlich besuchte Seiten" (siehe BenutzerEinstellungen)
+   * Inhalt
+   * Schnellsuche und zusätzliche Aktionen (HilfeZuAktionen)
+----
+Details auf HilfeFürAnfänger

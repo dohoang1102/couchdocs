@@ -1,0 +1,18 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:WordIndex
+##master-date:2004-03-11 20:08:30
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language sr
+
+Ovo je indeks svih reči koje se pojavljuju na naslovima stranica.
+
+Obratite pažnju i na ove stranice: 
+ * IndeksStranica -- sažetiji indeks
+ * PutoKazi -- ostali indeksi
+
+----
+<<WordIndex>>

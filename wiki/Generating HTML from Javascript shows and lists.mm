@@ -1,6 +1,8 @@
 = Generating HTML from Javascript shows and lists =
 You can generate output from [[http://books.couchdb.org/relax/design-documents/shows|shows]] and [[http://books.couchdb.org/relax/design-documents/lists|lists]].  Typically this would be HTML intended for a browser but any format can be generated. CouchDB already includes [[http://en.wikipedia.org/wiki/ECMAScript_for_XML|Javascript support]] for XML derived formats (eg Atom feeds). It is impractical to output HTML directly so some sort of templating is recommended.
 
+As of the 0.11 release of CouchDB you can use CommonJS 1.0 modules in your show, list, update, and validation functions - see [[CommonJS_Modules]].
+
 == Best Practise ==
 Generate clear concise simple HTML from your show/list functions.  The resulting HTML interface should be usable from constrained devices (eg cell phones, set top boxes) as well as being accessible (eg screen readers) and easy to index for search engines.  This is also easier to automatically test.  You can then run Javascript in the browser (if the browser supports Javascript and it is turned on) to enhance what is being displayed (eg add extra information, tooltips, icons, previews of next/previous content, enhanced menus and interaction etc).
 

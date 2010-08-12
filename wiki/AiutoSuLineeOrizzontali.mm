@@ -1,0 +1,41 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:Unknown-Page
+##master-date:Unknown-Date
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language it
+== Linee orizzontali ==
+
+Puoi disegnare delle linee divisorie orizzontali inserendo quattro o
+piu' caratteri "-" consecutivi. Il numero di tali caratteri determina
+lo spessore della linea, fino a un massimo di 10.
+
+Per ulteriori informazioni sulle possibilita' di formattazione, vedi
+AiutoSuFormattazione.
+
+=== Esempio ===
+{{{
+--- (non e' un separatore)
+----
+-----
+------
+-------
+--------
+---------
+----------
+-------------------------------------------- (di spessore non maggiore a 10)
+}}} 
+
+=== Risultato ===
+--- (non e' un separatore)
+----
+-----
+------
+-------
+--------
+---------
+----------
+-------------------------------------------- (di spessore non maggiore a 10)

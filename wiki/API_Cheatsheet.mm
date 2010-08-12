@@ -35,4 +35,4 @@ See [[HTTP_database_API]] for more information.
 ||/'''db'''||Get document||GET /'''db'''/'''doc'''||Retrieve a document||||
 ||/'''db'''||Create document||POST /'''db''' {"foo": "bar"}||Create new document||||
 ||/'''db'''/'''doc'''||Update document||PUT /'''db'''/'''doc''' {"foo": "test"}||Save updated document||||
-||/'''db'''/'''doc'''||Delete document||DELETE /'''db'''/'''doc'''||Delete document||||
+||/'''db'''/'''doc'''||Delete document||DELETE /'''db'''/'''doc'''?rev=REVISION||Delete document||||

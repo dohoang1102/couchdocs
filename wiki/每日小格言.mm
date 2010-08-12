@@ -1,0 +1,13 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:FortuneCookies
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language zh-tw
+
+用 `RandomQuote` 巨集, 可以隨機選取本頁清單裡的項目. 請參考["說明-巨集"](HelpOnMacros).
+
+ * 請把格言放在 FortuneCookies 那頁, 再用巨集顯示隨機選取的格言.
+ * 把格言放在本頁是沒有用的。

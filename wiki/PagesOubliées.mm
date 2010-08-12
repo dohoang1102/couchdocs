@@ -1,0 +1,12 @@
+## Please edit system and help pages ONLY in the moinmaster wiki!
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+## Merci de n'éditer les pages systèmes et d'aide QUE sur MoinMaster !
+## Pour plus d'information, consultez MoinMaster:MoinPagesEditorGroup.
+##master-page:AbandonedPages
+##master-date:2004-11-15 19:05:14
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language fr
+Les pages qui n'ont pas été modifiées depuis la nuit des temps ; cette page présente la liste des plus vieilles entrées du journal des modifications.
+
+<<AbandonedPages>>

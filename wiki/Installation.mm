@@ -9,18 +9,18 @@
  ||0.10.x||>=1.7 && <=1.8.0||>=5.6.5||>= 3.0||>= 7.18.0||>= 1.6.3||>= 2.59||
  ||0.11.x||>=1.7||>=5.6.5||>= 3.0||>= 7.18.0||>= 1.6.3||>= 2.59||
 
-== Troubleshooting ==
-
-=== Installing from source ===
-'''Tips/Hints'''
-
-If you have trouble/wired errors building from source, it is always good starting point to reset the repository to a clean state and retry:
-{{{
-make clean && make distclean && ./bootstrap && ./configure && make check && make
-}}}
-
-
 == System specific installation guides ==
+
+'''Android'''
+  * Currently under development.
+
+'''Apple Mac'''
+  * [[Installing_on_OSX]]
+
+'''BSD Unix'''
+  * [[Installing_on_FreeBSD]]
+  * [[Installing_on_NetBSD]]
+  * [[Installing_on_OpenBSD]]
 
 '''Linux and Solaris'''
   * [[Installing_on_RHEL4]]
@@ -32,23 +32,28 @@ make clean && make distclean && ./bootstrap && ./configure && make check && make
   * [[Installing_on_Open_Solaris_and_Joynet_Accellerator]]
   * [[Installing_on_Slackware]]
 
-'''Apple Mac'''
-  * [[Installing_on_OSX]]
+'''WebOS'''
+  * Currently under development.
 
 '''Windows'''
   * [[Installing_on_Windows]]
 
-'''BSD Unix'''
-  * [[Installing_on_FreeBSD]]
-  * [[Installing_on_NetBSD]]
-  * [[Installing_on_OpenBSD]]
+'''Cross platform package managers'''
+  * [[Installing_with_nix]]
 
-'''Installing from Source'''
-  * [[Installing_SpiderMonkey]]
-  * [[Installing_from_source]]
+'''Miscellaneous'''
+  * [[Installing_from_source| Getting The CouchDB Source.]]
+  * [[Building_The_Source_On_Nix| Building the source on *nix based systems.]]
+  * [[Installing_SpiderMonkey| Installing SpiderMonkey From Source.  CouchDB Relies on SpiderMonkey.]]
+  * [[Verify_and_Test_Your_Installation| Verify and test your installation.]]
 
-'''Verifying the Installation'''
-  * [[Verify_and_Test_Your_Installation]]
+
+== Troubleshooting ==
+
+  * See - [[Getting Help]]
+
+== General Production & Deployment Tips ==
 
 '''Third Party Tool Configuration'''
-  * [[Apache_As_a_Reverse_Proxy]]
+  * [[Performance| Tips for getting more performance out of CouchDB]]
+  * [[Apache_As_a_Reverse_Proxy| How to configure Apache as a reverse proxy.]]

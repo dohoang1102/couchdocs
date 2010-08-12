@@ -135,3 +135,4 @@ If you use the JavaScript view-server, you achieve this effect by calling the fu
  * [[http://github.com/tashafa/clutch/|Clojure]]
  * [[http://search.cpan.org/~hdp/CouchDB-View-0.003/lib/CouchDB/View/Server.pm|Perl]]
  * [[http://chicken.wiki.br/eggref/4/couchdb-view-server|Chicken Scheme]]
+ * [[http://couchdb.riaforge.com|Coldfusion]]

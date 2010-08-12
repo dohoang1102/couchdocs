@@ -1,0 +1,23 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:Unknown-Page
+##master-date:Unknown-Date
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language en
+`SecurityPolicy` is a config option that allows wiki admins to dynamically enable or disable certain key actions in a MoinMoin wiki, most notably editing and deleting content. See also HelpOnAccessControlLists for an easier way.
+
+== Mechanics ==
+
+Security restrictions in a MoinMoin wiki work by the interface defined in the `MoinMoin.security` module.
+The `Permissions` class implements the basic interface for user permissions and system policy. If you want to define your own policy, inherit
+from that base class, so that when new permissions are defined, you get the defaults.
+
+Then either assign your new class to `SecurityPolicy` in `wikiconfig.py` (and I mean the class, not an instance of it), or define your class directly in `wikiconfig.py` and name it `SecurityPolicy`.
+
+
+== Samples ==
+
+For samples on using this mechanism, see MoinMoin:SecurityPolicy.

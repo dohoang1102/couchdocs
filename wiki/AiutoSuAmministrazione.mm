@@ -1,0 +1,25 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:Unknown-Page
+##master-date:Unknown-Date
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language it
+AiutoContenuti > AiutoSuAmministrazione
+
+== Fare la manutenzione a un sito MoinMoin ==
+
+Le seguenti pagine contengono informazioni sui vari aspetti importanti
+per gli amministratori di un sito MoinMoin.
+
+Compiti di routine:
+ * AiutoSuCancellazionePagina - come cancellare una pagina
+
+Installazione e aggiornamento:
+ * AiutoSuInstallazione - come installare il software e i file di supporto
+ * AiutoSuConfigurazione - come configurare il tuo sistema
+ * AiutoSuAggiornamento - come aggiornare un sito wiki preesistente
+ * AiutoSuControlloOrtografico - come configurare e manutenere l'opzione di controllo ortografico
+ * AiutoSuAspettoSito - come cambiare l'aspetto delle pagine

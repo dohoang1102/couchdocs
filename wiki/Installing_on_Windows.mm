@@ -1,6 +1,9 @@
 <<TableOfContents>>
 
 This page describes how to build and install couchdb from source on Windows.  See also the [[Windows_binary_installer]].
+= Windows Installer =
+
+There is a [[Windows binary installer]] in "beta testing". See the wiki page for it for more instructions.
 
 = Building current couchdb versions =
 
@@ -24,8 +27,6 @@ After executing 'make install', you will find a couchdb directory structure insi
 
 These instructions are for couch versions pre 0.10
 
-
-There is a [[Windows_binary_installer]] in "beta testing". See the wiki page for it for more instructions.
 
 CouchDB does not natively install on Windows but it is possible to install it by hand. '''Be aware that many unit tests fail due to IO-related features that aren't supported by Erlang on Windows.'''
 

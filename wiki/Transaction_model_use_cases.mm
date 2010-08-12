@@ -96,3 +96,12 @@ At least 2 documents are updated: user gets a piece of gold, and the article sta
 
 Alternative use case:
 Each user has to be invited by someone to be able to register. Hence, all users participate in a 2nd-tier bonus program, and they also get an additional 10% (3 pieces of silver) for the content their invitee generated. This needs to be reflected in their transaction log. Once again, database crash or any concurrent access violation screws up the whole math. 
+
+
+== Typical e-store ==
+
+This is a typical e-store, where people are able to fill their shopping carts and place orders.
+
+  1. Only allow to buy products with stock level greater than suspend level;
+  2. Stock level of each product in order must be updated;
+  3. Stock level must be updated when whole order or just a number of line items is canceled.

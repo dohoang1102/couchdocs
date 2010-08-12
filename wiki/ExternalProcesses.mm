@@ -38,6 +38,7 @@ In order:
  * ''path'' - Any extra path information after routing to the external process
  * ''query'' - Decoded version of the query string parameters.
  * ''method'' - HTTP request verb
+ * ''userCtx'' - Information about the User
 
 Note: Before CouchDB 0.11 `method` was `verb`.
 

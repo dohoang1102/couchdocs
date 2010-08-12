@@ -1,7 +1,7 @@
 #language fr
 == Présentation ==
 
-Le compactage réecrit le fichier de base de données en supprimant les anciennes révisions de documments et les documents effacés. C'est disponible dans CouchDB dans SVN depuis 2008-04-07 et depuis la version 0.8-incubating dans les sources téléchargeables.
+Le compactage réecrit le fichier de base de données en supprimant les anciennes révisions de documents et les documents effacés. C'est disponible dans CouchDB dans SVN depuis 2008-04-07 et depuis la version 0.8-incubating dans les sources téléchargeables.
 
 Le compactage est géré manuellement par base de données. La gestion de queue de compactage sur plusieurs bases de données est prévue.
 
@@ -11,7 +11,7 @@ Le compactage est initié par une requête HTTP POST sur la sous-resource _compa
 
 {{{
     # POST http://localhost/ma_db/_compact via curl
-    curl -X POST http://localhost/ma_db/_compact
+    curl -H "Content-Type: application/json"  -X POST http://localhost/ma_db/_compact
     #=> {"ok":true}
 }}}
 

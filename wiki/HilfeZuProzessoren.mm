@@ -1,0 +1,13 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:HelpOnProcessors
+##master-date:2003-10-29 15:10:13
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language de
+#REDIRECT HilfeZuParsern
+
+## Processors will be deprecated in moin 1.4
+## moin 1.3 still supports them, but it is recommended to switch to the parser api soon.

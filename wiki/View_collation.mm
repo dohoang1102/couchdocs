@@ -1,3 +1,6 @@
+= View Collation =
+<<TableOfContents()>>
+
 A simple introduction to CouchDB view collation.
 
 == Basics ==

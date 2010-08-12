@@ -9,7 +9,7 @@
   * [[Getting_started_with_Haskell]]
   * [[Getting_started_with_Java]]
   * [[Getting_started_with_JavaScript]]
-  * [[http://github.com/felixge/node-couchdb/|Getting_started_with_Node.js]]
+  * [[Getting_started_with_NodeJS]]
   * [[Getting_started_with_LISP]]
   * [[Getting_started_with_LotusScript]]
   * [[Getting_started_with_Objective-C]]

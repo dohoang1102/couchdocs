@@ -1,0 +1,192 @@
+## Please edit system and help pages ONLY in the moinmaster wiki!
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+## Merci de n'éditer les pages systèmes et d'aide QUE sur MoinMaster !
+## Pour plus d'information, consultez MoinMaster:MoinPagesEditorGroup.
+##master-page:HelpMiscellaneous/FrequentlyAskedQuestions
+##master-date:2004-12-05 12:56:16
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language fr
+'''Sommaire'''
+<<TableOfContents>>
+
+== Questions sur ce qu'est un wiki ==
+=== Qu'est-ce qu'un wiki ? Qu'est-ce qu'est MoinMoin ? ===
+
+Le terme ''Wiki'' est une version abrégée de Wiki''''''Wiki''''''Web. Un Wiki est une base de pages qui peuvent être modifiées par différentes personnes en collaboration en utilisant un navigateur web.
+
+Un Moin''''''Moin est un wiki fourni par le programme python de wiki Moin''''''Moin.
+
+=== À quoi est-il bon ? ===
+
+Pour être honnête, il sera bon à ce que vous voudrez lui faire faire. Chez [http://www.lineo.com/ Lineo], nous avons mis en place un wiki sur notre site web interne, avec de nombreuses pages. Elles décrivent les différents projets, architectures, idées, et cætera afin qu'ils puissent être commentés. Certaines pages restent simplement là et sont porteuses d'information. D'autres sont souvent des invitations à discuter et à commenter. Nous avons également mis en place un wiki pour offrir une base de données de compétences très simple.
+
+En général, wiki est un outil très adaptable , dont la valeur provient de l'utilisation que l'on en fait. Par exemple, une page de wiki peut avoir le même fonction que le fil d'une discussion. Vous pouvez utiliser une page de wiki comme un outil pour travailler en groupe sur un projet.
+
+Les wikis sont utilisés en interne pour gérer leurs idées et leurs projets par l'équipe qui écrit [http://www.zope.org/ Zope].
+
+=== Quelles sont les caractéristiques principales d'un wiki ? ===
+
+Voici quelques-unes des caractéristiques importantes des wikis :
+ * Éditable par tous - un wiki peut être édité par toute personne disposant d'un navigateur.
+ * Possibilité de voir les modifications récentes.
+ * Possibilité de chercher dans le contenu des pages (de plusieurs façons).
+ * Possibilité de créer très facilement de nouvelles pages.
+ * Possibilité de voir l'historique des modifications d'un document.
+ * Possibilité d'ajouter de nouvelles informations  ou de modifier les informations existantes.
+
+=== Qu'en est-il de la sécurité ? Un wiki ne risque-t-il pas d'être complètement effacé ou d'être victime de la malveillance d'un saboteur ? ===
+
+C'est un point important. Traditionnellement, les wiki n'offrent '''aucune''' sécurité (vous lisez bien !). 
+
+Dans le cas de [wiki:MoinMoinVF MoinMoin], cela a changé grâce à l'introduction des listes de contrôle d'accès (ACL), voir AideDesListesDeContrôleD'Accès.
+
+Cependant, en supposant que vous n'utilisiez pas de listes de contrôle d'accès, une destruction ou une corruption volontaire ou non d'une partie ou de tout le wiki est toujours possible.
+
+Il existe deux façons principales de déprécier un wiki. La première est l'effacement, la seconde la corruption. Il n'est pas très difficile de s'occuper de l'effacement, car il existe un journal des modifications (et des copies des versions précédentes) pour chaque page conservé dans un endroit inaccessible aux utilisateurs extérieurs. Ainsi, lorsque l'on s'aperçoit que des pages ou des portions importantes de pages ont été détruites (ce qui devrait être assez rapide), les pages peuvent être assez facilement restaurées à leur (bon) état antérieur.
+
+Des corruptions intentionnelles et explicites sont plus difficiles à traiter. Il est possible que quelqu'un entre des informations incorrectes dans une page ou modifie intentionnellement une page pour la rendre incorrecte (par exemple, en changeant l'auteur d'une citation pour faire croire qu'une autre personne l'a faite ou encore en modifiant le contenu d'un paragraphe d'une manière préjudiciable). Quasiment tout système de collaboration souffre de ce type de problème. En pratique, la corruption d'un wiki est quelque chose d'extrêmement rare. La meilleure façon de s'en occuper (si besoin) est d'utiliser la fonction de notification (à un auditeur attitré) des nouvelles modifications soumises.
+
+En d'autres mots, la philosophie des wikis est de s'occuper à la main (on parle de sécurité douce) du cas rare (exceptionnel) d'un saboteur, plutôt que de concevoir des fonctions et des alourdissements (tant en termes de mise en œuvre que d'utilisation) destinés à éviter les dégâts causés par un saboteur.
+
+== Questions sur l'utilisation de ce wiki ==
+=== Trouver et accéder à l'information dans le wiki ===
+==== Comment faire une recherche dans le wiki ? ====
+
+Il y a d'ores et déjà énormément de façons de réaliser une recherche ou de parcourir le wiki :
+ * Cliquez sur l'icône représentant une loupe (<<Icon(find)>>). Elle vous emmènera à la page RechercherUnePage, où vous pourrez effectuer des recherches par mots clefs dans les titres et les textes, que ce soit avec des mots normaux ou avec des jokers (i. e. des expressions rationnelles).
+ * Cliquez sur l'IndexDesTitres. Cette page contient une liste alphabétique de toutes les pages classées par titres.
+ * Cliquez sur l'IndexDesTermes. Cette page contient une liste par ordre alphabétique de chacun des mots employés dans tous les titres des pages (i. e. une page appelée Blue''Tooth sera mentionnée à la fois dans l'entrée B - Blue et dans l'entrée T - Tooth).
+ * Cliquez sur {{{PagesSimilaires}}} en bas de la page. Cela vous permettra de rechercher les pages dont le titre contient des mots similaires à la page en cours.
+ * Cliquez sur le titre de la page tout en haut de celle-ci. Cela vous permettra de rechercher toutes les pages pointant vers la page en cours (ce qui peut vous aider à trouver des pages sur un même sujet).
+
+==== Comment trouver ce qui c'est passé récemment sur ce wiki ? ====
+
+Cliquez sur le lien ModificationsRécentes se trouvant en haut de chaque page.
+
+==== Comment obtenir la liste des ModificationsRécentes antérieures à la période de temps par défaut ====
+
+Identifiez-vous en cliquant sur « Connexion » et vous pourrez choisir de remonter jusquà 90 jours dans le passé. Est-ce suffisant ?
+
+==== Que sont ces BizarresLiensRouges que je trouve partout ? ====
+
+Tout nom mélangeant majuscules et minuscules et ne pointant pas vers une page apparaîtra sous la forme d'un lien de couleur rouge.
+
+=== Ajouter de nouvelles informations à ce wiki ===
+
+==== Comment ajouter quelque-chose à ce wiki ou comment corriger quelque-chose de faux ? ====
+
+Si vous tombez sur quelque-chose que vous souhaitez commenter, compléter ou modifier, il vous suffit de cliquer sur le lien {{{Éditer}}} en bas de la page ou de cliquer sur l'icône <<Icon(moin-edit)>> en haut de la page. La page s'affichera alors dans un panneau d'édition dans votre navigateur et vous pourrez alors tout simplement la modifier. Le moteur de mise en forme du wiki fera en général « ce qu'il faut » avec le texte que vous indiquerez. Si vous voulez bien faire, vous pourrez obtenir le même type de mise en forme que le HTML permet. Consultez la page AideDeMiseEnForme qui vous indiquera quelques astuces et quelques exemples.
+  
+==== Y a-t-il des conventions à respecter lorsque j'ajoute des informations ? ====
+
+Pas beaucoup. Il est en général préférable de continuer à présenter certains types d'informations d'une manière cohérente. L'une des conventions importantes qui aide à la cohérence est l'utilisations des pages « Modèles » (ou « Templates » selon votre configuration).
+
+Ce wiki dispose d'une fonction appelée « Modèles » (ou « Templates » selon votre configuration) qui se manifeste lorsque vous créez une nouvelle page. Si vous cliquez sur l'un de ceux-ci lorsque vous créez une page, cette page sera créée avec une structure similaire aux autres pages du même type. Par exemple, lorsque vous créez votre propre PagePersonnelle, vous devriez utiliser la page ModèlePagePersonnelle (ou PagePersonnelleTemplate), qui est disponible lors de la création de nouvelles pages sur ce wiki.
+  
+==== Comment ajouter des informations autres que du texte au wiki ? ====
+
+Si l'élément que vous souhaitez ajouter existe déjà sur la Toile, il vous suffit d'ajouter un lien à la page. Suivez la procédure suivante :
+ * récupérez l'URL du document ;
+ * éditez la page (ouvrez la page en question et cliquez simplement sur le lien « Éditer ») ;
+ * Indiquez l'URL à l'endroit où vous le souhaitez ;
+ * Enregistez les modifications.
+Ce wiki transformera automatiquement le texte que vous avez indiqué en hyperlien.
+
+Vous pouvez obtenir un lien plus joli en mettant entre crochet un intitulé pour celui-ci. Cet intitulé sera affiché sur la page, mais le lien dirigera l'utilisateur vers l'URL que vous auvez indiqué. Par exemple :
+{{{
+  [http://votre.lien.indique.ici/truc.html Ceci sera le texte du lien]
+}}}
+produira :
+
+[http://votre.lien.indique.ici/truc.html Ceci sera le texte du lien]
+
+==== Comment ajouter une image à une page ? ====
+
+Vous pouvez indiquer l'URL de l'image dans la page. Par exemple :
+{{{
+http://c2.com/sig/inter/wikibase.gif
+}}}
+produira :
+
+http://c2.com/sig/inter/wikibase.gif
+
+==== Ajouter des documents dans un réseau interne d'entreprise (intranet) ====
+
+Si vous utilisez [wiki:MoinMoinVF MoinMoin] dans un réseau interne d'entreprise, il peut être utile de créer des liens vers des documents disponibles dans des répertoires partagés accessibles à tous vos lecteurs. Par exemple :
+{{{
+[file://nom_du_serveur/chemin/complet/nom_du_fichier.txt Lire nom_du_fichier.txt]}}}
+
+Vous pouvez aussi créer des liens vers des fichiers dont les noms contiennent des espaces. Pour ceci, vous devrez indiquer à la main le code utilisé pour représenter les espaces dans les URL ({{{%20}}}) :
+{{{
+[file://nom_du_serveur/chemin/complet/nom%20du%20fichier.txt Lire nom du fichier.txt]}}}
+
+Une autre solution simple et sans doute meilleure est d'utiliser l'action {{{Joindre un fichier}}}.
+
+==== Dois-je « signer » mes modifications ? ====
+
+Si elles sont importantes ou si vous voulez faire savoir que vous les avez faites, alors oui. Indiquez simplement votre nom ou votre adresse électronique à la fin de votre commentaire. Il n'est pas inhabituel de mettre en retrait votre commentaire, sous la déclaration que vous commentez. Il est aussi intéressant de mettre votre commentaire en italiques pour qu'il ressorte mieux de la page que vous commentez.
+
+Cependant, dans certains cas, il peut être plus approprié de faire votre modification d'une manière anonyme. Corriger l'orthographe, la mise en page ou modifier un mot sans changer le sens sont des cas où il n'est pas nécessaire (et même déconseillé) que vous apposiez votre signature à la modification.
+
+=== Ajouter d'autres formats de documents au wiki ===
+
+==== Est-il possible d'ajouter du HTML au wiki ? ====
+
+Si vous désirez ajouter une seule ligne de HTML, utilisez la macro du même nom. Pour ceci, indiquez votre texte HTML comme paramètre de la macro HTML, comme suit :
+
+{{{<<HTML(<font size=+12>Utilisation d'une fonte plus grande</font>)>>}}}
+
+Ce qui apparaîtra sur la page comme ceci : <<HTML(<font size=+12>Utilisation d'une fonte plus grande</font>)>>
+
+Il est aussi possible de placer un document HTML dans la page en ajoutant {{{#format html}}} comme première ligne de celle-ci. Si cette ligne est présente, alors la page au complet sera interprétée comme du HTML (ce qui rendra la création de liens vers les autres pages un peu plus difficile !). Assurez-vous de n'ajouter que le corps de la page (i. e. la partie entre les balises <body>, mais ni les en-têtes HTML, ni quoi que ce soit à l'extérieur de ces balises, y compris ces balises elle-même).
+
+ /!\ Tout ceci ne fonctionnera que si les extensions HTML (macro et analyseur HTML) sont installées.
+
+== Installation & configuration ==
+
+ (!) Reportez-vous à l'["AideD'Administration"] pour l'aide générale à ce sujet.
+
+=== Comment puis-je activer les options « Supprimer le page », « Joindre un fichier » et « Renommer la page » ? ===
+
+« Supprimer le page » n'est pas activé par défaut, car cette fonction est principalement utile dans les réseaux internes d'entreprises et qu'elle est un peu dangereuse pour des wikis publics. Pour activer cette option ainsi que les autres options dangereuses, ajoutez-les comme suit à votre fichier {{{wikiconfig.py}}} :
+{{{
+allowed_actions=['DeletePage', 'RenamePage', 'AttachFile', ]
+}}}
+
+
+"Delete''''''Page" is not active by default, since it's most often used in intranets only and is somewhat dangerous in public wikis. To allow this and other dangerous actions, add them like this to {{{wikiconfig.py}}}:
+{{{
+allowed_actions=['DeletePage', 'RenamePage', 'AttachFile', ]
+}}}
+
+Pour être autorisé à détruire ou à renommer une page, vous devrez être identifié (via les PréférencesUtilisateur).
+
+== Administrer le wiki ==
+=== Comment dois-je administrer le wiki ? ===
+
+La page ModificationsRécentes offre de nombreuses informations à l'administrateur, notamment le nombre de pages, ainsi que la liste des macros et des actions qui sont installées.
+
+Je définis d'habitude une « PageD'Administration » où je place des macros pour cela, ainsi que des informations sur l'emplacement physique réel des pages. J'y ajoute aussi des macros de détection des pages orphelines et d'autres choses qu'un administrateur du wiki pourra vouloir consulter.
+
+=== Est-il possible de restaurer une page d'une version antérieure ? ===
+
+ 1. cliquez sur l'icône <<Icon(info)>> en haut à droite de la page ({{{Informations}}}) ;
+ 1. cliquez sur l'action « restaurer » de la version que vous voulez rétablir.
+
+Pour être autorisé à restaurer une page, vous devrez être identifié (via les PréférencesUtilisateur).
+
+=== Comment créer un nouveau modèle de page ? ===
+
+Les modèles (ou templates) sont des pages prosposées automatiquement lorsque vous créez une page vierge. Dans la configuration par défaut, toute page se terminant par le mot « Template » apparaîtra automatiquement dans la liste. Si votre wiki est francophone, nous vous recommandons de le paramétrer pour utiliser des modèles dont le nom commence par le mot « Modèle » (voir ci-dessous). En conséquence, si vous souhaitez que certains types de pages aient une présentation similaire (mêmes en-têtes, même structure, et cætera), il vous suffit de créer une page donc le nom se termine par Template (ou respectivement commence par Modèle). Il vous suffira par la suite de choisir ce modèle et de l'éditer lorsque vous créerez une nouvelle page de ce type. Le wiki remplira le contenu initial de la page pour vous. Les modèles sont des pages modifiables comme toutes les autres.
+
+Pour créer une page Modèle, créez simplement une page appelée <quelquechose>Template (ou Modèle<quelquechose> pour un wiki francophone). 
+
+==== Utilisation des modèles pour les wikis francophones ====
+
+Si votre wiki est francophone, nous vous recommandons de modifier l'expression rationnelle utilisée pour identifier les modèles en ajoutant le paramètre suivant à votre fichier {{{wikiconfig.py}}} :
+{{{
+page_template_regex=u'^Modèle'
+}}}
+
+Une fois cette modification faite, votre wiki utilisera les modèles nommés {{{ModèleQuelqueChose}}} au lieu des modèles appelés {{{QuelqueChoseTemplate}}}.

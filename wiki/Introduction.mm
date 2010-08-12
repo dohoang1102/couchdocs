@@ -1,24 +1,29 @@
 = Introduction =
 <<TableOfContents()>>
 
+== Meet CouchDB ==
+CouchDB is often categorized as a “NoSQL” database, a term that has become increasingly popular in late 2009, and early 2010.  While this is a rather generic, and sometimes offensive characterization of a database, or data store, it does clearly define a break from traditional SQL based databases.   CouchDB makes a clean break from the SQL database world in many ways.  One of the primary differences  is  the lack of a schema,  or rigid pre-defined data structures like tables.   Because the data stored in CouchDB is a JSON document(s), the structure of the data, or document(s), can change dynamically.  This greatly simplifies the maintenance and development of the database, especially over time when the data  and it's use evolve.  Additionally, CouchDB doesn't rely on SQL JOINS to merge related data.  This is often confusing for some users of traditional SQL databases, but is generally a non-issue once CouchDB users become familiar it's powerful Map/Reduce framework.
 
-== Meet CouchDB  ==
+CouchDB's departure from the SQL world isn't the only thing that makes CouchDB stand out among a growing list of “NoSQL”  databases.  One of CouchDB's most powerful feature, is it's replication framework.  This replication framework provides a comprehensive set of features:
 
-CouchDB is often categorized as a “NoSQL” database, a term that has become increasingly popular in late 2009, and early 2010.  While this is a rather generic, and sometimes offensive characterization of a database, or data store, it does clearly define a break from traditional SQL based databases.   CouchDB makes a clean break from the SQL database world in many ways.  One of the primary differences  is  the lack of a schema,  or rigid pre-defined data structures like tables.   Because the data stored in CouchDB is a JSON document(s), the structure of the data, or document(s), can change dynamically.  This greatly simplifies the maintenance and development of the database, especially over time when the data  and it's use evolve.  Additionally, CouchDB doesn't rely on SQL JOINS to merge related data.  This is often a point of contention with some users of SQL databases, but is generally a non-issue in CouchDB, as it's powerful Map/Reduce framework comes to the rescue.  
+ * Master → Slave replication
+ * Master ↔ Maser replication
+ * Filtered Replication
+ * Incremental replication with bi-directional conflict detection/resolution
 
-CouchDB's departure from the SQL world isn't the only thing that makes CouchDB stand out among a growing list of “NoSQL”  databases available.  One of CouchDB's most powerful feature, is it's replication framework.  This replication framework provides a comprehensive set of features: 
-  * Master → Slave replication
-  * Master ↔ Maser replication
-  * Filtered Replication
-  * Incremental replication with bi-directional conflict detection/resolution
-These replication features can be used in combination to create powerful solutions to many problems in the IT industry, like reliability, and scalability.  
+These replication features can be used in combination to create powerful solutions to many problems in the IT industry, like reliability, and scalability. In addition to the fantastic replication features, CouchDBs reliability and scalability is further enhanced by being implemented in the Erlang programming language. Erlang has built-in support for concurrency, distribution, fault tolerance, and has been used for years to build reliable systems in the telecommunications industry. By design, the Erlang language and runtime are able to take advantage of newer hardware with multiple CPU cores. When you look at all of the great characteristics of Erlang, it becomes clear why CouchDB uses it for it's foundation.
 
 == What it is Not ==
- * A relational database.
- * A replacement for relational databases.
- * An object-oriented database. Or more specifically, meant to function as a seamless persistence layer for an OO programming language.
+To better understand what CouchDB is, it may be helpful to understand a few things that CouchDB isn't.
+
+ * A relational database.  These differences are articulated above in the Meet CouchDB section, and other portions of this Wiki.
+ * A replacement for all databases.  When developing and designing a good information system you should select the __best tool for the job__.  While CouchDB can be used in a wide variety of application types including financial, you may find that a relational database, or other data store is a better fit for your problem.  If you are new to CouchDB, and aren't sure if it's a good fit for your data management problem, please ask others on the mailing list, and the #couchdb IRC channel for advice.
+ * An object-oriented database.  While CouchDB stores JSON objects, it isn't meant to function as a seamless persistence layer for an OO programming language.
 
 == Key Characteristics ==
+
+Lets review some of the basic elements of CouchDB.  
+
 === Documents ===
 A CouchDB document is a [[http://www.json.org/|JSON]] object that consists of named fields. Field values may be strings, numbers, dates, or even ordered lists and associative maps. An example of a document would be a blog post:
 

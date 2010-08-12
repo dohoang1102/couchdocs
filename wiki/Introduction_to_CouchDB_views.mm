@@ -14,7 +14,7 @@ Views are the primary tool used for querying and reporting on CouchDB documents.
 
 For both kinds of views, the view is defined by a !JavaScript function that maps view keys to values (although it is possible to use other languages than !JavaScript by plugging in third-party view servers).
 
-Note that by default views are not created and updated when a document is saved, but rather, when it is accessed. As a result, the first access might take some time depending on the size of your data while CouchDB creates the view. If preferable the views can also be updated when a document is saved using an external script that calls the views when updates have been made. An example can be found here: RegeneratingViewsOnUpdate
+Note that by default views are not created and updated when a document is saved, but rather, when they are accessed. As a result, the first access might take some time depending on the size of your data while CouchDB creates the view. If preferable the views can also be updated when a document is saved using an external script that calls the views when updates have been made. An example can be found here: RegeneratingViewsOnUpdate
 
 Note that all views in a single design document get updated when one of the views in that design document gets queried.
 
@@ -179,7 +179,7 @@ CouchDB will call your reduce function to calculate a value for {{{[e f g]}}} an
 Therefore, it is wrong to attempt to maintain any sort of state in your reduce function between invocations. And because the Btree node boundaries can appear in any place, it is wrong to attempt to cross-reference adjacent documents too. Any cross-referencing needs to take place in the client, not in a reduce function.
 
 === Access Strategy ===
-For queries which are not meant to actually condense the amount of information you often can live without a reduce function. A common strategy is to get the data you are interested to select by in into the ''key'' part and then use ''startkey'' and ''endkey'' on the result.
+For queries which are not meant to actually condense the amount of information you often can live without a reduce function. A common strategy is to get the data you are interested in into the ''key'' part and then use ''startkey'' and ''endkey'' on the result.
 
 == Keys and values ==
 === Equal keys ===
@@ -298,7 +298,7 @@ This requirement of reduce functions allows CouchDB to store off intermediated r
 
 For more details see [[http://damienkatz.net/2008/02/incremental_map.html|this blog post]]
 
-Furthermore: you have no control over how documents are partitioned in reduce and re-reduce phases. You cannot rely on "adjacent" documents all being presented at the same time to the reduce function; it's quite possible that one subset will be reduced to R1, another subset will be reduced to R2, and then R1 and R2 will be re-reduced together to make the final reduce value. In the limiting case, consider that each of your documents might be reduced individually and that the reduce outputs will be re-reduced together (which also may happen as a single stage or in multiple stages)
+Furthermore: you have no control over how documents are partitioned in reduce and re-reduce phases. You cannot rely on "adjacent" documents all being presented at the same time to the reduce function; it's quite possible that one subset will be reduced to R1, another subset will be reduced to R2, and then R1 and R2 will be re-reduced together to make the final reduce value. In the extreme case, consider that each of your documents might be reduced individually and that the reduce outputs will be re-reduced together (which also may happen as a single stage or in multiple stages)
 
 So you should also design your reduce/re-reduce function so that
 

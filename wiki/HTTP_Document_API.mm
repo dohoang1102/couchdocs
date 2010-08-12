@@ -42,19 +42,27 @@ Here are two simple examples of documents:
  "Body":"I decided today that I don't like baseball. I like plankton."
 }
 }}}
+
 === Special Fields ===
-Note that any top-level fields with a name that starts with a ''_'' prefix are reserved for use by CouchDB itself. Also see [[Reserved_words]]. Currently (0.10+) reserved fields are:
+Note that any top-level fields within a JSON document containing a name that starts with a ''_'' prefix are reserved for use by CouchDB itself. Also see [[Reserved_words]]. Currently (0.10+) reserved fields are:
+
 ||'''Field Name''' ||'''Description''' ||
 ||''_id'' ||The unique identifier of the document ('''mandatory''' and '''immutable''') ||
 ||''_rev'' ||The current MVCC-token/revision of this document ('''mandatory''' and '''immutable''') ||
 ||''_attachments'' ||If the document has attachments, _attachments holds a (meta-)data structure (see section on [[HTTP_Document_API#Attachments]]) ||
 ||''_deleted'' ||Indicates that this document has been deleted and will be removed on next compaction run ||
 ||''_revisions'' ||If the document was requested with ''?revs=true'' this field will hold a simple list of the documents history ||
-||''_rev_infos'' ||Similar to ''_revisions'', but more details about the history and the availability of ancient versions of the document ||
+||''_revs_info'' ||Similar to ''_revisions'', but more details about the history and the availability of ancient versions of the document ||
 ||''_conflicts'' ||Information about conflicts ||
 ||''_deleted_conflicts'' ||Information about conflicts ||
 
 
+To request a special field be returned along with the normal fields you get when you request a document, add the desired field as a query parameter without the leading underscore in a GET request:
+{{{
+curl -X GET 'http://localhost:5984/my_database/my_document?conflicts=true'
+}}}
+
+This request will return a document that includes the special field '_conflicts' which contains all the conflicting revisions of "my_document".
 
 
 ==== Document IDs ====
@@ -552,6 +560,12 @@ Content-Type:image/jpeg
 
 <JPEG data>
 }}}
+
+=== Compression of Attachments ===
+As of version 0.11, CouchDB, by default, will automatically compress certain attachment types.  That is, based on the Content-Type header of the request CouchDB may perform compression of the data.  This is done to reduce the amount of data being shuffled around during replication, and in most cases it's probably what you want.  However, if uploading large files (e.g. a 200M CSV) you may want to tweak this configuration in order to avoid compression and therefore reduce the network latency of the request.
+
+This setting can be found in the attachments section of the configuration.
+
 == ETags/Caching ==
 CouchDB sends an ''ETag'' Header for document requests. The ETag Header is simply the document's revision in quotes.
 

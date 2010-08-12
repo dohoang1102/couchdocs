@@ -4,7 +4,7 @@
 
  1. Update the `README` file with important information.
  2. Update the `NEWS` and `CHANGES` files with important information.
- 3. Update the [[Breaking changes]] document.
+ 3. Update the [[Breaking_changes]] document.
  4. Update the `acinclude.m4` file with version information.
 
 === Preparing the Community ===
@@ -64,7 +64,7 @@ tar -xvzf apache-couchdb*.tar.gz
 Then compare the tarball with the boostrapped source:
 
 {{{
-diff -f apache-couchdb-Y.Y.Y Y.Y.Y
+diff -r apache-couchdb-Y.Y.Y Y.Y.Y
 }}}
 
 Use your judgment here to figure out if anything is missing, or has been included by mistake.
@@ -87,11 +87,12 @@ The Release Manager has the power to abort a vote at any point and for any reaso
  * Update http://couchdb.apache.org/downloads.html
  * Wait for all changes to be synced to the public site.
  * Make a release announcement to the [[http://mail-archives.apache.org/mod_mbox/www-announce/|announce@apache.org]], [[http://mail-archives.apache.org/mod_mbox/couchdb-user/|user@couchdb.apache.org]], and [[http://mail-archives.apache.org/mod_mbox/couchdb-dev/|dev@couchdb.apache.org]] mailing lists:
-   * [[http://mail-archives.apache.org/mod_mbox/www-announce/200806.mbox/%3C20080625173452.GA14650@bytesexual.org%3E|example release announcement]]
+   * [[http://mail-archives.apache.org/mod_mbox/www-announce/201007.mbox/%3C029B8F80-6C99-41C0-B47C-A334667E25BA@apache.org%3E|example release announcement]]
  * [[https://issues.apache.org/jira/secure/project/ManageVersions.jspa?pid=12310780|Update versions]] in JIRA.
    * If the currently released version is 0.1.0, JIRA should have options for 0.1.1, 0.2.0, and 0.3.0.
    * The released version should be marked as released in JIRA.
  * Update the links on this page to most recent email archives.
+ * Update branches, trunk, and site with security changes not documented in the released.
  * Call a discussion on the [[http://mail-archives.apache.org/mod_mbox/couchdb-dev/|couchdb-dev]] mailing list about archiving old releases.
 
 == Useful Resources ==

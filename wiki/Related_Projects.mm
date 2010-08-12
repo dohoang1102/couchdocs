@@ -28,6 +28,9 @@ A list of CouchDB related projects, clients and libraries.
     * [[http://github.com/ngerakines/erlang_couchdb/|erlang_couchdb]]
     * [[http://code.google.com/p/ecouch/|eCouch]]
 
+  * .Net interfaces:
+    * [[http://github.com/arobson/Relax/|Relax - .Net CouchDB API]]
+
   * Java interfaces:
     * [[http://code.google.com/p/ektorp/|Ektorp CouchDB connector]]
     * [[http://code.google.com/p/couchdb4j/|CouchDB4J Java bindings]]
@@ -77,8 +80,9 @@ A list of CouchDB related projects, clients and libraries.
   * [[http://github.com/mbreese/featherdb|Feather DB (CouchDB clone in Java.  Note:This project is not active.)]]
   * [[http://github.com/yrashk/strokedb|StrokeDB (A CouchDB-like database written in Ruby to make embedding into Ruby apps easier.  Note:This project is not active.)]]
 
-== Applications ==
-  * See [[CouchDB_in_the_wild]]
+== Applications And Websites ==
+
+  * See [[CouchDB_in_the_wild|CouchDB In The Wild!]]
 
 == Miscellaneous ==
 
@@ -95,5 +99,6 @@ A list of CouchDB related projects, clients and libraries.
     * Note: ''HyperCouch was a project by Paul Davis, but it was abandoned''
     * http://www.davispj.com/2009/01/24/hypercouch.html
     * Code mirror [[http://github.com/benoitc/hypercouch|HyperCouch]]
-  * [[http://github.com/deguzman/couchdb-solr2|CouchDB Solr2]] Integrates full-text indexing and searching with CouchDB.
+  * CouchDB Solr2 integrates full-text indexing and searching with CouchDB.
+    * WAS hosted [[http://github.com/deguzman/couchdb-solr2|here]] but is no longer available. Does anyone know of a clone/copy?
     * Per README, the CouchDB Solr2 project is no longer being maintained as of January 2009.

@@ -1,0 +1,30 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:MoinMoin
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language ru
+#pragma section-numbers off
+
+= МойнМойн вики =
+
+WikiWikiWeb - это интерактивная гипертекстовая среда для совместного использования с упором на лёгкость доступа и простоту исправления информации. Эта вики также может легко ссылаться на пространство InterWiki.
+
+МойнМойн (MoinMoin) - это Wiki:WikiClone на языке Питон ([http://www.python.org Python]), основанный на Wiki:PikiPiki. Имя взято из распространённого немецкого приветствия, которое объясняется на странице MoinMoin. Если вы пользуетесь MoinMoin вики, пожалуйста добавьте свой сайт к списку  MoinMoin:MoinMoinWikis. Дополнительные возможности доступны на MoinMoin:MacroMarket, MoinMoin:ActionMarket и MoinMoin:ParserMarket страницах. Дальнейшие подробности описаны на странице MoinMoin.
+
+----
+Вы можете исправить любую страницу! Чтобы сделать это, нажмите на ссылку внизу. Заглавные слова
+слитно образуют ВикИмя, которое ссылается на другую страницу. Ссылка на заголовке ищет все страницы, ссылающиеся на текущую. Ссылки на НенаписанныеСтраницы показаны со знаком вопроса, перейдите по этой ссылке и вы сможете добавить своё описание.
+
+Для обзора содержимого этого вики можно ПойтиПоСайту.
+
+Для того, что узнать больше о WikiWikiWeb, прочтите MoinMoin:WhyWikiWorks и MoinMoin:WikiNature. 
+Еще загляните в MoinMoin:WikiWikiWebFaq.
+
+----
+Вот интересные страницы для того, чтобы начать:
+  * ["Новости"] - что делают другие люди
+  * ПомощьНовичкам - начните сами
+  * [wiki:self:WikiSandBox Песочница] - здесь можно спокойно копаться и пробовать свои исправления
+  * НайтиСтраницу - различные способы поиска
+  * СправочникПоСинтаксису (SyntaxReference)

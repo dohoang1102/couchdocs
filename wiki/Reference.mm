@@ -30,7 +30,7 @@
   * [[View_collation|View Collation]]
   * [[View_server|View Servers]]
   * [[View_Snippets|View Snippets]]
-
+  * [[Built-In_Reduce_Functions]]
 
 === Document-Level ===
   * [[Document_revisions]]

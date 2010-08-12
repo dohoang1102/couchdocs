@@ -3,7 +3,10 @@
  * Nightly build of CouchDB for OS X: http://couch.lstoll.net/nightly/
 
 == MacPorts ==
-To install CouchDB using MacPorts
+To install CouchDB using MacPorts you have 2 package choices:
+
+ * couchdb - currently at 0.11 which does not run without being patched due to [[https://issues.apache.org/jira/browse/COUCHDB-805|COUCHDB-805]] caused by dependencies in upgraded erlang R14
+ * couchdb-devel - follows [[http://svn.apache.org/repos/asf/couchdb/trunk|trunk]] & includes fix for the above issue
 
 {{{
 $ sudo port install couchdb
@@ -18,12 +21,12 @@ This will upgrade dependencies recursively, if there are more recent versions av
 {{{
 $ sudo launchctl load -w /opt/local/Library/LaunchDaemons/org.apache.couchdb.plist
 }}}
-and it should be up and accessible via http://127.0.0.1:5984/_utils/index.html. It should also be restarted automatically after reboot (because of the -w flag).
+and it should be up and accessible via Futon at http://127.0.0.1:5984/_utils/index.html. It should also be restarted automatically after reboot (because of the -w flag).
 
 If not, be sure to check permissions on couchdb files and repair them if neccessary:
 
 {{{
-$ sudo chown -R couchdb:couchdb /opt/local/var/lib/couchdb/ /opt/local/var/log/couchdb/
+$ sudo chown -R couchdb:couchdb /opt/local/var/lib/couchdb/ /opt/local/var/log/couchdb/ /opt/local/etc/couchdb/
 }}}
 Updating the ports collection. The collection of port files has to be updated to reflect the latest versions of available packages. In order to do that run:
 
@@ -40,6 +43,12 @@ Command output: megaco_flex_scanner_drv.flex:31: unknown error processing sectio
 }}}
 You will need to upgrade flex: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=465039
 
+=== Erlang fails to configure on Snow Leopard ===
+The macport for erlang universal on Mac OS X 10.6 Snow Leopard appears to be [[http://www.pubbs.net/200912/macports/53571-erlang-build-failing-on-configure.html|broken]]. To install it, I had to install it separately with :
+
+{{{
+sudo port install erlang -universal
+}}}
 == Typical build process of a CouchDB developer build ==
 {{{
 $ svn co http://svn.apache.org/repos/asf/couchdb/trunk couchdb
@@ -61,16 +70,13 @@ $ ./runConfigureICU MacOSX --with-library-bits=64 --disable-samples --enable-sta
 $ make
 $ sudo make install
 }}}
-
-
 I couldn't get the above to work on 64bit Snow Leopard 10.6.3, but I did find a fix for the configure file that will make it compile in 64bit correctly.
+
 {{{
 - *-arch*ppc*|*-arch*i386*|*-arch*x86_64*) ac_cv_c_bigendian=universal;;
 + *-arch*ppc*) ac_cv_c_bigendian=yes;;
 }}}
-
-find the first line with the - in configure and replace it with the second line with the +
-in the ICU 4.4.1 release this line is at 8002, if Erlang is compiled with 64bit and you patch the ICU configure to compile in 64bit then CouchDB will build and run correctly on 64bit OSX 10.6.x
+find the first line with the - in configure and replace it with the second line with the + in the ICU 4.4.1 release this line is at 8002, if Erlang is compiled with 64bit and you patch the ICU configure to compile in 64bit then CouchDB will build and run correctly on 64bit OSX 10.6.x
 
 2. Install SpiderMonkey
 

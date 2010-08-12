@@ -248,6 +248,25 @@ init terminating in do_boot (Driver is an inappropriate Mach-O file)
 
 This is related to an update made in erlang (http://www.nabble.com/OS-X-fixes-(HiPE,-ddll-unload)-td19411880.html) Upgrading to version R12B-5 or higher should fix things.
 
+=== Mac Port of Erlang fails to configure on Snow Leopard ===
+
+'''Problem'''
+During the installation of erlang, the installer fails during the configuration step:
+
+{{{
+configure: error: /bin/sh =
+'/opt/local/var/macports/build/_opt_local_var_macports_sources_rsync.macpo=
+rts.org_release_ports_lang_erlang/work/erlang-R13B02/erts/configure' =
+failed for ertsError: Status 1 =
+encountered during processing
+}}}
+
+'''Solution'''
+Install the non-universal build of erlang separately before couchdb:
+{{{
+sudo port install erlang -universal
+sudo port install couchdb
+}}}
 
 == Runtime Errors ==
 

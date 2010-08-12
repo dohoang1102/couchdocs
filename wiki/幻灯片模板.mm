@@ -1,0 +1,21 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:SlideTemplate
+##master-date:2004-11-22 11:03:00
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language zh
+#pragma section-numbers off
+
+<<Navigation(slides)>>
+= 标题 =
+
+内容
+
+##<<Navigation(siblings)>>
+
+
+
+此页的英文版本SlideTemplate

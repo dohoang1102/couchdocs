@@ -1,0 +1,150 @@
+## Please edit system and help pages ONLY in the moinmaster wiki!
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+## Merci de n'éditer les pages systèmes et d'aide QUE sur MoinMaster !
+## Pour plus d'information, consultez MoinMaster:MoinPagesEditorGroup.
+##master-page:MoinMoin/TextFormatting
+##master-date:2004-11-21 23:24:58
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language fr
+'''Table des matières'''
+<<TableOfContents(1)>>
+
+= Sections =
+== Titre niveau 2 ==
+=== Titre niveau 3 ===
+==== Titre niveau 4 ====
+===== Titre niveau 5 =====
+
+Cette page tente d'utiliser chaque élément de formatage disponible au moins une fois.
+
+Texte normal, ''en italique'', '''en gras''', __souligné__, ,,en indice,,, ^en exposant^, à `chasse fixe` et à {{{chasse fixe}}}.
+
+:) ;) :D {1} {fr} {OK} (./)
+
+= Liens =
+
+["MoinMoinVF"]
+
+["MoinMoinVF/MiseEnForme"]
+
+["MoinMoinVF/DocumentationD'Installation"]
+
+["../DocumentationD'Installation"]
+
+/SousPage
+
+[#nom-de-l'ancre Ancre]
+
+http://moinmoin.wikiwikiweb.de/
+
+[http://moinmoin.wikiwikiweb.de/]
+
+[http://moinmoin.wikiwikiweb.de/ Page d'accueil de MoinMoin]
+
+[http://moinmoin.wikiwikiweb.de/wiki/classic/img/moinmoin.png]
+
+[http://moinmoin.wikiwikiweb.de/wiki/classic/img/moinmoin.png moinmoin.png]
+
+Self:InterWikiVF
+
+MeatBall:InterWiki
+
+wiki:MeatBall/InterWiki
+
+[wiki:MeatBall/InterWiki]
+
+[wiki:MeatBall/InterWiki Page InterWiki sur MeatBall]
+
+nimportequi@inter.net (si vous voulez être bombardé de courriers publicitaires)
+
+<<MailTo(prenom DOT nom NOSPAM AT domaine DOT fr)>> (un peu protégé contre les récolteurs d'adresses)
+
+http://moinmoin.wikiwikiweb.de/wiki/classic/img/moinmoin.png
+
+= Blocs =
+
+'''Citation'''
+ Ceci est indenté
+  Ceci l'est encore plus
+
+'''Liste à puces'''
+ * Item 1
+
+ * Item 2, après un saut
+ * Item 3
+   * Item 3.1
+
+'''Liste numérotée'''
+ 1. Item 1
+   i. Item 1
+   i. Item 2
+ 1. Item 2
+   a. Item 1
+   a. Item 2
+##
+ Terme:: Définition
+
+'''Affichage de code source'''
+ {{{
+ligne 1
+    indentation de quatre caractères
+}}}
+
+'''Tables'''
+ Mise en forme d'une table et options du style HTML
+ ||||||<tablewidth="80%">'''Titre'''||
+ ||Cellule 1||Cellule 2||Cellule 3||
+ ||<rowspan=2> sur plusieurs lignes||||<bgcolor='#E0E0FF'> sur deux colonnes||
+ ||<rowbgcolor="#FFFFE0">Cellule 2||Cellule 3||
+
+ Largeur d'une cellule
+ ||<tablewidth="80%"> étroit ||<:99%> large ||
+
+ Sur plusieurs lignes et plusieurs colonnes
+ ||<|2> 2 lignes || ligne 1 ||
+ || ligne 2 ||
+ ||<-2> ligne 3 sur 2 colonnes ||
+
+ Alignement
+ ||<tablewidth="40%"(> à gauche ||<^|3> en haut ||<v|3> en bas ||
+ ||<:> centrée ||
+ ||<)> à droite ||
+
+ Couleurs
+ ||<#FF8080> rouge ||<#80FF80> vert ||<#8080FF> bleu ||
+
+
+'''Filets horizontaux'''
+
+--- (n'est pas un filet horizontal)
+----
+-----
+------
+-------
+--------
+---------
+---------- (épaisseur maximale)
+-------------------------------------------- (pas plus épais que le précédent)
+
+= Macros =
+
+<<Anchor(nom-de-l'ancre)>>
+'''<<PageCount>>''' pages
+<<RandomPage>>
+
+= Processeurs =
+
+'''Mise en valeur syntaxique'''
+ {{{
+#!python
+# code python
+print code.colorize("abc", 1 + 1)
+}}}
+
+'''Table CSV'''
+ {{{#!CSV -2
+Col1;Col2;Col3;Col4
+1;2;3;4
+a;b;c;d
+}}}

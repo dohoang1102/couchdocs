@@ -32,8 +32,8 @@ This functionality is implemented via document update handlers defined in a desi
     },
 
     "in-place" : function(doc, req) {
-      var field = req.query.field;
-      var value = req.query.value;
+      var field = req.form.field;
+      var value = req.form.value;
       var message = "set "+field+" to "+value;
       doc[field] = value;
       return [doc, message];
@@ -67,6 +67,8 @@ This functionality is implemented via document update handlers defined in a desi
   }
 }
 }}}
+
+NOTE: '''The functions should be quoted'''.
 
 The handler function takes the document and the http request as parameters. It returns a two-element array: the first element is the (updated) document, which is committed to the database. The second element is the response that will be sent back to the caller.
 

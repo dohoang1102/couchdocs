@@ -1,0 +1,19 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##translated-by:Karolina Lindqvist, Shakti Wiki
+##master-page:UserPreferences
+##master-date:2002-03-05 10:00:35
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language sv
+<<UserPreferences>>
+
+Om du kommer till den här sidan för första gången, så ser du en
+blankett som du kan fylla i ditt användarnamn och andra inställningar
+som lösenord och e-mail i. (`obs:` Lösenord och e-mail sparas, men används
+för närvarande inte) Om du klickar på '''<<GetText( Create Profile )>>''', kommer
+en användarprofil att skapas för dig. Då kommer du också att kommas
+ihåg automatiskt, med hjälp av en HTTP-kaka innehållande ditt
+användar-ID, så `wiki:n` kommer ihåg vem du är från gång till gång.

@@ -33,3 +33,7 @@
  * [[http://www.jasondavies.com/|Jason Davies]], `<jasondavies@apache.org>`
 
   Developed various authentication features including cookie-based authentication and OAuth support.
+
+ * [[http://fdmanana.wordpress.com/|Filipe Manana]], `<fdmanana@apache.org>`
+
+  Works mostly on the replicator, some parts of the core database and the security features.

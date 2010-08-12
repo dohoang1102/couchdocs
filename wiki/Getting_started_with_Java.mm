@@ -25,7 +25,7 @@ CouchDB4J is an updated Java library for CouchDB. It handles the REST style call
 With CouchDB4J, you create a Session object that handles the CouchDB server communication. From here, you can get a handle on your Database. From the ''Database'' you can run views or retrieve ''Documents''. A ''!ViewResult'' is a special type of ''Document'' which contains the id's of the ''Documents'' that matched your view function.
 
 == Dependencies ==
- * http://code.google.com/p/couchdb4j
+ * http://github.com/mbreese/couchdb4j
  * [[http://commons.apache.org/|Apache commons]]
   * commons-httpclient
   * commons-beanutils

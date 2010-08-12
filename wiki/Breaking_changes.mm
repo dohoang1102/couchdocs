@@ -3,6 +3,23 @@
 
 This page documents backwards-incompatible changes made during the evolution of CouchDB. While not all such changes will necessarily affect all users, most of them probably will. This page should show you what changed and how you'll need to adapt your code.
 
+== Changes Between 0.11.0 and 1.0.0 ==
+
+Note, to replicate with a 1.0 CouchDB instance you must first upgrade in-place your current CouchDB to 1.0 or 0.11.1 -- backporting so that 0.10.x can replicate to 1.0 wouldn't be that hard. All that is required is patching the replicator to use the application/json content type.
+
+ * _log and _temp_views are now admin-only resources.
+ * _bulk_docs now requires a valid `Content-Type` header of `application/json`.
+ * jsonp is disabled by default. An .ini option was added to selectively enable it.
+ * The key, startkey and endkey properties of the request object passed to list and show functions now contain JSON objects representing the URL encoded string values in the query string. Previously, these properties contained strings which needed to be converted to JSON before using.
+
+== Changes Between 0.11.0 and 0.11.1 ==
+
+ * _log and _temp_views are now admin-only resources.
+ * _bulk_docs now requires a valid `Content-Type` header of `application/json`.
+ * jsonp is disabled by default. An .ini option was added to selectively enable it.
+ * The key, startkey and endkey properties of the request object passed to list and show functions now contain JSON objects representing the URL encoded string values in the query string. Previously, these properties contained strings which needed to be converted to JSON before using.
+
+
 == Changes Between 0.10.x and 0.11.0 ==
 
 === show, list, update and validation functions ===

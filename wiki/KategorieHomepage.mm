@@ -1,0 +1,22 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:Unknown-Page
+##master-date:Unknown-Date
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language de
+Eine Kategorie für die persönliche HomepageImWiki der Wiki-Benutzer.
+
+Bitte beachten, dass Wiki-Homepages das "Eigentum" der entsprechenden Person sind und nicht von anderen Leuten editiert werden sollten, es sei denn um eine Nachricht an diese Person zu hinterlassen. Um dies zu tun, einfach die Nachricht nach vier Strichen an die Seite anhängen, wie hier:
+
+{{{
+----
+Wollte nur mal "Hallo" sagen! -- JürgenHermann
+}}}
+
+Hier ist eine Liste aller Seiten, die zu dieser Kategorie gehören:
+<<FullSearch()>>
+----
+KategorieKategorie

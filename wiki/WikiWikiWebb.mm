@@ -1,0 +1,19 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##translated-by:Karolina Lindqvist, Shakti Wiki
+##master-page:WikiWikiWeb
+##master-date:2002-03-05 10:00:35
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language sv
+Den allra första wiki-platsen med namn [wiki:Wiki:FrontPage] skapades 1994 som ett automatiserat bihang till Wiki:PortlandPatternRepository. Den webbplatsen blev mycker snart väldigt populär i mönsterigenkänningsgrupper. Detta till stora delar beroende på nyheten med internet och den populära platsen Wiki:InvitedAuthors. Platsen var och är fortfarande avsedd för Wiki:PeopleProjectsAndPatterns.
+
+Wiki:WardCunnigham var skaparen och programmeraren av den sidan. Han valde wiki-wiki som en snabb ordagrann ersättning och undvek därför att kalla sitt program för "quick-web". En tidig webbplats Wiki:WikiWikiHyperCard gör att man kan spåra idéerna tillbaka till en Wiki:HyperCard, som han skrev i början på 80-talet.
+
+Se också följande länkar:
+ * http://www.c2.com/cgi/wiki or wiki:Wiki/FrontPage
+ * få några svar från Wiki:WikiWikiWebFaq
+ * läs mer om wikis histora på Wiki:WikiHistory
+ * [http://news.mpr.org/programs/futuretense/daily_rafiles/20011220.ram Radiointervju med Ward Cunningham]

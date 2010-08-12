@@ -1,0 +1,37 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:HelpOnRules
+##master-date:2002-02-27 15:16:34
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language de
+== Horizontale Trennlinien ==
+Sie können horizontale, quer über die Seite gehende Trennlinien einfügen, indem Sie vier oder mehr Bindestriche eintippen. Die Anzahl der Bindestriche in der Markierung bestimmt dann, wie dick die Trennlinie ist - bis zu einer Obergrenze von 10.
+
+Weitere Informationen über mögliche Formatierungen finden Sie unter HilfeZumEditieren.
+
+=== Beispiel ===
+{{{
+--- (keine Trennlinie)
+----
+-----
+------
+-------
+--------
+---------
+----------
+-------------------------------------------- (nicht dicker als 10)
+}}} 
+
+=== Anzeige ===
+--- (keine Trennlinie)
+----
+-----
+------
+-------
+--------
+---------
+----------
+-------------------------------------------- (nicht dicker als 10)

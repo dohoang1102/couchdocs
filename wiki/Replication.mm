@@ -9,7 +9,7 @@ The aim of the replication is that at the end of the process, all active documen
 
 The replication process only copies the last revision of a document, so all previous revisions that were only on the source database are not copied to the destination database.
 
-'''Changes on the master will not automatically replicate to the slaves'''
+Changes on the master will not automatically replicate to the slaves. See “Continuous Replication” below.
 
 === Run Replication ===
 
@@ -49,6 +49,54 @@ POST /_replicate HTTP/1.1
 
 At this time, CouchDB doesn’t remember continuous replications over a server restart. For more info visit http://books.couchdb.org/relax/reference/replication - CouchDB: The Definitive Guide, chapter Replication.
 
+=== Cancelling a continuous replication task ===
+
+To cancel a continuous replication task, add "cancel":true parameter to JSON, for example:
+
+{{{
+POST /_replicate HTTP/1.1
+
+{"source":"http://example.org/example-database","target":"http://admin:password@127.0.0.1:5984/example-database", "continuous":true, "cancel":true}
+}}}
+
+=== Filtered Replication ===
+
+Sometimes you don't want to transfer all documents from source to target. You can include one or more filter functions in your design document and then tell the replicator to use them.
+
+A filter function takes two arguments (the document to be replicated and the the replication request) and returns true or false. If the result is true, then the document is replicated.
+
+{{{
+  function(doc, req) {
+  if (doc.type && doc.type == "foo") {
+    return true;
+  } else {
+    return false;
+  }
+}
+}}}
+
+Filters live under the top-level "filters" key;
+
+{{{
+  {
+    "_id":"myddoc",
+    "filters": {
+      "myfilter": "function goes here"
+    }
+  }
+}}}
+
+Invoke them as follows;
+
+{{{
+{"source":"http://example.org/example-database","target":"http://admin:password@127.0.0.1:5984/example-database", "filter":"myddoc/myfilter"}
+}}}
+
+You can even pass arguments to them;
+
+{{{
+{"source":"http://example.org/example-database","target":"http://admin:password@127.0.0.1:5984/example-database", "filter":"myddoc/myfilter", "query_params": {"key":"value"}}
+}}}
 
 See also: 
  * [[Replication_and_conflicts|Replication and conflicts]]

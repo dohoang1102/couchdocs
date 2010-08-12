@@ -1,3 +1,5 @@
+<<TableOfContents>>
+
 With up to tens of thousands of documents you will generally find CouchDB to perform well no matter how you write your code.  Once you start getting into the millions of documents you need to be a lot more careful.
 
 Many of the individual wiki pages mention performance when describing how to do things.  It is worthwhile refreshing your memory by revisiting them.
@@ -63,3 +65,32 @@ This does not seem to be very well documented. In the [http://svn.apache.org/vie
 Python 2.6 and above ship with a JSON module based on simplejson.  It excludes simplejson's C based speedups and is an order of magnitude slower as a result.  You should install simplejson with the speedups and use that.  JSON encoding and decoding does not release the GIL which means that if you try to use threads to get concurrency - eg multiple network connections - then you won't actually get much concurrency.  Use the multiple processing module to get actual concurrency. Make sure each process/thread has its own database connection (ie underlying socket).
 
 As an example one of my benchmarks turned out to be mostly limited by the json module's encoding and decoding speed.  The process was using 40% of a CPU.  Switching to simplejson with no other changes resulted in 5% of a CPU.  Switching from threads to processes (using multiprocessing module) gave yet another performance improvement finally pushing CouchDB to consume more than 100% of a CPU (this is on a multi-processor machine).
+
+= Resource Limits =
+One of the problems that administrators run into as their deployments become large are resource limits imposed by the system and by the application configuration. Raising these limits can allow your deployment to grow beyond what the default configuration will support.
+== CouchDB Configuration Options ==
+In your configuration (local.ini or similar) familiarize yourself with the following options:{{{
+[couchdb]
+max_dbs_open = 100
+
+[httpd]
+max_connections = 2048}}}
+The first option places an upper bound on the number of databases that can be open at one time. CouchDB reference counts database accesses internally and will close idle databases when it must. Sometimes it is necessary to keep more than the default open at once, such as in deployments where many databases will be continuously replicating.
+The second option limits how many client connections the HTTP server will service at a time. Again, heavy replication scenarios are good candidates for increased {{{max_connections}}} since the replicator opens several connections to the source database.
+== System Resource Limits ==
+=== Erlang ===
+Even if you've increased the maximum connections CouchDB will allow, the Erlang runtime system will not allow more than 1024 connections by default. Adding the following directive to {{{(prefix)/etc/default/couchdb}}} (or equivalent) will increase this limit (in this case to 4096):{{{
+export ERL_MAX_PORTS=4096}}}
+=== PAM and ulimit ===
+Finally, most *nix operating systems impose various resource limits on every process. If your system is set up to use the Pluggable Authentication Modules (PAM) system, increasing this limit is straightforward. For example, creating a file named {{{/etc/security/limits.d/100-couchdb.conf}}} with the following contents will ensure that CouchDB can open enough file descriptors to service your increased maximum open databases and Erlang ports:{{{
+#<domain>    <type>    <item>    <value>
+couchdb      hard      nofile    4096
+couchdb      soft      nofile    4096}}}
+If your system does not use PAM, a {{{ulimit}}} command is usually available for use in a custom script to launch CouchDB with increased resource limits.
+If necessary, feel free to increase this limits as long as your hardware can handle the load.
+
+= Disk and File System Performance =
+Using faster disks, striped RAID arrays and modern file systems can all speed up your CouchDB deployment. However, there is one option that can increase the responsiveness of your CouchDB server when disk performance is a bottleneck. From the erlang documentation for the file module: {{{
+On operating systems with thread support, it is possible to let file operations be performed in threads of their own, allowing other Erlang processes to continue executing in parallel with the file operations. See the command line flag +A in erl(1).}}}
+Setting this argument to a number greater than zero can keep your CouchDB installation responsive even during periods of heavy disk utilization. The easiest way to set this option is through the {{{ERL_FLAGS}}} environment variable. For example, to give Erlang four threads with which to perform i/o operations add the following to {{{(prefix)/etc/defaults/couchdb}}} (or equivalent): {{{
+export ERL_FLAGS="+A 4"}}}

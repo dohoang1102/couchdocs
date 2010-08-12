@@ -4,7 +4,7 @@
 cd /usr/ports/databases/couchdb
 make install clean
 }}}
-This will install CouchDB 0.9.0 from the ports collection.
+This will install CouchDB 0.10.1 from the ports collection.
 
 == Post install ==
 In case the install script fails to install a noninteractive user "couchdb" to be used for the database, the user needs to be created manually:
@@ -58,6 +58,7 @@ In case the port does not set up correct permissions on the database directory, 
 
 {{{
 shell# chown couchdb:couchdb /var/log/couchdb
+shell# chown couchdb:couchdb /usr/local/lib/couchdb/erlang/lib/couch-0.10.1/priv/lib
 }}}
 command to have the couchdb process own the directory which allows it to write couch.log there. The other directories are "root:wheel" or "root:network". And I expected "/usr/local/var.." as location.
 

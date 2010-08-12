@@ -93,7 +93,7 @@ threads << Thread.new do
     else
       
       # Get the database name out of the call data
-      # The data looks somethind like this:
+      # The data looks something like this:
       # {"type":"updated","db":"DB_NAME"}\n
       update_call =~ /\"db\":\"(\w+)\"/
       database_name = $1
@@ -196,7 +196,7 @@ class ViewUpdater(object):
                                     )
                                     urllib2.urlopen(url)
                 time.sleep(self.PAUSE)
-            except Exception:
+            except:
                 flags['is_running'] = False
                 raise
             

@@ -1,0 +1,18 @@
+## Please edit system and help pages ONLY in the moinmaster wiki!
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+## Merci de n'éditer les pages systèmes et d'aide QUE sur MoinMaster !
+## Pour plus d'information, consultez MoinMaster:MoinPagesEditorGroup.
+##master-page:WikiWikiWeb
+##master-date:2004-10-31 23:45:11
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language fr
+Le [wiki:Wiki:FrontPage tout premier wiki] fut fondé le 25 mars 1995 en tant que complément automatisé du [wiki:Wiki:PortlandPatternRepository référentiel des motifs de programmation de Portland] (voir l'[wiki:Wiki:WikiHistory HistoireDesWiki]). Le site devint immédiatement populaire auprès de la communauté des motifs de programmation, en grande partie grâce à la nouveauté de l'Internet et une bonne dose d'[wiki:Wiki:InvitedAuthors AuteursInvités]. Le site était, et reste, dédié aux [wiki:Wiki:PeopleProjectsAndPatterns PersonnesProjetsEtMotifs].
+
+Wiki:WardCunningham a créé le site et la machinerie [:WikiWikiWebVF: WikiWikiWeb] qui le fait tourner. Il choisit wiki-wiki comme substitut allitératif de rapide (''quick'') et a ainsi évité de nommer son site ''quick-web''. Une des plus anciennes pages, Wiki:WikiWikiHyperCard, fait remonter certains concepts du wiki à une pile Wiki:HyperCard qu'il a écrit vers la fin des années 80.
+
+Vous pouvez également vous reporter aux liens suivants :
+ * http://www.c2.com/cgi/wiki ou wiki:Wiki/FrontPage ;
+ * obtenir quelques réponses sur la certaines réponses de la Wiki:WikiWikiWebFaq ;
+ * en apprendre plus sur l'[wiki:Wiki:WikiHistory HistoireDesWiki] ;
+ * [http://www.artima.com/intv/wiki.html Entretien radiophonique de Ward Cunningham].

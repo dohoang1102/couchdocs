@@ -1,0 +1,31 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##master-page:Unknown-Page
+##master-date:Unknown-Date
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language en
+== Processing Instructions ==
+MoinMoin processing instructions have the same semantics as in XML: they control the paths taken when processing a page. Processing instructions are lines that start with a "{{{#}}}" character followed by a keyword and optionally some arguments; the keyword is always handled case-insensitive. Two consecutive hash marks at the start of a line are a comment that won't appear in the processed page.
+
+Processing instructions this wiki knows of:
+ * {{{##}}} ''any-text'': comment
+ * {{{#FORMAT}}} ''format-specifier'' ''[extra arguments]'': defines the input format for this page, known formats are:
+   * '''wiki''': default MoinMoin wiki markup
+   * '''plain''': normal plain text
+   * see HelpOnParsers for additional parsers available and MoinMoin:ParserMarket for user provided parsers.
+ * {{{#REDIRECT}}} ''pagename'': redirect to a different page (see MeatBall:PageRedirect'''''')
+ * {{{#REFRESH}}} ''delay'' ''[pagename_or_URL]'': redirect to a different page (or an external URL or just refresh the same page, if left out - use `config.refresh` to enable)
+ * `#PRAGMA` ''mode'' ''args'': sets processing modes for this page; mode names are not case-sensitive, currently known modes are:
+  * `#pragma section-numbers off` (or "0") switches off automatic numbering of section headers and "on" or "1" enables numbering (the default mode is set by the `show_section_numbers` config option). `#pragma section-numbers 2` only displays section numbers for headings of level 2 and up (similarly for 3 to 6).
+  * `#pragma keywords Cars, Vehicles, Foo` adds a `<meta>` tag with keywords which tells search engines what you can find on the particular page.
+  * `#pragma description This page is about cars.` adds a `<meta>` tag which contains the description of the particular page.
+ * {{{#DEPRECATED}}}: Mark this page as deprecated, i.e. further changes to the page will create no backup versions and displaying it will show the current contents (usually the reason why this page is deprecated) plus the last backup. This effectively freezes the last version of the page, makes it unavailable for searches (no hits on stale content), but keeps that content available for viewing.
+  * Removing the PI from the page will store '''no''' backup of the deprecation warning.
+  * In comparison to `#REDIRECT` this PI gives the ability to give the user a reason why this page is no longer of use and why they should go to a new one, while `#REDIRECT` will throw them to the new page without any reason.
+
+All PIs must appear at the very start of a page. An exception are comment PIs, those may appear anywhere within a  page using "wiki" format (but not in pages using other formats).
+
+For more information on the possible markup, see HelpOnEditing. 

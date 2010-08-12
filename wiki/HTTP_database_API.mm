@@ -5,7 +5,7 @@ An introduction to the CouchDB HTTP Database API.
 
 == Naming and Addressing ==
 
-A database must be named with all lowercase characters (a-z), digits (0-9), or any of the ''_$()+-/'' characters and must end with a slash in the URL. The name has to start with characters.
+A database must be named with all lowercase letters (a-z), digits (0-9), or any of the ''_$()+-/'' characters and must end with a slash in the URL. The name has to start with a lowercase letter (a-z).
 
 {{{
 http://couchserver/databasename/

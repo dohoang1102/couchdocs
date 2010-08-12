@@ -286,3 +286,8 @@ No. Views are always read-only to databases and their documents.
 {{{
 YOUR-COUCHDB-SOURCE-DIRECTORY/tmp/log/couch.log
 }}}
+
+<<Anchor(get_a_list_of_design_docs)>>
+== How can I get a list of the design documents in a database? ==
+
+Query the `_all_docs` view with `startkey="_design/"&endkey="_design0"`.

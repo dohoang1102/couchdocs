@@ -50,7 +50,6 @@ Once this document is saved into a database, then the ''all'' view can be retrie
   http://localhost:5984/database/_design/company/_view/all
 
 Example:
-
 {{{
 GET /some_database/_design/company/_view/all HTTP/1.0
 Date: Thu, 17 Aug 2006 05:39:28 +0000GMT
@@ -121,7 +120,7 @@ The following URL query arguments for '''GET/HEAD''' requests are allowed:
 ||'''group_level'''||''number''||''-''||''see below''||
 ||'''reduce'''||''true / false''||''true''||use the reduce function of the view. It defaults to true, if a reduce function is defined and to false otherwise.||
 ||'''include_docs'''||''true / false''||''false''||automatically fetch and include the document which emitted each view entry||
-||'''inclusive_end'''||''true / false''||''false''||||
+||'''inclusive_end'''||''true / false''||''true''||Controls whether the endkey is included in the result. It defaults to true.||
 
 Since 0.9 you can also issue '''POST''' requests to views where you can send the following JSON structure in the body:
 
@@ -145,7 +144,7 @@ The ''group'' option controls whether the reduce function reduces to a set of di
 
 If a view contains both a map and reduce function, querying that view will by default return the result of the reduce function. The result of the map function only may be retrieved by passing ''reduce=false'' as a query parameter.
 
-The ''include_docs'' option will include the associated document. Although, the user should keep in mind that there is a race condition when using this option. It is possible that between reading the view data and fetching the corresponding document that the document has changed. If you want to alleviate such concerns you should emit an object with a _rev attribute as in ''emit(key, {"_rev": doc._rev})''. This alleviates the race condition but leaves the possiblity that the returned document has been deleted (in which case, it includes the ''"_deleted": true'' attribute).
+The ''include_docs'' option will include the associated document. However, the user should keep in mind that there is a race condition when using this option. It is possible that between reading the view data and fetching the corresponding document that the document has changed. If you want to alleviate such concerns you should emit an object with a _rev attribute as in ''emit(key, {"_rev": doc._rev})''. This alleviates the race condition but leaves the possibility that the returned document has been deleted (in which case, it includes the ''"_deleted": true'' attribute).
 
 The ''inclusive_end'' option controls whether the ''endkey'' is included in the result. It defaults to true.
 
@@ -263,7 +262,7 @@ Could result in the following response:
   "rows": [{
       "id": "AE1AD84316B903AD46EF396CAFE8E50F",
       "key": null,
-      "foo": "bar"
+      "value": "bar"
     }
   ]
 }

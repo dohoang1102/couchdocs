@@ -6,6 +6,7 @@
 
 == Software ==
  * [[http://www.ajatus.info/|Ajatus]] A CRM that runs as a local Ajax web application
+ * [[http://www.anologue.com/|Anologue]] is like comments, meets im, meets irc, meets your favorite paste app, meets instant coffee.
  * [[http://www.aptela.com/|Aptela]] Hosted VoIP/PBX Service that uses Couch for persistence services
  * [[http://www.couch.it/|Couchit]], minimal site creator ([[http://bitbucket.org/benoitc/couchit/|source code]])
  * [[http://github.com/benoitc/couchdbproxy|CouchdbProxy]], Simple multinode couchdb proxy
@@ -20,9 +21,15 @@
  * [[http://www.flickr.com/photos/natematias/sets/72157621921932346/| Emberlight]] Publish data-rich flowcharts to the web
  * [[http://code.google.com/p/tapirwiki/| TapirWiki]] is a pure HTML / Javascript wiki which uses CouchDB as the server and data store. It's a single HTML file which you can upload for an ad-hoc, quick and dirty wiki.
  * [[http://wiki.github.com/arobson/Symbiote/| Symbiote Framework]] is a .Net RAD framework that brings together several excellent open source libraries and provides .Net APIs for technologies like CouchDB.
+ * [[http://github.com/quirkey/swinger| Swinger]] is a couchapp for creating and showing Presentations. Think Keynote, stored in CouchDB, run via Javascript and Sammy.js.
+ * [[http://github.com/ashbylane/CouchRS | CouchRS]] is a custom data processing extension allowing SQL Server Reporting Services to be pointed at CouchDB as reporting/analytics data store.
 
 == Websites ==
+ * [[http://shrinkbooth.com/|ShrinkBooth]] Multi-lingual URL shortener on the couch.
+ * [[http://pastebooth.com/|PasteBooth]] Multi-lingual Pastebin on the couch.
+ * [[http://memorize.com/| Memorize.com]] A website for memorizing all kinds of things. 
  * [[http://www.assaydepot.com/|Assay Depot]] a marketplace for pharmaceutical research services. We have multiple sites based on CouchDB (including [[http://providers.assaydepot.com/|our provider site]] all using filtered replication to communicate.
+ * [[http://www.passged.com/| Passed GED]] A GED preparation service. 
  * [[http://www.twigroups.com/|TwiGroups]] is a social networking tool for use on Twitter. CouchDB as tweets storage.
  * [[http://www.erlang-factory.com/conference/London2009/speakers/endafarrell|CouchDB at the BBC as a fault tolerant, scalable, multi-data center key-value store]]
  * [[http://www.magnifeast.com/|Magnifeast]] Restaurant website with online ordering from hundreds of restaurants.  CouchDB used as main database.
@@ -70,6 +77,8 @@
  * [[http://www.sincerial.com/|Sincerial]], Personalization and recommendation service for online stores. Uses CouchDB for all storage needs. The rest of the system is ruby.
  * [[http://www.pkw.de/|pkw.de]] is a German-based car-selling platform and is using CouchDB for one of it's services for getting individual offers by car-sellers. 
  * [[http://www.obsono.de/|obsono.de]] is a German-based service for creating shopping lists. It makes shopping faster and more structured and you will not buy things you don't need.
+ * [[http://www.hamstudy.org/|HamStudy.org]] provides practice tests and study information for preparing for a US Amateur Radio License exam.
+ * [[http://www.stereoblog.net/|StereoBlog.net]] anaglyph pictures blog powered by CouchDB and Django.
 
 == Facebook Applications ==
  * [[http://apps.facebook.com/ukissme/|Will you Kissme]], Dating game
@@ -83,3 +92,4 @@
  * [[http://sotelips.net/|Sotel IP Services]] is using it for some dynamic call routing applications [[http://blog.shimaore.net/2009/01/freeswitch-modxmlcurl-yaws-erlang-and.html|more]].
  * [[http://engineyard.com|Engine Yard]] is using it for metrics and tracking package installs.
  * [[http://www.berryski.com/|BerrySki]] BlackBerry app that offer GPS Ski Maps for Europe and North America. It uses couch db for subscription management.
+ * [[http://www.credit-suisse.com/|Credit Suisse Commodities]] Credit Suisse commodities department use CouchDB to store configuration details for their python marketdata framework. What's stored includes SQL statements, urls, db connection strings, regex statements. Futon is used as the configuration front-end. 

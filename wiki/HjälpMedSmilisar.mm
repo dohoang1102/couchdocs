@@ -1,0 +1,17 @@
+## Please edit system and help pages ONLY in the moinmaster wiki! For more
+## information, please see MoinMaster:MoinPagesEditorGroup.
+## Please edit (or translate) system/help pages on the moinmaster wiki ONLY.
+## For more information, please see MoinMaster:MoinPagesEditorGroup.
+##translated-by:Karolina Lindqvist, Shakti Wiki
+##master-page:HelpOnSmileys
+##master-date:2002-05-10 10:00:43
+#acl MoinPagesEditorGroup:read,write,delete,revert All:read
+#format wiki
+#language sv
+== Grafiska Smilisar ==
+För att sätta in en smilis, skriv bara in din favorit från tabellen nedan. De visas som ikoner endast om de har ''mellanslag omkring sig''.
+
+För att veta mer om möjliga märkkoder, se HjälpMedÄndringar.
+
+=== Exampel ===
+<<ShowSmileys>>
