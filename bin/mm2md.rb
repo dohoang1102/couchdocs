@@ -118,19 +118,25 @@ def mm2md(input)
       # got the regexp from http://flanders.co.nz/2009/11/08/a-good-url-regular-expression-repost/
       {
         :regexp => /(?:\s|^)((?#Protocol)(?:(?:ht|f)tp(?:s?)\:\/\/|~\/|\/)?(?#Username:Password)(?:\w+:\w+@)?(?#Subdomains)(?:(?:[-\w]+\.)+(?#TopLevel Domains)(?:com|org|net|gov|mil|biz|info|mobi|name|aero|jobs|museum|travel|[a-z]{2}))(?#Port)(?::[\d]{1,5})?(?#Directories)(?:(?:(?:\/(?:[-\w~!$+|.,=]|%[a-f\d]{2})+)+|\/)+|\?|#)?(?#Query)(?:(?:\?(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=?(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)(?:&(?:[-\w~!$+|.,*:]|%[a-f\d{2}])+=?(?:[-\w~!$+|.,*:=]|%[a-f\d]{2})*)*)*(?#Anchor)(?:#(?:[-\w~!$+|\/.,*:=]|%[a-f\d]{2})*)?)(?:\s|$)/,
-        :replacement => %Q{ <a href="\\1">\\1</a> },
+        :replacement => %Q{<\\1>},
       },
 
 
       # basic processing of named links
       {
         :regexp => /\[\[(?:(.*?)\|([^\]]*?))\]\]/,
-        :replacement => %Q{<a href="\\1">\\2</a>},
+        :replacement => %Q{\[\\2\]\(\\1\)},
       },
       # ... and just links
       {
         :regexp => /\[\[(https?|irc|mailto):\/\/(.*?)\]\]/,
-        :replacement => %Q{<a href="\\1">\\1</a>},
+        :replacement => %Q{<\\1>},
+      },
+
+      # MailTo
+      {
+        :regexp => /<<MailTo\((.*?)\)>>/,
+        :replacement => '[\\1](mailto:\\1)'
       },
 
       # Table of Contents
@@ -174,11 +180,12 @@ unless STDIN.tty?
   puts mm2md(input)
 else
   FileUtils.mkdir_p(target_dir)
+  # TODO get mm from subdirectories
   Dir.glob(File.join(File.dirname(__FILE__),"../wiki/**mm")).each do |file|
     target_file = File.join(target_dir, File.basename(file, ".mm")) + ".md"
     File.open(target_file, 'w') do |f|
       puts "Transcoding #{File.basename(file)}"
-      f.write("template: page.html\ntitle: #{File.basename(file, ".mm")}\n\n" + mm2md(File.read(file)))
+      f.write(mm2md(File.read(file)))
     end
   end
 end
